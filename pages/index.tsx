@@ -1,18 +1,24 @@
 import { GetServerSideProps, InferGetStaticPropsType } from "next";
 import { Header } from "../components/header";
 import { Headline } from "@smartive-education/pizza-hawaii";
+import User from "../data/user.json";
 
 type PageProps = {};
 
 export default function PageHome({}: PageProps): InferGetStaticPropsType<
   typeof getServerSideProps
 > {
+	const user = {
+		...User,
+		profileLink: `user/${User.id}`,
+	};
+
   return (
     <>
-      <Header title="Mumble">
-        <span>Your custom network</span>
-      </Header>
-      <Headline as="h1" level={1} >hoi</Headline>
+      <Header user={user} />
+      <Headline as="h1" level={1}>
+        hoi
+      </Headline>
     </>
   );
 }
