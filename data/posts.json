@@ -1,0 +1,56 @@
+{
+  "count": 3,
+  "data": [
+    {
+      "id": "01GQFGCRQVFE88FXPV0EYWMMHF",
+      "creator": {
+        "id": "195305735549092097",
+        "userName": "petermanser",
+        "firstName": "Peter",
+        "lastName": "Manser",
+        "avatarUrl": "https://cas-fee-advanced-ocvdad.zitadel.cloud/assets/v1/179828644300980481/users/195305735549092097/avatar?v=3b1662b598359b0221e987ebc08375f7"
+      },
+      "text": "FCSG",
+      "mediaUrl": "https://storage.googleapis.com/qwacker-api-prod-data/037faf32-faf9-452b-ad17-2ff00ea62116",
+      "mediaType": "image/jpeg",
+      "likeCount": 1,
+      "likedByUser": false,
+      "type": "post",
+      "replyCount": 0
+    },
+    {
+      "id": "01GP0GW2RQTJZ0G9E26HMRYK7A",
+      "creator": {
+        "id": "195305735549092097",
+        "userName": "petermanser",
+        "firstName": "Peter",
+        "lastName": "Manser",
+        "avatarUrl": "https://cas-fee-advanced-ocvdad.zitadel.cloud/assets/v1/179828644300980481/users/195305735549092097/avatar?v=3b1662b598359b0221e987ebc08375f7"
+      },
+      "text": "just setting up my qwckr",
+      "mediaUrl": null,
+      "mediaType": null,
+      "likeCount": 0,
+      "likedByUser": false,
+      "type": "post",
+      "replyCount": 0
+    },
+    {
+      "id": "01GHDP1XFCGDVJN9C9JM3S1KDD",
+      "creator": {
+        "id": "179828644301046017",
+        "userName": "christoph",
+        "firstName": "Christoph",
+        "lastName": "Bühler",
+        "avatarUrl": "https://cas-fee-advanced-ocvdad.zitadel.cloud/assets/v1/179828644300980481/users/179828644301046017/avatar?v=fbad86703d114f72f7c57c25fa8ade0a"
+      },
+      "text": "Hello World!",
+      "mediaUrl": null,
+      "mediaType": null,
+      "likeCount": 0,
+      "likedByUser": false,
+      "type": "post",
+      "replyCount": 0
+    }
+  ]
+}
