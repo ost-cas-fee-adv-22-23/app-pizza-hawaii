@@ -1,22 +1,56 @@
-import { FC, ReactElement } from "react";
+import { FC, useState, FormEvent } from "react";
+import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
 
 import {
-  Navi,
-  NaviButton,
-  UserProfile,
+	Navi,
+	NaviButton,
+	UserProfile,
+	Modal,
+	Form,
+	Button,
+	Label,
+	Grid,
+	FormInput,
+	FormTextarea,
+	FormPassword
 } from "@smartive-education/pizza-hawaii";
 
-type HeaderProps = {
-  user: any;
+import { User } from "../types/User";
+
+type THeader = {
+  user: User;
+  profileLink?: string;
 };
 
-export const Header: FC<HeaderProps> = ({ user }: HeaderProps) => {
+export const Header: FC<THeader> = ({ user }) => {
+  const [state, setState] = useState({
+    showSettingsModal: false,
+    user: user,
+  });
+
+  const handleSettingsModalClick = (): void => {
+    setState({ ...state, showSettingsModal: !state.showSettingsModal });
+  };
+
+  const onFieldChange = (e: FormEvent): void => {
+    const { name, value } = e.target as HTMLInputElement;
+
+    setState({
+      ...state,
+      user: {
+        ...state.user,
+        [name]: value,
+      },
+    });
+  };
+
   return (
     <>
       <header className="Header mb-8 bg-violet-600 text-white">
         <div className="px-content py-3">
           <div className="flex items-center justify-between gap-8 w-full max-w-content mx-auto">
-            <a href="/" className="flex w-[209px]">
+            <Link href="/" className="flex w-[209px]">
               <svg
                 className="w-full"
                 viewBox="0 0 209 40"
@@ -68,26 +102,27 @@ export const Header: FC<HeaderProps> = ({ user }: HeaderProps) => {
               </svg>
 
               <h1 className="sr-only">Mumble</h1>
-            </a>
+            </Link>
             <nav className="">
               <Navi>
+                <Link href={`/user/${user.userName}`} title="My Mumble Profile">
+                  <NaviButton as="span">
+                    <UserProfile
+                      userName={user.userName}
+                      avatar={user.avatarUrl}
+                      size="S"
+                      buttonLabel="My Mumble Profile"
+                    />
+                  </NaviButton>
+                </Link>
                 <NaviButton
-                  as="a"
-                  icon=""
-                  href={user.profileLink}
-                  title="My Mumble Profile"
+                  as="button"
+                  icon="settings"
+                  onClick={handleSettingsModalClick}
                 >
-                  <UserProfile
-                    userName={user.userName}
-                    avatar={user.avatarUrl}
-                    size="S"
-                    buttonLabel="My Mumble Profile"
-                  />
-                </NaviButton>
-                <NaviButton as="button" icon="settings">
                   Settings
                 </NaviButton>
-                <NaviButton as="a" icon="logout" href="/logout">
+                <NaviButton as="button" icon="logout" onClick={() => signOut()}>
                   Log out
                 </NaviButton>
               </Navi>
@@ -95,6 +130,87 @@ export const Header: FC<HeaderProps> = ({ user }: HeaderProps) => {
           </div>
         </div>
       </header>
+      {state.showSettingsModal && (
+        <Modal
+          title="Einstellungen"
+          isVisible={state.showSettingsModal}
+          onClose={handleSettingsModalClick}
+        >
+          <Form>
+            <fieldset>
+              <Label as="legend" size="XL">
+                Persönliche Einstellungen
+              </Label>
+              <div className="mt-4">
+                <Grid variant="col" gap="M" marginBelow="M">
+                  <FormInput
+                    type="text"
+                    label="UserName"
+                    name="userName"
+                    value={state.user.userName}
+                    disabled={true}
+                    icon="mumble"
+                    onChange={onFieldChange}
+                  />
+                  <FormInput
+                    type="text"
+                    label="Vorname"
+                    name="firstName"
+                    value={state.user.firstName}
+                    onChange={onFieldChange}
+                  />
+                  <FormInput
+                    type="text"
+                    label="Name"
+                    name="lastName"
+                    value={state.user.lastName}
+                    onChange={onFieldChange}
+                  />
+                  <FormInput
+                    type="email"
+                    label="E-Mail"
+                    name="email"
+                    value={state.user.email}
+                    onChange={onFieldChange}
+                  />
+                  <FormTextarea
+                    label="Bio"
+                    name="bio"
+                    value={state.user.bio}
+                    onChange={onFieldChange}
+                  />
+                </Grid>
+              </div>
+            </fieldset>
+            <fieldset>
+              <Label as="legend" size="XL">
+                Passwort ändern
+              </Label>
+              <div className="mt-4">
+                <Grid variant="col" gap="M" marginBelow="M">
+                  <FormPassword
+                    label="Altes Passwort"
+                    onChange={onFieldChange}
+                  />
+                  <FormPassword
+                    label="Neues Passwort"
+                    onChange={onFieldChange}
+                  />
+                </Grid>
+              </div>
+            </fieldset>
+
+            <Grid variant="row" gap="S" wrapBelowScreen="md">
+              <Button as="button" colorScheme="slate" icon="cross">
+                Abbrechen
+              </Button>
+              <Button as="button" colorScheme="violet" icon="check">
+                Speichern
+              </Button>
+            </Grid>
+          </Form>
+        </Modal>
+      )}
     </>
   );
 };

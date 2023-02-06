@@ -16,7 +16,8 @@
       "likeCount": 1,
       "likedByUser": false,
       "type": "post",
-      "replyCount": 0
+      "replyCount": 0,
+	  "createdAt": "2021-03-09T14:00:00.000Z"
     },
     {
       "id": "01GP0GW2RQTJZ0G9E26HMRYK7A",
@@ -33,7 +34,8 @@
       "likeCount": 0,
       "likedByUser": false,
       "type": "post",
-      "replyCount": 0
+      "replyCount": 0,
+      "createdAt": "2021-03-09T14:00:00.000Z"
     },
     {
       "id": "01GHDP1XFCGDVJN9C9JM3S1KDD",
@@ -50,7 +52,8 @@
       "likeCount": 0,
       "likedByUser": false,
       "type": "post",
-      "replyCount": 0
+      "replyCount": 0,
+      "createdAt": "2021-03-09T14:00:00.000Z"
     }
   ]
 }
