@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
 import {
-  Button,
-  Label,
-  Grid,
-  FormTextarea,
-  UserName,
-  UserContentCard,
-  TUserContentCard,
-} from "@smartive-education/pizza-hawaii";
+	Button,
+	Label,
+	Grid,
+	FormTextarea,
+	UserName,
+	UserContentCard,
+	TUserContentCard,
+} from '@smartive-education/pizza-hawaii';
 
-import { User } from "../types/User";
+import { User } from '../types/User';
 
 type TContentInput = {
 	variant: 'newPost' | 'answerPost';
