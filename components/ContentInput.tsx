@@ -51,7 +51,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		<Grid variant="col" gap="S">
 			<Grid variant="col" gap="S">
 				<Label as="span" size={setting.headlineSize}>
-					{author.fullName}
+					{`${author.firstName} ${author.lastName}`}
 				</Label>
 				<Grid variant="row" gap="S">
 					<UserName href={author.profileLink}>{author.userName}</UserName>
@@ -64,7 +64,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		<UserContentCard
 			headline={headerSlotContent}
 			userProfile={{
-				avatar: author.avatar,
+				avatar: author.avatarUrl,
 				userName: author.userName,
 				href: author.profileLink,
 			}}
