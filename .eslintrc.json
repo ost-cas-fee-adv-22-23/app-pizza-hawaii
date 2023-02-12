@@ -1,3 +1,6 @@
 {
-  "extends": "next/core-web-vitals"
+	"extends": [
+		"@smartive/eslint-config",
+		"next/core-web-vitals"
+	]
 }

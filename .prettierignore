@@ -1,0 +1,7 @@
+# Ignore artifacts:
+dist
+.eslintrc.json
+.next
+.vscode
+node_modules
+
