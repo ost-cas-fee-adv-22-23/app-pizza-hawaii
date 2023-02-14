@@ -15,7 +15,7 @@ import {
 	TUserContentCard,
 } from '@smartive-education/pizza-hawaii';
 
-import ProjectSettings from '../data/ProjectSettings.json';
+import ProjectSettings from './../data/ProjectSettings.json';
 import { Post } from '../types/Post';
 
 /*
