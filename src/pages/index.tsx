@@ -6,7 +6,7 @@ import { ContentInput } from '../components/ContentInput';
 
 import { Headline, Grid } from '@smartive-education/pizza-hawaii';
 
-import User from '../data/user.json';
+import User from './../data/user.json';
 import { Post as PostType } from '../types/Post';
 
 type PageProps = {
