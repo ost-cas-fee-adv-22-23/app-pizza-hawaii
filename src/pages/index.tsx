@@ -1,51 +1,54 @@
+import { useState } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { getToken } from 'next-auth/jwt';
+
 import { Header } from '../components/Header';
 import { ContentCard } from '../components/ContentCard';
 import { ContentInput } from '../components/ContentInput';
 
 import { Headline, Grid } from '@smartive-education/pizza-hawaii';
 
-import { fetchMumbles, fetchUsers, Mumble } from '../services/qwacker';
-import User from './../data/user.json';
-import { useState } from 'react';
+import { services } from '../services';
+
+import type { User as TUser } from '../types/User';
+import type { Post as TPost } from '../types/Post';
 
 type PageProps = {
+	currentUser: TUser;
 	count: number;
-	mumbles: Mumble[];
+	posts: TPost[];
 	error?: string;
 };
 
 export default function PageHome({
+	currentUser,
 	count,
-	mumbles: initialMumbles,
+	posts: initialPosts,
 	error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	const [mumbles, setMumbles] = useState(initialMumbles);
+	const [posts, setPosts] = useState(initialPosts);
 	const [loading, setLoading] = useState(false);
-	const [hasMore, setHasMore] = useState(initialMumbles.length < count);
+	const [hasMore, setHasMore] = useState(initialPosts.length < count);
 
 	if (error) {
 		return <div>An error occurred: {error}</div>;
 	}
 
 	const loadMore = async () => {
-		const { count, mumbles: newMumbles } = await fetchMumbles({
+		setLoading(true);
+		const { count, posts: newPosts } = await services.posts.fetchPosts({
 			limit: 5,
-			offset: mumbles.length,
+			offset: posts.length,
 		});
 
 		setLoading(false);
-		setHasMore(mumbles.length + newMumbles.length < count);
-		setMumbles([...mumbles, ...newMumbles]);
-	};
-	const user = {
-		...User,
-		profileLink: `user/${User.userName}`,
+		setHasMore(posts.length + newPosts.length < count);
+		setPosts([...posts, ...newPosts]);
 	};
 
 	return (
 		<div className="bg-slate-100">
-			<Header user={user} />
+			<Header user={currentUser} />
 			<main className="px-content">
 				<section className="mx-auto w-full max-w-content">
 					<div className="mb-2 text-violet-600">
@@ -62,12 +65,12 @@ export default function PageHome({
 						<ContentInput
 							variant="newPost"
 							headline="Hey, was geht ab?"
-							author={user}
+							author={currentUser}
 							placeHolderText="Deine Meinung zählt"
 						/>
 
-						{mumbles.map((mumble) => {
-							return <ContentCard key={mumble.id} variant="timeline" post={mumble} />;
+						{posts.map((post) => {
+							return <ContentCard key={post.id} variant="timeline" post={post} />;
 						})}
 					</Grid>
 
@@ -88,23 +91,27 @@ export default function PageHome({
 	);
 }
 
-export const getServerSideProps: GetServerSideProps<PageProps> = async () => {
-	//const { data: token } = useSession();
+export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req }) => {
+	const session = await getToken({ req });
+	if (!session) {
+		return { props: { currentUser: null, posts: [], count: 0, error: 'No token found' } };
+	}
 	try {
-		const { count, mumbles } = await fetchMumbles({ limit: 5 });
-		const { users } = await fetchUsers({
-			accessToken: '',
+		const { count, posts } = await services.posts.fetchPosts({ limit: 5 });
+		const { users } = await services.users.fetchUsers({
+			accessToken: session?.accessToken,
 		});
-		console.log(users);
+
 		return {
 			props: {
+				currentUser: session?.user,
 				count,
-				mumbles: mumbles.map((mumble) => {
-					const author = users.find((user) => user.id === mumble.creator);
+				posts: posts.map((post) => {
+					const author = users.find((user) => user.id === post.creator);
 					if (author) {
-						mumble.creator = author;
+						post.creator = author;
 					}
-					return mumble;
+					return post;
 				}),
 			},
 		};
@@ -116,6 +123,6 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async () => {
 			message = String(error);
 		}
 
-		return { props: { error: message, mumbles: [], count: 0 } };
+		return { props: { error: message, currentUser: session?.user, posts: [], count: 0 } };
 	}
 };
