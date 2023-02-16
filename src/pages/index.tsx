@@ -1,4 +1,6 @@
-import { GetServerSideProps, InferGetStaticPropsType } from 'next';
+import { useState } from 'react';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { getToken } from 'next-auth/jwt';
 
 import { Header } from '../components/Header';
 import { ContentCard } from '../components/ContentCard';
@@ -6,26 +8,47 @@ import { ContentInput } from '../components/ContentInput';
 
 import { Headline, Grid } from '@smartive-education/pizza-hawaii';
 
-import User from './../data/user.json';
-import { Post as PostType } from '../types/Post';
+import { services } from '../services';
+
+import type { User as TUser } from '../types/User';
+import type { Post as TPost } from '../types/Post';
 
 type PageProps = {
-	posts: {
-		data: PostType[];
-	};
+	currentUser: TUser;
+	count: number;
+	posts: TPost[];
+	error?: string;
 };
 
-export default function PageHome({ posts }: PageProps): InferGetStaticPropsType<typeof getServerSideProps> {
-	const user = {
-		...User,
-		profileLink: `user/${User.userName}`,
-	};
+export default function PageHome({
+	currentUser,
+	count,
+	posts: initialPosts,
+	error,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	const [posts, setPosts] = useState(initialPosts);
+	const [loading, setLoading] = useState(false);
+	const [hasMore, setHasMore] = useState(initialPosts.length < count);
 
-	const Posts = posts.data;
+	if (error) {
+		return <div>An error occurred: {error}</div>;
+	}
+
+	const loadMore = async () => {
+		setLoading(true);
+		const { count, posts: newPosts } = await services.posts.fetchPosts({
+			limit: 5,
+			offset: posts.length,
+		});
+
+		setLoading(false);
+		setHasMore(posts.length + newPosts.length < count);
+		setPosts([...posts, ...newPosts]);
+	};
 
 	return (
 		<div className="bg-slate-100">
-			<Header user={user} />
+			<Header user={currentUser} />
 			<main className="px-content">
 				<section className="mx-auto w-full max-w-content">
 					<div className="mb-2 text-violet-600">
@@ -42,22 +65,64 @@ export default function PageHome({ posts }: PageProps): InferGetStaticPropsType<
 						<ContentInput
 							variant="newPost"
 							headline="Hey, was geht ab?"
-							author={user}
+							author={currentUser}
 							placeHolderText="Deine Meinung zählt"
 						/>
 
-						{Posts &&
-							Posts.sort((a: PostType, b: PostType) => {
-								return new Date(b.createdAt) > new Date(a.createdAt) ? 1 : -1;
-							}).map((post) => {
-								return <ContentCard key={post.id} variant="timeline" post={post} />;
-							})}
+						{posts.map((post) => {
+							return <ContentCard key={post.id} variant="timeline" post={post} />;
+						})}
 					</Grid>
+
+					{hasMore ? (
+						<button
+							onClick={() => loadMore()}
+							disabled={loading}
+							className="bg-indigo-400 px-2 py-1 rounded-lg mt-4"
+						>
+							{loading ? '...' : 'Load more'}
+						</button>
+					) : (
+						''
+					)}
 				</section>
 			</main>
 		</div>
 	);
 }
-export const getServerSideProps: GetServerSideProps = async () => ({
-	props: { posts: require('../data/posts.json') },
-});
+
+export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req }) => {
+	const session = await getToken({ req });
+	if (!session) {
+		return { props: { currentUser: null, posts: [], count: 0, error: 'No token found' } };
+	}
+	try {
+		const { count, posts } = await services.posts.fetchPosts({ limit: 5 });
+		const { users } = await services.users.fetchUsers({
+			accessToken: session?.accessToken,
+		});
+
+		return {
+			props: {
+				currentUser: session?.user,
+				count,
+				posts: posts.map((post) => {
+					const author = users.find((user) => user.id === post.creator);
+					if (author) {
+						post.creator = author;
+					}
+					return post;
+				}),
+			},
+		};
+	} catch (error) {
+		let message;
+		if (error instanceof Error) {
+			message = error.message;
+		} else {
+			message = String(error);
+		}
+
+		return { props: { error: message, currentUser: session?.user, posts: [], count: 0 } };
+	}
+};

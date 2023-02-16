@@ -15,8 +15,9 @@ import {
 	TUserContentCard,
 } from '@smartive-education/pizza-hawaii';
 
+import { Mumble } from '../services/qwacker';
+
 import ProjectSettings from './../data/ProjectSettings.json';
-import { Post } from '../types/Post';
 
 /*
  * Type
@@ -24,7 +25,7 @@ import { Post } from '../types/Post';
 
 type TContentCard = {
 	variant: 'detailpage' | 'timeline' | 'response';
-	post: Post;
+	post: Mumble;
 	profileLink?: string;
 };
 
