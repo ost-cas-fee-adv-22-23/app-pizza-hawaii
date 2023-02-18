@@ -47,6 +47,27 @@ const fetchPosts = async (params?: { limit?: number; offset?: number; newerThanM
 	};
 };
 
+// get single Post (mumble)
+const getPostById = async (id: string) => {
+	if (!id) {
+		throw new Error('no valid id was provided');
+	}
+
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${id}`, {
+			method: 'GET',
+		});
+		console.log('line:58 response', response);
+		if (!response.ok) {
+			throw new Error('Something went wrong  with the response!');
+		}
+
+		return response.json();
+	} catch (error) {
+		throw new Error('could not reach API');
+	}
+};
+
 const addPost = async (text: string, file: TUploadImage | null, accessToken?: string) => {
 	if (!accessToken) {
 		throw new Error('No access token');
@@ -83,4 +104,5 @@ const transformPost = (post: RawPost) => ({
 export const postsService = {
 	fetchPosts,
 	addPost,
+	getPostById,
 };

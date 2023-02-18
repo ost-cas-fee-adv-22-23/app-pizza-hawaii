@@ -114,7 +114,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 			<Grid variant="row" gap="M" wrapBelowScreen="md">
 				<InteractionButton
 					as="a"
-					href="/link/to/post"
+					href={`/mumble/${post.id}`}
 					isActive={post.replyCount > 0}
 					colorScheme="violet"
 					buttonText={
