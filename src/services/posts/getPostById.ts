@@ -14,8 +14,14 @@ export const getPostById = async (id: string) => {
 			throw new Error('Something went wrong  with the response!');
 		}
 
-		return response.json();
+		return transformPost(await response.json());
 	} catch (error) {
 		throw new Error('could not reach API');
 	}
+
 };
+
+const transformPost = (post: RawPost) => ({
+	...post,
+	createdAt: new Date(decodeTime(post.id)).toISOString(),
+});

@@ -57,14 +57,36 @@ const getPostById = async (id: string) => {
 		const response = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${id}`, {
 			method: 'GET',
 		});
-		console.log('line:58 response', response);
+
 		if (!response.ok) {
 			throw new Error('Something went wrong  with the response!');
 		}
 
-		return response.json();
+		return transformPost(await response.json());
 	} catch (error) {
 		throw new Error('could not reach API');
+	}
+};
+
+// get all Replies for a given Post Id
+const getRepliesById = async (id: string) => {
+	if (!id) {
+		throw new Error('getReplyById: no valid id was provided');
+	}
+
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${id}/replies`, {
+			method: 'GET',
+		});
+
+		if (response.status !== 200) {
+			throw new Error('Something went sour! not status 200. have a look at the network status');
+		}
+
+		return response.json()
+
+	} catch (error) {
+		throw new Error('getReplyById could not reach API');
 	}
 };
 
@@ -105,4 +127,5 @@ export const postsService = {
 	fetchPosts,
 	addPost,
 	getPostById,
+	getRepliesById,
 };
