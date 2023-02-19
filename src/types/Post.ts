@@ -1,8 +1,8 @@
-import { User } from './User';
+import { TUser } from './User';
 
-export type Post = {
+export type TPost = {
 	id: string;
-	creator: User;
+	creator: TUser | string;
 	text: string;
 	mediaUrl?: string | null;
 	mediaType: 'image/jpeg';
