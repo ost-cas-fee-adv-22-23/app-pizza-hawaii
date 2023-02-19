@@ -26,6 +26,7 @@ import ProjectSettings from './../data/ProjectSettings.json';
 type TContentCard = {
 	variant: 'detailpage' | 'timeline' | 'response';
 	post: Mumble;
+	user: TUser;
 	profileLink?: string;
 };
 
@@ -61,16 +62,16 @@ const contentCardvariantMap: Record<TContentCard['variant'], TContentCardvariant
 	},
 };
 
-export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
+export const ContentCard: FC<TContentCard> = ({ variant, post, user }) => {
 	const setting = contentCardvariantMap[variant] || contentCardvariantMap.detailpage;
 
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
-				{`${post.creator.firstName} ${post.creator.lastName}`}
+				{`${user?.firstName} ${user?.lastName}`}
 			</Label>
 			<Grid variant="row" gap="S">
-				<UserName href={`/user/${post.creator.userName}`}>{post.creator.userName}</UserName>
+				<UserName href={`/user/${user?.userName}`}>{user?.userName}</UserName>
 				<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
 					<TimeStamp date={post.createdAt} />
 				</IconLink>
@@ -82,9 +83,9 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 		<UserContentCard
 			headline={headerSlotContent}
 			userProfile={{
-				avatar: post.creator.avatarUrl,
-				userName: post.creator.userName,
-				href: `/user/${post.creator.userName}`,
+				avatar: user?.avatarUrl,
+				userName: user?.userName,
+				href: `/user/${user?.userName}`,
 			}}
 			avatarVariant={setting.avatarVariant}
 			avatarSize={setting.avatarSize}
@@ -106,7 +107,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 							ProjectSettings.images.post.aspectRatio[1]
 						}
 						src={post.mediaUrl}
-						alt={`Image of ${post.creator.firstName} ${post.creator.lastName}`}
+						alt={`Image of ${post?.firstName} ${post?.lastName}`}
 					/>
 				</ImageOverlay>
 			)}
@@ -123,7 +124,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 					iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
 					onClick={function (): void {
 						console.log('add comment');
-						throw new Error('Function not implemented.');
+						// throw new Error('Function not implemented.');
 					}}
 				/>
 				<InteractionButton
@@ -135,7 +136,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 					iconName={post.likeCount > 0 ? 'heart_filled' : 'heart_fillable'}
 					onClick={function (): void {
 						console.log('add like');
-						throw new Error('Function not implemented.');
+						// throw new Error('Function not implemented.');
 					}}
 				/>
 

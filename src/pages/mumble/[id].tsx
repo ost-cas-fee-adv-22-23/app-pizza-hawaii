@@ -1,26 +1,27 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { services } from '../../services';
 import { useSession } from 'next-auth/react';
+import { getToken } from 'next-auth/jwt';
 import { Grid, Button } from '@smartive-education/pizza-hawaii';
 import { ContentCard } from '../../components/ContentCard';
 import type TPost from '../../services/index';
 import { ContentInput } from '../../components/ContentInput';
+import { TUser } from '../../services/users';
 
 type Props = {
-	mumble: {
+	detailData: {
+		userData: TUser;
 		id: string;
 		postData: TPost;
 	};
 };
 
-export default function MumblePage({ mumble }: Props): InferGetServerSidePropsType<typeof getServerSideProps> {
+export default function DetailPage({ detailData }: Props): InferGetServerSidePropsType<typeof getServerSideProps> {
 	const [loading, setLoading] = useState(false);
-	const { data: session } = useSession();
+	const { postData, id, userData } = detailData;
 
 
-	const { postData, id } = mumble;
-	console.log('%c[id].tsx line:21 accessToken', 'color: white; background-color: #007acc;', session);
 	const loadResponses = async (id: string) => {
 		const replies = await services.posts.getRepliesById(id);
 	};
@@ -37,11 +38,11 @@ export default function MumblePage({ mumble }: Props): InferGetServerSidePropsTy
 		<div className="bg-slate-400">
 			<section className="mx-auto w-full max-w-content">
 				<Grid as="div" variant="col" gap="S">
-					<ContentCard variant="response" post={postData} />
+					<ContentCard variant="response" post={postData} user={userData} />
 					<ContentInput
 						variant="answerPost"
 						headline="Hey, was geht ab?"
-						author='me'
+						author="me" //TODO my account user data
 						placeHolderText="Deine Meinung zählt"
 					/>
 					<h1>Mumble post ID: {postData.id}</h1>
@@ -56,13 +57,24 @@ export default function MumblePage({ mumble }: Props): InferGetServerSidePropsTy
 	);
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ query: { id } }) => {
-	const res = await services.posts.getPostById(id);
-	const postData = await res;
+export const getServerSideProps: GetServerSideProps = async ({ req, query: { id } }) => {
+	const session = await getToken({ req });
+	if (!session) {
+		return {
+			props: { userData: null, error: 'not logged in, no session' },
+		};
+	}
+	try {
+		const postData = await services.posts.getPostById(id);
+		const userData = await services.posts.getUserbyPostId(postData.creator, session?.accessToken);
 
-	return {
-		props: {
-			mumble: { id, postData },
-		},
-	};
+		return {
+			props: {
+				// userData: userData,
+				detailData: { id, postData, userData },
+			},
+		};
+	} catch (error) {
+		throw new Error('getUserByPostId: No valid UserId was provided');
+	}
 };

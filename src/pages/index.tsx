@@ -78,7 +78,7 @@ export default function PageHome({
 						{posts.map((post) => {
 							return (
 								// <Link href={`/mumble/${post.id}`} key={post.id}>
-								<ContentCard key={post.id} variant="timeline" post={post} />
+								<ContentCard key={post.id} variant="timeline" post={post}  />
 								// </Link>
 							);
 						})}
@@ -103,7 +103,6 @@ export default function PageHome({
 
 export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req }) => {
 	const session = await getToken({ req });
-	console.log('session', session);
 	if (!session) {
 		return { props: { currentUser: null, posts: [], count: 0, error: 'No token found' } };
 	}
