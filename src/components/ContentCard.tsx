@@ -15,7 +15,8 @@ import {
 	TUserContentCard,
 } from '@smartive-education/pizza-hawaii';
 
-import { Mumble } from '../services/qwacker';
+// import { Mumble } from '../services/qwacker';
+import { ContentCardModel } from '../models/ContentCard';
 
 import ProjectSettings from './../data/ProjectSettings.json';
 
@@ -25,8 +26,7 @@ import ProjectSettings from './../data/ProjectSettings.json';
 
 type TContentCard = {
 	variant: 'detailpage' | 'timeline' | 'response';
-	post: Mumble;
-	user: TUser;
+	post: ContentCardModel;
 	profileLink?: string;
 };
 
@@ -62,16 +62,16 @@ const contentCardvariantMap: Record<TContentCard['variant'], TContentCardvariant
 	},
 };
 
-export const ContentCard: FC<TContentCard> = ({ variant, post, user }) => {
+export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 	const setting = contentCardvariantMap[variant] || contentCardvariantMap.detailpage;
 
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
-				{`${user?.firstName} ${user?.lastName}`}
+				{`${post.firstName} ${post.lastName}`}
 			</Label>
 			<Grid variant="row" gap="S">
-				<UserName href={`/user/${user?.userName}`}>{user?.userName}</UserName>
+				<UserName href={`/user/${post.userName}`}>{post.userName}</UserName>
 				<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
 					<TimeStamp date={post.createdAt} />
 				</IconLink>
@@ -83,9 +83,9 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, user }) => {
 		<UserContentCard
 			headline={headerSlotContent}
 			userProfile={{
-				avatar: user?.avatarUrl,
-				userName: user?.userName,
-				href: `/user/${user?.userName}`,
+				avatar: post.avatarUrl,
+				userName: post.userName,
+				href: `/user/${post.userName}`,
 			}}
 			avatarVariant={setting.avatarVariant}
 			avatarSize={setting.avatarSize}
@@ -107,7 +107,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, user }) => {
 							ProjectSettings.images.post.aspectRatio[1]
 						}
 						src={post.mediaUrl}
-						alt={`Image of ${post?.firstName} ${post?.lastName}`}
+						alt={`Image of ${post.firstName} ${post.lastName}`}
 					/>
 				</ImageOverlay>
 			)}

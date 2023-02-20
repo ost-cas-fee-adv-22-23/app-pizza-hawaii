@@ -119,6 +119,8 @@ const getUserbyPostId = async (id: string, accessToken?: string) => {
 	}
 };
 
+
+
 const addPost = async (text: string, file: TUploadImage | null, accessToken?: string) => {
 	if (!accessToken) {
 		throw new Error('No access token');
