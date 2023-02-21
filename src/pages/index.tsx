@@ -39,31 +39,38 @@ export default function PageHome({
 
 	const loadMore = async () => {
 		setLoading(true);
-		const { count: newPostCount, posts: newPosts } = await services.posts.fetchPosts({
-			limit: 5,
-			offset: posts.length,
-		});
 
-		setPostCount(newPostCount);
+		try {
+			const { count: newPostCount, posts: newPosts } = await services.posts.fetchPosts({
+				limit: 5,
+				offset: posts.length,
+			});
 
-		const postsToAdd = newPosts
-			.map((post) => {
-				const author = users.find((user: TUser) => user.id === post.creator);
-				if (author) {
-					post.creator = author;
-				}
-				return post;
-			})
-			.filter((post) => typeof post.creator === 'object');
+			setPostCount(newPostCount);
 
-		if (postsToAdd.length !== newPosts.length) {
-			console.warn('Some users could not loaded');
-			// todo: decide what to do here
+			const postsToAdd = newPosts
+				.map((post) => {
+					const author = users.find((user: TUser) => user.id === post.creator);
+					if (author) {
+						post.creator = author;
+					}
+					return post;
+				})
+				.filter((post) => typeof post.creator === 'object');
+
+			if (postsToAdd.length !== newPosts.length) {
+				console.warn('Some users could not loaded');
+				// todo: decide what to do here
+			}
+
+			setHasMore(posts.length + newPosts.length < postCount);
+			setPosts([...posts, ...postsToAdd]);
+		} catch (error) {
+			console.warn(error);
+			// todo: error handling
 		}
 
 		setLoading(false);
-		setHasMore(posts.length + newPosts.length < postCount);
-		setPosts([...posts, ...postsToAdd]);
 	};
 
 	return (
@@ -125,7 +132,7 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req })
 				users,
 				posts: posts
 					.map((post) => {
-						const author = users.find((user) => user.id === post.creator);
+						const author = users?.find((user) => user.id === post.creator);
 						if (author) {
 							post.creator = author;
 						}
