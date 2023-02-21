@@ -31,11 +31,21 @@ type DetailPageProps = {
 
 export default function DetailPage(props: DetailPageProps): InferGetServerSidePropsType<typeof getServerSideProps> {
 	// console.log('%c[id].tsx line:16 postData', 'color: white; background-color: #007acc;', props);
-	const { text, firstName, type } = props;
+	const { text, firstName } = props;
+	const { data: session } = useSession();
+
+	const author = {
+		firstName: session?.user.firstName,
+		lastName: session?.user.lastName,
+		userName: session?.user.userName,
+		profileLink: `/user/${session?.user.id}`,
+		id: session?.user.id,
+	};
+
+	
 
 	const loadResponses = async (id: string) => {
 		const replies = await services.posts.getRepliesById(id);
-		// console.log('%c[id].tsf5f:39 replies', 'color: white; background-color: #f5f;', replies);
 	};
 
 	const loadUser = async (creator: string, token: string) => {
@@ -51,7 +61,7 @@ export default function DetailPage(props: DetailPageProps): InferGetServerSidePr
 					<ContentInput
 						variant="answerPost"
 						headline="Hey, was geht ab?"
-						author="me" //TODO my account user data
+						author={author} //TODO better model for author
 						placeHolderText="Deine Meinung zählt"
 					/>
 					<h1>Mumble post ID: {props.postDataId}</h1>
@@ -76,7 +86,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { id 
 	try {
 		const postData: TPost = await services.posts.getPostById(id);
 		const userData: TUser = await services.posts.getUserbyPostId(postData.creator, session?.accessToken);
-		// const replyData = await services.posts.getRepliesById(id);
+
 		return {
 			props: contentCardModel(postData, userData),
 		};
