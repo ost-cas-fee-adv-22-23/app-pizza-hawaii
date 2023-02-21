@@ -7,48 +7,48 @@ import { ContentCard } from '../components/ContentCard';
 import { ContentInput } from '../components/ContentInput';
 
 import { Headline, Grid, Button } from '@smartive-education/pizza-hawaii';
-
 import { services } from '../services';
 
 import type { TPost, TUser } from '../types';
-import { useSession } from 'next-auth/react';
 
 type PageProps = {
 	currentUser: TUser;
 	count: number;
 	posts: TPost[];
+	users: TUser[];
 	error?: string;
 };
 
 export default function PageHome({
 	currentUser,
-	count,
+	postCount: initialPostCount,
+	users: initialUsers,
 	posts: initialPosts,
 	error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const [posts, setPosts] = useState(initialPosts);
-	const [loading, setLoading] = useState(false);
-	const [hasMore, setHasMore] = useState(initialPosts.length < count);
+	const [postCount, setPostCount] = useState(initialPostCount);
+	const [users] = useState(initialUsers);
 
-	const { data: session } = useSession();
+	const [loading, setLoading] = useState(false);
+	const [hasMore, setHasMore] = useState(initialPosts.length < postCount);
+
 	if (error) {
 		return <div>An error occurred: {error}</div>;
 	}
 
 	const loadMore = async () => {
 		setLoading(true);
-		const { count, posts: newPosts } = await services.posts.fetchPosts({
+		const { count: newPostCount, posts: newPosts } = await services.posts.fetchPosts({
 			limit: 5,
 			offset: posts.length,
 		});
 
-		const { users } = await services.users.fetchUsers({
-			accessToken: session?.accessToken as string,
-		});
+		setPostCount(newPostCount);
 
 		const postsToAdd = newPosts
 			.map((post) => {
-				const author = users.find((user) => user.id === post.creator);
+				const author = users.find((user: TUser) => user.id === post.creator);
 				if (author) {
 					post.creator = author;
 				}
@@ -56,8 +56,13 @@ export default function PageHome({
 			})
 			.filter((post) => typeof post.creator === 'object');
 
+		if (postsToAdd.length !== newPosts.length) {
+			console.warn('Some users could not loaded');
+			// todo: decide what to do here
+		}
+
 		setLoading(false);
-		setHasMore(posts.length + postsToAdd.length < count);
+		setHasMore(posts.length + newPosts.length < postCount);
 		setPosts([...posts, ...postsToAdd]);
 	};
 
@@ -105,10 +110,10 @@ export default function PageHome({
 export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req }) => {
 	const session = await getToken({ req });
 	if (!session) {
-		return { props: { currentUser: null, posts: [], count: 0, error: 'No token found' } };
+		return { props: { currentUser: null, posts: [], users: [], postCount: 0, error: 'No token found' } };
 	}
 	try {
-		const { count, posts } = await services.posts.fetchPosts({ limit: 5 });
+		const { count: postCount, posts } = await services.posts.fetchPosts({ limit: 5 });
 		const { users } = await services.users.fetchUsers({
 			accessToken: session?.accessToken as string,
 		});
@@ -116,7 +121,8 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req })
 		return {
 			props: {
 				currentUser: session?.user,
-				count,
+				postCount,
+				users,
 				posts: posts
 					.map((post) => {
 						const author = users.find((user) => user.id === post.creator);
@@ -136,6 +142,6 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req })
 			message = String(error);
 		}
 
-		return { props: { error: message, currentUser: session?.user, posts: [], count: 0 } };
+		return { props: { error: message, currentUser: session?.user, posts: [], users: [], postCount: 0 } };
 	}
 };
