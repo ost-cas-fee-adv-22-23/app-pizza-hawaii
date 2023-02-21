@@ -10,8 +10,7 @@ import { Headline, Grid, Button } from '@smartive-education/pizza-hawaii';
 
 import { services } from '../services';
 
-import type { User as TUser } from '../types/User';
-import type { Post as TPost } from '../types/Post';
+import type { TPost, TUser } from '../types';
 import { useSession } from 'next-auth/react';
 
 type PageProps = {

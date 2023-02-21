@@ -9,12 +9,12 @@ import {
 	TUserContentCard,
 } from '@smartive-education/pizza-hawaii';
 
-import { User } from '../types/User';
+import { TUser } from '../types';
 
 type TContentInput = {
 	variant: 'newPost' | 'answerPost';
 	headline: string;
-	author: User;
+	author: TUser;
 	placeHolderText: string;
 };
 

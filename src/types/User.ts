@@ -1,4 +1,4 @@
-export type User = {
+export type TUser = {
 	id: string;
 	userName: string;
 	firstName: string;
@@ -8,5 +8,6 @@ export type User = {
 	bio?: string;
 	avatarUrl?: string;
 	posterImage?: string;
-	createdAt?: string;
+	createdAt: string;
+	profileLink: string;
 };
