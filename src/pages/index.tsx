@@ -47,17 +47,19 @@ export default function PageHome({
 			accessToken: session?.accessToken as string,
 		});
 
-		newPosts.forEach((post) => {
-			const author = users.find((user) => user.id === post.creator);
-			if (author) {
-				post.creator = author;
-			}
-			return post;
-		});
+		const postsToAdd = newPosts
+			.map((post) => {
+				const author = users.find((user) => user.id === post.creator);
+				if (author) {
+					post.creator = author;
+				}
+				return post;
+			})
+			.filter((post) => typeof post.creator === 'object');
 
 		setLoading(false);
-		setHasMore(posts.length + newPosts.length < count);
-		setPosts([...posts, ...newPosts]);
+		setHasMore(posts.length + postsToAdd.length < count);
+		setPosts([...posts, ...postsToAdd]);
 	};
 
 	return (
