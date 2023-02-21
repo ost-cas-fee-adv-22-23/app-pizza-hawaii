@@ -54,7 +54,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 					{`${author.firstName} ${author.lastName}`}
 				</Label>
 				<Grid variant="row" gap="S">
-					<UserName href={author.profileLink}>{author.userName}</UserName>
+					<UserName href={author.profileLink as string}>{author.userName}</UserName>
 				</Grid>
 			</Grid>
 		</Grid>
