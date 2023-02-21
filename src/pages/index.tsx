@@ -44,7 +44,7 @@ export default function PageHome({
 		});
 
 		const { users } = await services.users.fetchUsers({
-			accessToken: session?.accessToken,
+			accessToken: session?.accessToken as string,
 		});
 
 		newPosts.forEach((post) => {
@@ -54,6 +54,7 @@ export default function PageHome({
 			}
 			return post;
 		});
+
 		setLoading(false);
 		setHasMore(posts.length + newPosts.length < count);
 		setPosts([...posts, ...newPosts]);
@@ -108,20 +109,22 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req })
 	try {
 		const { count, posts } = await services.posts.fetchPosts({ limit: 5 });
 		const { users } = await services.users.fetchUsers({
-			accessToken: session?.accessToken,
+			accessToken: session?.accessToken as string,
 		});
 
 		return {
 			props: {
 				currentUser: session?.user,
 				count,
-				posts: posts.map((post) => {
-					const author = users.find((user) => user.id === post.creator);
-					if (author) {
-						post.creator = author;
-					}
-					return post;
-				}),
+				posts: posts
+					.map((post) => {
+						const author = users.find((user) => user.id === post.creator);
+						if (author) {
+							post.creator = author;
+						}
+						return post;
+					})
+					.filter((post) => typeof post.creator === 'object'),
 			},
 		};
 	} catch (error) {
