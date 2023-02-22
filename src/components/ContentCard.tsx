@@ -16,7 +16,7 @@ import {
 } from '@smartive-education/pizza-hawaii';
 
 // import { Mumble } from '../services/qwacker';
-import { ContentCardModel } from '../models/ContentCard';
+// import { ContentCardModel } from '../models/ContentCard';
 
 import ProjectSettings from './../data/ProjectSettings.json';
 

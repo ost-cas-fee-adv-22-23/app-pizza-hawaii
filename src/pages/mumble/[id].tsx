@@ -29,9 +29,8 @@ type DetailPageProps = {
 	replyCounter: number;
 };
 
-export default function DetailPage(props: DetailPageProps): InferGetServerSidePropsType<typeof getServerSideProps> {
-	// console.log('%c[id].tsx line:16 postData', 'color: white; background-color: #007acc;', props);
-	const { text, firstName } = props;
+export default function DetailPage({post, creator}): InferGetServerSidePropsType<typeof getServerSideProps> {
+	console.log('%c[id].tsx line:16 postData', 'color: white; background-color: #007acc;', creator);
 	const { data: session } = useSession();
 
 	const author = {
@@ -57,17 +56,13 @@ export default function DetailPage(props: DetailPageProps): InferGetServerSidePr
 		<div className="bg-slate-400">
 			<section className="mx-auto w-full max-w-content">
 				<Grid as="div" variant="col" gap="S">
-					<ContentCard variant="response" post={props} />
+					<ContentCard variant="response" post={post} creator={creator} />
 					<ContentInput
 						variant="answerPost"
 						headline="Hey, was geht ab?"
-						author={author} //TODO better model for author
+						author={session?.user} //TODO better model for author
 						placeHolderText="Deine Meinung zählt"
 					/>
-					<h1>Mumble post ID: {props.postDataId}</h1>
-					text:{text} <br />
-					firstname:{firstName} <br />
-					reply replyCount: {props.replyCount} <br />
 					<button onClick={() => loadResponses(props.postDataId)}>are there replys?</button>
 					<button onClick={() => loadUser(props.creator, session?.accessToken)}>userData</button>
 				</Grid>
@@ -86,7 +81,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { id 
 	try {
 		const postData: TPost = await services.posts.getPostById(id);
 		const userData: TUser = await services.posts.getUserbyPostId(postData.creator, session?.accessToken);
-
+		// const replies = await services.posts.getRepliesById(id);
 		return {
 			props: contentCardModel(postData, userData),
 		};
