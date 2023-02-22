@@ -67,10 +67,10 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
-				{`${post.firstName} ${post.lastName}`}
+				{`${post.creator.firstName} ${post.creator.lastName}`}
 			</Label>
 			<Grid variant="row" gap="S">
-				<UserName href={`/user/${post.userName}`}>{post.userName}</UserName>
+				<UserName href={`/user/${post.creator.userName}`}>{post.creator.userName}</UserName>
 				<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
 					<TimeStamp date={post.createdAt} />
 				</IconLink>
@@ -82,9 +82,9 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 		<UserContentCard
 			headline={headerSlotContent}
 			userProfile={{
-				avatar: post.avatarUrl,
-				userName: post.userName,
-				href: `/user/${post.userName}`,
+				avatar: post.creator.avatarUrl,
+				userName: post.creator.userName,
+				href: `/user/${post.creator.userName}`,
 			}}
 			avatarVariant={setting.avatarVariant}
 			avatarSize={setting.avatarSize}
@@ -106,7 +106,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 							ProjectSettings.images.post.aspectRatio[1]
 						}
 						src={post.mediaUrl}
-						alt={`Image of ${post.firstName} ${post.lastName}`}
+						alt={`Image of ${post.creator.firstName} ${post.creator.lastName}`}
 					/>
 				</ImageOverlay>
 			)}
