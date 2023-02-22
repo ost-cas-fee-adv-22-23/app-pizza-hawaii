@@ -1,4 +1,20 @@
 import NextAuth from 'next-auth';
+import { TokenSetParameters } from 'openid-client';
+import { TUser } from '../../../types';
+
+type TProfileUser = {
+	id: string;
+	firstName: string;
+	lastName: string;
+	userName: string;
+};
+
+type TProfile = {
+	profile: TProfileUser;
+	tokens: TokenSetParameters;
+	lastName: string;
+	userName: string;
+};
 
 export default NextAuth({
 	providers: [
@@ -18,10 +34,11 @@ export default NextAuth({
 			client: {
 				token_endpoint_auth_method: 'none',
 			},
-			async profile(_, { access_token }) {
+			async profile(_, { access_token }): Promise<TUser> {
 				const { userinfo_endpoint } = await (
 					await fetch(`${process.env.ZITADEL_ISSUER}/.well-known/openid-configuration`)
 				).json();
+
 				const profile = await (
 					await fetch(userinfo_endpoint, {
 						headers: {
@@ -30,12 +47,16 @@ export default NextAuth({
 					})
 				).json();
 
+				const userName = profile.preferred_username.replace('@smartive.zitadel.cloud', '');
+
 				return {
 					id: profile.sub,
 					firstName: profile.given_name,
 					lastName: profile.family_name,
-					userName: profile.preferred_username.replace('@smartive.zitadel.cloud', ''),
+					userName: userName,
 					avatarUrl: profile.picture || undefined,
+					profileLink: `user/${userName}`,
+					createdAt: new Date().toISOString(),
 				};
 			},
 			clientId: process.env.ZITADEL_CLIENT_ID,

@@ -16,10 +16,10 @@ import {
 	FormPassword,
 } from '@smartive-education/pizza-hawaii';
 
-import { User } from '../types/User';
+import { TUser } from '../types';
 
 type THeader = {
-	user: User;
+	user: TUser;
 	profileLink?: string;
 };
 
