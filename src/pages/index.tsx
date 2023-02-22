@@ -11,6 +11,7 @@ import { Headline, Grid, Button } from '@smartive-education/pizza-hawaii';
 import { services } from '../services';
 
 import type { TPost, TUser } from '../types';
+import { contentCardModel } from '../models/ContentCard';
 
 type PageProps = {
 	currentUser: TUser;
@@ -47,7 +48,7 @@ export default function PageHome({
 		setLoading(true);
 
 		try {
-			const { count: newPostCount, posts: newPosts } = await services.posts.fetchPosts({
+			const { count: newPostCount, posts: newPosts } = await services.posts.getPosts({
 				limit: 5,
 				offset: posts.length,
 			});
@@ -126,8 +127,8 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req })
 		return { props: { currentUser: null, posts: [], users: [], postCount: 0, error: 'No token found' } };
 	}
 	try {
-		const { count: postCount, posts } = await services.posts.fetchPosts({ limit: 5 });
-		const { users } = await services.users.fetchUsers({
+		const { count: postCount, posts } = await services.posts.getPosts({ limit: 5 });
+		const { users } = await services.users.getUsers({
 			accessToken: session?.accessToken as string,
 		});
 
@@ -138,13 +139,12 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req })
 				users,
 				posts: posts
 					.map((post) => {
-						const author = users?.find((user) => user.id === post.creator);
-						if (author) {
-							post.creator = author;
-						}
-						return post;
+						return contentCardModel(
+							post,
+							users.find((user: TUser) => user.id === post.creator)
+						);
 					})
-					.filter((post) => typeof post.creator === 'object'),
+					.filter((post) => typeof post?.creator === 'object'),
 			},
 		};
 	} catch (error) {

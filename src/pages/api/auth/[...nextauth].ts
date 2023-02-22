@@ -1,20 +1,6 @@
 import NextAuth from 'next-auth';
-import { TokenSetParameters } from 'openid-client';
+import { services } from '../../../services';
 import { TUser } from '../../../types';
-
-type TProfileUser = {
-	id: string;
-	firstName: string;
-	lastName: string;
-	userName: string;
-};
-
-type TProfile = {
-	profile: TProfileUser;
-	tokens: TokenSetParameters;
-	lastName: string;
-	userName: string;
-};
 
 export default NextAuth({
 	providers: [
@@ -47,17 +33,7 @@ export default NextAuth({
 					})
 				).json();
 
-				const userName = profile.preferred_username.replace('@smartive.zitadel.cloud', '');
-
-				return {
-					id: profile.sub,
-					firstName: profile.given_name,
-					lastName: profile.family_name,
-					userName: userName,
-					avatarUrl: profile.picture || undefined,
-					profileLink: `user/${userName}`,
-					createdAt: new Date().toISOString(),
-				};
+				return (await services.users.getUserById({ id: profile.sub, accessToken: access_token })) as TUser;
 			},
 			clientId: process.env.ZITADEL_CLIENT_ID,
 		},

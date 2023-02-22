@@ -10,7 +10,7 @@ type TPostResponse = {
 
 export type TUploadImage = File & { preview: string };
 
-const fetchPosts = async (params?: { limit?: number; offset?: number; newerThanMumbleId?: string }) => {
+const getPosts = async (params?: { limit?: number; offset?: number; newerThanMumbleId?: string }) => {
 	const { limit, offset, newerThanMumbleId } = params || {};
 
 	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts?${new URLSearchParams({
@@ -76,38 +76,6 @@ const getRepliesById = async (id: string) => {
 	}
 };
 
-// get User of a given Post Id
-const getUserbyPostId = async (id: string, accessToken?: string) => {
-	console.log('id', id)
-	console.log('getuser token', accessToken);
-	if (!id) {
-		throw new Error('getUserByPostId: No valid UserId was provided');
-	}
-
-	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}users/${id}`, {
-			method: 'GET',
-			headers: {
-				Authorization: `Bearer ${accessToken}`,
-			},
-		});
-
-		if (response.status === 401) {
-			throw new Error('getUserByPostId: unauthorized');
-		}
-
-		if (response.status !== 200) {
-			throw new Error('getUserByPostId: Something went wrong  with the response!');
-		}
-
-		return response.json();
-	} catch (error) {
-		throw new Error('getUserByPostId: could not reach API');
-	}
-};
-
-
-
 const addPost = async (text: string, file: TUploadImage | null, accessToken?: string) => {
 	if (!accessToken) {
 		throw new Error('No access token');
@@ -142,9 +110,8 @@ const transformPost = (post: RawPost) => ({
 });
 
 export const postsService = {
-	fetchPosts,
+	getPosts,
 	addPost,
 	getPostById,
 	getRepliesById,
-	getUserbyPostId,
 };

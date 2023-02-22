@@ -1,7 +1,6 @@
 // get all details of a single Post (Mumble by Id)
 import { decodeTime } from 'ulid';
 
-
 export const getPostById = async (id: string) => {
 	if (!id) {
 		throw new Error('no valid id was provided');
@@ -20,7 +19,6 @@ export const getPostById = async (id: string) => {
 	} catch (error) {
 		throw new Error('could not reach API');
 	}
-
 };
 
 const transformPost = (post: RawPost) => ({
