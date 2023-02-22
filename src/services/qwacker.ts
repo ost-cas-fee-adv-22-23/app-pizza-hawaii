@@ -79,7 +79,7 @@ export const fetchUsers = async (params?: { limit?: number; offset?: number; acc
 	});
 	const { count, data } = (await res.json()) as QwackerUserResponse;
 
-	const users = data;//.map(transformUser);
+	const users = data; //.map(transformUser);
 
 	return {
 		count,

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
+import Link from 'next/link';
 
 import { Header } from '../components/Header';
 import { ContentCard } from '../components/ContentCard';
@@ -34,7 +35,12 @@ export default function PageHome({
 	const [hasMore, setHasMore] = useState(initialPosts.length < postCount);
 
 	if (error) {
-		return <div>An error occurred: {error}</div>;
+		return (
+			<div>
+				An error occurred: {error} <br />
+				<Link href="/login">to Login page</Link>
+			</div>
+		);
 	}
 
 	const loadMore = async () => {

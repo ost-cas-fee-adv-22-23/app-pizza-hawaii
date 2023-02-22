@@ -34,6 +34,80 @@ const fetchPosts = async (params?: { limit?: number; offset?: number; newerThanM
 	};
 };
 
+// get single Post (mumble)
+const getPostById = async (id: string) => {
+	if (!id) {
+		throw new Error('no valid id was provided');
+	}
+
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${id}`, {
+			method: 'GET',
+		});
+
+		if (!response.ok) {
+			throw new Error('Something went wrong  with the response!');
+		}
+
+		return transformPost(await response.json());
+	} catch (error) {
+		throw new Error('could not reach API');
+	}
+};
+
+// get all Replies for a given Post Id
+const getRepliesById = async (id: string) => {
+	if (!id) {
+		throw new Error('getReplyById: no valid id was provided');
+	}
+
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${id}/replies`, {
+			method: 'GET',
+		});
+
+		if (response.status !== 200) {
+			throw new Error('Something went sour! not status 200. have a look at the network status');
+		}
+
+		return response.json();
+	} catch (error) {
+		throw new Error('getReplyById could not reach API');
+	}
+};
+
+// get User of a given Post Id
+const getUserbyPostId = async (id: string, accessToken?: string) => {
+	console.log('id', id)
+	console.log('getuser token', accessToken);
+	if (!id) {
+		throw new Error('getUserByPostId: No valid UserId was provided');
+	}
+
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}users/${id}`, {
+			method: 'GET',
+			headers: {
+				Authorization: `Bearer ${accessToken}`,
+			},
+		});
+
+		if (response.status === 401) {
+			throw new Error('getUserByPostId: unauthorized');
+		}
+
+		if (response.status !== 200) {
+			throw new Error('getUserByPostId: Something went wrong  with the response!');
+		}
+
+		return response.json();
+	} catch (error) {
+		throw new Error('getUserByPostId: could not reach API');
+	}
+};
+
+
+
 const addPost = async (text: string, file: TUploadImage | null, accessToken?: string) => {
 	if (!accessToken) {
 		throw new Error('No access token');
@@ -70,4 +144,7 @@ const transformPost = (post: RawPost) => ({
 export const postsService = {
 	fetchPosts,
 	addPost,
+	getPostById,
+	getRepliesById,
+	getUserbyPostId,
 };

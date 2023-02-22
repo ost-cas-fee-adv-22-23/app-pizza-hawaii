@@ -114,7 +114,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 			<Grid variant="row" gap="M" wrapBelowScreen="md">
 				<InteractionButton
 					as="a"
-					href="/link/to/post"
+					href={`/mumble/${post.id}`}
 					isActive={post.replyCount > 0}
 					colorScheme="violet"
 					buttonText={
@@ -123,7 +123,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 					iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
 					onClick={function (): void {
 						console.log('add comment');
-						throw new Error('Function not implemented.');
+						// throw new Error('Function not implemented.');
 					}}
 				/>
 				<InteractionButton
@@ -135,7 +135,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 					iconName={post.likeCount > 0 ? 'heart_filled' : 'heart_fillable'}
 					onClick={function (): void {
 						console.log('add like');
-						throw new Error('Function not implemented.');
+						// throw new Error('Function not implemented.');
 					}}
 				/>
 
