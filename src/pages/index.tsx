@@ -88,11 +88,7 @@ export default function PageHome({
 						/>
 
 						{posts.map((post) => {
-							return (
-								// <Link href={`/mumble/${post.id}`} key={post.id}>
-								<ContentCard key={post.id} variant="timeline" post={post}  />
-								// </Link>
-							);
+							return <ContentCard key={post.id} variant="timeline" post={post} />;
 						})}
 					</Grid>
 
