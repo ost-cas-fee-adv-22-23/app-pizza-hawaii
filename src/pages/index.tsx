@@ -7,12 +7,12 @@ import { Header } from '../components/Header';
 import { ContentCard } from '../components/ContentCard';
 import { ContentInput } from '../components/ContentInput';
 
-import { Headline, Grid } from '@smartive-education/pizza-hawaii';
+import { Headline, Grid, Button } from '@smartive-education/pizza-hawaii';
 
 import { services } from '../services';
 
-import type { User as TUser } from '../types/User';
-import type { Post as TPost } from '../types/Post';
+import type { TPost, TUser } from '../types';
+import { useSession } from 'next-auth/react';
 
 type PageProps = {
 	currentUser: TUser;
@@ -31,6 +31,7 @@ export default function PageHome({
 	const [loading, setLoading] = useState(false);
 	const [hasMore, setHasMore] = useState(initialPosts.length < count);
 
+	const { data: session } = useSession();
 	if (error) {
 		return (
 			<div>
@@ -47,6 +48,17 @@ export default function PageHome({
 			offset: posts.length,
 		});
 
+		const { users } = await services.users.fetchUsers({
+			accessToken: session?.accessToken,
+		});
+
+		newPosts.forEach((post) => {
+			const author = users.find((user) => user.id === post.creator);
+			if (author) {
+				post.creator = author;
+			}
+			return post;
+		});
 		setLoading(false);
 		setHasMore(posts.length + newPosts.length < count);
 		setPosts([...posts, ...newPosts]);
@@ -85,13 +97,9 @@ export default function PageHome({
 					</Grid>
 
 					{hasMore ? (
-						<button
-							onClick={() => loadMore()}
-							disabled={loading}
-							className="bg-indigo-400 px-2 py-1 rounded-lg mt-4"
-						>
+						<Button as="button" colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
 							{loading ? '...' : 'Load more'}
-						</button>
+						</Button>
 					) : (
 						''
 					)}

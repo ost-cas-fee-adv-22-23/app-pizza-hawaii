@@ -1,18 +1,5 @@
 import { decodeTime } from 'ulid';
-import { TUser } from '../users';
-
-export type TPost = {
-	id: string;
-	creator: string | TUser;
-	text: string;
-	mediaUrl: string;
-	mediaType: string;
-	likeCount: number;
-	likedByUser: boolean;
-	type: string;
-	replyCount: number;
-	createdAt: string;
-};
+import { TPost } from '../../types';
 
 type RawPost = Omit<TPost, 'createdAt'>;
 

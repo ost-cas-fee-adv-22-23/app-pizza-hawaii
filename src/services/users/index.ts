@@ -1,19 +1,7 @@
 import { decodeTime } from 'ulid';
+import { TUser } from '../../types';
 
-export type TUser = {
-	id: string;
-	userName: string;
-	firstName: string;
-	lastName: string;
-	email?: string;
-	city?: string;
-	bio?: string;
-	avatarUrl?: string;
-	posterImage?: string;
-	createdAt?: string;
-};
-
-type RawUser = Omit<TUser, 'createdAt'>;
+type RawUser = Omit<TUser, 'createdAt profileLink'>;
 
 type TUserResponse = {
 	count: number;
@@ -47,6 +35,7 @@ const fetchUsers = async (params?: { limit?: number; offset?: number; accessToke
 
 const transformUser = (user: RawUser) => ({
 	...user,
+	profileLink: `/user/${user.userName}`,
 	//createdAt: new Date(decodeTime(user.id)).toISOString(),
 });
 
