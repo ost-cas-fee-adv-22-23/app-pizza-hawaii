@@ -32,9 +32,9 @@ const getUsers = async (params?: { limit?: number; offset?: number; accessToken:
 	};
 };
 
+// get User by a given User id
 const getUserById = async (params?: { id: string; accessToken: string }) => {
 	const { id, accessToken } = params || {};
-	console.log(params);
 
 	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}users/${id}`;
 

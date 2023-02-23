@@ -1,5 +1,6 @@
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Head from 'next/head';
+import Link from 'next/link';
 
 export default function Home() {
 	const { data: session } = useSession();
@@ -24,6 +25,14 @@ export default function Home() {
 						<h2>Login &rarr;</h2>
 						<p>Login with a ZITADEL account</p>
 					</a>
+				)}
+				{/* successfull login */}
+				{session && (
+					<>
+						<br />
+						<h2>Login was successfull return to </h2>
+						<Link href="/">Startpage</Link>
+					</>
 				)}
 			</main>
 		</>

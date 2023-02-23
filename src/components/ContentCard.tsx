@@ -84,7 +84,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 			userProfile={{
 				avatar: post.creator.avatarUrl,
 				userName: post.creator.userName,
-				href: `/user/${post.creator.userName}`,
+				href: `/user/${post.creator.id}`,
 			}}
 			avatarVariant={setting.avatarVariant}
 			avatarSize={setting.avatarSize}
