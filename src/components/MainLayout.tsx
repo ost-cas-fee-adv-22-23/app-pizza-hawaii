@@ -21,7 +21,7 @@ const MainLayout: LayoutProps = ({ children }) => {
 	return (
 		<>
 			<Head>
-				<link rel="icon" href="favicon.ico" />
+				<link rel="icon" href="/src/assets/favicon.ico" />
 			</Head>
 			{currentUser && <Header user={currentUser} />}
 			<div className="w-screen h-screen bg-slate-100">
