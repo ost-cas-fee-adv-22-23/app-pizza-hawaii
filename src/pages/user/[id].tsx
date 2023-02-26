@@ -5,6 +5,7 @@ import { services } from '../../services';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import { UserProfile, Image, Card, Headline, UserName, IconLink, TimeStamp } from '@smartive-education/pizza-hawaii';
 
 type Props = {
 	user: {
@@ -12,7 +13,7 @@ type Props = {
 	};
 };
 
-export default function UserPage(props :Props): InferGetServerSidePropsType<typeof getServerSideProps> {
+export default function UserPage(props: Props): InferGetServerSidePropsType<typeof getServerSideProps> {
 	const [isLoading, setIsLoading] = useState(true);
 	const [userData, setUserData] = useState();
 	const router = useRouter();
@@ -23,7 +24,7 @@ export default function UserPage(props :Props): InferGetServerSidePropsType<type
 		const fetchData = async () => {
 			const userData = await services.users.getUserById({ id: userId, accessToken: session?.accessToken });
 			console.log('%c[id].tsx line:22 userData', 'color: #26bfa5;', userData);
-			setUserData({user: userData})
+			setUserData({ user: userData });
 			setIsLoading(false);
 		};
 		fetchData();
@@ -33,19 +34,47 @@ export default function UserPage(props :Props): InferGetServerSidePropsType<type
 		const res = await services.users.getUserById({ id: userId, accessToken: session?.accessToken });
 		console.log('%c[id].tsx line:22 res', 'color: #26bfa5;', res);
 	};
-	return isLoading ? (
+	return isLoading && !userData ? (
 		<span>loading Data</span>
 	) : (
-		<>
-			<h1>UserPage of: {userId}</h1>
-			<button onClick={() => loadUserData(userId)}>get user by click!</button>
-			{userData && (
-				<>
-					<h1>Vorname: {userData.user.firstName} </h1>
-					<h1>Nachname: {userData.user.lastName} </h1>
-				</>
-			)}
-		</>
+		<div className="bg-slate-100">
+			<Card as="div" rounded size="M">
+				<div className="relative mb-6">
+					<Image
+						className="max-height: h-80"
+						src={'//picsum.photos/seed/johndoe1/1600/1157/'}
+						alt={userData?.user?.userName}
+					/>
+					<div className="absolute right-8 bottom-0 translate-y-1/2 z-10">
+						<UserProfile
+							userName={userData.user.userName}
+							avatar={userData.user.avatarUrl}
+							size="XL"
+							border={true}
+							href="/"
+							buttonLabel={userData.user.userName}
+						/>
+					</div>
+				</div>
+				<div className="mb-2 text-slate-900 pr-48">
+					<Headline level={3}>
+						{userData.user.firstName} {userData.user.lastName}
+					</Headline>
+				</div>
+				<span className="flex flex-row align-baseline gap-3 mb-3">
+					<UserName href={userData.user.profileLink}>{userData.user.userName}</UserName>
+
+					<IconLink as="span" icon="location" colorScheme="slate" size="S">
+						CityName
+					</IconLink>
+
+					<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
+						{/* <TimeStamp date={userData.user.createdAt} prefix="Mitglied seit" /> */}
+						{/* <TimeStamp date='' prefix="Mitglied seit" /> */}
+					</IconLink>
+				</span>
+			</Card>
+		</div>
 	);
 }
 /*

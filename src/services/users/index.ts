@@ -1,6 +1,7 @@
 import { TUser } from '../../types';
 
 type RawUser = Omit<TUser, 'createdAt profileLink'>;
+import { decodeTime } from 'ulid';
 
 type TUserResponse = {
 	count: number;
@@ -77,11 +78,13 @@ const getUserbyPostId = async (id: string, accessToken?: string) => {
 	}
 };
 
-const transformUser = (user: RawUser) => ({
-	...user,
-	profileLink: `/user/${user.userName}`,
-	//createdAt: new Date(decodeTime(user.id)).toISOString(),
-});
+const transformUser = (user: RawUser) => {
+	console.log('transform: user', user)
+	return {
+		...user,
+		createdAt: new Date().toISOString(),
+		profileLink: `/user/${user.userName}`,
+}};
 
 export const usersService = {
 	getUsers,
