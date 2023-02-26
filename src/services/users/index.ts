@@ -79,12 +79,14 @@ const getUserbyPostId = async (id: string, accessToken?: string) => {
 };
 
 const transformUser = (user: RawUser) => {
-	console.log('transform: user', user)
 	return {
 		...user,
 		createdAt: new Date().toISOString(),
+		backgroundImage: '//picsum.photos/seed/1466/1060/',
 		profileLink: `/user/${user.userName}`,
-}};
+		bio: 'This plugin works best if you disable all other ESLint rules relating to code formatting, and only enable rules that detect potential bugs.',
+	};
+};
 
 export const usersService = {
 	getUsers,

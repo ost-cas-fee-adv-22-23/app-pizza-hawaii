@@ -1,7 +1,10 @@
 import { TPost, TUser } from '../types';
 
-export const userCardModel = (userData) => {
-	if (userData) return undefined;
+export const UserCardModel = (userData) => {
+	
+	console.log('UserCardModel', userData);
+	if (userData) return null;
+
 	const emptyUser = {
 		id: '',
 		userName: '',
@@ -12,7 +15,6 @@ export const userCardModel = (userData) => {
 	};
 
 	return {
-		userData: {
 			id: userData.id,
 			userName: userData.userName,
 			firstName: userData.firstName,
@@ -21,6 +23,6 @@ export const userCardModel = (userData) => {
 			createdAt: new Date().toISOString(),
 			backgroundImage: '//picsum.photos/seed/johndoe1/1600/1157/',
 			profileLink: '',
-		},
+
 	};
 };
