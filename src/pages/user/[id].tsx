@@ -35,7 +35,6 @@ export default function UserPage(props: Props): InferGetServerSidePropsType<type
 	useEffect(() => {
 		const fetchData = async () => {
 			const userData = await services.users.getUserById({ id: userId, accessToken: session?.accessToken });
-			console.log('%c[id].tsx line:22 userData', 'color: #26bfa5;', userData);
 			setUserData({ user: userData });
 			setIsLoading(false);
 		};
@@ -44,6 +43,11 @@ export default function UserPage(props: Props): InferGetServerSidePropsType<type
 
 	const loadUserData = async (userId: string) => {
 		const res = await services.users.getUserById({ id: userId, accessToken: session?.accessToken });
+	};
+
+	const searchPostsofUser = async (userId: string) => {
+		const userPosts = await services.posts.searchPostbyQuerry({ text: 'Test' });
+		console.log('%c[id].tsx line:50 userPosts', 'color: white; background-color: #007acc;', userPosts);
 	};
 
 	// TODO: probably somewhere else as a helperClass
@@ -109,14 +113,11 @@ export default function UserPage(props: Props): InferGetServerSidePropsType<type
 				</div>
 			</Card>
 			<br />
-			here should come all mumble-posts of that user
+			<Button as="button" size="L" onClick={() => searchPostsofUser(userData.user.id)}>
+				Search Mumble posts of {userData.user.firstName}
+			</Button>
+			here should come all mumble-posts replies of that user by search querry.
 			<Grid variant="col" gap="M" as="div">
-				<div>
-					<h3>Hi there!</h3>
-				</div>
-				<div>
-					<h3>Hi there!</h3>
-				</div>
 				<div>
 					<h3>Hi there!</h3>
 				</div>
@@ -124,27 +125,3 @@ export default function UserPage(props: Props): InferGetServerSidePropsType<type
 		</div>
 	);
 }
-/*
-export const getServerSideProps: GetServerSideProps = async ({ req, userId }) => {
-	const session = await getToken({ req });
-	if (!session) {
-		return {
-			props: { userData: null, error: 'not logged in, no session' },
-		};
-	}
-	try {
-		const userData: TUser = await services.users.getUserById({ id: userId, accessToken: session?.accessToken });
-
-		console.log('dataset userData:', userData);
-		return {
-			props: {
-				user: userData,
-			},
-		};
-	} catch (error) {
-		console.log(error);
-		throw new Error('getUserByPostId: No valid UserId was provided');
-	}
-
-};
-*/
