@@ -8,20 +8,10 @@ const MainLayout: LayoutProps = ({ children }) => {
 	const { data: session } = useSession();
 	const currentUser: TUser | undefined = session?.user;
 
-	// TODO some fallback for failed login
-	const emptyUser = {
-		avatarUrl: '',
-		firstName: '',
-		id: '0000000000000',
-		lastName: 'nobody',
-		profileLink: '/user/nobody',
-		userName: 'empty',
-	};
-
 	return (
 		<>
 			<Head>
-				<link rel="icon" href="/src/assets/favicon.ico" />
+				<link rel="icon" href="favicon.svg" />
 			</Head>
 			{currentUser && <Header user={currentUser} />}
 			<div className="w-screen h-screen bg-slate-100">
