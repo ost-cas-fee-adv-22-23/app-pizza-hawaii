@@ -1,17 +1,18 @@
-import { decodeTime } from 'ulid';
-import { TPost } from '../services/posts';
-import { TUser } from '../services/users';
+import { TPost, TUser } from '../types';
 
-export type ContentCardModel = {
-	post: TPost;
-	creator: TUser;
-};
-
-export const contentCardModel = (postData?: any, userData?: any): ContentCardModel | undefined => {
+export const contentCardModel = (postData?: TPost, userData?: TUser): TPost | undefined => {
 	if (!postData || !userData) return undefined;
-
+	const emptyUser = {
+		id: '',
+		userName: '',
+		firstName: '',
+		lastName: '',
+		avatarUrl: '',
+		createdAt: '',
+		profileLink: '',
+	};
 	return {
-		post: postData,
-		creator: userData,
+		...postData,
+		creator: userData || emptyUser,
 	};
 };
