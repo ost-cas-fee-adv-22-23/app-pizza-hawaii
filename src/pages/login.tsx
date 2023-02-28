@@ -1,7 +1,7 @@
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Head from 'next/head';
-// import { Children } from 'react';
 import LoginLayout from '../components/LoginLayout';
+import { Button } from '@smartive-education/pizza-hawaii';
 
 export default function Home() {
 	const { data: session } = useSession();
@@ -27,8 +27,8 @@ export default function Home() {
 					</a>
 					<br />
 					<div>
-						<p>noch kein Account?</p>
-						<a href="/register">Jetzt registrieren</a>
+						<span>noch kein Account?</span>
+						<a className='text-violet-600 underline' href="/register">Jetzt registrieren</a>
 					</div>
 				</>
 			)}
