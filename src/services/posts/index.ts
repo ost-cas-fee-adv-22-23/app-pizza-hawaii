@@ -22,7 +22,7 @@ type TGetPost = {
 	olderThan?: string;
 	limit?: number;
 	offset?: number;
-	accessToken: string;
+	accessToken?: string;
 };
 
 type TGetPostResult = {

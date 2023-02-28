@@ -29,11 +29,9 @@ export default function PageHome({
 	error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const [posts, setPosts] = useState(initialPosts);
-	const [postCount, setPostCount] = useState(initialPostCount);
 	const [users] = useState(initialUsers);
-
 	const [loading, setLoading] = useState(false);
-	const [hasMore, setHasMore] = useState(initialPosts.length < postCount);
+	const [hasMore, setHasMore] = useState(initialPosts.length < initialPostCount);
 
 	if (error) {
 		return (
@@ -46,14 +44,12 @@ export default function PageHome({
 
 	const loadMore = async () => {
 		setLoading(true);
-
+		console.log(0);
 		try {
-			const { count: newPostCount, posts: newPosts } = await services.posts.getPosts({
+			const { count: newPostCount, posts: newPosts } = await services.api.loadmorePosts({
 				limit: 5,
-				offset: posts.length,
+				olderThan: posts[posts.length - 1].id,
 			});
-
-			setPostCount(newPostCount);
 
 			const postsToAdd = newPosts
 				.map((post) => {
@@ -70,7 +66,7 @@ export default function PageHome({
 				// todo: decide what to do here
 			}
 
-			setHasMore(posts.length + newPosts.length < postCount);
+			setHasMore(newPosts.length < newPostCount);
 			setPosts([...posts, ...postsToAdd]);
 		} catch (error) {
 			console.warn(error);
@@ -123,7 +119,7 @@ export default function PageHome({
 
 export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req }) => {
 	const session = await getToken({ req });
-	if (!session || !session.accessToken) {
+	if (!session?.accessToken) {
 		return { props: { currentUser: null, posts: [], users: [], postCount: 0, error: 'No token found' } };
 	}
 	try {
