@@ -15,7 +15,7 @@ import { contentCardModel } from '../models/ContentCard';
 
 type PageProps = {
 	currentUser: TUser;
-	count: number;
+	postCount: number;
 	posts: TPost[];
 	users: TUser[];
 	error?: string;
@@ -123,13 +123,16 @@ export default function PageHome({
 
 export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req }) => {
 	const session = await getToken({ req });
-	if (!session) {
+	if (!session || !session.accessToken) {
 		return { props: { currentUser: null, posts: [], users: [], postCount: 0, error: 'No token found' } };
 	}
 	try {
-		const { count: postCount, posts } = await services.posts.getPosts({ limit: 5 });
+		const { count: postCount, posts } = await services.posts.getPosts({
+			limit: 5,
+			accessToken: session?.accessToken,
+		});
 		const { users } = await services.users.getUsers({
-			accessToken: session?.accessToken as string,
+			accessToken: session?.accessToken,
 		});
 
 		return {

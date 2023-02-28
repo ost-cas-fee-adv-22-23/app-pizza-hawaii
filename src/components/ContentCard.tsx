@@ -1,5 +1,7 @@
 /* eslint-disable import/no-unresolved */
 import React, { FC } from 'react';
+import { useSession } from 'next-auth/react';
+
 import {
 	Image,
 	Label,
@@ -19,6 +21,7 @@ import { TPost } from '../types';
 
 import ProjectSettings from './../data/ProjectSettings.json';
 
+import { services } from '../services';
 /*
  * Type
  */
@@ -64,13 +67,34 @@ const contentCardvariantMap: Record<TContentCard['variant'], TContentCardvariant
 export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 	const setting = contentCardvariantMap[variant] || contentCardvariantMap.detailpage;
 
+	// toggle Like/Dislike
+	const [likedByUser, setLikedByUser] = React.useState(post.likedByUser);
+	const [likeCount, setLikeCount] = React.useState(post.likeCount);
+
+	const { data: session } = useSession();
+
+	// Like function
+	const handleLike = async () => {
+		console.log('like', likedByUser);
+		if (likedByUser) {
+			if (await services.likes.unlike(post.id, session?.accessToken as string)) {
+				setLikeCount(likeCount - 1);
+			}
+		} else {
+			if (await services.likes.like(post.id, session?.accessToken as string)) {
+				setLikeCount(likeCount + 1);
+			}
+		}
+		setLikedByUser(!likedByUser);
+	};
+
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
 				{`${post.creator.firstName} ${post.creator.lastName}`}
 			</Label>
 			<Grid variant="row" gap="S">
-				<UserName href={`/user/${post.creator.userName}`}>{post.creator.userName}</UserName>
+				<UserName href={post.creator.profileLink}>{post.creator.userName}</UserName>
 				<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
 					<TimeStamp date={post.createdAt} />
 				</IconLink>
@@ -84,7 +108,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 			userProfile={{
 				avatar: post.creator.avatarUrl,
 				userName: post.creator.userName,
-				href: `/user/${post.creator.id}`,
+				href: post.creator.profileLink,
 			}}
 			avatarVariant={setting.avatarVariant}
 			avatarSize={setting.avatarSize}
@@ -129,20 +153,17 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 				<InteractionButton
 					as="button"
 					type="button"
-					isActive={post.likeCount > 0}
+					isActive={likeCount > 0}
 					colorScheme="pink"
-					buttonText={post.likeCount > 0 ? `${post.likeCount} Likes` : post.likeCount === 0 ? 'Like' : '1 Like'}
-					iconName={post.likeCount > 0 ? 'heart_filled' : 'heart_fillable'}
-					onClick={function (): void {
-						console.log('add like');
-						// throw new Error('Function not implemented.');
-					}}
+					buttonText={likeCount > 0 ? `${likeCount} Likes` : likeCount === 0 ? 'Like' : '1 Like'}
+					iconName={likedByUser ? 'heart_filled' : 'heart_fillable'}
+					onClick={handleLike}
 				/>
 
 				<CopyToClipboardButton
 					defaultButtonText="Copy Link"
 					activeButtonText="Link copied"
-					shareText="/url/to/post"
+					shareText={`${process.env.NEXT_PUBLIC_URL}/mumble/${post.id}`}
 				/>
 			</Grid>
 		</UserContentCard>

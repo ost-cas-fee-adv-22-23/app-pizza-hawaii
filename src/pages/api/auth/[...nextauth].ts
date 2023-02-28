@@ -1,4 +1,5 @@
 import NextAuth from 'next-auth';
+
 import { services } from '../../../services';
 import { TUser } from '../../../types';
 
@@ -33,7 +34,11 @@ export default NextAuth({
 					})
 				).json();
 
-				return (await services.users.getUserById({ id: profile.sub, accessToken: access_token })) as TUser;
+				const user = (await services.users.getUserById({ id: profile.sub, accessToken: access_token })) as TUser;
+				return {
+					...user,
+					email: profile.email,
+				};
 			},
 			clientId: process.env.ZITADEL_CLIENT_ID,
 		},

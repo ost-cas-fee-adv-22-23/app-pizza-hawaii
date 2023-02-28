@@ -39,8 +39,15 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { id 
 		};
 	}
 	try {
-		const postData: TPost = await services.posts.getPostById(id);
-		const userData: TUser = await services.users.getUserbyPostId(postData.creator, session?.accessToken);
+		const postData: TPost = await services.posts.getPostById({
+			id: id as string,
+			accessToken: session?.accessToken as string,
+		});
+
+		const userData: TUser = await services.users.getUserbyPostId({
+			id: postData.creator as string,
+			accessToken: session?.accessToken as string,
+		});
 
 		return {
 			props: {
