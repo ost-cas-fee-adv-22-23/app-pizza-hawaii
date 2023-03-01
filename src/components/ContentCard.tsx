@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useSession } from 'next-auth/react';
 
 import {
@@ -68,8 +68,8 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 	const setting = contentCardvariantMap[variant] || contentCardvariantMap.detailpage;
 
 	// toggle Like/Dislike
-	const [likedByUser, setLikedByUser] = React.useState(post.likedByUser);
-	const [likeCount, setLikeCount] = React.useState(post.likeCount);
+	const [likedByUser, setLikedByUser] = useState(post.likedByUser);
+	const [likeCount, setLikeCount] = useState(post.likeCount);
 
 	const { data: session } = useSession();
 

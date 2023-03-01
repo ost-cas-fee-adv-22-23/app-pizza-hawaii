@@ -1,6 +1,6 @@
 {
-	"name": "cas-fee-adv-qwacker-tpl",
-	"version": "0.0.0-development",
+	"name": "app-pizza-hawaii",
+	"version": "0.1.0-development",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",

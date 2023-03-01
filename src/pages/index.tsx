@@ -12,6 +12,8 @@ import { services } from '../services';
 
 import type { TPost, TUser } from '../types';
 import { contentCardModel } from '../models/ContentCard';
+import MainLayout from '../components/MainLayout';
+import Head from 'next/head';
 
 type PageProps = {
 	currentUser: TUser;
@@ -29,11 +31,9 @@ export default function PageHome({
 	error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const [posts, setPosts] = useState(initialPosts);
-	const [postCount, setPostCount] = useState(initialPostCount);
 	const [users] = useState(initialUsers);
-
 	const [loading, setLoading] = useState(false);
-	const [hasMore, setHasMore] = useState(initialPosts.length < postCount);
+	const [hasMore, setHasMore] = useState(initialPosts.length < initialPostCount);
 
 	if (error) {
 		return (
@@ -46,14 +46,10 @@ export default function PageHome({
 
 	const loadMore = async () => {
 		setLoading(true);
-
 		try {
-			const { count: newPostCount, posts: newPosts } = await services.posts.getPosts({
-				limit: 5,
-				offset: posts.length,
+			const { count: newPostCount, posts: newPosts } = await services.api.loadmorePosts({
+				olderThan: posts[posts.length - 1].id,
 			});
-
-			setPostCount(newPostCount);
 
 			const postsToAdd = newPosts
 				.map((post) => {
@@ -70,7 +66,7 @@ export default function PageHome({
 				// todo: decide what to do here
 			}
 
-			setHasMore(posts.length + newPosts.length < postCount);
+			setHasMore(newPosts.length < newPostCount);
 			setPosts([...posts, ...postsToAdd]);
 		} catch (error) {
 			console.warn(error);
@@ -81,17 +77,22 @@ export default function PageHome({
 	};
 
 	return (
-		<div className="bg-slate-100">
-			<Header user={currentUser} />
+		<MainLayout>
+			<>
+				<Head>
+					<title>Mumble StartPage - Welcome</title>
+				</Head>
+			</>
+			{/* <Header user={currentUser} /> */}
 			<main className="px-content">
 				<section className="mx-auto w-full max-w-content">
 					<div className="mb-2 text-violet-600">
-						<Headline level={2}>Welcome to Storybook</Headline>
+						<Headline level={2}>Welcome to Mumble</Headline>
 					</div>
 
 					<div className="text-slate-500 mb-8">
 						<Headline level={4} as="p">
-							Voluptatem qui cumque voluptatem quia tempora dolores distinctio vel repellat dicta.
+							Whats new in Mumble....
 						</Headline>
 					</div>
 
@@ -117,13 +118,13 @@ export default function PageHome({
 					)}
 				</section>
 			</main>
-		</div>
+		</MainLayout>
 	);
 }
 
 export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req }) => {
 	const session = await getToken({ req });
-	if (!session || !session.accessToken) {
+	if (!session?.accessToken) {
 		return { props: { currentUser: null, posts: [], users: [], postCount: 0, error: 'No token found' } };
 	}
 	try {
