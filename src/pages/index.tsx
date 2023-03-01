@@ -44,10 +44,8 @@ export default function PageHome({
 
 	const loadMore = async () => {
 		setLoading(true);
-		console.log(0);
 		try {
 			const { count: newPostCount, posts: newPosts } = await services.api.loadmorePosts({
-				limit: 5,
 				olderThan: posts[posts.length - 1].id,
 			});
 

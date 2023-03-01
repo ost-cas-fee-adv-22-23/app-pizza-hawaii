@@ -6,7 +6,6 @@ type TGetPostResult = {
 };
 
 type TGetPost = {
-	limit?: number;
 	olderThan?: string;
 	newerThan?: string;
 };
