@@ -12,6 +12,8 @@ import { services } from '../services';
 
 import type { TPost, TUser } from '../types';
 import { contentCardModel } from '../models/ContentCard';
+import MainLayout from '../components/MainLayout';
+import Head from 'next/head';
 
 type PageProps = {
 	currentUser: TUser;
@@ -81,17 +83,22 @@ export default function PageHome({
 	};
 
 	return (
-		<div className="bg-slate-100">
-			<Header user={currentUser} />
+		<MainLayout>
+			<>
+				<Head>
+					<title>Mumble StartPage - Welcome</title>
+				</Head>
+			</>
+			{/* <Header user={currentUser} /> */}
 			<main className="px-content">
 				<section className="mx-auto w-full max-w-content">
 					<div className="mb-2 text-violet-600">
-						<Headline level={2}>Welcome to Storybook</Headline>
+						<Headline level={2}>Welcome to Mumble</Headline>
 					</div>
 
 					<div className="text-slate-500 mb-8">
 						<Headline level={4} as="p">
-							Voluptatem qui cumque voluptatem quia tempora dolores distinctio vel repellat dicta.
+							Whats new in Mumble....
 						</Headline>
 					</div>
 
@@ -117,7 +124,7 @@ export default function PageHome({
 					)}
 				</section>
 			</main>
-		</div>
+		</MainLayout>
 	);
 }
 
