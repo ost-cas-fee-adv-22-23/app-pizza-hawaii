@@ -135,6 +135,31 @@ const getRepliesById = async (id: string) => {
 	}
 };
 
+// search for posts by a search object
+const searchPostbyQuerry = async (queryObj: object) => {
+	if (!queryObj) {
+		throw new Error('searchPostbyQuerry: no valid query object was provided');
+	}
+
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/search`, {
+			method: 'POST',
+			body: JSON.stringify(queryObj),
+			headers: {
+				'Content-type': 'application/json',
+			},
+		});
+
+		if (response.status !== 200) {
+			throw new Error('Something went sour! not status 200. have a look at the network status');
+		}
+
+		return await response.json();
+	} catch (error) {
+		throw new Error('searchPostbyQuerry failed');
+	}
+};
+
 const addPost = async (text: string, file: TUploadImage | null, accessToken?: string) => {
 	if (!accessToken) {
 		throw new Error('No access token');
@@ -173,4 +198,5 @@ export const postsService = {
 	addPost,
 	getPostById,
 	getRepliesById,
+	searchPostbyQuerry,
 };

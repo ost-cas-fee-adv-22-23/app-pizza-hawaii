@@ -9,7 +9,7 @@ type Props = {
 export default function ProfilePage({ profile }: Props): InferGetServerSidePropsType<typeof getServerSideProps> {
 	return (
 		<>
-			<h1>{profile.alias}</h1>
+			<h1>ProfilePage of: {profile.alias}</h1>
 		</>
 	);
 }

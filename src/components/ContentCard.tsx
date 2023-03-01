@@ -94,7 +94,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 				{`${post.creator.firstName} ${post.creator.lastName}`}
 			</Label>
 			<Grid variant="row" gap="S">
-				<UserName href={`/user/${post.creator.userName}`}>{post.creator.userName}</UserName>
+				<UserName href={post.creator.profileLink}>{post.creator.userName}</UserName>
 				<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
 					<TimeStamp date={post.createdAt} />
 				</IconLink>
@@ -108,7 +108,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 			userProfile={{
 				avatar: post.creator.avatarUrl,
 				userName: post.creator.userName,
-				href: `/user/${post.creator.userName}`,
+				href: post.creator.profileLink,
 			}}
 			avatarVariant={setting.avatarVariant}
 			avatarSize={setting.avatarSize}

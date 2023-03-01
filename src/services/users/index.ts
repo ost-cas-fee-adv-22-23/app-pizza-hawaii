@@ -146,8 +146,10 @@ const getUserbyPostId = async ({ id, accessToken }: TGetUserByPostId) => {
 
 const transformUser = (user: TRawUser): TUser => ({
 	...user,
-	profileLink: `/user/${user.userName}`,
-	//createdAt: new Date(decodeTime(user.id)).toISOString(),
+	createdAt: new Date().toISOString(), // TODO: Find correct solution. This is not the correct date of creation but the last update of the user profile.
+	backgroundImage: '//picsum.photos/seed/1466/1060/',
+	profileLink: `/user/${user.id}`,
+	bio: 'This plugin works best if you disable all other ESLint rules relating to code formatting, and only enable rules that detect potential bugs.',
 });
 
 export const usersService = {

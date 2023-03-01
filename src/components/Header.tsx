@@ -57,7 +57,7 @@ export const Header: FC<THeader> = ({ user }) => {
 						</Link>
 						<nav className="">
 							<Navi>
-								<Link href={`/user/${user.userName}`} title="My Mumble Profile">
+								<Link href={user.profileLink} title="My Mumble Profile">
 									<NaviButton as="span">
 										<UserProfile
 											userName={user.userName}
