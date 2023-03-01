@@ -1,10 +1,15 @@
+import { ReactElement, FC } from 'react';
+import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { Header } from './Header';
-import { LayoutProps } from '../types/layoutProps';
-import { useSession } from 'next-auth/react';
 import { TUser } from '../types';
 
-const MainLayout: LayoutProps = ({ children }) => {
+type TMainLayout = {
+	children: ReactElement | JSX.Element;
+
+};
+
+export const MainLayout: FC<TMainLayout> = ({ children }) => {
 	const { data: session } = useSession();
 	const currentUser: TUser | undefined = session?.user;
 
