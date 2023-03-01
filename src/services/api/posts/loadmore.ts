@@ -1,4 +1,4 @@
-import { TPost } from '../../types';
+import { TPost } from '../../../types';
 
 type TGetPostResult = {
 	count: number;
@@ -10,7 +10,7 @@ type TGetPost = {
 	newerThan?: string;
 };
 
-export const loadmorePosts = async ({ olderThan, newerThan }: TGetPost): Promise<TGetPostResult> => {
+export const loadmore = async ({ olderThan, newerThan }: TGetPost): Promise<TGetPostResult> => {
 	// create url params
 	const urlParams = new URLSearchParams();
 

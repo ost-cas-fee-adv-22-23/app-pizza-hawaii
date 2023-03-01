@@ -1,5 +1,5 @@
-import { loadmorePosts } from './loadmorePosts';
+import { postsService } from './posts/';
 
 export const apiService = {
-	loadmorePosts,
+	posts: postsService,
 };
