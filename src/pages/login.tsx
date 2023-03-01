@@ -1,9 +1,8 @@
 import { signIn, signOut, useSession } from 'next-auth/react';
-import Head from 'next/head';
 import LoginLayout from '../components/LoginLayout';
-import { Button } from '@smartive-education/pizza-hawaii';
+import { Button, Headline, Label } from '@smartive-education/pizza-hawaii';
 
-export default function Home() {
+export default function LoginPage() {
 	const { data: session } = useSession();
 
 	return (
@@ -17,17 +16,15 @@ export default function Home() {
 			)}
 
 			{!session && (
-				<>
-					<a href="#" onClick={() => signIn('zitadel')}>
-						<span>schön kommt noch: login or register screen</span>
-						<br />
-						<br />
-						<h2>Login &rarr;</h2>
-						<p>Login with a ZITADEL account</p>
-					</a>
+				<>	
+					<Headline as='h1' level={1}>Anmelden</Headline>
 					<br />
-					<div>
-						<span>noch kein Account?</span>
+					<Button as='button' onClick={() => signIn('zitadel')} colorScheme='gradient' icon='mumble' >Login to Mumble</Button>
+					<br />
+					<Label as='legend' size='S' className='text-slate-100'>Zitadel login needed</Label>
+					<br />
+					<div className='text-right'>
+						<Label as='label' size='M'>noch kein Account? </Label>&nbsp;
 						<a className='text-violet-600 underline' href="/register">Jetzt registrieren</a>
 					</div>
 				</>
