@@ -21,7 +21,7 @@ import { TPost } from '../types';
 
 import ProjectSettings from './../data/ProjectSettings.json';
 
-import { services } from '../services';
+import { postsService } from '../services/api/posts/';
 /*
  * Type
  */
@@ -75,15 +75,14 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 
 	// Like function
 	const handleLike = async () => {
-		console.log('like', likedByUser);
 		if (likedByUser) {
-			if (await services.likes.unlike(post.id, session?.accessToken as string)) {
+			postsService.unlike({ id: post.id, accessToken: session?.accessToken as string }).then(() => {
 				setLikeCount(likeCount - 1);
-			}
+			});
 		} else {
-			if (await services.likes.like(post.id, session?.accessToken as string)) {
+			postsService.like({ id: post.id, accessToken: session?.accessToken as string }).then(() => {
 				setLikeCount(likeCount + 1);
-			}
+			});
 		}
 		setLikedByUser(!likedByUser);
 	};
