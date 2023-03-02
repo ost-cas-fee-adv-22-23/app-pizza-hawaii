@@ -125,7 +125,8 @@ export default function PageHome({
 export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req }) => {
 	const session = await getToken({ req });
 	if (!session?.accessToken) {
-		return { props: { currentUser: null, posts: [], users: [], postCount: 0, error: 'No token found' } };
+		// no session -> redirect to login page
+		return { redirect: { destination: 'login', permanent: false } };
 	}
 	try {
 		const { count: postCount, posts } = await services.posts.getPosts({
