@@ -6,7 +6,6 @@ import { TUser } from '../types';
 
 type TMainLayout = {
 	children: ReactElement | JSX.Element;
-
 };
 
 export const MainLayout: FC<TMainLayout> = ({ children }) => {

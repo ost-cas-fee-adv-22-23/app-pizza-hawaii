@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { Headline } from '@smartive-education/pizza-hawaii';
 import VerticalLogo from '../assets/svg/verticalLogo.svg';
 
-
 type TLoginLayout = {
 	children: ReactElement | JSX.Element;
 };
