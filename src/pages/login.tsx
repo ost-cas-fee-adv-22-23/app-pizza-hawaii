@@ -3,7 +3,7 @@ import Head from 'next/head';
 import LoginLayout from '../components/LoginLayout';
 import { Button } from '@smartive-education/pizza-hawaii';
 
-export default function Home() {
+export default function Login() {
 	const { data: session } = useSession();
 
 	return (
@@ -28,7 +28,9 @@ export default function Home() {
 					<br />
 					<div>
 						<span>noch kein Account?</span>
-						<a className='text-violet-600 underline' href="/register">Jetzt registrieren</a>
+						<a className="text-violet-600 underline" href="/register">
+							Jetzt registrieren
+						</a>
 					</div>
 				</>
 			)}
