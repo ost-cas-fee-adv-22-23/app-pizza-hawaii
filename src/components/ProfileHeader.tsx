@@ -11,37 +11,59 @@ import ProjectSettings from '../data/ProjectSettings.json';
 
 type TProfileHeader = {
 	user: TUser;
+	canEdit?: boolean;
 };
 
-export const ProfileHeader: FC<TProfileHeader> = ({ user }) => {
+export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit }) => {
 	return (
 		<div className="relative mb-6">
-			<ImageOverlay
-				preset="edit"
-				buttonLabel={'Hintergrundbild anpassen'}
-				onClick={function (): void {
-					throw new Error('Function not implemented.');
-				}}
-				borderRadius="L"
-			>
-				<Image
-					src={user.posterImage}
-					alt={user.userName}
-					width={ProjectSettings.images.header.width}
-					height={
-						(ProjectSettings.images.header.width / ProjectSettings.images.header.aspectRatio[0]) *
-						ProjectSettings.images.header.aspectRatio[1]
-					}
-				/>
-			</ImageOverlay>
+			{canEdit ? (
+				<ImageOverlay
+					preset="edit"
+					buttonLabel={'Hintergrundbild anpassen'}
+					onClick={function (): void {
+						throw new Error('Function not implemented.');
+					}}
+					borderRadius="L"
+				>
+					<Image
+						src={user.posterImage}
+						alt={user.userName}
+						width={ProjectSettings.images.header.width}
+						height={
+							(ProjectSettings.images.header.width / ProjectSettings.images.header.aspectRatio[0]) *
+							ProjectSettings.images.header.aspectRatio[1]
+						}
+					/>
+				</ImageOverlay>
+			) : (
+				<ImageOverlay
+					preset="enlarge"
+					buttonLabel={'Hintergrundbild anzeigen'}
+					onClick={function (): void {
+						throw new Error('Function not implemented.');
+					}}
+					borderRadius="L"
+				>
+					<Image
+						src={user.posterImage}
+						alt={user.userName}
+						width={ProjectSettings.images.header.width}
+						height={
+							(ProjectSettings.images.header.width / ProjectSettings.images.header.aspectRatio[0]) *
+							ProjectSettings.images.header.aspectRatio[1]
+						}
+					/>
+				</ImageOverlay>
+			)}
 			<div className="absolute right-8 bottom-0 translate-y-1/2 z-10">
 				<UserProfile
 					userName={user.userName}
 					avatar={user.avatarUrl}
 					size="XL"
 					border={true}
-					href="/"
-					buttonLabel="Change Avatar"
+					href={canEdit && ''}
+					buttonLabel={canEdit && 'Change Avatar'}
 				/>
 			</div>
 		</div>

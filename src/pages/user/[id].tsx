@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { useSession } from 'next-auth/react';
 import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
 
@@ -7,7 +8,7 @@ import { MainLayout } from '../../components/MainLayout';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { ContentCard } from '../../components/ContentCard';
 
-import { Switch, Headline, UserName, IconLink, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
+import { Switch, Headline, UserName, IconLink, TimeStamp, Richtext, Grid, Button } from '@smartive-education/pizza-hawaii';
 
 import { services } from '../../services';
 
@@ -22,6 +23,11 @@ type TUserPage = {
 export default function UserPage({ user, mumbles, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const [currentPostType, setCurrentPostType] = useState('mumbles');
 
+	const { data: session } = useSession();
+	const currentUser: TUser | undefined = session?.user;
+
+	const isCurrentUser = currentUser?.id === user.id;
+
 	const postsToRender: Record<string, TPost[]> = {
 		mumbles,
 		likes,
@@ -30,11 +36,11 @@ export default function UserPage({ user, mumbles, likes }: InferGetServerSidePro
 	return (
 		<>
 			<Head>
-				<title>Mumble StartPage - Welcome</title>
+				<title>{`Mumble Page of ${user.fullName}`}</title>
 			</Head>
 
 			<MainLayout>
-				<ProfileHeader user={user} />
+				<ProfileHeader user={user} canEdit={isCurrentUser} />
 				<div className="mb-2 text-slate-900 pr-48">
 					<Headline level={3}>{user.fullName}</Headline>
 				</div>
@@ -54,28 +60,33 @@ export default function UserPage({ user, mumbles, likes }: InferGetServerSidePro
 				<div className="text-slate-400 mb-8">
 					<Richtext size="M">{user.bio}</Richtext>
 				</div>
-				<Grid variant="col" gap="M" marginBelow="M">
-					<Switch
-						label="Wechsle deine angezeigten Mumbles"
-						options={[
-							{
-								label: 'Meine Mumbles',
-								value: 'mumbles',
-							},
-							{
-								label: 'Meine Likes',
-								value: 'likes',
-							},
-						]}
-						value="mumbles"
-						name="posttype"
-						onChange={(event: ChangeEvent): void => {
-							const value = (event.target as HTMLInputElement).value;
-							setCurrentPostType(value);
-						}}
-					/>
-				</Grid>
-
+				{isCurrentUser ? (
+					<Grid variant="col" gap="M" marginBelow="M">
+						<Switch
+							label="Wechsle deine angezeigten Mumbles"
+							options={[
+								{
+									label: 'Meine Mumbles',
+									value: 'mumbles',
+								},
+								{
+									label: 'Meine Likes',
+									value: 'likes',
+								},
+							]}
+							value="mumbles"
+							name="posttype"
+							onChange={(event: ChangeEvent): void => {
+								const value = (event.target as HTMLInputElement).value;
+								setCurrentPostType(value);
+							}}
+						/>
+					</Grid>
+				) : (
+					<Button as="button" size="M" colorScheme="violet">
+						Follow
+					</Button>
+				)}
 				<Grid variant="col" gap="M" marginBelow="M">
 					{postsToRender[currentPostType] &&
 						postsToRender[currentPostType]
