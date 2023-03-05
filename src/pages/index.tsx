@@ -12,7 +12,7 @@ import { services } from '../services';
 
 import type { TPost, TUser } from '../types';
 import { contentCardModel } from '../models/ContentCard';
-import MainLayout from '../components/MainLayout';
+import MainLayout from '../components/layoutComponents/MainLayout';
 import Head from 'next/head';
 
 type PageProps = {

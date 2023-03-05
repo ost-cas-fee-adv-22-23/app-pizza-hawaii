@@ -1,5 +1,5 @@
 import { signIn, useSession } from 'next-auth/react';
-import LoginLayout from '../components/LoginLayout';
+import LoginLayout from '../components/layoutComponents/LoginLayout';
 import { Button, Headline, Label } from '@smartive-education/pizza-hawaii';
 import Link from 'next/link';
 import { useRouter } from 'next/router';

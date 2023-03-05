@@ -1,8 +1,8 @@
 import Head from 'next/head';
-import {  FC } from 'react';
+import { FC } from 'react';
 import Image from 'next/image';
 import { Headline } from '@smartive-education/pizza-hawaii';
-import VerticalLogo from '../assets/svg/verticalLogo.svg';
+import VerticalLogo from '../../assets/svg/verticalLogo.svg';
 
 type TLoginLayout = {
 	children: React.ReactNode;

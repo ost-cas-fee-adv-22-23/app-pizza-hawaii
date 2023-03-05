@@ -3,6 +3,8 @@ import { getToken } from 'next-auth/jwt';
 import { TUser } from '../../types';
 import { UserCardModel } from '../../models/UserCard';
 import { services } from '../../services';
+import MainLayout from '../../components/layoutComponents/MainLayout';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
@@ -58,7 +60,12 @@ export default function UserPage(props: Props): InferGetServerSidePropsType<type
 	return isLoading && !userData ? (
 		<span>loading Data... - a loading animation would be nice- </span>
 	) : (
-		<div className="bg-slate-100">
+		<MainLayout>
+			<>
+				<Head>
+					<title>Details about User {userData?.user?.firstName}</title>
+				</Head>
+			</>
 			<Card as="section" rounded size="M" className="bg-slate-100">
 				<div className="relative mb-6">
 					<Image
@@ -122,6 +129,6 @@ export default function UserPage(props: Props): InferGetServerSidePropsType<type
 					<h3>Hi there!</h3>
 				</div>
 			</Grid>
-		</div>
+		</MainLayout>
 	);
 }
