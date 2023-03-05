@@ -9,7 +9,12 @@ const urlMap: Record<string, string> = {
 	unlike: `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/{id}/likes/`,
 };
 
-const like = async (id: string, accessToken: string) => {
+type TLikeProps = {
+	id: string;
+	accessToken: string;
+};
+
+const like = async ({ id, accessToken }: TLikeProps) => {
 	const url = urlMap['like'].replace('{id}', id);
 
 	const res = await fetch(url, {
@@ -28,9 +33,8 @@ const like = async (id: string, accessToken: string) => {
 	return true;
 };
 
-const unlike = async (id: string, accessToken: string) => {
+const unlike = async ({ id, accessToken }: TLikeProps) => {
 	const url = urlMap['unlike'].replace('{id}', id);
-
 	const res = await fetch(url, {
 		method: 'DELETE',
 		headers: {
