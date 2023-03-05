@@ -1,0 +1,16 @@
+import { usersService } from '../../../services/users';
+import { getToken } from 'next-auth/jwt';
+
+export default async function recommendedUsers(req, res) {
+  const { id } = req.query;
+  const session = await getToken({ req });
+
+  
+  usersService.getUsers({ id, session, limit:6 })
+    .then((data) => {  
+      res.status(200).json({ status: true , data });
+    })
+    .catch((error) => {
+      res.status(500).json({ status: false, error });
+    });
+}
