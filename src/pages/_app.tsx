@@ -8,14 +8,12 @@ import '@fontsource/poppins/700.css';
 import LoginPage from './login';
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
-	const validUser = !pageProps?.currentuser || false
-	
+	const validUser = !pageProps?.currentuser;
 	return (
 		<SessionProvider session={session}>
-			{validUser 
-				? <Component {...pageProps} />
-				: <LoginPage />
-			}
+		{validUser 
+			? <Component {...pageProps} /> 
+			: <LoginPage />}
 		</SessionProvider>
 	);
 }
