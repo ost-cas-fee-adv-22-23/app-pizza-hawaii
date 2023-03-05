@@ -22,7 +22,7 @@ const RegisterPage = () => {
 	const [responseBody, setResponseBody] = useState<RegisterFormData>(formData);
 
 	const inputChangeHandler = (e: FormEvent) => {
-		// const { name, value } = e.target;
+		const { name, value } = e.target;
 		setResponseBody({ ...responseBody, [name]: value });
 	};
 
@@ -74,7 +74,7 @@ const RegisterPage = () => {
 				<div className="mt-3 text-center">
 					<Label as="span" size="M">
 						Bereits registriert? &nbsp;
-						<Link className="text-violet-600 underline" as="a" href="/login">
+						<Link className="text-violet-600 underline" href="/login">
 							Jetzt anmelden
 						</Link>
 					</Label>
