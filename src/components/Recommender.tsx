@@ -1,17 +1,33 @@
-import React, { FC, useEffect, useSession } from 'react';
-import { TUserCard } from '../types';
-import { Grid, UserCard, Card, Headline } from '@smartive-education/pizza-hawaii';
+import React, { FC, useEffect, useState } from 'react';
+import { Grid, Card, Headline } from '@smartive-education/pizza-hawaii';
+import { services } from '../services';
+// import { getToken } from 'next-auth/jwt';
+import { useSession } from 'next-auth/react';
 
 export const Recommender: FC<TRecommender> = (props) => {
-	// const { data: session } = useSession();
+	const [isLoading, setIsLoading] = useState(true);
+	const [recommendedUsers, setRecommendedUsers] = useState([]);
+	const { data: session } = useSession();
 
 	useEffect(() => {
-		const fetchRecUsers = async () => {
-			const response = await fetch('/api/recommendations');
-			const data = await response.json();
-			console.log('%cRecommender.tsx line:5 data', 'color: white; background-color: #33aade;', data);
-		};
+		if (session?.accessToken !== undefined) {
+			const fetchRecommendedUsers = async (accessToken) => {
+				// TODO: Fetch recommended users via API
+				// const response = await fetch('/api/recommendations');
+				const recommendedUsers = await services.users.getUsers({
+					limit: 6,
+					offset: 0,
+					accessToken: session.accessToken,
+				});
+
+				setRecommendedUsers({ recommendedUsers });
+			};
+			fetchRecommendedUsers();
+			setIsLoading(false);
+		}
 	}, []);
+
+	console.log('%cRecommender.tsx line:27 recommendedUsers', 'color: #26bfa5;', recommendedUsers);
 
 	const dummyUser = {
 		id: '123',
@@ -31,15 +47,14 @@ export const Recommender: FC<TRecommender> = (props) => {
 			<Headline as="h2" level={3}>
 				Empfohlene User
 			</Headline>
-			<Grid variant="row" gap="S">
-				<div>
-					<Card user={dummyUser}>
-						<Headline as="h4" level={4}>
-							{dummyUser.fullName}
-						</Headline>
-					</Card>
-				</div>
+			{isLoading && !recommendedUsers
+			? (<span>loading Data... - a loading animation would be nice- </span>)
+			: (	<Grid variant="row" gap="S">
+					{recommendedUsers.map((user) => (
+					<Card key={user.id} variant="small" user={user} />
+				))}
 			</Grid>
+			)}
 		</>
 	);
 };

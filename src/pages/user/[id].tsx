@@ -18,6 +18,7 @@ import {
 	Button,
 	Grid,
 } from '@smartive-education/pizza-hawaii';
+import { Recommender } from '../../components/Recommender';
 
 type Props = {
 	user: {
@@ -113,6 +114,7 @@ export default function UserPage(props: Props): InferGetServerSidePropsType<type
 				</div>
 			</Card>
 			<br />
+			<Recommender />
 			<Button as="button" size="L" onClick={() => searchPostsofUser(userData.user.id)}>
 				Search Mumble posts of {userData.user.firstName}
 			</Button>
