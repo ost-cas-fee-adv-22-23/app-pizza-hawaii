@@ -9,6 +9,7 @@ export const UserCardModel = (userData) => {
 		userName: '',
 		firstName: '',
 		lastName: '',
+		displayName: '',
 		avatarUrl: '',
 		profileLink: '',
 	};
@@ -18,6 +19,7 @@ export const UserCardModel = (userData) => {
 		userName: userData.userName,
 		firstName: userData.firstName,
 		lastName: userData.LastName,
+		displayName: `${userData.firstName} ${userData.lastName}`,
 		avatarUrl: userData.avatarUrl,
 		createdAt: new Date().toISOString(),
 		backgroundImage: '//picsum.photos/seed/johndoe1/1600/1157/',

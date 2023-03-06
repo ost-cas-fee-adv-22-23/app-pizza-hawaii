@@ -1,6 +1,6 @@
 import { TUser } from '../../types';
 
-type TRawUser = Omit<TUser, 'createdAt profileLink'>;
+type TRawUser = Omit<TUser, 'createdAt profileLink, displayName, posterImage, bio, city'>;
 
 /**
  * Get all users
@@ -145,11 +145,13 @@ const getUserbyPostId = async ({ id, accessToken }: TGetUserByPostId) => {
 };
 
 const transformUser = (user: TRawUser): TUser => ({
-	createdAt: new Date().toISOString(), // TODO: Find correct solution. This is not the correct date of creation but the last update of the user profile.
 	posterImage: '//picsum.photos/seed/1466/1060/',
-	profileLink: `/user/${user.id}`,
 	bio: `Hello my name is ${user.firstName} ${user.lastName}. I am a big fan of the Qwacker community and I am looking forward to meet you all.`,
+	createdAt: new Date().toISOString(), // TODO: Find correct solution. This is not the correct date of creation but the last update of the user profile.
+	city: 'Switzerland',
 	...user,
+	profileLink: `/user/${user.id}`,
+	displayName: `${user.firstName} ${user.lastName}`,
 });
 
 export const usersService = {

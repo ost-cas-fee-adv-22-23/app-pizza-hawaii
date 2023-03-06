@@ -90,7 +90,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
-				{`${post.creator.firstName} ${post.creator.lastName}`}
+				{`${post.creator.displayName}`}
 			</Label>
 			<Grid variant="row" gap="S">
 				<UserName href={post.creator.profileLink}>{post.creator.userName}</UserName>
