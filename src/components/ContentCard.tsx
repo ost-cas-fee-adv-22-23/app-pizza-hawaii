@@ -1,6 +1,5 @@
 /* eslint-disable import/no-unresolved */
 import React, { FC, useState } from 'react';
-import { useSession } from 'next-auth/react';
 
 import {
 	Image,
@@ -71,16 +70,14 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 	const [likedByUser, setLikedByUser] = useState(post.likedByUser);
 	const [likeCount, setLikeCount] = useState(post.likeCount);
 
-	const { data: session } = useSession();
-
 	// Like function
 	const handleLike = async () => {
 		if (likedByUser) {
-			postsService.unlike({ id: post.id, accessToken: session?.accessToken as string }).then(() => {
+			postsService.unlike({ id: post.id}).then(() => {
 				setLikeCount(likeCount - 1);
 			});
 		} else {
-			postsService.like({ id: post.id, accessToken: session?.accessToken as string }).then(() => {
+			postsService.like({ id: post.id }).then(() => {
 				setLikeCount(likeCount + 1);
 			});
 		}

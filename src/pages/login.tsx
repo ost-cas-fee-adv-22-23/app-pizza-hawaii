@@ -3,7 +3,7 @@ import Head from 'next/head';
 import LoginLayout from '../components/LoginLayout';
 import { Button } from '@smartive-education/pizza-hawaii';
 
-export default function Login() {
+export default function LoginPage() {
 	const { data: session } = useSession();
 
 	return (
