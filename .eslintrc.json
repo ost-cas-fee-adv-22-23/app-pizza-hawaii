@@ -1,6 +1,7 @@
 {
 	"extends": [
-		"@smartive/eslint-config",
-		"next/core-web-vitals"
+		"@smartive/eslint-config/react",
+		"next/core-web-vitals",
+		"prettier"
 	]
 }

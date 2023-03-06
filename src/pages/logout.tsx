@@ -1,7 +1,7 @@
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Head from 'next/head';
 
-export default function Home() {
+export default function LogoutPage() {
 	const { data: session } = useSession();
 
 	return (

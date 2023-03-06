@@ -10,7 +10,7 @@
 		"format:fix": "$npm_execpath run lint:fix && $npm_execpath run prettier:fix",
 		"lint": "next lint",
 		"lint:fix": "next lint --fix",
-		"prettier": "prettier --list-different .",
+		"prettier": "prettier --check .",
 		"prettier:fix": "prettier --write ."
 	},
 	"dependencies": {
