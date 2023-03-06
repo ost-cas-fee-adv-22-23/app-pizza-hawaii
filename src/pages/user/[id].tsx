@@ -1,127 +1,170 @@
+import { ChangeEvent, useState } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { getToken } from 'next-auth/jwt';
-import { TUser } from '../../types';
-import { UserCardModel } from '../../models/UserCard';
-import { services } from '../../services';
-import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
-import {
-	UserProfile,
-	Image,
-	Card,
-	Headline,
-	UserName,
-	IconLink,
-	TimeStamp,
-	Richtext,
-	Button,
-	Grid,
-} from '@smartive-education/pizza-hawaii';
+import { getToken } from 'next-auth/jwt';
+import Head from 'next/head';
 
-type Props = {
-	user: {
-		userData: TUser;
-	};
+import { MainLayout } from '../../components/MainLayout';
+import { ProfileHeader } from '../../components/ProfileHeader';
+import { ContentCard } from '../../components/ContentCard';
+
+import { Switch, Headline, UserName, IconLink, TimeStamp, Richtext, Grid, Button } from '@smartive-education/pizza-hawaii';
+
+import { services } from '../../services';
+
+import { TPost, TUser } from '../../types';
+
+type TUserPage = {
+	user: TUser;
+	mumbles: TPost[];
+	likes?: TPost[];
 };
 
-export default function UserPage(props: Props): InferGetServerSidePropsType<typeof getServerSideProps> {
-	const [isLoading, setIsLoading] = useState(true);
-	const [userData, setUserData] = useState(undefined);
-	const router = useRouter();
+export default function UserPage({ user, mumbles, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	if (!user) {
+		// TODO: better content or 404 page with nice illustration of a lost user
+		return (
+			<MainLayout>
+				<div className="text-slate-900 text-center">
+					<Headline level={3}>User not found</Headline>
+				</div>
+			</MainLayout>
+		);
+	}
+	const [currentPostType, setCurrentPostType] = useState('mumbles');
 	const { data: session } = useSession();
-	const userId = router.query.id?.toString();
+	const currentUser: TUser | undefined = session?.user;
 
-	useEffect(() => {
-		const fetchData = async () => {
-			const userData = await services.users.getUserById({ id: userId, accessToken: session?.accessToken });
-			setUserData({ user: userData });
-			setIsLoading(false);
-		};
-		fetchData();
-	}, [userId, session]);
+	const isCurrentUser = currentUser?.id === user.id;
 
-	const loadUserData = async (userId: string) => {
-		const res = await services.users.getUserById({ id: userId, accessToken: session?.accessToken });
+	const postsToRender: Record<string, TPost[]> = {
+		mumbles,
+		likes,
 	};
 
-	const searchPostsofUser = async (userId: string) => {
-		const userPosts = await services.posts.searchPostbyQuerry({ text: 'Test' });
-		console.log('%c[id].tsx line:50 userPosts', 'color: white; background-color: #007acc;', userPosts);
-	};
+	return (
+		<>
+			<Head>
+				<title>{`Mumble Page of ${user.displayName}`}</title>
+			</Head>
 
-	// TODO: probably somewhere else as a helperClass
-	const unfollowUser = (id: string) => {
-		console.log('unfollow user with user id', id);
-	};
-
-	return isLoading && !userData ? (
-		<span>loading Data... - a loading animation would be nice- </span>
-	) : (
-		<div className="bg-slate-100">
-			<Card as="section" rounded size="M" className="bg-slate-100">
-				<div className="relative mb-6">
-					<Image
-						className="max-height: h-80"
-						src={userData?.user.backgroundImage}
-						alt={userData?.user?.userName}
-						preset="header"
-					/>
-					<div className="absolute right-8 bottom-0 translate-y-1/2 z-10">
-						<UserProfile
-							userName={userData.user.userName}
-							avatar={userData.user.avatarUrl}
-							size="XL"
-							border={true}
-							href="/"
-							buttonLabel={userData.user.userName}
-						/>
+			<MainLayout>
+				<>
+					<ProfileHeader user={user} canEdit={isCurrentUser} />
+					<div className="mb-2 text-slate-900 pr-48">
+						<Headline level={3}>{user.displayName}</Headline>
 					</div>
-				</div>
-				<div className="mb-2 text-slate-900 pr-48">
-					<Headline level={3}>
-						{userData.user.firstName} {userData.user.lastName}
-					</Headline>
-				</div>
-				<span className="flex flex-row align-baseline gap-3 mb-3">
-					<UserName href={userData.user.profileLink}>{userData.user.userName}</UserName>
 
-					<IconLink as="span" icon="location" colorScheme="slate" size="S">
-						CityName
-					</IconLink>
+					<span className="flex flex-row align-baseline gap-3 mb-3">
+						<UserName href={user.profileLink}>{user.userName}</UserName>
 
-					<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
-						<TimeStamp date={userData.user.createdAt} prefix="Mitglied seit" />
-					</IconLink>
-				</span>
-				<div className="text-slate-400 mb-8">
-					<Richtext size="M">{userData.user.bio}</Richtext>
-				</div>
-				<div className="text-right flex flex-row max-w-[50%]">
-					<span>
-						Du folgst {userData.user.firstName} {userData.user.lastName}{' '}
+						<IconLink as="span" icon="location" colorScheme="slate" size="S">
+							{user.city}
+						</IconLink>
+
+						<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
+							<TimeStamp date={user.createdAt} prefix="Mitglied seit" />
+						</IconLink>
 					</span>
-					<Button
-						onClick={() => unfollowUser(userData.user.id)}
-						as="button"
-						size="S"
-						colorScheme="slate"
-						icon="cancel"
-					>
-						Unfollow
-					</Button>
-				</div>
-			</Card>
-			<br />
-			<Button as="button" size="L" onClick={() => searchPostsofUser(userData.user.id)}>
-				Search Mumble posts of {userData.user.firstName}
-			</Button>
-			here should come all mumble-posts replies of that user by search querry.
-			<Grid variant="col" gap="M" as="div">
-				<div>
-					<h3>Hi there!</h3>
-				</div>
-			</Grid>
-		</div>
+
+					<div className="text-slate-400 mb-8">
+						<Richtext size="M">{user.bio}</Richtext>
+					</div>
+					{isCurrentUser ? (
+						<Grid variant="col" gap="M" marginBelow="M">
+							<Switch
+								label="Wechsle deine angezeigten Mumbles"
+								options={[
+									{
+										label: 'Meine Mumbles',
+										value: 'mumbles',
+									},
+									{
+										label: 'Meine Likes',
+										value: 'likes',
+									},
+								]}
+								value="mumbles"
+								name="posttype"
+								onChange={(event: ChangeEvent): void => {
+									const value = (event.target as HTMLInputElement).value;
+									setCurrentPostType(value);
+								}}
+							/>
+						</Grid>
+					) : (
+						<Button as="button" size="M" colorScheme="violet">
+							Follow
+						</Button>
+					)}
+					<Grid variant="col" gap="M" marginBelow="M">
+						{postsToRender[currentPostType] &&
+							postsToRender[currentPostType].map((post) => {
+								return <ContentCard key={post.id} variant="timeline" post={post} />;
+							})}
+					</Grid>
+				</>
+			</MainLayout>
+		</>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req, params }) => {
+	const userId: string = params?.id as string;
+	const session = await getToken({ req });
+
+	if (!session?.accessToken) {
+		return { props: { error: 'No token found' } };
+	}
+
+	try {
+		const { users } = await services.users.getUsers({
+			accessToken: session?.accessToken,
+		});
+
+		const user = users.find((user) => user.id === userId) || null;
+
+		let mumbles = await services.posts.getPostsByUserId({
+			id: userId,
+			accessToken: session?.accessToken,
+		});
+
+		mumbles = mumbles.map((post) => {
+			const creator = users.find((user) => user.id === post.creator);
+			return {
+				...post,
+				creator: creator,
+			} as TPost;
+		});
+
+		let likes = await services.posts.getLikedPostsByCurrentUser({
+			id: userId,
+			accessToken: session?.accessToken,
+		});
+
+		likes = likes.map((post) => {
+			const creator = users.find((user) => user.id === post.creator);
+			return {
+				...post,
+				creator: creator,
+			} as TPost;
+		}) as TPost[];
+
+		return {
+			props: {
+				user,
+				mumbles,
+				likes,
+			},
+		};
+	} catch (error) {
+		let message;
+		if (error instanceof Error) {
+			message = error.message;
+		} else {
+			message = String(error);
+		}
+
+		return { props: { error: message } };
+	}
+};
