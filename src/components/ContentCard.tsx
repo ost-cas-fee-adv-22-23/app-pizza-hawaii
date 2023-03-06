@@ -142,7 +142,6 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 					}
 					iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
 					onClick={function (): void {
-						console.log('add comment');
 						// throw new Error('Function not implemented.');
 					}}
 				/>

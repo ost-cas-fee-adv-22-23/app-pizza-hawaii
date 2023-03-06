@@ -11,7 +11,6 @@ export default function LoginPage() {
 
 	useEffect(() => {
 		if (session) {
-			console.log('succesfull login -> redirecting');
 			router.push('/');
 		}
 	}, [session, router]);
@@ -51,8 +50,8 @@ export default function LoginPage() {
 							noch kein Account?{' '}
 						</Label>
 						&nbsp;
-						<Link className="text-violet-600 underline" href="/register">
-							Jetzt registrieren
+						<Link href="/register">
+							<span className="text-violet-600 underline">Jetzt registrieren</span>
 						</Link>
 					</div>
 				</>
