@@ -1,8 +1,8 @@
 import { ReactElement, FC } from 'react';
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
-import { Header } from './Header';
-import { TUser } from '../types';
+import { Header } from '../Header';
+import { TUser } from '../../types';
 
 type TMainLayout = {
 	children: ReactElement | JSX.Element;

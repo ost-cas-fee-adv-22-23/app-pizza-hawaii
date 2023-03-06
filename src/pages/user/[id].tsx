@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
 
-import { MainLayout } from '../../components/MainLayout';
+import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { ContentCard } from '../../components/ContentCard';
 

@@ -4,7 +4,7 @@ import { getToken } from 'next-auth/jwt';
 import Link from 'next/link';
 import Head from 'next/head';
 
-import { MainLayout } from '../components/MainLayout';
+import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { ContentCard } from '../components/ContentCard';
 import { ContentInput } from '../components/ContentInput';
 
@@ -124,7 +124,8 @@ export default function PageHome({
 export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req }) => {
 	const session = await getToken({ req });
 	if (!session?.accessToken) {
-		return { props: { currentUser: null, posts: [], users: [], postCount: 0, error: 'No token found' } };
+		// no session -> redirect to login page
+		return { redirect: { destination: 'login', permanent: false } };
 	}
 	try {
 		const { count: postCount, posts } = await services.posts.getPosts({
