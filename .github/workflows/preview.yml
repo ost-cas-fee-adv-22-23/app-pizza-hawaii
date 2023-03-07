@@ -9,6 +9,11 @@ env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+  NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+  NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
+  ZITADEL_ISSUER: ${{ secrets.ZITADEL_ISSUER }}
+  ZITADEL_CLIENT_ID: ${{ secrets.ZITADEL_CLIENT_ID }}
 
 on:
   push:
