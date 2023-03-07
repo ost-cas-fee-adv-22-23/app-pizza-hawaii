@@ -1,4 +1,4 @@
-import { SessionProvider, useSession } from 'next-auth/react';
+import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 
 import '../styles/globals.css';
@@ -9,11 +9,5 @@ import LoginPage from './login';
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 	const validUser = !pageProps?.currentuser;
-	return (
-		<SessionProvider session={session}>
-		{validUser 
-			? <Component {...pageProps} /> 
-			: <LoginPage />}
-		</SessionProvider>
-	);
+	return <SessionProvider session={session}>{validUser ? <Component {...pageProps} /> : <LoginPage />}</SessionProvider>;
 }

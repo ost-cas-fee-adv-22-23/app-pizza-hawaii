@@ -16,7 +16,7 @@ import {
 	TUserContentCard,
 } from '@smartive-education/pizza-hawaii';
 
-import { TPost, TUser } from '../types';
+import { TPost } from '../types';
 
 import ProjectSettings from './../data/ProjectSettings.json';
 
@@ -73,7 +73,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 	// Like function
 	const handleLike = async () => {
 		if (likedByUser) {
-			postsService.unlike({ id: post.id}).then(() => {
+			postsService.unlike({ id: post.id }).then(() => {
 				setLikeCount(likeCount - 1);
 			});
 		} else {

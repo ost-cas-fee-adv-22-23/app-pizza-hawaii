@@ -14,14 +14,6 @@ import { services } from '../services';
 import type { TPost, TUser } from '../types';
 import { contentCardModel } from '../models/ContentCard';
 
-type PageProps = {
-	currentUser: TUser;
-	postCount: number;
-	posts: TPost[];
-	users: TUser[];
-	error?: string;
-};
-
 export default function PageHome({
 	currentUser,
 	postCount: initialPostCount,
@@ -102,7 +94,7 @@ export default function PageHome({
 								placeHolderText="Deine Meinung zählt"
 							/>
 
-							{posts.map((post) => {
+							{posts.map((post: TPost) => {
 								return <ContentCard key={post.id} variant="timeline" post={post} />;
 							})}
 						</Grid>
@@ -121,7 +113,7 @@ export default function PageHome({
 	);
 }
 
-export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	const session = await getToken({ req });
 	if (!session?.accessToken) {
 		// no session -> redirect to login page
