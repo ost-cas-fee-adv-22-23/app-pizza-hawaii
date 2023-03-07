@@ -34,24 +34,6 @@ jobs:
           ZITADEL_CLIENT_ID: ${{ secrets.ZITADEL_CLIENT_ID }}
       - name: Deploy Project Artifacts to Vercel
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
-
-      - uses: aaimio/vercel-preview-url-action@v2.0.0
-        id: vercel_preview_url
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # Below is but an example of what you could do with the preview URL.
-      # The preview URL is accessed through ${{ steps.<step_id>.outputs.vercel_preview_url }}
-      - uses: actions/github-script@v3
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'The preview URL is: ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}.'
-            });
-
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         if: failure()
