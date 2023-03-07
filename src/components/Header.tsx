@@ -59,16 +59,14 @@ export const Header: FC<THeader> = ({ user }) => {
 						</div>
 						<nav className="">
 							<Navi>
-								<Link href={user.profileLink} title="My Mumble Profile">
-									<NaviButton as="span">
-										<UserProfile
-											userName={user.userName}
-											avatar={user.avatarUrl}
-											size="S"
-											buttonLabel="My Mumble Profile"
-										/>
-									</NaviButton>
-								</Link>
+								<NaviButton as="a" href={user.profileLink} title="My Mumble Profile">
+									<UserProfile
+										userName={user.userName}
+										avatar={user.avatarUrl}
+										size="S"
+										buttonLabel="My Mumble Profile"
+									/>
+								</NaviButton>
 								<NaviButton as="button" icon="settings" onClick={handleSettingsModalClick}>
 									Settings
 								</NaviButton>

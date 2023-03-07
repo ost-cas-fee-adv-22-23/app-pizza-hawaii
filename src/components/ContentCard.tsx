@@ -16,7 +16,7 @@ import {
 	TUserContentCard,
 } from '@smartive-education/pizza-hawaii';
 
-import { TPost } from '../types';
+import { TPost, TUser } from '../types';
 
 import ProjectSettings from './../data/ProjectSettings.json';
 
@@ -83,6 +83,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 		}
 		setLikedByUser(!likedByUser);
 	};
+	post.creator = post.creator as TUser;
 
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
