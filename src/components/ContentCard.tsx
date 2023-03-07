@@ -83,7 +83,15 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 		}
 		setLikedByUser(!likedByUser);
 	};
-	post.creator = post.creator as TUser;
+	if (post?.creator?.userName) {
+		post.creator = post.creator as TUser;
+	} else {
+		return (
+			<div className="flex flex-col items-center justify-center w-full h-full">
+				<p className="text-center">Something went wrong. Please try again later.</p>
+			</div>
+		);
+	}
 
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
