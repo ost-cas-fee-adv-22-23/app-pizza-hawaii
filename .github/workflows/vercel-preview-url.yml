@@ -1,8 +1,8 @@
 name: Capture Vercel preview URL
 
 on:
-  issue_comment:
-    types: [edited]
+  pull_request:
+    types: [opened, edited, reopened]
 
 jobs:
   capture_vercel_preview_url:
