@@ -22,6 +22,8 @@ export default NextAuth({
 				token_endpoint_auth_method: 'none',
 			},
 			async profile(_, { access_token }): Promise<TUser> {
+				if (!access_token) throw new Error('No access token found');
+
 				const { userinfo_endpoint } = await (
 					await fetch(`${process.env.ZITADEL_ISSUER}/.well-known/openid-configuration`)
 				).json();

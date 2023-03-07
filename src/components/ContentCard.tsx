@@ -83,9 +83,8 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 		}
 		setLikedByUser(!likedByUser);
 	};
-	if (post?.creator?.userName) {
-		post.creator = post.creator as TUser;
-	} else {
+
+	if (!post.creator || typeof post.creator === 'string') {
 		return (
 			<div className="flex flex-col items-center justify-center w-full h-full">
 				<p className="text-center">Something went wrong. Please try again later.</p>
