@@ -1,14 +1,14 @@
 import Head from 'next/head';
-import { ReactElement, FC } from 'react';
+import { FC } from 'react';
 import Image from 'next/image';
 import { Headline } from '@smartive-education/pizza-hawaii';
-import VerticalLogo from '../assets/svg/verticalLogo.svg';
+import VerticalLogo from '../../assets/svg/verticalLogo.svg';
 
 type TLoginLayout = {
-	children: ReactElement | JSX.Element;
+	children: React.ReactNode;
 };
 
-export const LoginLayout: FC<TLoginLayout> = ({ children }) => {
+const LoginLayout: FC<TLoginLayout> = ({ children }) => {
 	return (
 		<>
 			<Head>
@@ -31,7 +31,7 @@ export const LoginLayout: FC<TLoginLayout> = ({ children }) => {
 					</div>
 				</header>
 				<div className="column-start-2 column-span-1 row-start-1 row-span-1 md:column-start-1 md:row-start-2 flex items-center justify-center">
-					<section className="w-6/12">{children}</section>
+					<section className="w-8/12">{children}</section>
 				</div>
 			</div>
 		</>

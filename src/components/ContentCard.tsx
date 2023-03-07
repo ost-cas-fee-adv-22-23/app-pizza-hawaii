@@ -1,6 +1,5 @@
 /* eslint-disable import/no-unresolved */
 import React, { FC, useState } from 'react';
-import { useSession } from 'next-auth/react';
 
 import {
 	Image,
@@ -71,26 +70,32 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 	const [likedByUser, setLikedByUser] = useState(post.likedByUser);
 	const [likeCount, setLikeCount] = useState(post.likeCount);
 
-	const { data: session } = useSession();
-
 	// Like function
 	const handleLike = async () => {
 		if (likedByUser) {
-			postsService.unlike({ id: post.id, accessToken: session?.accessToken as string }).then(() => {
+			postsService.unlike({ id: post.id }).then(() => {
 				setLikeCount(likeCount - 1);
 			});
 		} else {
-			postsService.like({ id: post.id, accessToken: session?.accessToken as string }).then(() => {
+			postsService.like({ id: post.id }).then(() => {
 				setLikeCount(likeCount + 1);
 			});
 		}
 		setLikedByUser(!likedByUser);
 	};
 
+	if (!post.creator || typeof post.creator === 'string') {
+		return (
+			<div className="flex flex-col items-center justify-center w-full h-full">
+				<p className="text-center">Something went wrong. Please try again later.</p>
+			</div>
+		);
+	}
+
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
-				{`${post.creator.firstName} ${post.creator.lastName}`}
+				{`${post.creator.displayName}`}
 			</Label>
 			<Grid variant="row" gap="S">
 				<UserName href={post.creator.profileLink}>{post.creator.userName}</UserName>
@@ -145,7 +150,6 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 					}
 					iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
 					onClick={function (): void {
-						console.log('add comment');
 						// throw new Error('Function not implemented.');
 					}}
 				/>
@@ -162,7 +166,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 				<CopyToClipboardButton
 					defaultButtonText="Copy Link"
 					activeButtonText="Link copied"
-					shareText={`${process.env.NEXT_PUBLIC_URL}/mumble/${post.id}`}
+					shareText={`${process.env.NEXTAUTH_URL}/mumble/${post.id}`}
 				/>
 			</Grid>
 		</UserContentCard>

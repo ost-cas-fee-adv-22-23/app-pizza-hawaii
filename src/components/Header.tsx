@@ -51,22 +51,22 @@ export const Header: FC<THeader> = ({ user }) => {
 			<header className="Header mb-8 bg-violet-600 text-white">
 				<div className="px-content py-3">
 					<div className="flex items-center justify-between gap-8 w-full max-w-content mx-auto">
-						<Link href="/" className="flex w-[209px]">
-							<Image src={MumbleLogo} alt="Mumble Messenger" />
-							<h1 className="sr-only">Mumble</h1>
-						</Link>
+						<div className="flex w-[209px]">
+							<Link href="/">
+								<Image src={MumbleLogo} alt="Mumble Messenger" />
+								<h1 className="sr-only">Mumble</h1>
+							</Link>
+						</div>
 						<nav className="">
 							<Navi>
-								<Link href={user.profileLink} title="My Mumble Profile">
-									<NaviButton as="span">
-										<UserProfile
-											userName={user.userName}
-											avatar={user.avatarUrl}
-											size="S"
-											buttonLabel="My Mumble Profile"
-										/>
-									</NaviButton>
-								</Link>
+								<NaviButton as="a" href={user.profileLink} title="My Mumble Profile">
+									<UserProfile
+										userName={user.userName}
+										avatar={user.avatarUrl}
+										size="S"
+										buttonLabel="My Mumble Profile"
+									/>
+								</NaviButton>
 								<NaviButton as="button" icon="settings" onClick={handleSettingsModalClick}>
 									Settings
 								</NaviButton>

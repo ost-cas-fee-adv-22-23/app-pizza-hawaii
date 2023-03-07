@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 import Link from 'next/link';
+import Head from 'next/head';
 
-import { Header } from '../components/Header';
+import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { ContentCard } from '../components/ContentCard';
 import { ContentInput } from '../components/ContentInput';
 
@@ -12,16 +13,6 @@ import { services } from '../services';
 
 import type { TPost, TUser } from '../types';
 import { contentCardModel } from '../models/ContentCard';
-import MainLayout from '../components/MainLayout';
-import Head from 'next/head';
-
-type PageProps = {
-	currentUser: TUser;
-	postCount: number;
-	posts: TPost[];
-	users: TUser[];
-	error?: string;
-};
 
 export default function PageHome({
 	currentUser,
@@ -77,55 +68,56 @@ export default function PageHome({
 	};
 
 	return (
-		<MainLayout>
-			<>
-				<Head>
-					<title>Mumble StartPage - Welcome</title>
-				</Head>
-			</>
-			{/* <Header user={currentUser} /> */}
-			<main className="px-content">
-				<section className="mx-auto w-full max-w-content">
-					<div className="mb-2 text-violet-600">
-						<Headline level={2}>Welcome to Mumble</Headline>
-					</div>
+		<>
+			<Head>
+				<title>Mumble StartPage - Welcome</title>
+			</Head>
 
-					<div className="text-slate-500 mb-8">
-						<Headline level={4} as="p">
-							Whats new in Mumble....
-						</Headline>
-					</div>
+			<MainLayout>
+				<main className="px-content">
+					<section className="mx-auto w-full max-w-content">
+						<div className="mb-2 text-violet-600">
+							<Headline level={2}>Welcome to Mumble</Headline>
+						</div>
 
-					<Grid variant="col" gap="M" marginBelow="M">
-						<ContentInput
-							variant="newPost"
-							headline="Hey, was geht ab?"
-							author={currentUser}
-							placeHolderText="Deine Meinung zählt"
-						/>
+						<div className="text-slate-500 mb-8">
+							<Headline level={4} as="p">
+								Whats new in Mumble....
+							</Headline>
+						</div>
 
-						{posts.map((post) => {
-							return <ContentCard key={post.id} variant="timeline" post={post} />;
-						})}
-					</Grid>
+						<Grid variant="col" gap="M" marginBelow="M">
+							<ContentInput
+								variant="newPost"
+								headline="Hey, was geht ab?"
+								author={currentUser}
+								placeHolderText="Deine Meinung zählt"
+							/>
 
-					{hasMore ? (
-						<Button as="button" colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
-							{loading ? '...' : 'Load more'}
-						</Button>
-					) : (
-						''
-					)}
-				</section>
-			</main>
-		</MainLayout>
+							{posts.map((post: TPost) => {
+								return <ContentCard key={post.id} variant="timeline" post={post} />;
+							})}
+						</Grid>
+
+						{hasMore ? (
+							<Button as="button" colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
+								{loading ? '...' : 'Load more'}
+							</Button>
+						) : (
+							''
+						)}
+					</section>
+				</main>
+			</MainLayout>
+		</>
 	);
 }
 
-export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	const session = await getToken({ req });
 	if (!session?.accessToken) {
-		return { props: { currentUser: null, posts: [], users: [], postCount: 0, error: 'No token found' } };
+		// no session -> redirect to login page
+		return { redirect: { destination: 'login', permanent: false } };
 	}
 	try {
 		const { count: postCount, posts } = await services.posts.getPosts({

@@ -22,6 +22,8 @@ export default NextAuth({
 				token_endpoint_auth_method: 'none',
 			},
 			async profile(_, { access_token }): Promise<TUser> {
+				if (!access_token) throw new Error('No access token found');
+
 				const { userinfo_endpoint } = await (
 					await fetch(`${process.env.ZITADEL_ISSUER}/.well-known/openid-configuration`)
 				).json();
@@ -53,7 +55,7 @@ export default NextAuth({
 				token.expiresAt = (account.expires_at as number) * 1000;
 			}
 			if (user) {
-				token.user = user;
+				token.user = user as TUser;
 			}
 
 			if (Date.now() > (token.expiresAt as number)) {
@@ -63,7 +65,7 @@ export default NextAuth({
 			return token;
 		},
 		async session({ session, token }) {
-			session.user = token.user;
+			session.user = token.user as TUser;
 			session.accessToken = token.accessToken;
 			return session;
 		},

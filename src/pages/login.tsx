@@ -1,34 +1,59 @@
-import { signIn, signOut, useSession } from 'next-auth/react';
-import Head from 'next/head';
-import LoginLayout from '../components/LoginLayout';
-import { Button } from '@smartive-education/pizza-hawaii';
+import { signIn, useSession } from 'next-auth/react';
+import LoginLayout from '../components/layoutComponents/LoginLayout';
+import { Button, Headline, Label } from '@smartive-education/pizza-hawaii';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
-export default function Home() {
+export default function LoginPage() {
 	const { data: session } = useSession();
+	const router = useRouter();
+
+	useEffect(() => {
+		if (session) {
+			router.push('/');
+		}
+	}, [session, router]);
 
 	return (
 		<LoginLayout>
 			{!!session && (
-				<a href="#" onClick={() => signOut()}>
-					<span>bye-bye: display logout screen</span>
-					<h2>Logout &rarr;</h2>
-					<p>Logout from your account</p>
-				</a>
+				<Headline level={1} as="h2">
+					👌 Login successful.
+					<br /> <br />
+					<span className="text-pink-600">
+						Welcome back, <span className="text-violet-600">{session?.user?.firstName}</span>.
+					</span>
+					<br />
+					<Label as="span" size="M">
+						Redirecting...
+					</Label>
+				</Headline>
 			)}
 
 			{!session && (
 				<>
-					<a href="#" onClick={() => signIn('zitadel')}>
-						<span>schön kommt noch: login or register screen</span>
-						<br />
-						<br />
-						<h2>Login &rarr;</h2>
-						<p>Login with a ZITADEL account</p>
-					</a>
+					<Headline as="h1" level={1}>
+						Anmelden
+					</Headline>
 					<br />
-					<div>
-						<span>noch kein Account?</span>
-						<a className='text-violet-600 underline' href="/register">Jetzt registrieren</a>
+					<Button as="button" onClick={() => signIn('zitadel')} colorScheme="gradient" icon="mumble">
+						Login to Mumble
+					</Button>
+					<br />
+
+					<Label as="legend" size="S">
+						Zitadel login needed
+					</Label>
+					<br />
+					<div className="text-right">
+						<Label as="label" size="M">
+							noch kein Account?{' '}
+						</Label>
+						&nbsp;
+						<Link href="/register">
+							<span className="text-violet-600 underline">Jetzt registrieren</span>
+						</Link>
 					</div>
 				</>
 			)}

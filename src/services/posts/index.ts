@@ -83,7 +83,6 @@ const getPosts = async ({ newerThan, olderThan, limit, offset = 0, accessToken }
 	};
 };
 
-
 /**
  * Get a single post by id
  *
@@ -115,49 +114,72 @@ const getPostById = async ({ id, accessToken }: TGetPostById) => {
 };
 
 // get all Replies for a given Post Id
-const getRepliesById = async (id: string) => {
-	if (!id) {
-		throw new Error('getReplyById: no valid id was provided');
-	}
+const getRepliesById = async ({ id, accessToken }: TGetPostById) => {
+	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${id}/replies`;
 
-	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${id}/replies`, {
-			method: 'GET',
-		});
+	const res = await fetch(url, {
+		headers: {
+			'content-type': 'application/json',
+			Authorization: `Bearer ${accessToken}`,
+		},
+	});
+	const post = (await res.json()) as TRawPost;
+	return transformPost(post);
+};
 
-		if (response.status !== 200) {
-			throw new Error('Something went sour! not status 200. have a look at the network status');
-		}
+type TGetPostQueryObj = {
+	text?: string;
+	tags?: string[];
+	mentions?: string[];
+	isReply?: boolean;
+	offset?: number;
+	limit?: number;
+};
 
-		return response.json();
-	} catch (error) {
-		throw new Error('getReplyById could not reach API');
-	}
+type TGetPostByQuery = {
+	query: TGetPostQueryObj;
+	accessToken: string;
 };
 
 // search for posts by a search object
-const searchPostbyQuerry = async (queryObj: object) => {
-	if (!queryObj) {
-		throw new Error('searchPostbyQuerry: no valid query object was provided');
-	}
+const searchPostbyQuery = async ({ query, accessToken }: TGetPostByQuery) => {
+	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/search`;
 
-	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/search`, {
-			method: 'POST',
-			body: JSON.stringify(queryObj),
-			headers: {
-				'Content-type': 'application/json',
-			},
-		});
+	const res = await fetch(url, {
+		method: 'POST',
+		body: JSON.stringify(query),
+		headers: {
+			'Content-type': 'application/json',
+			Authorization: `Bearer ${accessToken}`,
+		},
+	});
 
-		if (response.status !== 200) {
-			throw new Error('Something went sour! not status 200. have a look at the network status');
-		}
+	const { count, data } = (await res.json()) as { count: number; data: TRawPost[] };
+	const posts = data.map(transformPost) as TPost[];
 
-		return await response.json();
-	} catch (error) {
-		throw new Error('searchPostbyQuerry failed');
-	}
+	return {
+		count,
+		posts,
+	};
+};
+
+// TODO: implement this in a better way
+const getPostsByUserId = async ({ id, accessToken }: TGetPostById) => {
+	const { posts } = await getPosts({
+		accessToken,
+	});
+
+	return posts.filter((post) => post.creator === id) as TPost[];
+};
+
+// TODO: implement this in a better way
+const getLikedPostsByCurrentUser = async ({ id, accessToken }: TGetPostById) => {
+	console.log('current user id', id);
+	const { posts } = await getPosts({
+		accessToken,
+	});
+
+	return posts.filter((post) => post.likedByUser) as TPost[];
 };
 
 const addPost = async (text: string, file: TUploadImage | null, accessToken?: string) => {
@@ -188,6 +210,7 @@ const addPost = async (text: string, file: TUploadImage | null, accessToken?: st
 		throw new Error(error instanceof Error ? error.message : 'Could not post Post');
 	}
 };
+
 const transformPost = (post: TRawPost) => ({
 	...post,
 	createdAt: new Date(decodeTime(post.id)).toISOString(),
@@ -197,6 +220,8 @@ export const postsService = {
 	getPosts,
 	addPost,
 	getPostById,
+	getPostsByUserId,
+	getLikedPostsByCurrentUser,
 	getRepliesById,
-	searchPostbyQuerry,
+	searchPostbyQuery,
 };
