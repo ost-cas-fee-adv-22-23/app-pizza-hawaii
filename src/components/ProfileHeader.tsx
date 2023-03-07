@@ -11,10 +11,10 @@ import ProjectSettings from '../data/ProjectSettings.json';
 
 type TProfileHeader = {
 	user: TUser;
-	canEdit?: boolean;
+	canEdit: boolean;
 };
 
-export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit }) => {
+export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => {
 	return (
 		<div className="relative mb-6">
 			{canEdit ? (
@@ -62,8 +62,8 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit }) => {
 					avatar={user.avatarUrl}
 					size="XL"
 					border={true}
-					href={canEdit && ''}
-					buttonLabel={canEdit && 'Change Avatar'}
+					href={canEdit ? '/profile' : undefined}
+					buttonLabel={canEdit ? 'Change Avatar' : 'View Avatar'}
 				/>
 			</div>
 		</div>

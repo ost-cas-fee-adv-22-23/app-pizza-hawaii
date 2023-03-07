@@ -73,7 +73,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 	// Like function
 	const handleLike = async () => {
 		if (likedByUser) {
-			postsService.unlike({ id: post.id}).then(() => {
+			postsService.unlike({ id: post.id }).then(() => {
 				setLikeCount(likeCount - 1);
 			});
 		} else {
@@ -83,6 +83,14 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 		}
 		setLikedByUser(!likedByUser);
 	};
+
+	if (!post.creator || typeof post.creator === 'string') {
+		return (
+			<div className="flex flex-col items-center justify-center w-full h-full">
+				<p className="text-center">Something went wrong. Please try again later.</p>
+			</div>
+		);
+	}
 
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
@@ -158,7 +166,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 				<CopyToClipboardButton
 					defaultButtonText="Copy Link"
 					activeButtonText="Link copied"
-					shareText={`${process.env.NEXT_PUBLIC_URL}/mumble/${post.id}`}
+					shareText={`${process.env.NEXTAUTH_URL}/mumble/${post.id}`}
 				/>
 			</Grid>
 		</UserContentCard>

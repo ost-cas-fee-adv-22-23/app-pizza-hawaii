@@ -6,8 +6,6 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"format": "$npm_execpath run lint && $npm_execpath run prettier",
-		"format:fix": "$npm_execpath run lint:fix && $npm_execpath run prettier:fix",
 		"lint": "next lint",
 		"lint:fix": "next lint --fix",
 		"prettier": "prettier --check .",
@@ -16,24 +14,25 @@
 	"dependencies": {
 		"@fontsource/poppins": "^4.5.10",
 		"@smartive-education/pizza-hawaii": "^1.41.0",
-		"@smartive/eslint-config": "^3.1.1",
-		"@smartive/prettier-config": "^3.0.0",
-		"@types/node": "18.11.9",
-		"@types/react": "18.0.25",
-		"@types/react-dom": "18.0.8",
-		"eslint": "8.27.0",
-		"eslint-config-next": "13.0.2",
-		"next": "13.0.2",
-		"next-auth": "^4.16.4",
-		"prettier": "^2.8.3",
-		"react": "18.2.0",
-		"react-dom": "18.2.0",
-		"typescript": "4.8.4",
+		"next": "^13.1.6",
+		"next-auth": "^4.19.2",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
 		"ulid": "^2.3.0"
 	},
 	"devDependencies": {
+		"@smartive/eslint-config": "^3.1.1",
+		"@smartive/prettier-config": "^3.0.0",
+		"@types/node": "^18.14.0",
+		"@types/react": "^18.0.28",
+		"@types/react-dom": "^18.0.11",
 		"autoprefixer": "^10.4.13",
+		"dependency-cruiser": "^12.10.0",
+		"eslint": "^8.34.0",
+		"eslint-config-next": "^13.1.6",
 		"postcss": "^8.4.21",
-		"tailwindcss": "^3.2.4"
+		"prettier": "^2.8.4",
+		"tailwindcss": "^3.2.7",
+		"typescript": "^4.9.5"
 	}
 }

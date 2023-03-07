@@ -174,6 +174,7 @@ const getPostsByUserId = async ({ id, accessToken }: TGetPostById) => {
 
 // TODO: implement this in a better way
 const getLikedPostsByCurrentUser = async ({ id, accessToken }: TGetPostById) => {
+	console.log('current user id', id);
 	const { posts } = await getPosts({
 		accessToken,
 	});
@@ -209,6 +210,7 @@ const addPost = async (text: string, file: TUploadImage | null, accessToken?: st
 		throw new Error(error instanceof Error ? error.message : 'Could not post Post');
 	}
 };
+
 const transformPost = (post: TRawPost) => ({
 	...post,
 	createdAt: new Date(decodeTime(post.id)).toISOString(),

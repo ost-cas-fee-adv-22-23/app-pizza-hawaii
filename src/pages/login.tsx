@@ -41,7 +41,8 @@ export default function LoginPage() {
 						Login to Mumble
 					</Button>
 					<br />
-					<Label as="legend" size="S" className="text-slate-100">
+
+					<Label as="legend" size="S">
 						Zitadel login needed
 					</Label>
 					<br />

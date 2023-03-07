@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState, FC } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useSession } from 'next-auth/react';
 import { getToken } from 'next-auth/jwt';
@@ -20,7 +20,11 @@ type TUserPage = {
 	likes?: TPost[];
 };
 
-export default function UserPage({ user, mumbles, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+const UserPage: FC<TUserPage> = ({ user, mumbles, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+	const [currentPostType, setCurrentPostType] = useState('mumbles');
+	const { data: session } = useSession();
+	const currentUser: TUser | undefined = session?.user;
+
 	if (!user) {
 		// TODO: better content or 404 page with nice illustration of a lost user
 		return (
@@ -31,9 +35,6 @@ export default function UserPage({ user, mumbles, likes }: InferGetServerSidePro
 			</MainLayout>
 		);
 	}
-	const [currentPostType, setCurrentPostType] = useState('mumbles');
-	const { data: session } = useSession();
-	const currentUser: TUser | undefined = session?.user;
 
 	const isCurrentUser = currentUser?.id === user.id;
 
@@ -107,7 +108,9 @@ export default function UserPage({ user, mumbles, likes }: InferGetServerSidePro
 			</MainLayout>
 		</>
 	);
-}
+};
+
+export default UserPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ req, params }) => {
 	const userId: string = params?.id as string;
