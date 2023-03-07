@@ -1,27 +1,41 @@
-name: Capture Vercel preview URL
+#
+# Workflow to deploy on Vercel
+# https://vercel.com/guides/how-can-i-use-github-actions-with-vercel
+#
+
+name: Vercel Preview Deployment
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 on:
-  issue_comment:
-    types: [edited]
+  push:
+    branches:
+      - main
 
 jobs:
-  capture_vercel_preview_url:
-    name: Capture Vercel preview URL
-    runs-on: "ubuntu-latest"
+  Deploy-Preview:
+    runs-on: ubuntu-latest
     steps:
-      - uses: aaimio/vercel-preview-url-action@v2.0.0
-        id: vercel_preview_url
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # Below is but an example of what you could do with the preview URL.
-      # The preview URL is accessed through ${{ steps.<step_id>.outputs.vercel_preview_url }}
-      - uses: actions/github-script@v3
+          node-version: 18.x
+          registry-url: https://npm.pkg.github.com/
+          scope: '@smartive-education'
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        if: failure()
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'The preview URL is: ${{ steps.vercel_preview_url.outputs.vercel_preview_url }}.'
-            });
+          name: npm-logs
+          path: ~/.npm/_logs
+          retention-days: 5

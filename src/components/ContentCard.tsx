@@ -166,7 +166,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 				<CopyToClipboardButton
 					defaultButtonText="Copy Link"
 					activeButtonText="Link copied"
-					shareText={`${process.env.NEXT_PUBLIC_URL}/mumble/${post.id}`}
+					shareText={`${process.env.NEXTAUTH_URL}/mumble/${post.id}`}
 				/>
 			</Grid>
 		</UserContentCard>
