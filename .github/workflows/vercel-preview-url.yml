@@ -1,8 +1,10 @@
 name: Capture Vercel preview URL
 
 on:
-  pull_request:
-    types: [opened, edited, reopened]
+  push:
+    branches-ignore:
+      - main
+  workflow_dispatch:
 
 jobs:
   capture_vercel_preview_url:
