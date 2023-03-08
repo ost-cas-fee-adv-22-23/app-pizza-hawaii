@@ -1,59 +1,57 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Grid, Card, Headline } from '@smartive-education/pizza-hawaii';
+import { Grid, Headline } from '@smartive-education/pizza-hawaii';
 import { services } from '../services';
-// import { getToken } from 'next-auth/jwt';
 import { useSession } from 'next-auth/react';
+import { UserCard } from './UserCard';
+
+interface TRecommender {
+	currentUser: string;
+}
 
 export const Recommender: FC<TRecommender> = (props) => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [recommendedUsers, setRecommendedUsers] = useState([]);
 	const { data: session } = useSession();
+	const { currentUser } = props;
 
 	useEffect(() => {
 		if (session?.accessToken !== undefined) {
-			const fetchRecommendedUsers = async (accessToken) => {
-				// TODO: Fetch recommended users via API
-				// const response = await fetch('/api/recommendations');
+			const fetchRecommendedUsers = async () => {
+				// TODO: should we fetch recommended users via API ?
 				const recommendedUsers = await services.users.getUsers({
-					limit: 6,
+					limit: 7,
 					offset: 0,
 					accessToken: session.accessToken,
 				});
-
-				setRecommendedUsers({ recommendedUsers });
+				setRecommendedUsers(recommendedUsers.users);
 			};
 			fetchRecommendedUsers();
 			setIsLoading(false);
 		}
-	}, []);
+	}, [session]);
 
-	console.log('%cRecommender.tsx line:27 recommendedUsers', 'color: #26bfa5;', recommendedUsers);
-
-	const dummyUser = {
-		id: '123',
-		userName: 'johndoe',
-		fullName: 'John Doe',
-		profileLink: '/user/johndoe',
-		email: 'johndoe@example.com',
-		city: 'Zürich',
-		avatar: 'https://faces-img.xcdn.link/image-lorem-face-6307.jpg',
-		posterImage: '//picsum.photos/seed/johndoe1/1600/1157/',
-		bio: 'Ich bin Softwareentwickler und interessiere mich für die Entwicklung von Web-Anwendungen mit modernen Technologien. In meiner Freizeit gehe ich gerne wandern und genieße die Natur.',
-		createdAt: '2022-11-24T21:45:51.402Z',
-	};
+	// exclude current user from recommended users
+	const pureRecommendedUsers = recommendedUsers.filter((user) => user.id !== currentUser);
 
 	return (
 		<>
 			<Headline as="h2" level={3}>
 				Empfohlene User
 			</Headline>
-			{isLoading && !recommendedUsers
-			? (<span>loading Data... - a loading animation would be nice- </span>)
-			: (	<Grid variant="row" gap="S">
-					{recommendedUsers.map((user) => (
-					<Card key={user.id} variant="small" user={user} />
-				))}
-			</Grid>
+			{isLoading && !recommendedUsers ? (
+				<span>loading Data... - a loading animation would be nice- </span>
+			) : (
+				<Grid variant="row" gap="S" marginBelow="M">
+					<div className="mb-8">
+						<div className="flex flex-row flex-wrap -m-2">
+							{pureRecommendedUsers.map((user) => (
+								<div key={user.id} className="flex-initial w-4/12 p-3">
+									<UserCard key={user.id} user={user} />
+								</div>
+							))}
+						</div>
+					</div>
+				</Grid>
 			)}
 		</>
 	);

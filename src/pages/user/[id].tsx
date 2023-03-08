@@ -37,7 +37,6 @@ const UserPage: FC<TUserPage> = ({ user, mumbles, likes }: InferGetServerSidePro
 	}
 
 	const isCurrentUser = currentUser?.id === user.id;
-
 	const postsToRender: Record<string, TPost[]> = {
 		mumbles,
 		likes,
@@ -100,8 +99,7 @@ const UserPage: FC<TUserPage> = ({ user, mumbles, likes }: InferGetServerSidePro
 					)}
 					{isCurrentUser && (
 						<Grid variant="col" gap="M" marginBelow="M">
-							-recommender here-
-							{/* <Recommender /> */}
+							<Recommender currentUser={user.id} />
 						</Grid>
 					)}
 					<Grid variant="col" gap="M" marginBelow="M">
