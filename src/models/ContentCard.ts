@@ -1,18 +1,19 @@
 import { TPost, TUser } from '../types';
 
-export const contentCardModel = (postData?: TPost, userData?: TUser): TPost | undefined => {
-	if (!postData || !userData) return undefined;
-	const emptyUser = {
-		id: '',
-		userName: '',
-		firstName: '',
-		lastName: '',
-		avatarUrl: '',
-		createdAt: '',
-		profileLink: '',
-	};
+type TContentCard = {
+	post: TPost;
+	user: TUser;
+	replies?: TPost[];
+};
+
+export const contentCardModel: TContentCard = (props: TContentCard): TPost | undefined => {
+	const { post, user, replies } = props;
+
+	if (!post || !user) return undefined;
+
 	return {
-		...postData,
-		creator: userData || emptyUser,
+		...post,
+		replies: replies || [],
+		creator: user,
 	};
 };

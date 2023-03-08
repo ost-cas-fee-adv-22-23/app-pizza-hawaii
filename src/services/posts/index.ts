@@ -30,6 +30,11 @@ type TGetPostResult = {
 	posts: TPost[];
 };
 
+enum EPostType {
+	POST = 'post',
+	REPLY = 'reply',
+}
+
 const getPosts = async ({ newerThan, olderThan, limit, offset = 0, accessToken }: TGetPost): Promise<TGetPostResult> => {
 	const maxLimit = 1000;
 
@@ -59,11 +64,12 @@ const getPosts = async ({ newerThan, olderThan, limit, offset = 0, accessToken }
 	});
 
 	const { count, data } = (await res.json()) as { count: number; data: TRawPost[] };
-	const posts = data.map(transformPost) as TPost[];
+	const loadedPosts = data.length;
+	const posts = data.filter((post) => post.type === EPostType.POST).map(transformPost) as TPost[];
 
 	// load more posts if limit is not set and the amount of posts is less than the total count
-	if (limit === undefined && posts.length < count) {
-		const remainingOffset = offset + posts.length;
+	if (limit === undefined && loadedPosts < count) {
+		const remainingOffset = offset + loadedPosts;
 		const { posts: remainingPosts } = await getPosts({
 			newerThan,
 			olderThan,
@@ -123,8 +129,8 @@ const getRepliesById = async ({ id, accessToken }: TGetPostById) => {
 			Authorization: `Bearer ${accessToken}`,
 		},
 	});
-	const post = (await res.json()) as TRawPost;
-	return transformPost(post);
+	const posts = (await res.json()) as TRawPost[];
+	return posts.filter((post) => post.type === EPostType.REPLY).map(transformPost) as TPost[];
 };
 
 type TGetPostQueryObj = {

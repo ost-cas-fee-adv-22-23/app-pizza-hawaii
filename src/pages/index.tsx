@@ -28,10 +28,12 @@ export default function PageHome({
 
 	if (error) {
 		return (
-			<div>
-				An error occurred: {error} <br />
-				<Link href="/login">to Login page</Link>
-			</div>
+			<MainLayout>
+				<div className="text-slate-900 text-center">
+					<Headline level={3}>An error occurred while loading the posts. Please try again later.</Headline>
+					Error: {error}
+				</div>
+			</MainLayout>
 		);
 	}
 
@@ -135,10 +137,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 				users,
 				posts: posts
 					.map((post) => {
-						return contentCardModel(
-							post,
-							users.find((user: TUser) => user.id === post.creator)
-						);
+						return contentCardModel({
+							post: post,
+							user: users.find((user: TUser) => user.id === post.creator)
+						});
 					})
 					.filter((post) => typeof post?.creator === 'object'),
 			},

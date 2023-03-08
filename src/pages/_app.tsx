@@ -5,9 +5,11 @@ import '../styles/globals.css';
 import '@fontsource/poppins/500.css';
 import '@fontsource/poppins/600.css';
 import '@fontsource/poppins/700.css';
-import LoginPage from './login';
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
-	const validUser = !pageProps?.currentuser;
-	return <SessionProvider session={session}>{validUser ? <Component {...pageProps} /> : <LoginPage />}</SessionProvider>;
+	return (
+		<SessionProvider session={session}>
+			<Component {...pageProps} />
+		</SessionProvider>
+	);
 }

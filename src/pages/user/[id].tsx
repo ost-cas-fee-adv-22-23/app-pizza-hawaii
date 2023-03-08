@@ -16,12 +16,17 @@ import { TPost, TUser } from '../../types';
 
 type TUserPage = {
 	user: TUser;
-	mumbles: TPost[];
+	posts: TPost[];
 	likes?: TPost[];
 };
 
-const UserPage: FC<TUserPage> = ({ user, mumbles, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	const [currentPostType, setCurrentPostType] = useState('mumbles');
+enum PostType {
+	Posts = 'posts',
+	Likes = 'likes',
+}
+
+const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+	const [currentPostType, setCurrentPostType] = useState(PostType.Posts);
 	const { data: session } = useSession();
 	const currentUser: TUser | undefined = session?.user;
 
@@ -39,7 +44,7 @@ const UserPage: FC<TUserPage> = ({ user, mumbles, likes }: InferGetServerSidePro
 	const isCurrentUser = currentUser?.id === user.id;
 
 	const postsToRender: Record<string, TPost[]> = {
-		mumbles,
+		posts,
 		likes,
 	};
 
@@ -78,14 +83,14 @@ const UserPage: FC<TUserPage> = ({ user, mumbles, likes }: InferGetServerSidePro
 								options={[
 									{
 										label: 'Meine Mumbles',
-										value: 'mumbles',
+										value: PostType.Posts,
 									},
 									{
 										label: 'Meine Likes',
-										value: 'likes',
+										value: PostType.Likes,
 									},
 								]}
-								value="mumbles"
+								value={PostType.Posts}
 								name="posttype"
 								onChange={(event: ChangeEvent): void => {
 									const value = (event.target as HTMLInputElement).value;
@@ -127,12 +132,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 
 		const user = users.find((user) => user.id === userId) || null;
 
-		let mumbles = await services.posts.getPostsByUserId({
+		let posts = await services.posts.getPostsByUserId({
 			id: userId,
 			accessToken: session?.accessToken,
 		});
 
-		mumbles = mumbles.map((post) => {
+		posts = posts.map((post) => {
 			const creator = users.find((user) => user.id === post.creator);
 			return {
 				...post,
@@ -156,7 +161,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 		return {
 			props: {
 				user,
-				mumbles,
+				posts,
 				likes,
 			},
 		};
