@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
-import Link from 'next/link';
+// import Link from 'next/link'; TODO: use Link in Design System
 import Head from 'next/head';
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
@@ -120,11 +120,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
 	try {
 		const { count: postCount, posts } = await services.posts.getPosts({
-			limit: 5,
-			accessToken: session?.accessToken,
+			limit: 10,
+			accessToken: session?.accessToken as string,
 		});
 		const { users } = await services.users.getUsers({
-			accessToken: session?.accessToken,
+			accessToken: session?.accessToken as string,
 		});
 
 		return {
@@ -136,7 +136,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 					.map((post) => {
 						return contentCardModel({
 							post: post,
-							user: users.find((user: TUser) => user.id === post.creator)
+							user: users.find((user: TUser) => user.id === post.creator) as TUser,
 						});
 					})
 					.filter((post) => typeof post?.creator === 'object'),

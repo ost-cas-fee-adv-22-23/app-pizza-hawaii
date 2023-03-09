@@ -22,6 +22,7 @@ type TGetPost = {
 	olderThan?: string;
 	limit?: number;
 	offset?: number;
+	creator?: string;
 	accessToken?: string;
 };
 
@@ -35,7 +36,14 @@ enum EPostType {
 	REPLY = 'reply',
 }
 
-const getPosts = async ({ newerThan, olderThan, limit, offset = 0, accessToken }: TGetPost): Promise<TGetPostResult> => {
+const getPosts = async ({
+	newerThan,
+	olderThan,
+	limit,
+	offset = 0,
+	creator,
+	accessToken,
+}: TGetPost): Promise<TGetPostResult> => {
 	const maxLimit = 1000;
 
 	// create url params
@@ -51,6 +59,9 @@ const getPosts = async ({ newerThan, olderThan, limit, offset = 0, accessToken }
 	}
 	if (olderThan !== undefined) {
 		urlParams.set('olderThan', olderThan);
+	}
+	if (creator !== undefined) {
+		urlParams.set('creator', creator);
 	}
 
 	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts?${urlParams}`;
@@ -148,7 +159,7 @@ type TGetPostByQuery = {
 };
 
 // search for posts by a search object
-const searchPostbyQuery = async ({ query, accessToken }: TGetPostByQuery) => {
+const searchPostByQuery = async ({ query, accessToken }: TGetPostByQuery) => {
 	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/search`;
 
 	const res = await fetch(url, {
@@ -169,13 +180,13 @@ const searchPostbyQuery = async ({ query, accessToken }: TGetPostByQuery) => {
 	};
 };
 
-// TODO: implement this in a better way
 const getPostsByUserId = async ({ id, accessToken }: TGetPostById) => {
 	const { posts } = await getPosts({
+		creator: id,
 		accessToken,
 	});
 
-	return posts.filter((post) => post.creator === id) as TPost[];
+	return posts;
 };
 
 // TODO: implement this in a better way
@@ -229,5 +240,5 @@ export const postsService = {
 	getPostsByUserId,
 	getLikedPostsByCurrentUser,
 	getRepliesById,
-	searchPostbyQuery,
+	searchPostByQuery,
 };

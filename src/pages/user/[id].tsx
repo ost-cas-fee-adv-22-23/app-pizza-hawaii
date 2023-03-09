@@ -21,12 +21,12 @@ type TUserPage = {
 };
 
 enum PostType {
-	Posts = 'posts',
-	Likes = 'likes',
+	POSTS = 'posts',
+	LIKES = 'likes',
 }
 
 const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	const [currentPostType, setCurrentPostType] = useState(PostType.Posts);
+	const [currentPostType, setCurrentPostType] = useState(PostType.POSTS);
 	const { data: session } = useSession();
 	const currentUser: TUser | undefined = session?.user;
 
@@ -83,17 +83,17 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 								options={[
 									{
 										label: 'Meine Mumbles',
-										value: PostType.Posts,
+										value: PostType.POSTS,
 									},
 									{
 										label: 'Meine Likes',
-										value: PostType.Likes,
+										value: PostType.LIKES,
 									},
 								]}
-								value={PostType.Posts}
+								value={PostType.POSTS}
 								name="posttype"
 								onChange={(event: ChangeEvent): void => {
-									const value = (event.target as HTMLInputElement).value;
+									const value = (event.target as HTMLInputElement).value as PostType;
 									setCurrentPostType(value);
 								}}
 							/>
@@ -123,14 +123,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 
 	try {
 		const { users } = await services.users.getUsers({
-			accessToken: session?.accessToken,
+			accessToken: session?.accessToken as string,
 		});
 
 		const user = users.find((user) => user.id === userId) || null;
 
 		let posts = await services.posts.getPostsByUserId({
 			id: userId,
-			accessToken: session?.accessToken,
+			accessToken: session?.accessToken as string,
 		});
 
 		posts = posts.map((post) => {
@@ -143,7 +143,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 
 		let likes = await services.posts.getLikedPostsByCurrentUser({
 			id: userId,
-			accessToken: session?.accessToken,
+			accessToken: session?.accessToken as string,
 		});
 
 		likes = likes.map((post) => {

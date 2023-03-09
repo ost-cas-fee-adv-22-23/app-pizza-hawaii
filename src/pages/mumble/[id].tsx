@@ -35,7 +35,7 @@ const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSideProp
 						author={currentUser}
 						placeHolderText="Deine Meinung zählt"
 					/>
-					{post.replies.map((reply: TPost) => {
+					{post?.replies?.map((reply: TPost) => {
 						console.log(reply);
 						return <ContentCard key={reply.id} variant="response" post={reply} />;
 					})}
@@ -71,7 +71,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { id:
 			accessToken: session?.accessToken as string,
 		});
 
-		const user = users.find((user) => user.id === postData.creator) || null;
+		const user = (users.find((user) => user.id === postData.creator) as TUser) || null;
 
 		const replies = repliesData
 			.map((post) => {
@@ -87,14 +87,20 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { id:
 			props: {
 				post: contentCardModel({
 					post: postData,
-					user,
+					user: user,
 					replies,
 				}),
 				currentUser: session?.user,
 			},
 		};
 	} catch (error) {
-		console.log(error);
-		throw new Error(error);
+		let message;
+		if (error instanceof Error) {
+			message = error.message;
+		} else {
+			message = String(error);
+		}
+
+		return { props: { error: message } };
 	}
 };

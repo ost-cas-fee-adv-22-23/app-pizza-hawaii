@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 	services.posts
 		.getPosts({
-			limit: 10,
+			limit: 10, // limit is hardcoded so nobody can request more than 10 posts via the api
 			newerThan: newerThan as string | undefined,
 			olderThan: olderThan as string | undefined,
 			accessToken: session?.accessToken as string,

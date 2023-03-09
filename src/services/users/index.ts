@@ -111,12 +111,12 @@ const getUserById = async ({ id, accessToken }: TGetUserById) => {
  * @throws {Error} if the response was unauthorized
  */
 
-type TGetUserByPostId = {
+type TgetUserByPostId = {
 	id: string;
 	accessToken: string;
 };
 
-const getUserbyPostId = async ({ id, accessToken }: TGetUserByPostId) => {
+const getUserByPostId = async ({ id, accessToken }: TgetUserByPostId) => {
 	if (!id) {
 		throw new Error('getUserByPostId: No valid UserId was provided');
 	}
@@ -160,5 +160,5 @@ const transformUser = (user: TRawUser): TUser => ({
 export const usersService = {
 	getUsers,
 	getUserById,
-	getUserbyPostId,
+	getUserByPostId,
 };
