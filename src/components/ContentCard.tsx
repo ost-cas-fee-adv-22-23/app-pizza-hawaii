@@ -146,9 +146,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 					href={`/mumble/${post.id}`}
 					isActive={replyCount > 0}
 					colorScheme="violet"
-					buttonText={
-						replyCount > 0 ? `${replyCount} Comments` : replyCount === 0 ? 'Comment' : '1 Comment'
-					}
+					buttonText={replyCount > 0 ? `${replyCount} Comments` : replyCount === 0 ? 'Comment' : '1 Comment'}
 					iconName={replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
 					onClick={function (): void {
 						// throw new Error('Function not implemented.');
