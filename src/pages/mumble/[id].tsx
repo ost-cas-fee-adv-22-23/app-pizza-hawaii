@@ -18,9 +18,7 @@ type TUserPage = {
 };
 
 const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	console.log('%c[id].tsx line:16 postData', 'color: white; background-color: #007acc;', post);
 
-	console.log('currentUser', currentUser);
 	return (
 		<div className="bg-slate-100">
 			<Header user={currentUser} />
@@ -32,6 +30,7 @@ const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSideProp
 						variant="answerPost"
 						headline="Hey, was meinst Du dazu?"
 						author={currentUser}
+						replyTo={post}
 						placeHolderText="Deine Antwort...?"
 					/>
 				</Grid>

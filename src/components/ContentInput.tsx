@@ -9,13 +9,15 @@ import {
 	TUserContentCard,
 } from '@smartive-education/pizza-hawaii';
 
-import { TUser } from '../types';
+import { TPost, TUser } from '../types';
+import { postsService } from '../services/api/posts/';
 
 type TContentInput = {
 	variant: 'newPost' | 'answerPost';
 	headline: string;
 	author: TUser;
 	placeHolderText: string;
+	replyTo?: TPost;
 };
 
 type TContentCardvariantMap = {
@@ -41,22 +43,25 @@ const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardv
 };
 
 export const ContentInput: FC<TContentInput> = (props) => {
-	const { variant, placeHolderText, author } = props;
+	const { variant, placeHolderText, author, replyTo } = props;
 	const setting = ContentInputCardVariantMap[variant] || ContentInputCardVariantMap.newPost;
 	const [text, setText] = React.useState<string>('');
 
 	console.log('variant', variant);
-
 
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setText(e.target.value);
 	};
 	const onSubmitHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
+		// TODO: make this work with post and post reply
 		if (variant === 'newPost') {
 			console.log('newPost submitted');
- 		} else {
-			console.log('answerPost submitted');
+			// post to /post
+		} else {
+			// post to /post/:id 
+			console.log('answerPost submitted!  replyTo', replyTo?.id);
+			postsService.postReply({ id: replyTo?.id as string, text: text });
 		};
 	};
 
