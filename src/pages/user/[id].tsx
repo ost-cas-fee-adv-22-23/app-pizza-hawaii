@@ -121,10 +121,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 	const userId: string = params?.id as string;
 	const session = await getToken({ req });
 
-	if (!session?.accessToken) {
-		return { props: { error: 'No token found' } };
-	}
-
 	try {
 		const { users } = await services.users.getUsers({
 			accessToken: session?.accessToken,

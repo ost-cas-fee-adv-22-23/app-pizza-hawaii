@@ -2,7 +2,7 @@ import React, { FormEvent, useState } from 'react';
 import { Button, Form, FormInput, Headline, Label } from '@smartive-education/pizza-hawaii';
 import Head from 'next/head';
 import Link from 'next/link';
-import LoginLayout from '../components/layoutComponents/LoginLayout';
+import LoginLayout from '../../components/layoutComponents/LoginLayout';
 
 const RegisterPage = () => {
 	interface RegisterFormData {
