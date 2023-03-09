@@ -30,9 +30,9 @@ const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSideProp
 
 					<ContentInput
 						variant="answerPost"
-						headline="Hey, was geht ab?"
+						headline="Hey, was meinst Du dazu?"
 						author={currentUser}
-						placeHolderText="Deine Meinung zählt"
+						placeHolderText="Deine Antwort...?"
 					/>
 				</Grid>
 			</section>

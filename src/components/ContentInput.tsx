@@ -42,8 +42,23 @@ const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardv
 
 export const ContentInput: FC<TContentInput> = (props) => {
 	const { variant, placeHolderText, author } = props;
-
 	const setting = ContentInputCardVariantMap[variant] || ContentInputCardVariantMap.newPost;
+	const [text, setText] = React.useState<string>('');
+
+	console.log('variant', variant);
+
+
+	const inputChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		setText(e.target.value);
+	};
+	const onSubmitHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		e.preventDefault();
+		if (variant === 'newPost') {
+			console.log('newPost submitted');
+ 		} else {
+			console.log('answerPost submitted');
+		};
+	};
 
 	const headerSlotContent = props.headline ? (
 		props.headline
@@ -71,13 +86,19 @@ export const ContentInput: FC<TContentInput> = (props) => {
 			avatarVariant={setting.avatarVariant}
 			avatarSize={setting.avatarSize}
 		>
-			<FormTextarea label={placeHolderText} placeholder={placeHolderText} hideLabel={true} size="L" />
+			<FormTextarea
+				label={placeHolderText}
+				placeholder={placeHolderText}
+				hideLabel={true}
+				size="L"
+				onChange={(e) => inputChangeHandler(e)}
+			/>
 
 			<Grid variant="row" gap="S" wrapBelowScreen="md">
 				<Button as="button" colorScheme="slate" icon="upload">
 					Bild Hochladen
 				</Button>
-				<Button as="button" colorScheme="violet" icon="send">
+				<Button as="button" colorScheme="violet" icon="send" onClick={(e) => onSubmitHandler(e)}>
 					Absenden
 				</Button>
 			</Grid>
