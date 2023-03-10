@@ -65,6 +65,7 @@ const contentCardvariantMap: Record<TContentCard['variant'], TContentCardvariant
 
 export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 	const setting = contentCardvariantMap[variant] || contentCardvariantMap.detailpage;
+	const replyCount = post?.replyCount || 0;
 
 	// toggle Like/Dislike
 	const [likedByUser, setLikedByUser] = useState(post.likedByUser);
@@ -143,12 +144,10 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 				<InteractionButton
 					as="a"
 					href={`/mumble/${post.id}`}
-					isActive={post.replyCount > 0}
+					isActive={replyCount > 0}
 					colorScheme="violet"
-					buttonText={
-						post.replyCount > 0 ? `${post.replyCount} Comments` : post.replyCount === 0 ? 'Comment' : '1 Comment'
-					}
-					iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
+					buttonText={replyCount > 0 ? `${replyCount} Comments` : replyCount === 0 ? 'Comment' : '1 Comment'}
+					iconName={replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
 					onClick={function (): void {
 						// throw new Error('Function not implemented.');
 					}}
