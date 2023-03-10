@@ -1,14 +1,14 @@
 import Head from 'next/head';
-import { FC } from 'react';
+import { ReactNode, FC } from 'react';
 import Image from 'next/image';
 import { Headline } from '@smartive-education/pizza-hawaii';
 import VerticalLogo from '../../assets/svg/verticalLogo.svg';
 
 type TLoginLayout = {
-	children: React.ReactNode;
+	children: ReactNode;
 };
 
-const LoginLayout: FC<TLoginLayout> = ({ children }) => {
+export const LoginLayout: FC<TLoginLayout> = ({ children }) => {
 	return (
 		<>
 			<Head>
