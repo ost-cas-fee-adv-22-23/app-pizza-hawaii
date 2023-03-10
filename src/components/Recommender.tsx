@@ -3,35 +3,37 @@ import { Grid, Headline } from '@smartive-education/pizza-hawaii';
 import { services } from '../services';
 import { useSession } from 'next-auth/react';
 import { UserCard } from './UserCard';
+import { TUser } from '../types';
 
 interface TRecommender {
-	currentUser: string;
+	currentUserId: string;
 }
 
 export const Recommender: FC<TRecommender> = (props) => {
 	const [isLoading, setIsLoading] = useState(true);
-	const [recommendedUsers, setRecommendedUsers] = useState([]);
+	const [recommendedUsers, setRecommendedUsers] = useState([] as TUser[]);
 	const { data: session } = useSession();
-	const { currentUser } = props;
+	const { currentUserId } = props;
+	const accessToken = session?.accessToken;
 
+	// optional TODO: should we fetch recommended users via API ?
 	useEffect(() => {
-		if (session?.accessToken !== undefined) {
-			const fetchRecommendedUsers = async () => {
-				// TODO: should we fetch recommended users via API ?
+		if (accessToken) {
+			const fetchRecommendedUsers = async (accessToken: string) => {
 				const recommendedUsers = await services.users.getUsers({
 					limit: 7,
 					offset: 0,
-					accessToken: session.accessToken,
+					accessToken,
 				});
 				setRecommendedUsers(recommendedUsers.users);
 			};
-			fetchRecommendedUsers();
+			fetchRecommendedUsers(accessToken);
 			setIsLoading(false);
 		}
-	}, [session]);
+	}, [accessToken]);
 
 	// exclude current user from recommended users
-	const pureRecommendedUsers = recommendedUsers.filter((user) => user.id !== currentUser);
+	const pureRecommendedUsers = recommendedUsers.filter((user) => user.id !== currentUserId);
 
 	return (
 		<>

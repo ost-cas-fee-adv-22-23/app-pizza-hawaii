@@ -20,7 +20,7 @@ export const UserCard: FC<TUserCard> = (props) => {
 					buttonLabel="View Profile"
 				/>
 				<div className="flex flex-col gap-2">
-					<Label as="span" size="L">
+					<Label as="span" size="M">
 						{user.displayName}
 					</Label>
 					<span className="flex flex-row align-baseline gap-3">
@@ -29,7 +29,9 @@ export const UserCard: FC<TUserCard> = (props) => {
 				</div>
 
 				<Button as="a" href={user.profileLink} size="M" colorScheme="violet" icon="mumble">
-					Follow
+					<Label as="span" size="S">
+						Follow
+					</Label>
 				</Button>
 			</Grid>
 		</Card>

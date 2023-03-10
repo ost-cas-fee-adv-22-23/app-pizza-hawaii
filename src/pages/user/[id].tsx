@@ -99,7 +99,7 @@ const UserPage: FC<TUserPage> = ({ user, mumbles, likes }: InferGetServerSidePro
 					)}
 					{isCurrentUser && (
 						<Grid variant="col" gap="M" marginBelow="M">
-							<Recommender currentUser={user.id} />
+							<Recommender currentUserId={user.id} />
 						</Grid>
 					)}
 					<Grid variant="col" gap="M" marginBelow="M">
