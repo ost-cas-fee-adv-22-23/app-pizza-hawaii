@@ -182,10 +182,17 @@ const getLikedPostsByCurrentUser = async ({ id, accessToken }: TGetPostById) => 
 	return posts.filter((post) => post.likedByUser) as TPost[];
 };
 
-const addPost = async (text: string, file: TUploadImage | null, accessToken?: string) => {
-	if (!accessToken) {
-		throw new Error('No access token');
-	}
+type TAddPost = {
+	text: string;
+	file: TUploadImage | null;
+	replyTo?: string;
+};
+
+// add a new post and answer to a post - depending on the replyTo parameter
+const addPost = async ({ text, file, replyTo = '' }: TAddPost) => {
+	console.log('addpost text', text);
+	console.log('addoist file ', file);
+	console.log('addpost reply string', replyTo);
 
 	const formData = new FormData();
 	formData.append('text', text);
@@ -194,18 +201,16 @@ const addPost = async (text: string, file: TUploadImage | null, accessToken?: st
 	}
 
 	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}/posts`, {
+		const res = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${replyTo}`, {
 			method: 'POST',
 			body: formData,
-			headers: {
-				Authorization: `Bearer ${accessToken}`,
-			},
 		});
-		if (!response.ok) {
-			throw new Error('Something was not okay');
+		if (res.status !== 204) {
+			throw new Error('Something was not okay - not status code 204');
 		}
-
-		return transformPost(await response.json());
+		console.log('addpost response', res);
+		const post = (await res.json()) as TRawPost;
+		return transformPost(post);
 	} catch (error) {
 		throw new Error(error instanceof Error ? error.message : 'Could not post Post');
 	}

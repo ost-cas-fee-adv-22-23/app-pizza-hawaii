@@ -10,7 +10,7 @@ import {
 } from '@smartive-education/pizza-hawaii';
 
 import { TPost, TUser } from '../types';
-import { postsService } from '../services/api/posts/';
+import { services } from '../services';
 
 type TContentInput = {
 	variant: 'newPost' | 'answerPost';
@@ -46,23 +46,27 @@ export const ContentInput: FC<TContentInput> = (props) => {
 	const { variant, placeHolderText, author, replyTo } = props;
 	const setting = ContentInputCardVariantMap[variant] || ContentInputCardVariantMap.newPost;
 	const [text, setText] = React.useState<string>('');
-
-	console.log('variant', variant);
+	const testimage = undefined;
 
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setText(e.target.value);
 	};
 	const onSubmitHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
-		// TODO: make this work with post and post reply
+		const replyToPostId = replyTo?.id || undefined;
+		// TODO is this needed?
 		if (variant === 'newPost') {
 			console.log('newPost submitted');
 			// post to /post
 		} else {
-			// post to /post/:id 
+			// post to /post/:id
 			console.log('answerPost submitted!  replyTo', replyTo?.id);
-			postsService.postReply({ id: replyTo?.id as string, text: text });
-		};
+			services.api.posts.reply({
+				text: text,
+				file: testimage,
+				replyTo: replyToPostId,
+			});
+		}
 	};
 
 	const headerSlotContent = props.headline ? (
