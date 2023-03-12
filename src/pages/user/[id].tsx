@@ -33,13 +33,6 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 
 	if (!user) {
 		return <FourOhFourPage error={Error} reason={'missing User'} />;
-		return (
-			<MainLayout>
-				<div className="text-slate-900 text-center">
-					<Headline level={3}>User not found</Headline>
-				</div>
-			</MainLayout>
-		);
 	}
 
 	const isCurrentUser = currentUser?.id === user.id;
