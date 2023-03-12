@@ -32,7 +32,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	const currentUser: TUser | undefined = session?.user;
 
 	if (!user) {
-		<FourOhFourPage error={{ reason: 'missing User' }} />;
+		return <FourOhFourPage error={Error} reason={'missing User'} />;
 		return (
 			<MainLayout>
 				<div className="text-slate-900 text-center">

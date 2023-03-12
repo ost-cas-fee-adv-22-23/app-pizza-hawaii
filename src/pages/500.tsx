@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Headline, Richtext } from '@smartive-education/pizza-hawaii';
-import { LoginLayout } from '../components/LoginLayout';
+import { LoginLayout } from '../components/layoutComponents/LoginLayout';
 
 interface TCustom500Page {
 	errorInfo: React.ErrorInfo | unknown | undefined | null;

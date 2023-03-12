@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
+// import Link from 'next/link'; TODO: use Link in Design System
 import Head from 'next/head';
 import Custom500Page from './500';
 
@@ -27,6 +28,14 @@ export default function PageHome({
 	const [hasMore, setHasMore] = useState(initialPosts.length < initialPostCount);
 
 	if (error) {
+		return (
+			<MainLayout>
+				<div className="text-slate-900 text-center">
+					<Headline level={3}>An error occurred while loading the posts. Please try again later.</Headline>
+					Error: {error}
+				</div>
+			</MainLayout>
+		);
 		return <Custom500Page errorInfo={error} />;
 	}
 
@@ -109,17 +118,14 @@ export default function PageHome({
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	const session = await getToken({ req });
-	if (!session?.accessToken) {
-		// no session -> redirect to login page
-		return { redirect: { destination: 'login', permanent: false } };
-	}
+
 	try {
 		const { count: postCount, posts } = await services.posts.getPosts({
-			limit: 5,
-			accessToken: session?.accessToken,
+			limit: 10,
+			accessToken: session?.accessToken as string,
 		});
 		const { users } = await services.users.getUsers({
-			accessToken: session?.accessToken,
+			accessToken: session?.accessToken as string,
 		});
 
 		return {
@@ -129,10 +135,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 				users,
 				posts: posts
 					.map((post) => {
-						return contentCardModel(
-							post,
-							users.find((user: TUser) => user.id === post.creator)
-						);
+						return contentCardModel({
+							post: post,
+							user: users.find((user: TUser) => user.id === post.creator) as TUser,
+						});
 					})
 					.filter((post) => typeof post?.creator === 'object'),
 			},
