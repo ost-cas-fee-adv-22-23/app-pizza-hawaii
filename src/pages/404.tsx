@@ -17,9 +17,11 @@ const FourOhFourPage: FC<TFourOhFourPage> = (error) => {
 					<span className="text-pink-600">Upsiii...</span>
 				</Headline>
 				{missingUser ? (
-					<Headline level={2} as="h3">
-						No User found... 😵
-					</Headline>
+					<>
+						<Headline level={2} as="h3">
+							No User found... 😵
+						</Headline>
+					</>
 				) : (
 					<>
 						<Headline level={2} as="h3">
