@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
-import Link from 'next/link';
 import Head from 'next/head';
+import Custom500Page from './500';
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { ContentCard } from '../components/ContentCard';
@@ -27,12 +27,7 @@ export default function PageHome({
 	const [hasMore, setHasMore] = useState(initialPosts.length < initialPostCount);
 
 	if (error) {
-		return (
-			<div>
-				An error occurred: {error} <br />
-				<Link href="/login">to Login page</Link>
-			</div>
-		);
+		return <Custom500Page errorInfo={error} />;
 	}
 
 	const loadMore = async () => {
@@ -60,8 +55,7 @@ export default function PageHome({
 			setHasMore(newPosts.length < newPostCount);
 			setPosts([...posts, ...postsToAdd]);
 		} catch (error) {
-			console.warn(error);
-			// todo: error handling
+			<Custom500Page errorInfo={error} />;
 		}
 
 		setLoading(false);

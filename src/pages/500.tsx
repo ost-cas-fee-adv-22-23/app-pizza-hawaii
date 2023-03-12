@@ -3,13 +3,12 @@ import { Headline, Richtext } from '@smartive-education/pizza-hawaii';
 import { LoginLayout } from '../components/LoginLayout';
 
 interface TCustom500Page {
-	errorInfo?: React.ErrorInfo | null;
+	errorInfo: React.ErrorInfo | unknown | undefined | null;
 }
 
 // pages/500.js
-const Custom500Page: FC<TCustom500Page> = (errorInfo) => {
-	const { message, stack } = errorInfo;
-
+const Custom500Page: FC<TCustom500Page> = (error) => {
+	const { errorInfo } = error;
 	return (
 		<LoginLayout>
 			<>
@@ -17,13 +16,13 @@ const Custom500Page: FC<TCustom500Page> = (errorInfo) => {
 					<span className="text-pink-600">Ouch! </span>
 				</Headline>
 				<Headline level={2} as="h3">
-					<span className="text-violet-600">500</span>
+					<span className="text-violet-600">HTTP 500</span>
 					<br />
-					Server Side error occured. Something went south..
+					Something went south... A Server Side error occured.
 				</Headline>
 				<br />
-				<Richtext size="M">
-					Errorcode here {message} - Stack {stack}
+				<Richtext size="M" as="div">
+					<>ErrorMessage: {errorInfo}</>
 				</Richtext>
 			</>
 		</LoginLayout>
