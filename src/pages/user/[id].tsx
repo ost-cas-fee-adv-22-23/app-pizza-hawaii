@@ -118,7 +118,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 export default UserPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ req, params }) => {
-	const userId: string = params?.id as string;
+	const userId = params?.id as string;
 	const session = await getToken({ req });
 
 	try {

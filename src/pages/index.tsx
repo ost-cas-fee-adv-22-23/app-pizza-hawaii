@@ -120,7 +120,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
 	try {
 		const { count: postCount, posts } = await services.posts.getPosts({
-			limit: 10,
+			limit: 25,
 			accessToken: session?.accessToken as string,
 		});
 		const { users } = await services.users.getUsers({

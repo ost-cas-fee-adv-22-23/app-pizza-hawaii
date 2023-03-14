@@ -48,17 +48,19 @@ const getUsers = async ({ limit, offset = 0, accessToken }: TGetUser): Promise<T
 	const { count, data } = (await res.json()) as { count: number; data: TRawUser[] };
 	const users = data.map(transformUser) as TUser[];
 
-	// load more users if limit is not set and the amount of users is less than the total count
-	if (limit === undefined && users.length < count) {
-		const remainingOffset = offset + users.length;
-		const { users: remainingUsers } = await getUsers({
+	// If there are more entries to fetch, make a recursive call
+	if (count > users.length && (!limit || users.length < limit)) {
+		const remainingLimit = limit ? limit - users.length : undefined;
+		const remainingOffset = limit ? offset + limit : offset + users.length;
+		const { users: remainingUsers, count: remainingCount } = await getUsers({
 			offset: remainingOffset,
+			limit: remainingLimit,
 			accessToken,
 		});
 
 		return {
-			count,
-			users: [...users, ...remainingUsers],
+			count: remainingCount,
+			users: [...users, ...remainingUsers].slice(0, limit),
 		};
 	}
 
