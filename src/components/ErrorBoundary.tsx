@@ -4,6 +4,7 @@ import GlobalError from '../pages/global-error';
 
 interface Props {
 	className?: string;
+	children: React.ReactNode;
 }
 
 interface State {
@@ -32,6 +33,8 @@ class ErrorBoundary extends React.Component<Props, State> {
 		// Check if the error is thrown
 		if (this.state.hasError) {
 			return <GlobalError error={this.state.error} />;
+		} else {
+			return this.props.children;
 		}
 	}
 }

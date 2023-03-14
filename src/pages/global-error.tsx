@@ -11,6 +11,7 @@ export default function GlobalError({ error }: { error?: Error }) {
 			<body>
 				<h2>Something went really wrong!</h2>
 				<p>Try to screenshot this page and send it to your friendly printer-fixer admin</p>
+				<br />
 				<p>Error Message: {error?.message}</p>
 				<p>Error Stack: {error?.stack}</p>
 				<br /> ¯\_(ツ)_/¯
