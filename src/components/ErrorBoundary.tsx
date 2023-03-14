@@ -30,8 +30,9 @@ class ErrorBoundary extends React.Component<Props, State> {
 	}
 
 	render() {
-		// Check if the error is thrown
+		// Check if the error is thrown or pass children to applciation
 		if (this.state.hasError) {
+			throw new Error('ErrorBoundary');
 			return <GlobalError error={this.state.error} />;
 		} else {
 			return this.props.children;

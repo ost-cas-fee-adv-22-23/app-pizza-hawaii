@@ -6,11 +6,10 @@ export default function LogoutPage() {
 		<>
 			<Head>
 				<title>Error</title>
-				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
 			<LoginLayout>
-				<h1>Error &rarr;</h1>
+				<h1>Error ! &rarr;</h1>
 			</LoginLayout>
 		</>
 	);
