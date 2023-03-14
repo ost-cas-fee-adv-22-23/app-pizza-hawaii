@@ -79,7 +79,6 @@ const getPosts = async ({
 	const lastPostId = data[data.length - 1]?.id as string;
 	const posts = data.filter((post) => post.type === EPostType.POST).map(transformPost) as TPost[];
 
-
 	// If there are more entries to fetch, make a recursive call
 	if (count > 0 && (!limit || posts.length < limit)) {
 		const remainingLimit = limit && count > limit ? limit - posts.length : count;
@@ -131,6 +130,24 @@ const getPostById = async ({ id, accessToken }: TGetPostById) => {
 	});
 	const post = (await res.json()) as TRawPost;
 	return transformPost(post);
+};
+
+const deletePost = async ({ id, accessToken }: TGetPostById) => {
+	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${id}`;
+
+	const res = await fetch(url, {
+		method: 'DELETE',
+		headers: {
+			'content-type': 'application/json',
+			Authorization: `Bearer ${accessToken}`,
+		},
+	});
+
+	if (res.status !== 204) {
+		return false;
+	}
+
+	return true;
 };
 
 // get all Replies for a given Post Id
@@ -208,7 +225,13 @@ const getLikedPostsByCurrentUser = async ({ id, accessToken }: TGetPostById) => 
 	return posts.filter((post) => post.likedByUser) as TPost[];
 };
 
-const addPost = async (text: string, file: TUploadImage | null, accessToken?: string) => {
+type TCreatePost = {
+	text: string;
+	file: TUploadImage;
+	accessToken: string;
+};
+
+const createPost = async ({ text, file, accessToken }: TCreatePost) => {
 	if (!accessToken) {
 		throw new Error('No access token');
 	}
@@ -244,8 +267,9 @@ const transformPost = (post: TRawPost) => ({
 
 export const postsService = {
 	getPosts,
-	addPost,
+	createPost,
 	getPostById,
+	deletePost,
 	getPostsByUserId,
 	getLikedPostsByCurrentUser,
 	getRepliesById,
