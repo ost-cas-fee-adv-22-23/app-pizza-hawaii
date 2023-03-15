@@ -37,6 +37,7 @@ export const authOptions: NextAuthOptions = {
 				).json();
 
 				const user = (await services.users.getUserById({ id: profile.sub, accessToken: access_token })) as TUser;
+
 				return {
 					...user,
 					email: profile.email,
@@ -70,7 +71,6 @@ export const authOptions: NextAuthOptions = {
 			return session;
 		},
 	},
-
 	pages: {
 		signIn: '/auth/login',
 		signOut: '/auth/logout',

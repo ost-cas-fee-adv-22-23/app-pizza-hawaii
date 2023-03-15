@@ -1,5 +1,6 @@
 import { decodeTime } from 'ulid';
 import { TPost } from '../../types';
+import fetchQwackerApi from '../qwacker';
 
 type TUploadImage = File & { preview: string };
 
@@ -32,26 +33,16 @@ type TGetPostResult = {
 	posts: TPost[];
 };
 
-enum EPostType {
-	POST = 'post',
-	REPLY = 'reply',
-}
-
-const getPosts = async ({
-	newerThan,
-	olderThan,
-	limit,
-	offset = 0,
-	creator,
-	accessToken,
-}: TGetPost): Promise<TGetPostResult> => {
+const getPosts = async (params: TGetPost): Promise<TGetPostResult> => {
 	const maxLimit = 1000;
+	const { newerThan, olderThan, limit, offset, creator, accessToken }: TGetPost = params;
 
 	// create url params
-	const urlParams = new URLSearchParams({
-		offset: offset.toString(),
-	});
+	const urlParams = new URLSearchParams();
 
+	if (offset !== undefined) {
+		urlParams.set('offset', offset.toString());
+	}
 	if (limit !== undefined) {
 		urlParams.set('limit', Math.min(limit, maxLimit).toString());
 	}
@@ -65,28 +56,20 @@ const getPosts = async ({
 		urlParams.set('creator', creator);
 	}
 
-	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts?${urlParams}`;
-
-	const res = await fetch(url, {
+	const { count, data } = (await fetchQwackerApi(`posts?${urlParams}`, accessToken, {
 		method: 'GET',
-		headers: {
-			'content-type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
-	});
+	})) as { count: number; data: TRawPost[] };
 
-	const { count, data } = (await res.json()) as { count: number; data: TRawPost[] };
 	const lastPostId = data[data.length - 1]?.id as string;
-	const posts = data.filter((post) => post.type === EPostType.POST).map(transformPost) as TPost[];
+	const posts = data.map(transformPost) as TPost[];
 
 	// If there are more entries to fetch, make a recursive call
 	if (count > 0 && (!limit || posts.length < limit)) {
 		const remainingLimit = limit && count > limit ? limit - posts.length : count;
 		const { posts: remainingPosts, count: remainingCount } = await getPosts({
+			...params,
 			limit: remainingLimit,
-			newerThan,
 			olderThan: lastPostId,
-			creator,
 			accessToken,
 		});
 
@@ -120,48 +103,27 @@ type TGetPostById = {
 };
 
 const getPostById = async ({ id, accessToken }: TGetPostById) => {
-	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${id}`;
+	const post = (await fetchQwackerApi(`posts/${id}`, accessToken, {
+		method: 'GET',
+	})) as TRawPost;
 
-	const res = await fetch(url, {
-		headers: {
-			'content-type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
-	});
-	const post = (await res.json()) as TRawPost;
 	return transformPost(post);
 };
 
 const deletePost = async ({ id, accessToken }: TGetPostById) => {
-	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${id}`;
-
-	const res = await fetch(url, {
+	const res = (await fetchQwackerApi(`posts/${id}`, accessToken, {
 		method: 'DELETE',
-		headers: {
-			'content-type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
-	});
+	})) as TRawPost;
 
-	if (res.status !== 204) {
-		return false;
-	}
+	console.log(res);
 
-	return true;
+	return res;
 };
 
-// get all Replies for a given Post Id
-const getRepliesById = async ({ id, accessToken }: TGetPostById) => {
-	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${id}/replies`;
+const getRepliesById = async ({ id }: TGetPostById) => {
+	const posts = (await fetchQwackerApi(`posts/${id}/replies`)) as TRawPost[];
 
-	const res = await fetch(url, {
-		headers: {
-			'content-type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
-	});
-	const posts = (await res.json()) as TRawPost[];
-	return posts.filter((post) => post.type === EPostType.REPLY).map(transformPost) as TPost[];
+	return posts.map(transformPost) as TPost[];
 };
 
 type TGetPostQueryObj = {
@@ -171,6 +133,7 @@ type TGetPostQueryObj = {
 	isReply?: boolean;
 	offset?: number;
 	limit?: number;
+	likedBy?: string[];
 };
 
 type TGetPostByQuery = {
@@ -180,18 +143,11 @@ type TGetPostByQuery = {
 
 // search for posts by a search object
 const searchPostByQuery = async ({ query, accessToken }: TGetPostByQuery) => {
-	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/search`;
-
-	const res = await fetch(url, {
+	const { count, data } = (await fetchQwackerApi(`posts/search`, accessToken, {
 		method: 'POST',
 		body: JSON.stringify(query),
-		headers: {
-			'Content-type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
-	});
+	})) as { count: number; data: TRawPost[] };
 
-	const { count, data } = (await res.json()) as { count: number; data: TRawPost[] };
 	const posts = data.map(transformPost) as TPost[];
 
 	return {
@@ -215,14 +171,21 @@ const getPostsByUserId = async ({ id, limit, accessToken }: TGetPostByUserId) =>
 
 	return posts;
 };
+type TgetLikedPostsByUser = {
+	id: string;
+	accessToken: string;
+};
 
 // TODO: implement this in a better way
-const getLikedPostsByCurrentUser = async ({ id, accessToken }: TGetPostById) => {
-	const { posts } = await getPosts({
+const getLikedPostsByUser = async ({ id, accessToken }: TgetLikedPostsByUser) => {
+	const { posts } = await searchPostByQuery({
+		query: {
+			likedBy: [id],
+		},
 		accessToken,
 	});
 
-	return posts.filter((post) => post.likedByUser) as TPost[];
+	return posts;
 };
 
 type TCreatePost = {
@@ -232,32 +195,18 @@ type TCreatePost = {
 };
 
 const createPost = async ({ text, file, accessToken }: TCreatePost) => {
-	if (!accessToken) {
-		throw new Error('No access token');
-	}
-
 	const formData = new FormData();
 	formData.append('text', text);
 	if (file) {
 		formData.append('image', file);
 	}
 
-	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}/posts`, {
-			method: 'POST',
-			body: formData,
-			headers: {
-				Authorization: `Bearer ${accessToken}`,
-			},
-		});
-		if (!response.ok) {
-			throw new Error('Something was not okay');
-		}
+	const post = (await fetchQwackerApi(`posts`, accessToken, {
+		method: 'POST',
+		body: formData,
+	})) as TRawPost;
 
-		return transformPost(await response.json());
-	} catch (error) {
-		throw new Error(error instanceof Error ? error.message : 'Could not post Post');
-	}
+	return transformPost(post);
 };
 
 const transformPost = (post: TRawPost) => ({
@@ -271,7 +220,7 @@ export const postsService = {
 	getPostById,
 	deletePost,
 	getPostsByUserId,
-	getLikedPostsByCurrentUser,
+	getLikedPostsByUser,
 	getRepliesById,
 	searchPostByQuery,
 };

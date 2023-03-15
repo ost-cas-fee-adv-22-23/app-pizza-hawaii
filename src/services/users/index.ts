@@ -1,4 +1,5 @@
 import { TUser } from '../../types';
+import fetchQwackerApi from '../qwacker';
 
 type TRawUser = Omit<TUser, 'createdAt profileLink, displayName, posterImage, bio, city'>;
 
@@ -7,7 +8,6 @@ type TRawUser = Omit<TUser, 'createdAt profileLink, displayName, posterImage, bi
  *
  * @param {number} limit
  * @param {number} offset
- * @param {string} accessToken
  *
  * @returns {Promise<{ count: number; users: TUser[] }>}
  */
@@ -35,17 +35,10 @@ const getUsers = async ({ limit, offset = 0, accessToken }: TGetUser): Promise<T
 		urlParams.set('limit', Math.min(limit, maxLimit).toString());
 	}
 
-	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}users?${urlParams}`;
-
-	const res = await fetch(url, {
+	const { count, data } = (await fetchQwackerApi(`users?${urlParams}`, accessToken, {
 		method: 'GET',
-		headers: {
-			'content-type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
-	});
+	})) as { count: number; data: TRawUser[] };
 
-	const { count, data } = (await res.json()) as { count: number; data: TRawUser[] };
 	const users = data.map(transformUser) as TUser[];
 
 	// If there are more entries to fetch, make a recursive call
@@ -74,43 +67,31 @@ const getUsers = async ({ limit, offset = 0, accessToken }: TGetUser): Promise<T
  * Get a single user by id
  *
  * @param {string} id
- * @param {string} accessToken
  *
  * @returns {Promise<TUser>}
- *
- * @throws {Error} if no valid id was provided
- * @throws {Error} if the response was not ok
- *
  */
-type TGetUserById = {
-	id: string;
+type TBase = {
 	accessToken: string;
 };
 
-const getUserById = async ({ id, accessToken }: TGetUserById) => {
-	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}users/${id}`;
+type TGetUserById = TBase & {
+	id: string;
+};
 
-	const res = await fetch(url, {
-		headers: {
-			'content-type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
-	});
-	const user = (await res.json()) as TRawUser;
-	return transformUser(user);
+const getUserById = async ({ id, accessToken }: TGetUserById) => {
+	const post = (await fetchQwackerApi(`users/${id}`, accessToken, {
+		method: 'GET',
+	})) as TRawUser;
+
+	return transformUser(post);
 };
 
 /**
- * Get a single user by id
+ * Get a single user by post id
  *
- * @param {string} id
- * @param {string} accessToken
+ * @param {string} id of the post
  *
  * @returns {Promise<TUser>}
- *
- * @throws {Error} if no valid id was provided
- * @throws {Error} if the response was not ok
- * @throws {Error} if the response was unauthorized
  */
 
 type TgetUserByPostId = {
@@ -119,31 +100,11 @@ type TgetUserByPostId = {
 };
 
 const getUserByPostId = async ({ id, accessToken }: TgetUserByPostId) => {
-	if (!id) {
-		throw new Error('getUserByPostId: No valid UserId was provided');
-	}
+	const user = (await fetchQwackerApi(`users/${id}`, accessToken, {
+		method: 'GET',
+	})) as TRawUser;
 
-	try {
-		const res = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}users/${id}`, {
-			method: 'GET',
-			headers: {
-				Authorization: `Bearer ${accessToken}`,
-			},
-		});
-
-		if (res.status === 401) {
-			throw new Error('getUserByPostId: unauthorized');
-		}
-
-		if (res.status !== 200) {
-			throw new Error('getUserByPostId: Something went wrong with the response!');
-		}
-
-		const user = (await res.json()) as TRawUser;
-		return transformUser(user);
-	} catch (error) {
-		throw new Error('getUserByPostId: could not reach API');
-	}
+	return transformUser(user);
 };
 
 const transformUser = (user: TRawUser): TUser => ({
@@ -163,4 +124,5 @@ export const usersService = {
 	getUsers,
 	getUserById,
 	getUserByPostId,
+	transformUser,
 };

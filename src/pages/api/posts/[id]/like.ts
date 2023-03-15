@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			error: `This is protected content. You can't access this content because you are not signed in.`,
 		});
 	}
-
+	console.log(session?.accessToken);
 	services.likes
 		.like({
 			id: id as string,

@@ -1,12 +1,9 @@
+import fetchQwackerApi from "../qwacker";
+
 const statusMessageMap: Record<number, string> = {
 	204: 'No Content',
 	401: 'Unauthorized',
 	403: 'Forbidden',
-};
-
-const urlMap: Record<string, string> = {
-	like: `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/{id}/likes/`,
-	unlike: `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/{id}/likes/`,
 };
 
 type TLikeProps = {
@@ -15,14 +12,8 @@ type TLikeProps = {
 };
 
 const like = async ({ id, accessToken }: TLikeProps) => {
-	const url = urlMap['like'].replace('{id}', id);
-
-	const res = await fetch(url, {
+	const res = await fetchQwackerApi(`posts/${id}/likes/`, accessToken, {
 		method: 'PUT',
-		headers: {
-			'content-type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
 	});
 
 	if (res.status !== 204) {
@@ -34,13 +25,8 @@ const like = async ({ id, accessToken }: TLikeProps) => {
 };
 
 const unlike = async ({ id, accessToken }: TLikeProps) => {
-	const url = urlMap['unlike'].replace('{id}', id);
-	const res = await fetch(url, {
+	const res = await fetchQwackerApi(`posts/${id}/likes/`, accessToken, {
 		method: 'DELETE',
-		headers: {
-			'content-type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
 	});
 
 	if (res.status !== 204) {
