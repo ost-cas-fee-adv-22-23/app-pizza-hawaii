@@ -1,4 +1,4 @@
-import fetchQwackerApi from "../qwacker";
+import fetchQwackerApi from '../qwacker';
 
 const statusMessageMap: Record<number, string> = {
 	204: 'No Content',
