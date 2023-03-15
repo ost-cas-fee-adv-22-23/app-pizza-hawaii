@@ -55,7 +55,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { id:
 			accessToken: session?.accessToken as string,
 		});
 
-		const repliesData = await services.posts.getRepliesById({
+		const repliesData = await services.posts.getPostReplies({
 			id: postId as string,
 			accessToken: session?.accessToken as string,
 		});

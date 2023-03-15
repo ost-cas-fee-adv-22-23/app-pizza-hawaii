@@ -111,5 +111,4 @@ export const usersService = {
 	getUsers,
 	getUser,
 	getUsersByIds,
-	transformUser,
 };

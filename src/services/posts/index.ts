@@ -125,7 +125,7 @@ const deletePost = async ({ id, accessToken }: TGetPost) => {
 	return true;
 };
 
-const getRepliesById = async ({ id }: TGetPost) => {
+const getPostReplies = async ({ id }: TGetPost) => {
 	const posts = (await fetchQwackerApi(`posts/${id}/replies`)) as TRawPost[];
 
 	return posts.map(transformPost) as TPost[];
@@ -147,7 +147,7 @@ type TGetPostByQuery = {
 };
 
 // search for posts by a search object
-const searchPostByQuery = async ({ query, accessToken }: TGetPostByQuery) => {
+const getPostsByQuery = async ({ query, accessToken }: TGetPostByQuery) => {
 	const { count, data } = (await fetchQwackerApi(`posts/search`, accessToken, {
 		method: 'POST',
 		body: JSON.stringify(query),
@@ -167,7 +167,7 @@ type TGetPostByUserId = {
 	accessToken: string;
 };
 
-const getAllByUserId = async ({ id, limit, accessToken }: TGetPostByUserId) => {
+const getPostsOfUser = async ({ id, limit, accessToken }: TGetPostByUserId) => {
 	const { posts } = await getPosts({
 		creator: id,
 		limit,
@@ -176,14 +176,14 @@ const getAllByUserId = async ({ id, limit, accessToken }: TGetPostByUserId) => {
 
 	return posts;
 };
-type TgetLikedPostsByUser = {
+type TgetPostsLikedByUser = {
 	id: string;
 	accessToken: string;
 };
 
 // TODO: implement this in a better way
-const getLikedPostsByUser = async ({ id, accessToken }: TgetLikedPostsByUser) => {
-	const { posts } = await searchPostByQuery({
+const getPostsLikedByUser = async ({ id, accessToken }: TgetPostsLikedByUser) => {
+	const { posts } = await getPostsByQuery({
 		query: {
 			likedBy: [id],
 		},
@@ -224,8 +224,8 @@ export const postsService = {
 	getPost,
 	createPost,
 	deletePost,
-	getAllByUserId,
-	getLikedPostsByUser,
-	getRepliesById,
-	searchPostByQuery,
+	getPostsOfUser,
+	getPostsLikedByUser,
+	getPostReplies,
+	getPostsByQuery,
 };

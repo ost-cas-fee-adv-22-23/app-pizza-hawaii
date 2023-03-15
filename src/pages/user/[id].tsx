@@ -128,7 +128,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 
 		const user = users.find((user) => user.id === userId) || null;
 
-		let posts = await services.posts.getAllByUserId({
+		let posts = await services.posts.getPostsOfUser({
 			id: userId,
 			accessToken: session?.accessToken as string,
 		});
@@ -141,7 +141,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 			} as TPost;
 		});
 
-		let likes = await services.posts.getLikedPostsByUser({
+		let likes = await services.posts.getPostsLikedByUser({
 			id: userId,
 			accessToken: session?.accessToken as string,
 		});
