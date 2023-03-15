@@ -8,25 +8,13 @@ const statusMessageMap: Record<number, string> = {
 
 type TLikeProps = {
 	id: string;
+	method: 'PUT' | 'DELETE';
 	accessToken: string;
 };
 
-const like = async ({ id, accessToken }: TLikeProps) => {
+const like = async ({ id, method, accessToken }: TLikeProps) => {
 	const res = await fetchQwackerApi(`posts/${id}/likes/`, accessToken, {
-		method: 'PUT',
-	});
-
-	if (res.status !== 204) {
-		console.error(statusMessageMap[res.status]);
-		return false;
-	}
-
-	return true;
-};
-
-const unlike = async ({ id, accessToken }: TLikeProps) => {
-	const res = await fetchQwackerApi(`posts/${id}/likes/`, accessToken, {
-		method: 'DELETE',
+		method,
 	});
 
 	if (res.status !== 204) {
@@ -39,5 +27,4 @@ const unlike = async ({ id, accessToken }: TLikeProps) => {
 
 export const likesService = {
 	like,
-	unlike,
 };

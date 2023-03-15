@@ -5,6 +5,7 @@ import { getToken } from 'next-auth/jwt';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	const { id } = req.query;
+	const method = req.method as 'PUT' | 'DELETE';
 	const session = await getToken({ req });
 
 	if (!session) {
@@ -13,10 +14,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			error: `This is protected content. You can't access this content because you are not signed in.`,
 		});
 	}
-	console.log(session?.accessToken);
+
 	services.likes
 		.like({
 			id: id as string,
+			method,
 			accessToken: session?.accessToken as string,
 		})
 		.then(() => {
