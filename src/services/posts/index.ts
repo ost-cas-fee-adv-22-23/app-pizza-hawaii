@@ -2,9 +2,18 @@ import { decodeTime } from 'ulid';
 import { TPost } from '../../types';
 import fetchQwackerApi from '../qwacker';
 
-type TUploadImage = File & { preview: string };
+const statusMessageMap: Record<number, string> = {
+	204: 'No Content',
+	401: 'Unauthorized',
+	403: 'Forbidden',
+};
 
+type TUploadImage = File & { preview: string };
 type TRawPost = Omit<TPost, 'createdAt'>;
+
+type TBase = {
+	accessToken: string;
+};
 
 /**
  * Get all posts
@@ -19,23 +28,22 @@ type TRawPost = Omit<TPost, 'createdAt'>;
  * @returns {Promise<{ count: number; users: TPost[] }>}
  */
 
-type TGetPost = {
+type TGetPosts = TBase & {
 	newerThan?: string;
 	olderThan?: string;
 	limit?: number;
 	offset?: number;
 	creator?: string;
-	accessToken?: string;
 };
 
-type TGetPostResult = {
+type TGetPostsResult = {
 	count: number;
 	posts: TPost[];
 };
 
-const getPosts = async (params: TGetPost): Promise<TGetPostResult> => {
+const getPosts = async (params: TGetPosts): Promise<TGetPostsResult> => {
 	const maxLimit = 1000;
-	const { newerThan, olderThan, limit, offset, creator, accessToken }: TGetPost = params;
+	const { newerThan, olderThan, limit, offset, creator, accessToken }: TGetPosts = params;
 
 	// create url params
 	const urlParams = new URLSearchParams();
@@ -91,18 +99,12 @@ const getPosts = async (params: TGetPost): Promise<TGetPostResult> => {
  * @param {string} id
  * @param {string} accessToken
  *
- * @returns {Promise<TPost>}
- *
- * @throws {Error} if no valid id was provided
- * @throws {Error} if the response was not ok
- *
  */
-type TGetPostById = {
+type TGetPost = TBase & {
 	id: string;
-	accessToken: string;
 };
 
-const getPostById = async ({ id, accessToken }: TGetPostById) => {
+const getPost = async ({ id, accessToken }: TGetPost) => {
 	const post = (await fetchQwackerApi(`posts/${id}`, accessToken, {
 		method: 'GET',
 	})) as TRawPost;
@@ -110,17 +112,20 @@ const getPostById = async ({ id, accessToken }: TGetPostById) => {
 	return transformPost(post);
 };
 
-const deletePost = async ({ id, accessToken }: TGetPostById) => {
-	const res = (await fetchQwackerApi(`posts/${id}`, accessToken, {
+const deletePost = async ({ id, accessToken }: TGetPost) => {
+	const res = await fetchQwackerApi(`posts/${id}`, accessToken, {
 		method: 'DELETE',
-	})) as TRawPost;
+	});
 
-	console.log(res);
+	if (res.status !== 204) {
+		console.error(statusMessageMap[res.status]);
+		return false;
+	}
 
-	return res;
+	return true;
 };
 
-const getRepliesById = async ({ id }: TGetPostById) => {
+const getRepliesById = async ({ id }: TGetPost) => {
 	const posts = (await fetchQwackerApi(`posts/${id}/replies`)) as TRawPost[];
 
 	return posts.map(transformPost) as TPost[];
@@ -162,7 +167,7 @@ type TGetPostByUserId = {
 	accessToken: string;
 };
 
-const getPostsByUserId = async ({ id, limit, accessToken }: TGetPostByUserId) => {
+const getAllByUserId = async ({ id, limit, accessToken }: TGetPostByUserId) => {
 	const { posts } = await getPosts({
 		creator: id,
 		limit,
@@ -216,10 +221,10 @@ const transformPost = (post: TRawPost) => ({
 
 export const postsService = {
 	getPosts,
+	getPost,
 	createPost,
-	getPostById,
 	deletePost,
-	getPostsByUserId,
+	getAllByUserId,
 	getLikedPostsByUser,
 	getRepliesById,
 	searchPostByQuery,

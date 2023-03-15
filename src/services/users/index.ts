@@ -3,6 +3,10 @@ import fetchQwackerApi from '../qwacker';
 
 type TRawUser = Omit<TUser, 'createdAt profileLink, displayName, posterImage, bio, city'>;
 
+type TBase = {
+	accessToken: string;
+};
+
 /**
  * Get all users
  *
@@ -12,18 +16,17 @@ type TRawUser = Omit<TUser, 'createdAt profileLink, displayName, posterImage, bi
  * @returns {Promise<{ count: number; users: TUser[] }>}
  */
 
-type TGetUser = {
+type TGetUsers = TBase & {
 	limit?: number;
 	offset?: number;
-	accessToken: string;
 };
 
-type TGetUserResult = {
+type TGetUsersResult = {
 	count: number;
 	users: TUser[];
 };
 
-const getUsers = async ({ limit, offset = 0, accessToken }: TGetUser): Promise<TGetUserResult> => {
+const getUsers = async ({ limit, offset = 0, accessToken }: TGetUsers): Promise<TGetUsersResult> => {
 	const maxLimit = 1000;
 
 	// create url params
@@ -63,6 +66,14 @@ const getUsers = async ({ limit, offset = 0, accessToken }: TGetUser): Promise<T
 	};
 };
 
+async function getUsersByIds(ids: string[], accessToken: string): Promise<TUser[]> {
+	const uniqueIds = ids.filter((id, index) => ids.indexOf(id) === index);
+
+	const users = await Promise.all(uniqueIds.map((id) => getUser({ id, accessToken })));
+
+	return users;
+}
+
 /**
  * Get a single user by id
  *
@@ -70,41 +81,17 @@ const getUsers = async ({ limit, offset = 0, accessToken }: TGetUser): Promise<T
  *
  * @returns {Promise<TUser>}
  */
-type TBase = {
-	accessToken: string;
-};
 
-type TGetUserById = TBase & {
+type TGetUser = TBase & {
 	id: string;
 };
 
-const getUserById = async ({ id, accessToken }: TGetUserById) => {
+const getUser = async ({ id, accessToken }: TGetUser) => {
 	const post = (await fetchQwackerApi(`users/${id}`, accessToken, {
 		method: 'GET',
 	})) as TRawUser;
 
 	return transformUser(post);
-};
-
-/**
- * Get a single user by post id
- *
- * @param {string} id of the post
- *
- * @returns {Promise<TUser>}
- */
-
-type TgetUserByPostId = {
-	id: string;
-	accessToken: string;
-};
-
-const getUserByPostId = async ({ id, accessToken }: TgetUserByPostId) => {
-	const user = (await fetchQwackerApi(`users/${id}`, accessToken, {
-		method: 'GET',
-	})) as TRawUser;
-
-	return transformUser(user);
 };
 
 const transformUser = (user: TRawUser): TUser => ({
@@ -122,7 +109,7 @@ const transformUser = (user: TRawUser): TUser => ({
 
 export const usersService = {
 	getUsers,
-	getUserById,
-	getUserByPostId,
+	getUser,
+	getUsersByIds,
 	transformUser,
 };

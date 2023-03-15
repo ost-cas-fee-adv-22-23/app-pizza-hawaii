@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	switch (method) {
 		case HTTP_METHODS.GET:
 			services.posts
-				.getPostById({
+				.getPost({
 					id: req.query.id as string,
 					accessToken: session?.accessToken as string,
 				})

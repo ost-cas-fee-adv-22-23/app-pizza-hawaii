@@ -128,7 +128,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 
 		const user = users.find((user) => user.id === userId) || null;
 
-		let posts = await services.posts.getPostsByUserId({
+		let posts = await services.posts.getAllByUserId({
 			id: userId,
 			accessToken: session?.accessToken as string,
 		});

@@ -36,7 +36,7 @@ export const authOptions: NextAuthOptions = {
 					})
 				).json();
 
-				const user = (await services.users.getUserById({ id: profile.sub, accessToken: access_token })) as TUser;
+				const user = (await services.users.getUser({ id: profile.sub, accessToken: access_token })) as TUser;
 
 				return {
 					...user,

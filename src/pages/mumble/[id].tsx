@@ -50,7 +50,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { id:
 		};
 	}
 	try {
-		const postData: TPost = await services.posts.getPostById({
+		const postData: TPost = await services.posts.getPost({
 			id: postId as string,
 			accessToken: session?.accessToken as string,
 		});
