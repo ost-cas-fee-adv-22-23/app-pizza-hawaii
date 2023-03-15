@@ -1,5 +1,3 @@
-import { TPost } from '../../../types';
-
 type TGetPost = {
 	id: string;
 };
