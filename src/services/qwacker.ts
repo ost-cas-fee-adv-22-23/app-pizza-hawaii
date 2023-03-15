@@ -9,7 +9,6 @@ const BASE_URL = process.env.NEXT_PUBLIC_QWACKER_API_URL;
 async function fetchQwackerApi(endpoint: string, accessToken?: string, options: object = {}) {
 	const url = `${BASE_URL}/${endpoint}`;
 
-	console.log('accessToken', accessToken);
 	const res = await fetch(url, {
 		headers: {
 			'content-type': 'application/json',
@@ -27,6 +26,7 @@ async function fetchQwackerApi(endpoint: string, accessToken?: string, options: 
 	}
 	if (res.status !== 200) {
 		// TODO handle errors
+		new Error(statusMessageMap[res.status]);
 		return false;
 	}
 
