@@ -7,8 +7,13 @@ type TBase = {
 	accessToken: string;
 };
 
+const TTL = 5 * 60 * 1000; // 5 minutes
+
 type TUserCache = {
-	[id: string]: TUser;
+	[id: string]: {
+		data: TUser;
+		createdAt: number;
+	};
 };
 
 const userCache: TUserCache = {};
@@ -99,8 +104,10 @@ type TGetUser = TBase & {
 
 const getUser = async ({ id, accessToken }: TGetUser) => {
 	// Check if user is already in cache
-	if (userCache[id]) {
-		return userCache[id];
+	const cachedUser = userCache[id];
+
+	if (cachedUser && Date.now() - cachedUser.createdAt <= TTL) {
+		return cachedUser.data;
 	}
 
 	// If not, fetch it from the API
@@ -111,7 +118,10 @@ const getUser = async ({ id, accessToken }: TGetUser) => {
 	const userData = transformUser(post);
 
 	// Add user to cache
-	userCache[id] = userData;
+	userCache[id] = {
+		createdAt: Date.now(),
+		data: userData,
+	};
 
 	return userData;
 };

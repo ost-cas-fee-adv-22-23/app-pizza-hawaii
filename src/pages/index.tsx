@@ -11,7 +11,7 @@ import { ContentInput } from '../components/ContentInput';
 import { Headline, Grid, Button } from '@smartive-education/pizza-hawaii';
 import { services } from '../services';
 
-import type { TPost, TUser } from '../types';
+import type { TPost } from '../types';
 
 export default function PageHome({
 	currentUser,
