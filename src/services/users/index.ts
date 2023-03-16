@@ -7,6 +7,12 @@ type TBase = {
 	accessToken: string;
 };
 
+type TUserCache = {
+	[id: string]: TUser;
+};
+
+const userCache: TUserCache = {};
+
 /**
  * Get all users
  *
@@ -45,9 +51,10 @@ const getUsers = async ({ limit, offset = 0, accessToken }: TGetUsers): Promise<
 	const users = data.map(transformUser) as TUser[];
 
 	// If there are more entries to fetch, make a recursive call
-	if (count > users.length && (!limit || users.length < limit)) {
+	if (count > 0 && (!limit || limit > users.length)) {
 		const remainingLimit = limit ? limit - users.length : undefined;
 		const remainingOffset = limit ? offset + limit : offset + users.length;
+
 		const { users: remainingUsers, count: remainingCount } = await getUsers({
 			offset: remainingOffset,
 			limit: remainingLimit,
@@ -66,7 +73,11 @@ const getUsers = async ({ limit, offset = 0, accessToken }: TGetUsers): Promise<
 	};
 };
 
-async function getUsersByIds(ids: string[], accessToken: string): Promise<TUser[]> {
+type TGetUsersByIds = TBase & {
+	ids: string[];
+};
+
+async function getUsersByIds({ ids, accessToken }: TGetUsersByIds): Promise<TUser[]> {
 	const uniqueIds = ids.filter((id, index) => ids.indexOf(id) === index);
 
 	const users = await Promise.all(uniqueIds.map((id) => getUser({ id, accessToken })));
@@ -87,11 +98,22 @@ type TGetUser = TBase & {
 };
 
 const getUser = async ({ id, accessToken }: TGetUser) => {
+	// Check if user is already in cache
+	if (userCache[id]) {
+		return userCache[id];
+	}
+
+	// If not, fetch it from the API
 	const post = (await fetchQwackerApi(`users/${id}`, accessToken, {
 		method: 'GET',
 	})) as TRawUser;
 
-	return transformUser(post);
+	const userData = transformUser(post);
+
+	// Add user to cache
+	userCache[id] = userData;
+
+	return userData;
 };
 
 const transformUser = (user: TRawUser): TUser => ({
