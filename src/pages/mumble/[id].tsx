@@ -18,10 +18,6 @@ type TUserPage = {
 };
 
 const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	console.log('%c[id].tsx line:16 postData', 'color: white; background-color: #007acc;', post);
-
-	console.log('currentUser', currentUser);
-	console.log('post', post);
 	return (
 		<div className="bg-slate-100">
 			<Header user={currentUser} />
@@ -64,8 +60,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { id:
 			id: postId as string,
 			accessToken: session?.accessToken as string,
 		});
-
-		console.log('repliesData', repliesData);
 
 		const { users } = await services.users.getUsers({
 			accessToken: session?.accessToken as string,

@@ -16,9 +16,7 @@ export const UserRecommender: FC<TUserRecommender> = (props) => {
 	const { currentUserId } = props;
 	const accessToken = session?.accessToken;
 
-	// optional TODO: should we fetch recommended users via API ?
-	// TODO do a fetch with /api/users/getall
-
+	// its clientside and its working better IMHO
 	useEffect(() => {
 		if (accessToken) {
 			const fetchRecommendedUsers = async (accessToken: string) => {
@@ -35,7 +33,7 @@ export const UserRecommender: FC<TUserRecommender> = (props) => {
 	}, [accessToken]);
 
 	// exclude current user from recommended users
-	const pureRecommendedUsers = recommendedUsers.filter((user) => user.id !== currentUserId);
+	const pureRecommendedUsers = recommendedUsers.filter((user) => user.id !== currentUserId).splice(0, 6);
 
 	return (
 		<>
@@ -60,3 +58,28 @@ export const UserRecommender: FC<TUserRecommender> = (props) => {
 		</>
 	);
 };
+
+// TODO later with api routes
+/*
+export const getServerSideProps: GetServerSideProps = async ({ req, params }) => {
+	// const { accessToken } = req.session;
+	const session = await getToken({ req });
+	const userId: string = params?.id as string;
+	try {
+		const { users } = await services.users.getUsers({
+			limit: 7,
+			accessToken: session?.accessToken as string,
+		});
+		console.log('server side props recommendedUsers', users);
+		return {
+			props: {
+				currentUserId: userId,
+				users,
+			},
+		};
+	} catch (error) {
+		console.log('error', error);
+		return { props: { error: 'error' } };
+	}
+};
+*/

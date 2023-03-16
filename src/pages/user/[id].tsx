@@ -7,7 +7,7 @@ import Head from 'next/head';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { ContentCard } from '../../components/ContentCard';
-import { Recommender } from '../../components/Recommender';
+import { UserRecommender } from '../../components/UserRecommender';
 import { Switch, Headline, UserName, IconLink, TimeStamp, Richtext, Grid, Button } from '@smartive-education/pizza-hawaii';
 
 import { services } from '../../services';
@@ -104,7 +104,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 					)}
 					{isCurrentUser && (
 						<Grid variant="col" gap="M" marginBelow="M">
-							<Recommender currentUserId={user.id} />
+							<UserRecommender currentUserId={user.id} />
 						</Grid>
 					)}
 					<Grid variant="col" gap="M" marginBelow="M">

@@ -1,7 +1,9 @@
-import { services } from '../../../services/users';
+import { NextApiRequest, NextApiResponse } from 'next';
+
+import { usersService } from '../../../services/users';
 import { getToken } from 'next-auth/jwt';
 
-export default async function getAll(req, res) {
+export default async function getAll(req: NextApiRequest, res: NextApiResponse) {
 	const { id } = req.query;
 	const session = await getToken({ req });
 
@@ -12,11 +14,10 @@ export default async function getAll(req, res) {
 		});
 	}
 
-	services.users
+	usersService
 		.getUsers({
-			id: id as string,
-			session,
-			limit: req.query.limit,
+			accessToken: id as string,
+			limit: req.query?.limit as number | undefined,
 		})
 		.then((data) => {
 			res.status(200).json({ status: true, data });
