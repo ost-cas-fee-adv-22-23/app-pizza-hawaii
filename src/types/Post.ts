@@ -8,7 +8,8 @@ export type TPost = {
 	mediaType: 'image/jpeg';
 	likeCount: number;
 	likedByUser: boolean | string;
-	replyCount: number;
+	replyCount?: number;
 	createdAt: string;
-	type: 'post';
+	type: 'post' | 'reply' | 'deleted';
+	replies?: TPost[];
 };

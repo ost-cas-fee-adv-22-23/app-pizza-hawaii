@@ -19,12 +19,14 @@ type TUserPage = {
 
 const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
+	console.log('currentUser', currentUser);
+	console.log('post', post);
 	return (
 		<div className="bg-slate-100">
 			<Header user={currentUser} />
 			<section className="mx-auto w-full max-w-content">
 				<Grid as="div" variant="col" gap="S">
-					<ContentCard variant="response" post={post} />
+					<ContentCard variant="detailpage" post={post} />
 
 					<ContentInput
 						variant="answerPost"
@@ -33,6 +35,10 @@ const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSideProp
 						replyTo={post}
 						placeHolderText="Deine Antwort...?"
 					/>
+					{post?.replies?.map((reply: TPost) => {
+						console.log(reply);
+						return <ContentCard key={reply.id} variant="response" post={reply} />;
+					})}
 				</Grid>
 			</section>
 		</div>
@@ -41,7 +47,7 @@ const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSideProp
 
 export default DetailPage;
 
-export const getServerSideProps: GetServerSideProps = async ({ req, query: { id } }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, query: { id: postId } }) => {
 	const session = await getToken({ req });
 	if (!session) {
 		return {
@@ -50,23 +56,51 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { id 
 	}
 	try {
 		const postData: TPost = await services.posts.getPostById({
-			id: id as string,
+			id: postId as string,
 			accessToken: session?.accessToken as string,
 		});
 
-		const userData: TUser = await services.users.getUserbyPostId({
-			id: postData.creator as string,
+		const repliesData = await services.posts.getRepliesById({
+			id: postId as string,
 			accessToken: session?.accessToken as string,
 		});
+
+		console.log('repliesData', repliesData);
+
+		const { users } = await services.users.getUsers({
+			accessToken: session?.accessToken as string,
+		});
+
+		const user = (users.find((user) => user.id === postData.creator) as TUser) || null;
+
+		const replies = repliesData
+			.map((post) => {
+				const author = users.find((user: TUser) => user.id === post.creator);
+				if (author) {
+					post.creator = author;
+				}
+				return post;
+			})
+			.filter((post) => typeof post.creator === 'object');
 
 		return {
 			props: {
-				post: contentCardModel(postData, userData),
+				post: contentCardModel({
+					post: postData,
+					user: user,
+					replies,
+				}),
 				currentUser: session?.user,
 			},
 		};
 	} catch (error) {
-		console.log(error);
-		throw new Error('getUserByPostId: No valid UserId was provided');
+		let message;
+		if (error instanceof Error) {
+			message = error.message;
+		} else {
+			message = String(error);
+		}
+
+		return { props: { error: message } };
 	}
 };

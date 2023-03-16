@@ -7,6 +7,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	const { id } = req.query;
 	const session = await getToken({ req });
 
+	if (!session) {
+		return res.status(401).json({
+			status: false,
+			error: `This is protected content. You can't access this content because you are not signed in.`,
+		});
+	}
+
 	services.likes
 		.unlike({
 			id: id as string,

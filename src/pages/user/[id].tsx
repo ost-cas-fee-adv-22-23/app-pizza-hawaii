@@ -16,12 +16,17 @@ import { TPost, TUser } from '../../types';
 
 type TUserPage = {
 	user: TUser;
-	mumbles: TPost[];
+	posts: TPost[];
 	likes?: TPost[];
 };
 
-const UserPage: FC<TUserPage> = ({ user, mumbles, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	const [currentPostType, setCurrentPostType] = useState('mumbles');
+enum PostType {
+	POSTS = 'posts',
+	LIKES = 'likes',
+}
+
+const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+	const [currentPostType, setCurrentPostType] = useState(PostType.POSTS);
 	const { data: session } = useSession();
 	const currentUser: TUser | undefined = session?.user;
 
@@ -39,7 +44,7 @@ const UserPage: FC<TUserPage> = ({ user, mumbles, likes }: InferGetServerSidePro
 	const isCurrentUser = currentUser?.id === user.id;
 
 	const postsToRender: Record<string, TPost[]> = {
-		mumbles,
+		posts,
 		likes,
 	};
 
@@ -78,17 +83,17 @@ const UserPage: FC<TUserPage> = ({ user, mumbles, likes }: InferGetServerSidePro
 								options={[
 									{
 										label: 'Meine Mumbles',
-										value: 'mumbles',
+										value: PostType.POSTS,
 									},
 									{
 										label: 'Meine Likes',
-										value: 'likes',
+										value: PostType.LIKES,
 									},
 								]}
-								value="mumbles"
+								value={PostType.POSTS}
 								name="posttype"
 								onChange={(event: ChangeEvent): void => {
-									const value = (event.target as HTMLInputElement).value;
+									const value = (event.target as HTMLInputElement).value as PostType;
 									setCurrentPostType(value);
 								}}
 							/>
@@ -116,23 +121,19 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 	const userId: string = params?.id as string;
 	const session = await getToken({ req });
 
-	if (!session?.accessToken) {
-		return { props: { error: 'No token found' } };
-	}
-
 	try {
 		const { users } = await services.users.getUsers({
-			accessToken: session?.accessToken,
+			accessToken: session?.accessToken as string,
 		});
 
 		const user = users.find((user) => user.id === userId) || null;
 
-		let mumbles = await services.posts.getPostsByUserId({
+		let posts = await services.posts.getPostsByUserId({
 			id: userId,
-			accessToken: session?.accessToken,
+			accessToken: session?.accessToken as string,
 		});
 
-		mumbles = mumbles.map((post) => {
+		posts = posts.map((post) => {
 			const creator = users.find((user) => user.id === post.creator);
 			return {
 				...post,
@@ -142,7 +143,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 
 		let likes = await services.posts.getLikedPostsByCurrentUser({
 			id: userId,
-			accessToken: session?.accessToken,
+			accessToken: session?.accessToken as string,
 		});
 
 		likes = likes.map((post) => {
@@ -156,7 +157,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 		return {
 			props: {
 				user,
-				mumbles,
+				posts,
 				likes,
 			},
 		};
