@@ -46,7 +46,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 	const { variant, placeHolderText, author, replyTo } = props;
 	const setting = ContentInputCardVariantMap[variant] || ContentInputCardVariantMap.newPost;
 	const [text, setText] = React.useState<string>('');
-	const testimage = undefined;
+	const testimage = null;
 
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setText(e.target.value);
@@ -54,19 +54,14 @@ export const ContentInput: FC<TContentInput> = (props) => {
 	const onSubmitHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
 		const replyToPostId = replyTo?.id || undefined;
-		// TODO is this needed?
-		if (variant === 'newPost') {
-			console.log('newPost submitted');
-			// post to /post
-		} else {
-			// post to /post/:id
-			console.log('answerPost submitted!  replyTo', replyTo?.id);
-			services.api.posts.reply({
-				text: text,
-				file: testimage,
-				replyTo: replyToPostId,
-			});
-		}
+
+		console.log('replyTO Post submitted!  id', replyTo?.id);
+		console.log('submitted text', text);
+		services.api.posts.reply({
+			text: text,
+			file: testimage,
+			replyTo: replyToPostId,
+		});
 	};
 
 	const headerSlotContent = props.headline ? (

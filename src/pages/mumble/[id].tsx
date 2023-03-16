@@ -18,9 +18,6 @@ type TUserPage = {
 };
 
 const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-
-	console.log('currentUser', currentUser);
-	console.log('post', post);
 	return (
 		<div className="bg-slate-100">
 			<Header user={currentUser} />
@@ -36,7 +33,6 @@ const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSideProp
 						placeHolderText="Deine Antwort...?"
 					/>
 					{post?.replies?.map((reply: TPost) => {
-						console.log(reply);
 						return <ContentCard key={reply.id} variant="response" post={reply} />;
 					})}
 				</Grid>
