@@ -1,9 +1,21 @@
 import { decodeTime } from 'ulid';
 import { TPost } from '../../types';
+import fetchQwackerApi from '../qwacker';
+
+import { usersService } from '../users';
+
+const statusMessageMap: Record<number, string> = {
+	204: 'No Content',
+	401: 'Unauthorized',
+	403: 'Forbidden',
+};
 
 type TUploadImage = File & { preview: string };
+type TRawPost = Omit<TPost, 'createdAt, user, replies'>;
 
-type TRawPost = Omit<TPost, 'createdAt'>;
+type TBase = {
+	accessToken: string;
+};
 
 /**
  * Get all posts
@@ -12,45 +24,35 @@ type TRawPost = Omit<TPost, 'createdAt'>;
  * @param {string} olderThan id of the oldest post
  * @param {number} limit
  * @param {number} offset default 0
- * @param {string} accessToken
+ * @param {string} creator id of the user who created the post
+ * @param {string} accessToken access token of the user who is fetching the posts
  *
  * @returns {Promise<{ count: number; users: TPost[] }>}
  */
 
-type TGetPost = {
+type TGetPosts = TBase & {
 	newerThan?: string;
 	olderThan?: string;
 	limit?: number;
 	offset?: number;
 	creator?: string;
-	accessToken?: string;
 };
 
-type TGetPostResult = {
+type TGetPostsResult = {
 	count: number;
 	posts: TPost[];
 };
 
-enum EPostType {
-	POST = 'post',
-	REPLY = 'reply',
-}
-
-const getPosts = async ({
-	newerThan,
-	olderThan,
-	limit,
-	offset = 0,
-	creator,
-	accessToken,
-}: TGetPost): Promise<TGetPostResult> => {
+const getPosts = async (params: TGetPosts): Promise<TGetPostsResult> => {
 	const maxLimit = 1000;
+	const { newerThan, olderThan, limit, offset, creator, accessToken }: TGetPosts = params;
 
 	// create url params
-	const urlParams = new URLSearchParams({
-		offset: offset.toString(),
-	});
+	const urlParams = new URLSearchParams();
 
+	if (offset !== undefined) {
+		urlParams.set('offset', offset.toString());
+	}
 	if (limit !== undefined) {
 		urlParams.set('limit', Math.min(limit, maxLimit).toString());
 	}
@@ -64,38 +66,37 @@ const getPosts = async ({
 		urlParams.set('creator', creator);
 	}
 
-	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts?${urlParams}`;
-
-	const res = await fetch(url, {
+	const result = (await fetchQwackerApi(`posts?${urlParams}`, accessToken, {
 		method: 'GET',
-		headers: {
-			'content-type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
-	});
+	})) as { count: number; data: TRawPost[] };
 
-	const { count, data } = (await res.json()) as { count: number; data: TRawPost[] };
-	const loadedPosts = data.length;
-	const posts = data.filter((post) => post.type === EPostType.POST).map(transformPost) as TPost[];
+	let remainingCount = result.count;
+	const lastPostId = result.data[result.data.length - 1]?.id as string;
+	let posts = result.data.map(transformPost) as TPost[];
 
-	// load more posts if limit is not set and the amount of posts is less than the total count
-	if (limit === undefined && loadedPosts < count) {
-		const remainingOffset = offset + loadedPosts;
-		const { posts: remainingPosts } = await getPosts({
-			newerThan,
-			olderThan,
-			offset: remainingOffset,
+	// If there are more entries to fetch, make a recursive call
+	if (remainingCount > 0 && (!limit || posts.length < limit)) {
+		const remainingLimit = limit && remainingCount > limit ? limit - posts.length : remainingCount;
+
+		const result = await getPosts({
+			...params,
+			limit: remainingLimit,
+			olderThan: lastPostId,
 			accessToken,
 		});
 
-		return {
-			count,
-			posts: [...posts, ...remainingPosts],
-		};
+		remainingCount = result.count;
+		posts = [...posts, ...result.posts];
 	}
 
+	// normalize posts
+	posts = posts.map(transformPost) as TPost[];
+
+	// load users
+	posts = await addReferencesToPosts(posts, false, accessToken);
+
 	return {
-		count,
+		count: remainingCount,
 		posts,
 	};
 };
@@ -106,42 +107,42 @@ const getPosts = async ({
  * @param {string} id
  * @param {string} accessToken
  *
- * @returns {Promise<TPost>}
- *
- * @throws {Error} if no valid id was provided
- * @throws {Error} if the response was not ok
- *
  */
-type TGetPostById = {
+type TGetPost = TBase & {
 	id: string;
-	accessToken: string;
+	loadReplies?: boolean;
 };
 
-const getPostById = async ({ id, accessToken }: TGetPostById) => {
-	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${id}`;
+const getPost = async ({ id, loadReplies = false, accessToken }: TGetPost) => {
+	let post = (await fetchQwackerApi(`posts/${id}`, accessToken, {
+		method: 'GET',
+	})) as TRawPost;
 
-	const res = await fetch(url, {
-		headers: {
-			'content-type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
-	});
-	const post = (await res.json()) as TRawPost;
-	return transformPost(post);
+	post = transformPost(post);
+
+	return (await addReferencesToPosts([post], loadReplies, accessToken))[0];
 };
 
-// get all Replies for a given Post Id
-const getRepliesById = async ({ id, accessToken }: TGetPostById) => {
-	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/${id}/replies`;
-
-	const res = await fetch(url, {
-		headers: {
-			'content-type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
+const deletePost = async ({ id, accessToken }: TGetPost) => {
+	const res = await fetchQwackerApi(`posts/${id}`, accessToken, {
+		method: 'DELETE',
 	});
-	const posts = (await res.json()) as TRawPost[];
-	return posts.filter((post) => post.type === EPostType.REPLY).map(transformPost) as TPost[];
+
+	if (res.status !== 204) {
+		console.error(statusMessageMap[res.status]);
+		return false;
+	}
+
+	return true;
+};
+
+const getPostReplies = async ({ id, accessToken }: TGetPost) => {
+	let posts = (await fetchQwackerApi(`posts/${id}/replies`, accessToken)) as TRawPost[];
+
+	posts = posts.map(transformPost) as TPost[];
+	posts = await addReferencesToPosts(posts, false, accessToken);
+
+	return posts;
 };
 
 type TGetPostQueryObj = {
@@ -151,6 +152,7 @@ type TGetPostQueryObj = {
 	isReply?: boolean;
 	offset?: number;
 	limit?: number;
+	likedBy?: string[];
 };
 
 type TGetPostByQuery = {
@@ -159,86 +161,108 @@ type TGetPostByQuery = {
 };
 
 // search for posts by a search object
-const searchPostByQuery = async ({ query, accessToken }: TGetPostByQuery) => {
-	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts/search`;
-
-	const res = await fetch(url, {
+const getPostsByQuery = async ({ query, accessToken }: TGetPostByQuery) => {
+	const { count, data } = (await fetchQwackerApi(`posts/search`, accessToken, {
 		method: 'POST',
 		body: JSON.stringify(query),
-		headers: {
-			'Content-type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
-	});
+	})) as { count: number; data: TRawPost[] };
 
-	const { count, data } = (await res.json()) as { count: number; data: TRawPost[] };
 	const posts = data.map(transformPost) as TPost[];
 
 	return {
 		count,
-		posts,
+		posts: await addReferencesToPosts(posts, false, accessToken),
 	};
 };
 
-const getPostsByUserId = async ({ id, accessToken }: TGetPostById) => {
+type TGetPostByUserId = {
+	id: string;
+	limit?: number;
+	accessToken: string;
+};
+
+const getPostsOfUser = async ({ id, limit, accessToken }: TGetPostByUserId) => {
 	const { posts } = await getPosts({
 		creator: id,
+		limit,
 		accessToken,
 	});
 
 	return posts;
 };
 
-// TODO: implement this in a better way
-const getLikedPostsByCurrentUser = async ({ id, accessToken }: TGetPostById) => {
-	console.log('current user id', id);
-	const { posts } = await getPosts({
-		accessToken,
-	});
-
-	return posts.filter((post) => post.likedByUser) as TPost[];
+type TgetPostsLikedByUser = {
+	id: string;
+	accessToken: string;
 };
 
-const addPost = async (text: string, file: TUploadImage | null, accessToken?: string) => {
-	if (!accessToken) {
-		throw new Error('No access token');
-	}
+// TODO: implement this in a better way
+const getPostsLikedByUser = async ({ id, accessToken }: TgetPostsLikedByUser) => {
+	const { posts } = await getPostsByQuery({
+		query: {
+			likedBy: [id],
+		},
+		accessToken,
+	});
+	console.log(posts);
+	return posts;
+};
 
+type TCreatePost = {
+	text: string;
+	file: TUploadImage;
+	accessToken: string;
+};
+
+const createPost = async ({ text, file, accessToken }: TCreatePost) => {
 	const formData = new FormData();
 	formData.append('text', text);
 	if (file) {
 		formData.append('image', file);
 	}
 
-	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}/posts`, {
-			method: 'POST',
-			body: formData,
-			headers: {
-				Authorization: `Bearer ${accessToken}`,
-			},
-		});
-		if (!response.ok) {
-			throw new Error('Something was not okay');
-		}
+	let post = (await fetchQwackerApi(`posts`, accessToken, {
+		method: 'POST',
+		body: formData,
+	})) as TRawPost;
 
-		return transformPost(await response.json());
-	} catch (error) {
-		throw new Error(error instanceof Error ? error.message : 'Could not post Post');
-	}
+	post = transformPost(post);
+	return (await addReferencesToPosts([post], false, accessToken))[0];
 };
 
-const transformPost = (post: TRawPost) => ({
-	...post,
-	createdAt: new Date(decodeTime(post.id)).toISOString(),
-});
+const addReferencesToPosts = async (posts: TRawPost[], loadReplies = false, accessToken: string) => {
+	// load users
+	const userIds = posts.map((post) => post.creator);
+	const users = await usersService.getUsersByIds({ ids: userIds, accessToken });
+
+	// add users to posts
+	const fullPostsPromises = posts.map(async (post) => {
+		const user = users.find((user) => user.id === post.creator) as TPost['user'];
+		if (loadReplies) {
+			const replies = await getPostReplies({ id: post.id, accessToken });
+			return { ...post, user, replies };
+		}
+		return { ...post, user };
+	});
+
+	const fullPosts = await Promise.all(fullPostsPromises);
+
+	return fullPosts;
+};
+const transformPost = (post: TRawPost) => {
+	return {
+		...post,
+		createdAt: new Date(decodeTime(post.id)).toISOString(),
+	};
+};
 
 export const postsService = {
 	getPosts,
-	addPost,
-	getPostById,
-	getPostsByUserId,
-	getLikedPostsByCurrentUser,
-	getRepliesById,
-	searchPostByQuery,
+	getPost,
+	createPost,
+	deletePost,
+	getPostsOfUser,
+	getPostsLikedByUser,
+	getPostReplies,
+	getPostsByQuery,
 };

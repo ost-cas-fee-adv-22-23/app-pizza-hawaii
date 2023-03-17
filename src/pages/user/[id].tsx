@@ -118,41 +118,24 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 export default UserPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ req, params }) => {
-	const userId: string = params?.id as string;
+	const userId = params?.id as string;
 	const session = await getToken({ req });
 
 	try {
-		const { users } = await services.users.getUsers({
-			accessToken: session?.accessToken as string,
-		});
-
-		const user = users.find((user) => user.id === userId) || null;
-
-		let posts = await services.posts.getPostsByUserId({
+		const user = await services.users.getUser({
 			id: userId,
 			accessToken: session?.accessToken as string,
 		});
 
-		posts = posts.map((post) => {
-			const creator = users.find((user) => user.id === post.creator);
-			return {
-				...post,
-				creator: creator,
-			} as TPost;
-		});
-
-		let likes = await services.posts.getLikedPostsByCurrentUser({
+		const posts = await services.posts.getPostsOfUser({
 			id: userId,
 			accessToken: session?.accessToken as string,
 		});
 
-		likes = likes.map((post) => {
-			const creator = users.find((user) => user.id === post.creator);
-			return {
-				...post,
-				creator: creator,
-			} as TPost;
-		}) as TPost[];
+		const likes = await services.posts.getPostsLikedByUser({
+			id: userId,
+			accessToken: session?.accessToken as string,
+		});
 
 		return {
 			props: {

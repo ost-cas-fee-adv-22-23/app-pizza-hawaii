@@ -37,7 +37,7 @@ const RegisterPage = () => {
 			<>
 				<Head>
 					<title>Register to Mumble</title>
-					<link rel="icon" href="/favicon.ico" />
+					<link rel="icon" href="favicon.svg" type="image/svg+xml" />
 				</Head>
 			</>
 			<main>

@@ -1,10 +1,29 @@
-import { TPost } from '../../../types';
-
 type TGetPost = {
 	id: string;
 };
 
-export const like = async ({ id }: TGetPost): Promise<TPost> => {
-	const res = await fetch(`api/posts/${id}/like`);
-	return (await res.json()) as TPost;
+/*
+ * Like a post
+ *
+ * @param {string} id - The id of the post to like
+ * @returns {Promise<Response>}
+ */
+
+export const like = async ({ id }: TGetPost) => {
+	return await fetch(`api/posts/${id}/like`, {
+		method: 'PUT',
+	});
+};
+
+/*
+ * UnLike a post
+ *
+ * @param {string} id - The id of the post to like
+ * @returns {Promise<Response>}
+ */
+
+export const unlike = async ({ id }: TGetPost) => {
+	return await fetch(`api/posts/${id}/like`, {
+		method: 'DELETE',
+	});
 };
