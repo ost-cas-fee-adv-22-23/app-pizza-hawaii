@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 import {
 	Button,
 	Label,
@@ -7,10 +8,13 @@ import {
 	UserName,
 	UserContentCard,
 	TUserContentCard,
+	Modal,
+	Icon,
 } from '@smartive-education/pizza-hawaii';
 
 import { TPost, TUser } from '../types';
 import { services } from '../services';
+import { ImageUpload } from './ImageUpload';
 
 type TContentInput = {
 	variant: 'newPost' | 'answerPost';
@@ -43,6 +47,28 @@ const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardv
 };
 
 export const ContentInput: FC<TContentInput> = (props) => {
+	const [showModal, setShowModal] = useState(false);
+	// TODO add correct type here
+	const [file, setFile] = useState(null);
+	const { getRootProps, getInputProps } = useDropzone({
+		accept: {
+			'image/png': [],
+			'image/jpeg': [],
+		},
+		onDrop: (acceptedFiles) => {
+			const newFile = acceptedFiles[0];
+			if (!newFile) {
+				return;
+			}
+
+			setFile(
+				Object.assign(newFile, {
+					preview: URL.createObjectURL(newFile),
+				})
+			);
+		},
+	});
+
 	const { variant, placeHolderText, author, replyTo } = props;
 	const setting = ContentInputCardVariantMap[variant] || ContentInputCardVariantMap.newPost;
 	const [text, setText] = React.useState<string>('');
@@ -51,6 +77,11 @@ export const ContentInput: FC<TContentInput> = (props) => {
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setText(e.target.value);
 	};
+
+	const showImageUploadModal = () => {
+		setShowModal(true);
+	};
+
 	const onSubmitHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
 		const replyToPostId = replyTo?.id || undefined;
@@ -79,6 +110,11 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		</Grid>
 	);
 
+	//TODO; implement upload image function
+	function onSubmitImage(e: React.FormEvent<HTMLFormElement>): void {
+		throw new Error('Function not implemented.');
+	}
+
 	return (
 		<UserContentCard
 			headline={headerSlotContent}
@@ -98,8 +134,39 @@ export const ContentInput: FC<TContentInput> = (props) => {
 				onChange={(e) => inputChangeHandler(e)}
 			/>
 
+			{showModal && (
+				<Modal title="Bild Hochladen" isVisible={showModal} onClose={() => setShowModal(false)}>
+					<form onSubmit={(e) => onSubmitImage(e)}>
+						{file ? (
+							<ImageUpload src={file.preview} width={file.width} height={file.height} />
+						) : (
+							<div className="p-2 h-48 cursor-pointer flex justify-center align-middle bg-slate-100">
+								<div {...getRootProps({ className: 'dropzone' })}>
+									<input {...getInputProps()} placeholder="Um Datei uploaden hierhinziehen oder clicken" />
+									<div className="block justify-center text-center align-middle p-10">
+										<Icon size="L" name="upload" />
+										<br />
+										<Label as="span" size="M">
+											Datei hierhinziehen oder clicken
+										</Label>
+										<br />
+										<Label as="span" size="S">
+											JPEG oder PNG, maximal 5MB
+										</Label>
+									</div>
+								</div>
+							</div>
+						)}
+						<input type={text} />
+						<br />
+						<Button colorScheme="gradient" icon="eye">
+							Dieses Bild posten
+						</Button>
+					</form>
+				</Modal>
+			)}
 			<Grid variant="row" gap="S" wrapBelowScreen="md">
-				<Button as="button" colorScheme="slate" icon="upload">
+				<Button as="button" colorScheme="slate" icon="upload" onClick={() => showImageUploadModal()}>
 					Bild Hochladen
 				</Button>
 				<Button as="button" colorScheme="violet" icon="send" onClick={(e) => onSubmitHandler(e)}>
