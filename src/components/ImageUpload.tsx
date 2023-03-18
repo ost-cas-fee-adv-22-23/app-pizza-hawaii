@@ -11,12 +11,12 @@ type TImageUpload = {
 };
 
 export const ImageUpload: FC<TImageUpload> = ({ ...props }) => {
-	const { src, width = 640, height = 300, alt = 'src' } = props;
+	const { src, width = 640, height = 320, alt = 'src' } = props;
 	return (
 		<div className="p-5 ">
 			<Image src={src} alt={alt} width={width} height={height} caption={src} />
 			<Label as="legend" size="M">
-				sollen wir den Alt-Text auch als input field ermöglichen?
+				Schreibe hier noch dein Text dazu...
 			</Label>
 		</div>
 	);

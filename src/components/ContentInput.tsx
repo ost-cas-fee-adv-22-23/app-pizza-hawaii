@@ -10,6 +10,7 @@ import {
 	TUserContentCard,
 	Modal,
 	Icon,
+	Image,
 } from '@smartive-education/pizza-hawaii';
 
 import { TPost, TUser } from '../types';
@@ -49,7 +50,6 @@ const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardv
 
 export const ContentInput: FC<TContentInput> = (props) => {
 	const [showModal, setShowModal] = useState(false);
-	// TODO error handling if file too big
 	const [file, setFile] = useState<TUploadImageFile | null>(null);
 	const { getRootProps, getInputProps } = useDropzone({
 		accept: {
@@ -63,8 +63,9 @@ export const ContentInput: FC<TContentInput> = (props) => {
 			const newFile = acceptedFiles[0];
 			console.log('new file', newFile);
 			if (!newFile) {
-				return;
+				return null;
 			}
+			// TODO error handling if file too big
 
 			setFile(
 				Object.assign(newFile, {
@@ -77,7 +78,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 	const { variant, placeHolderText, author, replyTo } = props;
 	const setting = ContentInputCardVariantMap[variant] || ContentInputCardVariantMap.newPost;
 	const [text, setText] = React.useState<string>('');
-	const testimage = null;
+	const imageToUpload = file ? file.preview : null;
 
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setText(e.target.value);
@@ -95,7 +96,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		console.log('submitted text', text);
 		services.api.posts.reply({
 			text: text,
-			file: testimage,
+			file: imageToUpload,
 			replyTo: replyToPostId,
 		});
 	};
@@ -115,9 +116,10 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		</Grid>
 	);
 
-	//TODO; implement upload image function
-	function onSubmitImage(e: React.FormEvent<HTMLFormElement>): void {
-		throw new Error('Function not implemented.');
+	function onChooseImage(e: React.FormEvent<HTMLFormElement>): void {
+		e.preventDefault();
+		// close modal
+		setShowModal(false);
 	}
 
 	return (
@@ -131,6 +133,9 @@ export const ContentInput: FC<TContentInput> = (props) => {
 			avatarVariant={setting.avatarVariant}
 			avatarSize={setting.avatarSize}
 		>
+			{!showModal && file && (
+			 	<Image src={file.preview} width={600} alt="preview" />
+			)}
 			<FormTextarea
 				label={placeHolderText}
 				placeholder={placeHolderText}
@@ -141,7 +146,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 
 			{showModal && (
 				<Modal title="Bild Hochladen" isVisible={showModal} onClose={() => setShowModal(false)}>
-					<form onSubmit={(e) => onSubmitImage(e)}>
+					<form onSubmit={(e) => onChooseImage(e)}>
 						{file ? (
 							<ImageUpload src={file.preview} />
 						) : (
@@ -152,7 +157,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 										<Icon size="L" name="upload" />
 										<br />
 										<Label as="span" size="M">
-											Datei hierhinziehen oder clicken
+											Datei hier hineinziehen oder clicken
 										</Label>
 										<br />
 										<Label as="span" size="S">
@@ -162,10 +167,10 @@ export const ContentInput: FC<TContentInput> = (props) => {
 								</div>
 							</div>
 						)}
-						<input type={text} />
+						{/* <input type={text} /> */}
 						<br />
-						<Button colorScheme="gradient" icon="eye">
-							Dieses Bild posten
+						<Button as="button" colorScheme="gradient" icon="eye">
+							Dieses Bild wählen
 						</Button>
 					</form>
 				</Modal>
