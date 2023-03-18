@@ -6,6 +6,8 @@ type TReply = {
 	replyTo?: string;
 };
 
+export type TUploadImageFile = File & { preview: string };
+
 // reply to another post id
 export const reply = async ({ text, file, replyTo }: TReply): Promise<TPost> => {
 	console.log('11 postreply.ts id, text', replyTo, text);

@@ -13,6 +13,7 @@ import {
 } from '@smartive-education/pizza-hawaii';
 
 import { TPost, TUser } from '../types';
+import { TUploadImageFile } from '../services/api/posts/reply';
 import { services } from '../services';
 import { ImageUpload } from './ImageUpload';
 
@@ -49,7 +50,7 @@ const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardv
 export const ContentInput: FC<TContentInput> = (props) => {
 	const [showModal, setShowModal] = useState(false);
 	// TODO add correct type here
-	const [file, setFile] = useState(null);
+	const [file, setFile] = useState<TUploadImageFile | null>(null);
 	const { getRootProps, getInputProps } = useDropzone({
 		accept: {
 			'image/png': [],
@@ -69,6 +70,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		},
 	});
 
+	console.log('new file', file)
 	const { variant, placeHolderText, author, replyTo } = props;
 	const setting = ContentInputCardVariantMap[variant] || ContentInputCardVariantMap.newPost;
 	const [text, setText] = React.useState<string>('');
