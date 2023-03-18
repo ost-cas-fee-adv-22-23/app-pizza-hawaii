@@ -17,6 +17,7 @@ import { TPost, TUser } from '../types';
 import { TUploadImageFile } from '../services/api/posts/reply';
 import { services } from '../services';
 import { ImageUpload } from './ImageUpload';
+import { useSession } from 'next-auth/react';
 
 type TContentInput = {
 	variant: 'newPost' | 'answerPost';
@@ -49,8 +50,13 @@ const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardv
 };
 
 export const ContentInput: FC<TContentInput> = (props) => {
+	const { data: session } = useSession();
 	const [showModal, setShowModal] = useState(false);
 	const [file, setFile] = useState<TUploadImageFile | null>(null);
+	const [text, setText] = React.useState<string>('');
+
+	// const [imageToUpload, setImageToUpload] = useState<string | null>(null);
+	// Dropzone hook
 	const { getRootProps, getInputProps } = useDropzone({
 		accept: {
 			'image/png': [],
@@ -76,10 +82,8 @@ export const ContentInput: FC<TContentInput> = (props) => {
 	});
 
 	const { variant, placeHolderText, author, replyTo } = props;
+	// variant settings: reply or new post
 	const setting = ContentInputCardVariantMap[variant] || ContentInputCardVariantMap.newPost;
-	const [text, setText] = React.useState<string>('');
-	const imageToUpload = file ? file.preview : null;
-
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setText(e.target.value);
 	};
@@ -88,17 +92,31 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		setShowModal(true);
 	};
 
+	const onChooseImage = (file: TUploadImageFile): void => {
+		// setImageToUpload(file?.preview || null);
+		setShowModal(false);
+	};
+
 	const onSubmitHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
 		const replyToPostId = replyTo?.id || undefined;
-
-		console.log('replyTO Post submitted!  id', replyTo?.id);
+		const imageToUpload = file?.preview || null;
+		// const accessToken = session?.accessToken || undefined;
+		console.log('submitted accessToken', session?.accessToken);
 		console.log('submitted text', text);
-		services.api.posts.reply({
-			text: text,
-			file: imageToUpload,
-			replyTo: replyToPostId,
-		});
+		console.log('submitted image', imageToUpload);
+		try {
+			services.api.posts.reply({
+				text: text,
+				file: imageToUpload,
+				replyTo: replyToPostId,
+				accessToken: session?.accessToken,
+			});
+
+			setFile(null); // reset file
+		} catch (error) {
+			console.error('onSubmitHandler: error', error);
+		}
 	};
 
 	const headerSlotContent = props.headline ? (
@@ -116,12 +134,6 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		</Grid>
 	);
 
-	function onChooseImage(e: React.FormEvent<HTMLFormElement>): void {
-		e.preventDefault();
-		// close modal
-		setShowModal(false);
-	}
-
 	return (
 		<UserContentCard
 			headline={headerSlotContent}
@@ -134,7 +146,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 			avatarSize={setting.avatarSize}
 		>
 			{!showModal && file && (
-			 	<Image src={file.preview} width={600} alt="preview" />
+				<Image src={file.preview} width={600} caption="Vorschau: Möchtest Du dieses Bild posten?" alt="preview" />
 			)}
 			<FormTextarea
 				label={placeHolderText}
@@ -146,7 +158,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 
 			{showModal && (
 				<Modal title="Bild Hochladen" isVisible={showModal} onClose={() => setShowModal(false)}>
-					<form onSubmit={(e) => onChooseImage(e)}>
+					<form onSubmit={() => onChooseImage(file)}>
 						{file ? (
 							<ImageUpload src={file.preview} />
 						) : (
@@ -167,7 +179,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 								</div>
 							</div>
 						)}
-						{/* <input type={text} /> */}
+						<input type={text} />
 						<br />
 						<Button as="button" colorScheme="gradient" icon="eye">
 							Dieses Bild wählen
