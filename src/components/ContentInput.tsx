@@ -49,15 +49,19 @@ const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardv
 
 export const ContentInput: FC<TContentInput> = (props) => {
 	const [showModal, setShowModal] = useState(false);
-	// TODO add correct type here
+	// TODO error handling if file too big
 	const [file, setFile] = useState<TUploadImageFile | null>(null);
 	const { getRootProps, getInputProps } = useDropzone({
 		accept: {
 			'image/png': [],
 			'image/jpeg': [],
+			'image/jpg': [],
+			'image/gif': [],
 		},
+		maxSize: 5000000,
 		onDrop: (acceptedFiles) => {
 			const newFile = acceptedFiles[0];
+			console.log('new file', newFile);
 			if (!newFile) {
 				return;
 			}
@@ -70,7 +74,6 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		},
 	});
 
-	console.log('new file', file)
 	const { variant, placeHolderText, author, replyTo } = props;
 	const setting = ContentInputCardVariantMap[variant] || ContentInputCardVariantMap.newPost;
 	const [text, setText] = React.useState<string>('');
@@ -140,7 +143,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 				<Modal title="Bild Hochladen" isVisible={showModal} onClose={() => setShowModal(false)}>
 					<form onSubmit={(e) => onSubmitImage(e)}>
 						{file ? (
-							<ImageUpload src={file.preview} width={file.width} height={file.height} />
+							<ImageUpload src={file.preview} />
 						) : (
 							<div className="p-2 h-48 cursor-pointer flex justify-center align-middle bg-slate-100">
 								<div {...getRootProps({ className: 'dropzone' })}>
@@ -153,7 +156,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 										</Label>
 										<br />
 										<Label as="span" size="S">
-											JPEG oder PNG, maximal 5MB
+											JPG, GIF oder PNG, maximal 5 MB
 										</Label>
 									</div>
 								</div>

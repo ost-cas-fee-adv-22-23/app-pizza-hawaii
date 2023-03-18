@@ -1,21 +1,22 @@
-import React, { FC, ImgHTMLAttributes } from 'react';
+import React, { FC } from 'react';
 import { Image, Label } from '@smartive-education/pizza-hawaii';
 
 type TImageUpload = {
-	// imageComponent?: ImgHTMLAttributes;
+	Image?: HTMLImageElement | null;
 	src: string;
-	width: number;
-	height: number;
+	width?: number;
+	height?: number;
+	alt?: string;
 	style?: React.CSSProperties;
 };
 
 export const ImageUpload: FC<TImageUpload> = ({ ...props }) => {
-	const { src, width, height } = props;
+	const { src, width = 640, height = 300, alt = 'src' } = props;
 	return (
 		<div className="p-5 ">
-			<Image src={src} alt="fada" width={width} height={height} caption={src} />
+			<Image src={src} alt={alt} width={width} height={height} caption={src} />
 			<Label as="legend" size="M">
-				Das Bild sollte im Format JPG sein und nicht grösser als 5MB sein.
+				sollen wir den Alt-Text auch als input field ermöglichen?
 			</Label>
 		</div>
 	);
