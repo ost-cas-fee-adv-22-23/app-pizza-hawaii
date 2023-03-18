@@ -11,18 +11,15 @@ import { ContentInput } from '../components/ContentInput';
 import { Headline, Grid, Button } from '@smartive-education/pizza-hawaii';
 import { services } from '../services';
 
-import type { TPost, TUser } from '../types';
-import { contentCardModel } from '../models/ContentCard';
+import type { TPost } from '../types';
 
 export default function PageHome({
 	currentUser,
 	postCount: initialPostCount,
-	users: initialUsers,
 	posts: initialPosts,
 	error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const [posts, setPosts] = useState(initialPosts);
-	const [users] = useState(initialUsers);
 	const [loading, setLoading] = useState(false);
 	const [hasMore, setHasMore] = useState(initialPosts.length < initialPostCount);
 
@@ -44,23 +41,8 @@ export default function PageHome({
 				olderThan: posts[posts.length - 1].id,
 			});
 
-			const postsToAdd = newPosts
-				.map((post) => {
-					const author = users.find((user: TUser) => user.id === post.creator);
-					if (author) {
-						post.creator = author;
-					}
-					return post;
-				})
-				.filter((post) => typeof post.creator === 'object');
-
-			if (postsToAdd.length !== newPosts.length) {
-				console.warn('Some users could not loaded');
-				// todo: decide what to do here
-			}
-
 			setHasMore(newPosts.length < newPostCount);
-			setPosts([...posts, ...postsToAdd]);
+			setPosts([...posts, ...newPosts]);
 		} catch (error) {
 			console.warn(error);
 			// todo: error handling
@@ -117,29 +99,19 @@ export default function PageHome({
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	const session = await getToken({ req });
+	const accessToken = session?.accessToken as string;
 
 	try {
 		const { count: postCount, posts } = await services.posts.getPosts({
 			limit: 10,
-			accessToken: session?.accessToken as string,
-		});
-		const { users } = await services.users.getUsers({
-			accessToken: session?.accessToken as string,
+			accessToken,
 		});
 
 		return {
 			props: {
 				currentUser: session?.user,
 				postCount,
-				users,
-				posts: posts
-					.map((post) => {
-						return contentCardModel({
-							post: post,
-							user: users.find((user: TUser) => user.id === post.creator) as TUser,
-						});
-					})
-					.filter((post) => typeof post?.creator === 'object'),
+				posts,
 			},
 		};
 	} catch (error) {
