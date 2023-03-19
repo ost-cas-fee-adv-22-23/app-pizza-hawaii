@@ -52,48 +52,55 @@ export default function PageHome({
 	};
 
 	return (
-		<>
-			<Head>
-				<title>Mumble StartPage - Welcome</title>
-			</Head>
+		<MainLayout>
+			<>
+				<Head>
+					<title>Mumble - Alle Mumbles</title>
+					<meta
+						name="description"
+						content="Verpassen Sie nicht die neuesten Mumbles von den besten Nutzern der Plattform. Besuchen Sie die Index-Seite von Mumble und bleiben Sie auf dem Laufenden."
+					/>
+				</Head>
+				<section className="mx-auto w-full max-w-content">
+					<div className="mb-2 text-violet-600">
+						<Headline level={2}>Welcome to Mumble</Headline>
+					</div>
 
-			<MainLayout>
-				<main className="px-content">
-					<section className="mx-auto w-full max-w-content">
-						<div className="mb-2 text-violet-600">
-							<Headline level={2}>Welcome to Mumble</Headline>
-						</div>
+					<div className="text-slate-500 mb-8">
+						<Headline level={4} as="p">
+							Whats new in Mumble....
+						</Headline>
+					</div>
 
-						<div className="text-slate-500 mb-8">
-							<Headline level={4} as="p">
-								Whats new in Mumble....
-							</Headline>
-						</div>
+					<Grid variant="col" gap="M" marginBelow="M">
+						<ContentInput
+							variant="newPost"
+							headline="Hey, was geht ab?"
+							author={currentUser}
+							placeHolderText="Deine Meinung zählt"
+						/>
 
-						<Grid variant="col" gap="M" marginBelow="M">
-							<ContentInput
-								variant="newPost"
-								headline="Hey, was geht ab?"
-								author={currentUser}
-								placeHolderText="Deine Meinung zählt"
-							/>
+						{posts.map((post: TPost) => {
+							return (
+								<ContentCard
+									key={post.id}
+									variant="timeline"
+									post={post}
+								/>
+							);
+						})}
+					</Grid>
 
-							{posts.map((post: TPost) => {
-								return <ContentCard key={post.id} variant="timeline" post={post} />;
-							})}
-						</Grid>
-
-						{hasMore ? (
-							<Button as="button" colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
-								{loading ? '...' : 'Load more'}
-							</Button>
-						) : (
-							''
-						)}
-					</section>
-				</main>
-			</MainLayout>
-		</>
+					{hasMore ? (
+						<Button as="button" colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
+							{loading ? '...' : 'Load more'}
+						</Button>
+					) : (
+						''
+					)}
+				</section>
+			</>
+		</MainLayout>
 	);
 }
 

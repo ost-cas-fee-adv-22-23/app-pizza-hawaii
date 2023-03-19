@@ -10,6 +10,7 @@ import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { TPost, TUser } from '../../types';
 
 import { services } from '../../services';
+import Head from 'next/head';
 
 type TUserPage = {
 	currentUser: TUser;
@@ -20,6 +21,11 @@ const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSideProp
 	return (
 		<MainLayout>
 			<>
+				<Head>
+					<title>Mumble - {post.user.userName}</title>
+					<meta name="description" content={post.text} />
+				</Head>
+
 				<Grid as="div" variant="col" gap="S">
 					{post && <ContentCard variant="detailpage" post={post} />}
 
