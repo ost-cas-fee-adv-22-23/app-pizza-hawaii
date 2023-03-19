@@ -1,5 +1,3 @@
-import fetchQwackerApi from '../../qwacker';
-
 import { TPost } from '../../../types';
 
 type TReply = {
@@ -10,8 +8,8 @@ type TReply = {
 	accessToken?: string;
 };
 
-const BASE_URL = process.env.NEXT_PUBLIC_URL;
-export type TUploadImageFile = File & { preview: string };
+const BASE_URL = 'https://qwacker-api-http-prod-4cxdci3drq-oa.a.run.app';
+// export type TUploadImageFile = File & { preview: string };
 // reply to another post id
 export const reply = async ({ method = 'POST', text, file, replyTo = '', accessToken }: TReply): Promise<TPost> => {
 	if (!accessToken) {
@@ -19,6 +17,7 @@ export const reply = async ({ method = 'POST', text, file, replyTo = '', accessT
 	}
 
 	const replyUrl = `${BASE_URL}/posts/${replyTo}`;
+
 	console.log('replyUrl', replyUrl);
 	const formData = new FormData();
 	formData.append('text', text);
