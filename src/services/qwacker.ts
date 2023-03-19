@@ -7,7 +7,7 @@ let counter = 0;
 const BASE_URL = process.env.NEXT_PUBLIC_QWACKER_API_URL;
 
 async function fetchQwackerApi(endpoint: string, accessToken?: string, options: object = {}) {
-	const url = `${BASE_URL}/${endpoint}`;
+	const url = `${BASE_URL}${endpoint}`;
 
 	console.log(`[${counter++}] Fetching ${url}...`);
 

@@ -103,12 +103,11 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		const imageToUpload = file;
 
 		try {
-			services.api.posts.reply({
-				method: 'POST',
+			services.api.posts.create({
 				text: text,
 				file: imageToUpload as File,
 				replyTo: replyToPostId,
-				accessToken: session?.accessToken,
+				// accessToken: session?.accessToken,
 			});
 
 			setFile(null); // reset file

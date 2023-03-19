@@ -37,7 +37,7 @@ export const reply = async ({ method = 'POST', text, file, replyTo = '', accessT
 		console.log('---> result status', res.status);
 
 		if (res.status === 201) {
-			console.log('yupe');
+			console.log('yup, 201 something good happened');
 		}
 		if (res.status !== 200) {
 			console.error('Error in reply.ts');

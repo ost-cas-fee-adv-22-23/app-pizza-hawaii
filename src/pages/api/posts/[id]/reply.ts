@@ -11,7 +11,7 @@ import { getToken } from 'next-auth/jwt';
  */
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-	const { text, file } = req.body;
+	console.log('API reply req.body', req.body);
 	const { id } = req.query;
 	const session = await getToken({ req });
 
@@ -25,8 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	services.posts
 		.createPost({
 			replyTo: id as string,
-			text: text as string,
-			file: file as File,
+			formData: req.body,
 			accessToken: session?.accessToken as string,
 		})
 		.then((result) => {

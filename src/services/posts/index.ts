@@ -216,23 +216,18 @@ type TCreatePost = {
 };
 
 // direct to db
-const createPost = async ({ text, file, replyTo, accessToken }: TCreatePost) => {
+const createPost = async ({ formData, replyTo, accessToken }: TCreatePost) => {
 	let url = 'posts';
 	if (replyTo) {
 		url = `posts/${replyTo}`;
 	}
-	console.log('---> createpost text and file', text, file, replyTo);
-	const formData = new FormData();
-	formData.append('text', text);
-	if (file) {
-		formData.append('image', file);
-	}
-
+	console.log('url from createPost', url);
+	console.log('url from createPost', formData);
 	let post = (await fetchQwackerApi(url, accessToken, {
 		method: 'POST',
 		body: formData,
 	})) as TRawPost;
-
+	console.log('post from createPost', post);
 	post = transformPost(post);
 	return (await addReferencesToPosts([post], false, accessToken))[0];
 };
