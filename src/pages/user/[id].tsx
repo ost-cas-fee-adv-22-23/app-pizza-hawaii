@@ -108,13 +108,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 				<Grid variant="col" gap="M" marginBelow="M">
 					{postsToRender[currentPostType] &&
 						postsToRender[currentPostType].map((post) => {
-							return (
-								<ContentCard
-									key={post.id}
-									variant="timeline"
-									post={post}
-								/>
-							);
+							return <ContentCard key={post.id} variant="timeline" post={post} />;
 						})}
 				</Grid>
 			</>
