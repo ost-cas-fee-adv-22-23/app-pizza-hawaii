@@ -81,13 +81,7 @@ export default function PageHome({
 						/>
 
 						{posts.map((post: TPost) => {
-							return (
-								<ContentCard
-									key={post.id}
-									variant="timeline"
-									post={post}
-								/>
-							);
+							return <ContentCard key={post.id} variant="timeline" post={post} />;
 						})}
 					</Grid>
 
