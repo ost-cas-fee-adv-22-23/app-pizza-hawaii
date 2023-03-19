@@ -28,7 +28,7 @@ import { postsService } from '../services/api/posts/';
 type TContentCard = {
 	variant: 'detailpage' | 'timeline' | 'response';
 	post: TPost;
-	profileLink?: string;
+	canDelete?: boolean;
 };
 
 type TContentCardvariantMap = {
@@ -63,7 +63,7 @@ const contentCardvariantMap: Record<TContentCard['variant'], TContentCardvariant
 	},
 };
 
-export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
+export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false }) => {
 	const setting = contentCardvariantMap[variant] || contentCardvariantMap.detailpage;
 	const replyCount = post?.replyCount || 0;
 
@@ -84,6 +84,10 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 		}
 		setLikedByUser(!likedByUser);
 	};
+
+	function removePost() {
+		postsService.remove({ id: post.id });
+	}
 
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
@@ -159,6 +163,16 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 					activeButtonText="Link copied"
 					shareText={`${process.env.NEXTAUTH_URL}/mumble/${post.id}`}
 				/>
+				{canDelete && (
+					<InteractionButton
+						as="button"
+						type="button"
+						colorScheme="pink"
+						buttonText="Remove"
+						iconName="cancel"
+						onClick={removePost}
+					/>
+				)}
 			</Grid>
 		</UserContentCard>
 	);

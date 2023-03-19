@@ -21,7 +21,7 @@ const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSideProp
 		<MainLayout>
 			<>
 				<Grid as="div" variant="col" gap="S">
-					{post && <ContentCard variant="detailpage" post={post} />}
+					{post && <ContentCard variant="detailpage" post={post} canDelete={post.creator === currentUser.id} />}
 					{currentUser && (
 						<ContentInput
 							variant="answerPost"
@@ -32,7 +32,14 @@ const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSideProp
 						/>
 					)}
 					{post?.replies?.map((reply: TPost) => {
-						return <ContentCard key={reply.id} variant="response" post={reply} />;
+						return (
+							<ContentCard
+								key={reply.id}
+								variant="response"
+								post={reply}
+								canDelete={reply.creator === currentUser.id}
+							/>
+						);
 					})}
 				</Grid>
 			</>
