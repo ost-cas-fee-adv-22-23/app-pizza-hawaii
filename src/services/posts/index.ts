@@ -211,17 +211,24 @@ const getPostsLikedByUser = async ({ id, accessToken }: TgetPostsLikedByUser) =>
 type TCreatePost = {
 	text: string;
 	file: TUploadImage;
+	replyTo?: string;
 	accessToken: string;
 };
 
-const createPost = async ({ text, file, accessToken }: TCreatePost) => {
+// direct to db
+const createPost = async ({ text, file, replyTo, accessToken }: TCreatePost) => {
+	let url = 'posts';
+	if (replyTo) {
+		url = `posts/${replyTo}`;
+	}
+	console.log('---> createpost text and file', text, file, replyTo);
 	const formData = new FormData();
 	formData.append('text', text);
 	if (file) {
 		formData.append('image', file);
 	}
 
-	let post = (await fetchQwackerApi(`posts`, accessToken, {
+	let post = (await fetchQwackerApi(url, accessToken, {
 		method: 'POST',
 		body: formData,
 	})) as TRawPost;

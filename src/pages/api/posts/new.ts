@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { services } from '../../../../services';
+import { services } from '../../../services';
 import { getToken } from 'next-auth/jwt';
 
 /**
- * @name reply
+ * @name new
  * @description
  * This api endpoint is used to get older or newer posts than the one with the given id (newerThan, olderThan).
  * It is used to load more posts when scrolling down or fetch new posts when FE need.
@@ -12,9 +12,10 @@ import { getToken } from 'next-auth/jwt';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	const { text, file } = req.body;
-	const { id } = req.query;
 	const session = await getToken({ req });
 
+	console.log('req.body', req.body);
+	// console.log('%c new.ts line:16 text, file', 'color: white; background-color: #26bfa5;', body);
 	if (!session) {
 		return res.status(401).json({
 			status: false,
@@ -24,9 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 	services.posts
 		.createPost({
-			replyTo: id as string,
-			text: text as string,
-			file: file as File,
+			...req.body,
 			accessToken: session?.accessToken as string,
 		})
 		.then((result) => {

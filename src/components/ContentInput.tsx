@@ -14,7 +14,6 @@ import {
 } from '@smartive-education/pizza-hawaii';
 
 import { TPost, TUser } from '../types';
-import { TUploadImageFile } from '../services/api/posts/reply';
 import { services } from '../services';
 import { ImageUpload } from './ImageUpload';
 import { useSession } from 'next-auth/react';
@@ -49,6 +48,8 @@ const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardv
 	},
 };
 
+type TUploadImageFile = File & { preview: string };
+
 export const ContentInput: FC<TContentInput> = (props) => {
 	const { data: session } = useSession();
 	const [showModal, setShowModal] = useState(false);
@@ -67,7 +68,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		maxSize: 5000000,
 		onDrop: (acceptedFiles) => {
 			const newFile = acceptedFiles[0];
-			console.log('new file', newFile);
+
 			if (!newFile) {
 				return null;
 			}
@@ -92,23 +93,20 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		setShowModal(true);
 	};
 
-	const onChooseImage = (file: TUploadImageFile): void => {
-		// setImageToUpload(file?.preview || null);
+	const onChooseImage = () => {
 		setShowModal(false);
 	};
 
 	const onSubmitHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
 		const replyToPostId = replyTo?.id || undefined;
-		const imageToUpload = file?.preview || null;
-		// const accessToken = session?.accessToken || undefined;
-		console.log('submitted accessToken', session?.accessToken);
-		console.log('submitted text', text);
-		console.log('submitted image', imageToUpload);
+		const imageToUpload = file;
+
 		try {
 			services.api.posts.reply({
+				method: 'POST',
 				text: text,
-				file: imageToUpload,
+				file: imageToUpload as File,
 				replyTo: replyToPostId,
 				accessToken: session?.accessToken,
 			});
@@ -158,7 +156,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 
 			{showModal && (
 				<Modal title="Bild Hochladen" isVisible={showModal} onClose={() => setShowModal(false)}>
-					<form onSubmit={() => onChooseImage(file)}>
+					<form onSubmit={() => onChooseImage()}>
 						{file ? (
 							<ImageUpload src={file.preview} />
 						) : (

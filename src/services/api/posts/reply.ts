@@ -1,49 +1,53 @@
+import fetchQwackerApi from '../../qwacker';
+
 import { TPost } from '../../../types';
 
 type TReply = {
+	method: 'POST';
 	text: string;
-	file?: string | void | null;
+	file?: File;
 	replyTo?: string;
-	accessToken: string;
+	accessToken?: string;
 };
 
+const BASE_URL = process.env.NEXT_PUBLIC_URL;
 export type TUploadImageFile = File & { preview: string };
-
 // reply to another post id
-export const reply = async ({ text, file, replyTo = '', accessToken }: TReply): Promise<TPost> => {
-	console.log('12 postreply.ts id, text, accessToken', replyTo, text, accessToken);
-	
-	const bodyPayload = new FormData();
-	bodyPayload.append('text', text);
+export const reply = async ({ method = 'POST', text, file, replyTo = '', accessToken }: TReply): Promise<TPost> => {
+	if (!accessToken) {
+		throw new Error('Access token is required');
+	}
+
+	const replyUrl = `${BASE_URL}/posts/${replyTo}`;
+	console.log('replyUrl', replyUrl);
+	const formData = new FormData();
+	formData.append('text', text);
 	if (file) {
-		bodyPayload.append('image', file);
+		formData.append('image', file);
 	}
 
-	console.log('13 postreply.ts bodyPayload', bodyPayload);
-/*
-	const bodyPayload = JSON.stringify({
-		text: text,
-		image: file,
-	});
+	try {
+		const res = await fetch(replyUrl, {
+			headers: {
+				Authorization: `Bearer ${accessToken}`,
+			},
+			method,
+			body: formData,
+		});
 
-	const bodyPayload2 = new FormData();
-	bodyPayload2.append('text', JSON.stringify(text));
-	if (file) {
-		bodyPayload2.append('image', file);
+		console.log('---> result status', res.status);
+
+		if (res.status === 201) {
+			console.log('yupe');
+		}
+		if (res.status !== 200) {
+			console.error('Error in reply.ts');
+		}
+		const result = await res.json();
+		console.log('---> result from reply.ts', result);
+		return result;
+	} catch (error) {
+		console.error('Error in reply.ts', error);
+		throw error;
 	}
-*/
-
-	const res = await fetch(`api/posts/${replyTo}`, {
-		method: 'POST',
-		body: bodyPayload,
-		headers: {
-			Authorization: `Bearer ${accessToken}`,
-		},
-	});
-	console.log('---> result from reply.ts', res);
-	if (res.status === 200) {
-		console.error('Error in reply.ts')
-	}
-
-	return (await res.json()) as TPost;
 };
