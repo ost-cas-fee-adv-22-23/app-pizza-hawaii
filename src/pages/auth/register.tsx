@@ -34,12 +34,13 @@ const RegisterPage = () => {
 
 	return (
 		<LoginLayout>
-			<>
-				<Head>
-					<title>Register to Mumble</title>
-					<link rel="icon" href="favicon.svg" type="image/svg+xml" />
-				</Head>
-			</>
+			<Head>
+				<title>Mumble - Registrierung</title>
+				<meta
+					name="description"
+					content="Erstellen Sie ein Konto und beginnen Sie, Ihre Gedanken mit der Welt zu teilen. Registrieren Sie sich noch heute bei Mumble"
+				/>
+			</Head>
 			<main>
 				<Headline level={2}>Register now</Headline>
 				<br />
