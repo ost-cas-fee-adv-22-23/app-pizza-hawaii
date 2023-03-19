@@ -191,7 +191,6 @@ const getPostsByUserId = async ({ id, accessToken }: TGetPostById) => {
 
 // TODO: implement this in a better way
 const getLikedPostsByCurrentUser = async ({ id, accessToken }: TGetPostById) => {
-	console.log('current user id', id);
 	const { posts } = await getPosts({
 		accessToken,
 	});

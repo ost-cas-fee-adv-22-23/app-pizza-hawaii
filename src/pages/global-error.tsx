@@ -13,10 +13,12 @@ export default function GlobalError({ error }: { error?: Error }) {
 				<p>Try to screenshot this page and send it to your friendly printer-fixer admin</p>
 				<br />
 				<p>Error Message: {error?.message}</p>
+				<br />
 				<p>Error Stack: {error?.stack}</p>
+				<br />
 				<br /> ¯\_(ツ)_/¯
 				<br />
-				<a href="/">Go back home</a>
+				<a href="/login">Go back home to Login</a>
 			</body>
 		</html>
 	);

@@ -3,8 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useSession } from 'next-auth/react';
 import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
-import FourOhFourPage from '../404';
-
+import ErrorPage from 'next/error';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { ContentCard } from '../../components/ContentCard';
@@ -32,7 +31,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	const currentUser: TUser | undefined = session?.user;
 
 	if (!user) {
-		return <FourOhFourPage error={Error} reason={'missing User'} />;
+		return <ErrorPage statusCode={403} title={'no user'} />;
 	}
 
 	const isCurrentUser = currentUser?.id === user.id;

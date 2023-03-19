@@ -1,16 +1,15 @@
 import React from 'react';
-import FourOhFourPage from '../pages/404';
-import GlobalError from '../pages/global-error';
+import ErrorPage from 'next/error';
 
-interface Props {
+type Props = {
 	className?: string;
 	children: React.ReactNode;
-}
+};
 
-interface State {
+type State = {
 	error?: Error;
 	hasError: boolean;
-}
+};
 
 // yes this is a class component, because we need to use componentDidCatch
 class ErrorBoundary extends React.Component<Props, State> {
@@ -22,18 +21,15 @@ class ErrorBoundary extends React.Component<Props, State> {
 		return { hasError: true, error };
 	}
 
-	componentDidCatch(error: Error | unknown) {
+	componentDidCatch(error: Error | unknown, errorInfo: React.ErrorInfo) {
 		// may we also introduce an error logging service here - if there is time for that
-		console.error({ error });
-		const message = error?.toString() || 'unknown';
-		return <FourOhFourPage error={Error} reason={message} />;
+		console.error(error, errorInfo);
 	}
 
 	render() {
 		// Check if the error is thrown or pass children to applciation
 		if (this.state.hasError) {
-			throw new Error('ErrorBoundary');
-			return <GlobalError error={this.state.error} />;
+			return <ErrorPage statusCode={500} title={this?.state?.error?.message} />;
 		} else {
 			return this.props.children;
 		}
