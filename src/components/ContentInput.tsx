@@ -52,7 +52,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 	const { data: session } = useSession();
 	const [showModal, setShowModal] = useState(false);
 	const [file, setFile] = useState<File>();
-	const [filePreview, setFilePreview] = useState<string>("");
+	const [filePreview, setFilePreview] = useState<string>('');
 	const [text, setText] = React.useState<string>('');
 
 	// const [imageToUpload, setImageToUpload] = useState<string | null>(null);
@@ -175,8 +175,6 @@ export const ContentInput: FC<TContentInput> = (props) => {
 								</div>
 							</div>
 						)}
-						<input type={text} />
-						<br />
 						<Button as="button" colorScheme="gradient" icon="eye">
 							Dieses Bild wählen
 						</Button>
