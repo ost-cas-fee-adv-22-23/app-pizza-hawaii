@@ -20,16 +20,13 @@ async function fetchQwackerApi(endpoint: string, accessToken?: string, options: 
 	});
 
 	if (!res.ok) {
-		throw new Error(`Qwacker API request failed with status ${res.status} (${res.statusText})`);
+		throw new Error(
+			`Qwacker API request failed with status ${res.status} (${res.statusText}) ${statusMessageMap[res.status]}`
+		);
 	}
 
 	if (res.status === 204) {
 		return true;
-	}
-	if (res.status !== 200) {
-		// TODO handle errors
-		new Error(statusMessageMap[res.status]);
-		return false;
 	}
 
 	return await res.json();
