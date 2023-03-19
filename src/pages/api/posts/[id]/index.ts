@@ -36,21 +36,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				});
 			break;
 
-		case HTTP_METHODS.POST:
-			services.posts
-				.createPost({
-					accessToken: session?.accessToken as string,
-					text: req.body.text,
-					file: req.body.file,
-				})
-				.then((post) => {
-					res.status(200).json(post);
-				})
-				.catch((err) => {
-					res.status(500).json(err);
-				});
-			break;
-
 		case HTTP_METHODS.DELETE:
 			services.posts
 				.deletePost({

@@ -210,26 +210,33 @@ const getPostsLikedByUser = async ({ id, accessToken }: TgetPostsLikedByUser) =>
 
 type TCreatePost = {
 	text: string;
-	file: TUploadImage;
+	file?: File;
 	replyTo?: string;
 	accessToken: string;
 };
 
 // direct to db
-const createPost = async ({ formData, replyTo, accessToken }: TCreatePost) => {
+const createPost = async ({ text, file, replyTo, accessToken }: TCreatePost) => {
 	let url = 'posts';
 	if (replyTo) {
 		url = `posts/${replyTo}`;
 	}
-	console.log('url from createPost', url);
-	console.log('url from createPost', formData);
-	let post = (await fetchQwackerApi(url, accessToken, {
+
+	const formData = new FormData();
+	formData.append('text', text);
+	if (file) {
+		formData.append('image', file);
+	}
+
+	const post = await fetchQwackerApi(url, accessToken, {
 		method: 'POST',
 		body: formData,
-	})) as TRawPost;
-	console.log('post from createPost', post);
-	post = transformPost(post);
-	return (await addReferencesToPosts([post], false, accessToken))[0];
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+		},
+	});
+
+	return transformPost(post);
 };
 
 const addReferencesToPosts = async (posts: TRawPost[], loadReplies = false, accessToken: string) => {

@@ -48,12 +48,11 @@ const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardv
 	},
 };
 
-type TUploadImageFile = File & { preview: string };
-
 export const ContentInput: FC<TContentInput> = (props) => {
 	const { data: session } = useSession();
 	const [showModal, setShowModal] = useState(false);
-	const [file, setFile] = useState<TUploadImageFile | null>(null);
+	const [file, setFile] = useState<File>();
+	const [filePreview, setFilePreview] = useState<string>("");
 	const [text, setText] = React.useState<string>('');
 
 	// const [imageToUpload, setImageToUpload] = useState<string | null>(null);
@@ -74,11 +73,8 @@ export const ContentInput: FC<TContentInput> = (props) => {
 			}
 			// TODO error handling if file too big
 
-			setFile(
-				Object.assign(newFile, {
-					preview: URL.createObjectURL(newFile),
-				})
-			);
+			setFile(newFile);
+			setFilePreview(URL.createObjectURL(newFile));
 		},
 	});
 
@@ -96,21 +92,24 @@ export const ContentInput: FC<TContentInput> = (props) => {
 	const onChooseImage = () => {
 		setShowModal(false);
 	};
+	const closeModal = () => {
+		setShowModal(false);
+		setFile(undefined);
+	};
 
 	const onSubmitHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
-		const replyToPostId = replyTo?.id || undefined;
-		const imageToUpload = file;
+		const replyToPostId = replyTo?.id;
 
 		try {
-			services.api.posts.create({
-				text: text,
-				file: imageToUpload as File,
+			services.posts.createPost({
+				text,
+				file,
 				replyTo: replyToPostId,
-				// accessToken: session?.accessToken,
+				accessToken: session?.accessToken as string,
 			});
 
-			setFile(null); // reset file
+			setFile(undefined); // reset file
 		} catch (error) {
 			console.error('onSubmitHandler: error', error);
 		}
@@ -143,7 +142,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 			avatarSize={setting.avatarSize}
 		>
 			{!showModal && file && (
-				<Image src={file.preview} width={600} caption="Vorschau: Möchtest Du dieses Bild posten?" alt="preview" />
+				<Image src={filePreview} width={600} caption="Vorschau: Möchtest Du dieses Bild posten?" alt="preview" />
 			)}
 			<FormTextarea
 				label={placeHolderText}
@@ -154,10 +153,10 @@ export const ContentInput: FC<TContentInput> = (props) => {
 			/>
 
 			{showModal && (
-				<Modal title="Bild Hochladen" isVisible={showModal} onClose={() => setShowModal(false)}>
+				<Modal title="Bild Hochladen" isVisible={showModal} onClose={() => closeModal()}>
 					<form onSubmit={() => onChooseImage()}>
 						{file ? (
-							<ImageUpload src={file.preview} />
+							<ImageUpload src={filePreview as string} />
 						) : (
 							<div className="p-2 h-48 cursor-pointer flex justify-center align-middle bg-slate-100">
 								<div {...getRootProps({ className: 'dropzone' })}>
