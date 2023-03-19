@@ -12,18 +12,15 @@ import { ContentInput } from '../components/ContentInput';
 import { Headline, Grid, Button } from '@smartive-education/pizza-hawaii';
 import { services } from '../services';
 
-import type { TPost, TUser } from '../types';
-import { contentCardModel } from '../models/ContentCard';
+import type { TPost } from '../types';
 
 export default function PageHome({
 	currentUser,
 	postCount: initialPostCount,
-	users: initialUsers,
 	posts: initialPosts,
 	error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const [posts, setPosts] = useState(initialPosts);
-	const [users] = useState(initialUsers);
 	const [loading, setLoading] = useState(false);
 	const [hasMore, setHasMore] = useState(initialPosts.length < initialPostCount);
 
@@ -46,23 +43,8 @@ export default function PageHome({
 				olderThan: posts[posts.length - 1].id,
 			});
 
-			const postsToAdd = newPosts
-				.map((post) => {
-					const author = users.find((user: TUser) => user.id === post.creator);
-					if (author) {
-						post.creator = author;
-					}
-					return post;
-				})
-				.filter((post) => typeof post.creator === 'object');
-
-			if (postsToAdd.length !== newPosts.length) {
-				console.warn('Some users could not loaded');
-				// todo: decide what to do here
-			}
-
 			setHasMore(newPosts.length < newPostCount);
-			setPosts([...posts, ...postsToAdd]);
+			setPosts([...posts, ...newPosts]);
 		} catch (error) {
 			<Custom500Page errorInfo={error} />;
 		}
@@ -71,76 +53,67 @@ export default function PageHome({
 	};
 
 	return (
-		<>
-			<Head>
-				<title>Mumble StartPage - Welcome</title>
-			</Head>
+		<MainLayout>
+			<>
+				<Head>
+					<title>Mumble - Alle Mumbles</title>
+					<meta
+						name="description"
+						content="Verpassen Sie nicht die neuesten Mumbles von den besten Nutzern der Plattform. Besuchen Sie die Index-Seite von Mumble und bleiben Sie auf dem Laufenden."
+					/>
+				</Head>
+				<section className="mx-auto w-full max-w-content">
+					<div className="mb-2 text-violet-600">
+						<Headline level={2}>Welcome to Mumble</Headline>
+					</div>
 
-			<MainLayout>
-				<main className="px-content">
-					<section className="mx-auto w-full max-w-content">
-						<div className="mb-2 text-violet-600">
-							<Headline level={2}>Welcome to Mumble</Headline>
-						</div>
+					<div className="text-slate-500 mb-8">
+						<Headline level={4} as="p">
+							Whats new in Mumble....
+						</Headline>
+					</div>
 
-						<div className="text-slate-500 mb-8">
-							<Headline level={4} as="p">
-								Whats new in Mumble....
-							</Headline>
-						</div>
+					<Grid variant="col" gap="M" marginBelow="M">
+						<ContentInput
+							variant="newPost"
+							headline="Hey, was geht ab?"
+							author={currentUser}
+							placeHolderText="Deine Meinung zählt"
+						/>
 
-						<Grid variant="col" gap="M" marginBelow="M">
-							<ContentInput
-								variant="newPost"
-								headline="Hey, was geht ab?"
-								author={currentUser}
-								placeHolderText="Deine Meinung zählt"
-							/>
+						{posts.map((post: TPost) => {
+							return <ContentCard key={post.id} variant="timeline" post={post} />;
+						})}
+					</Grid>
 
-							{posts.map((post: TPost) => {
-								return <ContentCard key={post.id} variant="timeline" post={post} />;
-							})}
-						</Grid>
-
-						{hasMore ? (
-							<Button as="button" colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
-								{loading ? '...' : 'Load more'}
-							</Button>
-						) : (
-							''
-						)}
-					</section>
-				</main>
-			</MainLayout>
-		</>
+					{hasMore ? (
+						<Button as="button" colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
+							{loading ? '...' : 'Load more'}
+						</Button>
+					) : (
+						''
+					)}
+				</section>
+			</>
+		</MainLayout>
 	);
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	const session = await getToken({ req });
+	const accessToken = session?.accessToken as string;
 
 	try {
 		const { count: postCount, posts } = await services.posts.getPosts({
 			limit: 10,
-			accessToken: session?.accessToken as string,
-		});
-		const { users } = await services.users.getUsers({
-			accessToken: session?.accessToken as string,
+			accessToken,
 		});
 
 		return {
 			props: {
 				currentUser: session?.user,
 				postCount,
-				users,
-				posts: posts
-					.map((post) => {
-						return contentCardModel({
-							post: post,
-							user: users.find((user: TUser) => user.id === post.creator) as TUser,
-						});
-					})
-					.filter((post) => typeof post?.creator === 'object'),
+				posts,
 			},
 		};
 	} catch (error) {

@@ -42,110 +42,94 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	};
 
 	return (
-		<>
-			<Head>
-				<title>{`Mumble Page of ${user.displayName}`}</title>
-			</Head>
+		<MainLayout>
+			<>
+				<Head>
+					<title>Mumble - {user.userName}</title>
+					<meta
+						name="description"
+						content={`Entdecken Sie die Mumbles von ${user.userName} - besuchen Sie die Seite eines Mumble-Nutzers.`}
+					/>
+				</Head>
+				<ProfileHeader user={user} canEdit={isCurrentUser} />
+				<div className="mb-2 text-slate-900 pr-48">
+					<Headline level={3}>{user.displayName}</Headline>
+				</div>
 
-			<MainLayout>
-				<>
-					<ProfileHeader user={user} canEdit={isCurrentUser} />
-					<div className="mb-2 text-slate-900 pr-48">
-						<Headline level={3}>{user.displayName}</Headline>
-					</div>
+				<span className="flex flex-row align-baseline gap-3 mb-3">
+					<UserName href={user.profileLink}>{user.userName}</UserName>
 
-					<span className="flex flex-row align-baseline gap-3 mb-3">
-						<UserName href={user.profileLink}>{user.userName}</UserName>
+					<IconLink as="span" icon="location" colorScheme="slate" size="S">
+						{user.city}
+					</IconLink>
 
-						<IconLink as="span" icon="location" colorScheme="slate" size="S">
-							{user.city}
-						</IconLink>
+					<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
+						<TimeStamp date={user.createdAt} prefix="Mitglied seit" />
+					</IconLink>
+				</span>
 
-						<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
-							<TimeStamp date={user.createdAt} prefix="Mitglied seit" />
-						</IconLink>
-					</span>
-
-					<div className="text-slate-400 mb-8">
-						<Richtext size="M">{user.bio}</Richtext>
-					</div>
-					{isCurrentUser ? (
-						<Grid variant="col" gap="M" marginBelow="M">
-							<Switch
-								label="Wechsle deine angezeigten Mumbles"
-								options={[
-									{
-										label: 'Meine Mumbles',
-										value: PostType.POSTS,
-									},
-									{
-										label: 'Meine Likes',
-										value: PostType.LIKES,
-									},
-								]}
-								value={PostType.POSTS}
-								name="posttype"
-								onChange={(event: ChangeEvent): void => {
-									const value = (event.target as HTMLInputElement).value as PostType;
-									setCurrentPostType(value);
-								}}
-							/>
-						</Grid>
-					) : (
-						<Button as="button" size="M" colorScheme="violet">
-							Follow
-						</Button>
-					)}
+				<div className="text-slate-400 mb-8">
+					<Richtext size="M">{user.bio}</Richtext>
+				</div>
+				{isCurrentUser ? (
 					<Grid variant="col" gap="M" marginBelow="M">
-						{postsToRender[currentPostType] &&
-							postsToRender[currentPostType].map((post) => {
-								return <ContentCard key={post.id} variant="timeline" post={post} />;
-							})}
+						<Switch
+							label="Wechsle deine angezeigten Mumbles"
+							options={[
+								{
+									label: 'Meine Mumbles',
+									value: PostType.POSTS,
+								},
+								{
+									label: 'Meine Likes',
+									value: PostType.LIKES,
+								},
+							]}
+							value={PostType.POSTS}
+							name="posttype"
+							onChange={(event: ChangeEvent): void => {
+								const value = (event.target as HTMLInputElement).value as PostType;
+								setCurrentPostType(value);
+							}}
+						/>
 					</Grid>
-				</>
-			</MainLayout>
-		</>
+				) : (
+					<Button as="button" size="M" colorScheme="violet">
+						Follow
+					</Button>
+				)}
+				<Grid variant="col" gap="M" marginBelow="M">
+					{postsToRender[currentPostType] &&
+						postsToRender[currentPostType].map((post) => {
+							return <ContentCard key={post.id} variant="timeline" post={post} />;
+						})}
+				</Grid>
+			</>
+		</MainLayout>
 	);
 };
 
 export default UserPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ req, params }) => {
-	const userId: string = params?.id as string;
+	const userId = params?.id as string;
 	const session = await getToken({ req });
 
 	try {
-		const { users } = await services.users.getUsers({
-			accessToken: session?.accessToken as string,
-		});
-
-		const user = users.find((user) => user.id === userId) || null;
-
-		let posts = await services.posts.getPostsByUserId({
+		const user = await services.users.getUser({
 			id: userId,
 			accessToken: session?.accessToken as string,
 		});
 
-		posts = posts.map((post) => {
-			const creator = users.find((user) => user.id === post.creator);
-			return {
-				...post,
-				creator: creator,
-			} as TPost;
-		});
-
-		let likes = await services.posts.getLikedPostsByCurrentUser({
+		const posts = await services.posts.getPostsOfUser({
 			id: userId,
 			accessToken: session?.accessToken as string,
 		});
 
-		likes = likes.map((post) => {
-			const creator = users.find((user) => user.id === post.creator);
-			return {
-				...post,
-				creator: creator,
-			} as TPost;
-		}) as TPost[];
+		const likes = await services.posts.getPostsLikedByUser({
+			id: userId,
+			accessToken: session?.accessToken as string,
+		});
 
 		return {
 			props: {

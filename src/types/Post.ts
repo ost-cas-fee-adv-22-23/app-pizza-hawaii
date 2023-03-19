@@ -2,14 +2,15 @@ import { TUser } from './User';
 
 export type TPost = {
 	id: string;
-	creator: TUser | string;
+	creator: string;
 	text: string;
-	mediaUrl?: string | null;
-	mediaType: 'image/jpeg';
+	mediaUrl?: string;
+	mediaType: string;
 	likeCount: number;
-	likedByUser: boolean | string;
+	likedByUser: boolean;
 	replyCount?: number;
 	createdAt: string;
-	type: 'post' | 'reply' | 'deleted';
+	type: 'post' | 'reply';
+	user: TUser;
 	replies?: TPost[];
 };

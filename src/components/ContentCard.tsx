@@ -85,21 +85,13 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 		setLikedByUser(!likedByUser);
 	};
 
-	if (!post.creator || typeof post.creator === 'string') {
-		return (
-			<div className="flex flex-col items-center justify-center w-full h-full">
-				<p className="text-center">Something went wrong. Please try again later.</p>
-			</div>
-		);
-	}
-
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
-				{`${post.creator.displayName}`}
+				{`${post.user.displayName}`}
 			</Label>
 			<Grid variant="row" gap="S">
-				<UserName href={post.creator.profileLink}>{post.creator.userName}</UserName>
+				<UserName href={post.user.profileLink}>{post.user.userName}</UserName>
 				<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
 					<TimeStamp date={post.createdAt} />
 				</IconLink>
@@ -111,9 +103,9 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 		<UserContentCard
 			headline={headerSlotContent}
 			userProfile={{
-				avatar: post.creator.avatarUrl,
-				userName: post.creator.userName,
-				href: post.creator.profileLink,
+				avatar: post.user.avatarUrl,
+				userName: post.user.userName,
+				href: post.user.profileLink,
 			}}
 			avatarVariant={setting.avatarVariant}
 			avatarSize={setting.avatarSize}
@@ -135,7 +127,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 							ProjectSettings.images.post.aspectRatio[1]
 						}
 						src={post.mediaUrl}
-						alt={`Image of ${post.creator.firstName} ${post.creator.lastName}`}
+						alt={`Image of ${post.user.firstName} ${post.user.lastName}`}
 					/>
 				</ImageOverlay>
 			)}
