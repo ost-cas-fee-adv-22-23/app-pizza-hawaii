@@ -10,7 +10,6 @@ const statusMessageMap: Record<number, string> = {
 	403: 'Forbidden',
 };
 
-type TUploadImage = File & { preview: string };
 type TRawPost = Omit<TPost, 'createdAt, user, replies'>;
 
 type TBase = {
@@ -228,7 +227,7 @@ const createPost = async ({ text, file, replyTo, accessToken }: TCreatePost) => 
 		formData.append('image', file);
 	}
 
-	const post = await fetchQwackerApi(url, accessToken, {
+	let post = await fetchQwackerApi(url, accessToken, {
 		method: 'POST',
 		body: formData,
 		headers: {
@@ -236,7 +235,9 @@ const createPost = async ({ text, file, replyTo, accessToken }: TCreatePost) => 
 		},
 	});
 
-	return transformPost(post);
+	post = transformPost(post);
+
+	return (await addReferencesToPosts([post], false, accessToken))[0];
 };
 
 const addReferencesToPosts = async (posts: TRawPost[], loadReplies = false, accessToken: string) => {

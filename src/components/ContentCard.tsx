@@ -29,6 +29,7 @@ type TContentCard = {
 	variant: 'detailpage' | 'timeline' | 'response';
 	post: TPost;
 	canDelete?: boolean;
+	onDeletePost: (id: string) => void;
 };
 
 type TContentCardvariantMap = {
@@ -63,7 +64,7 @@ const contentCardvariantMap: Record<TContentCard['variant'], TContentCardvariant
 	},
 };
 
-export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false }) => {
+export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false, onDeletePost }) => {
 	const setting = contentCardvariantMap[variant] || contentCardvariantMap.detailpage;
 	const replyCount = post?.replyCount || 0;
 
@@ -85,9 +86,9 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 		setLikedByUser(!likedByUser);
 	};
 
-	function removePost() {
-		postsService.remove({ id: post.id });
-	}
+	const handleDeletePost = async () => {
+		onDeletePost && onDeletePost(post.id);
+	};
 
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
@@ -170,7 +171,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 						colorScheme="pink"
 						buttonText="Remove"
 						iconName="cancel"
-						onClick={removePost}
+						onClick={handleDeletePost}
 					/>
 				)}
 			</Grid>

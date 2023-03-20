@@ -25,8 +25,14 @@ enum PostType {
 	LIKES = 'likes',
 }
 
-const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const UserPage: FC<TUserPage> = ({
+	user,
+	posts: initialPosts,
+	likes,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const [currentPostType, setCurrentPostType] = useState(PostType.POSTS);
+
+	const [posts, setPosts] = useState(initialPosts);
 	const { data: session } = useSession();
 	const currentUser: TUser | undefined = session?.user;
 
@@ -46,6 +52,18 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	const postsToRender: Record<string, TPost[]> = {
 		posts,
 		likes,
+	};
+
+	const onRemovePost = async (id: string) => {
+		try {
+			const result = await services.api.posts.remove({ id });
+
+			if (result) {
+				setPosts(posts.filter((post: TPost) => post.id !== id));
+			}
+		} catch (error) {
+			console.error('onSubmitHandler: error', error);
+		}
 	};
 
 	return (
@@ -106,7 +124,9 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 					<Grid variant="col" gap="M" marginBelow="M">
 						{postsToRender[currentPostType] &&
 							postsToRender[currentPostType].map((post) => {
-								return <ContentCard key={post.id} variant="timeline" post={post} />;
+								return (
+									<ContentCard key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />
+								);
 							})}
 					</Grid>
 				</>

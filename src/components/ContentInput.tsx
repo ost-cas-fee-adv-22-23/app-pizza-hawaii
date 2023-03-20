@@ -14,9 +14,13 @@ import {
 } from '@smartive-education/pizza-hawaii';
 
 import { TPost, TUser } from '../types';
-import { services } from '../services';
 import { ImageUpload } from './ImageUpload';
-import { useSession } from 'next-auth/react';
+
+export type TAddPostProps = {
+	text: string;
+	file?: File;
+	replyTo?: string;
+};
 
 type TContentInput = {
 	variant: 'newPost' | 'answerPost';
@@ -24,6 +28,7 @@ type TContentInput = {
 	author: TUser;
 	placeHolderText: string;
 	replyTo?: TPost;
+	onAddPost: (data: TAddPostProps) => void;
 };
 
 type TContentCardvariantMap = {
@@ -49,7 +54,7 @@ const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardv
 };
 
 export const ContentInput: FC<TContentInput> = (props) => {
-	const { data: session } = useSession();
+	const { variant, placeHolderText, author, replyTo, onAddPost } = props;
 	const [showModal, setShowModal] = useState(false);
 	const [file, setFile] = useState<File>();
 	const [filePreview, setFilePreview] = useState<string>('');
@@ -78,7 +83,6 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		},
 	});
 
-	const { variant, placeHolderText, author, replyTo } = props;
 	// variant settings: reply or new post
 	const setting = ContentInputCardVariantMap[variant] || ContentInputCardVariantMap.newPost;
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -97,21 +101,20 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		setFile(undefined);
 	};
 
-	const onSubmitHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+	const onSubmitPostHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
-		const replyToPostId = replyTo?.id;
 
 		try {
-			services.posts.createPost({
-				text,
-				file,
-				replyTo: replyToPostId,
-				accessToken: session?.accessToken as string,
-			});
+			onAddPost &&
+				onAddPost({
+					text,
+					file,
+					replyTo: replyTo?.id,
+				});
 
 			setFile(undefined); // reset file
 		} catch (error) {
-			console.error('onSubmitHandler: error', error);
+			console.error('onSubmitPostHandler: error', error);
 		}
 	};
 
@@ -185,7 +188,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 				<Button as="button" colorScheme="slate" icon="upload" onClick={() => showImageUploadModal()}>
 					Bild Hochladen
 				</Button>
-				<Button as="button" colorScheme="violet" icon="send" onClick={(e) => onSubmitHandler(e)}>
+				<Button as="button" colorScheme="violet" icon="send" onClick={(e) => onSubmitPostHandler(e)}>
 					Absenden
 				</Button>
 			</Grid>
