@@ -29,7 +29,7 @@ type TContentCard = {
 	variant: 'detailpage' | 'timeline' | 'response';
 	post: TPost;
 	canDelete?: boolean;
-	onDeletePost: (id: string) => void;
+	onDeletePost?: (id: string) => void;
 };
 
 type TContentCardvariantMap = {

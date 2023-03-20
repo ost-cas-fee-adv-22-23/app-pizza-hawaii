@@ -54,6 +54,11 @@ const UserPage: FC<TUserPage> = ({
 		likes,
 	};
 
+	const switchoptions = [
+		{ label: 'Meine Mumbles', value: PostType.POSTS },
+		{ label: 'Meine Likes', value: PostType.LIKES },
+	];
+
 	const onRemovePost = async (id: string) => {
 		try {
 			const result = await services.api.posts.remove({ id });
@@ -97,25 +102,47 @@ const UserPage: FC<TUserPage> = ({
 					<Richtext size="M">{user.bio}</Richtext>
 				</div>
 				{isCurrentUser ? (
-					<Grid variant="col" gap="M" marginBelow="M">
-						{postsToRender[currentPostType] &&
-							postsToRender[currentPostType].map((post) => {
-								return (
-									<ContentCard key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />
-								);
-							})}
-					</Grid>
+					<>
+						<Grid variant="col" gap="M" marginBelow="M">
+							<Switch
+								label="Wechsle deine angezeigten Mumbles"
+								options={switchoptions}
+								value={PostType.POSTS}
+								name="posttype"
+								onChange={(event: ChangeEvent): void => {
+									const value = (event.target as HTMLInputElement).value as PostType;
+									setCurrentPostType(value);
+								}}
+							/>
+						</Grid>
+						<Grid variant="col" gap="M" marginBelow="M">
+							{postsToRender[currentPostType] &&
+								postsToRender[currentPostType].map((post) => {
+									return (
+										<ContentCard
+											key={post.id}
+											variant="timeline"
+											post={post}
+											onDeletePost={onRemovePost}
+										/>
+									);
+								})}
+						</Grid>
+					</>
 				) : (
-					<Button as="button" size="M" colorScheme="violet">
-						Follow
-					</Button>
+					<>
+						<Button as="button" size="M" colorScheme="violet">
+							Follow
+						</Button>
+						<Grid variant="col" gap="M" marginBelow="M">
+							<span>posts by alien user</span>
+							{postsToRender[currentPostType] &&
+								postsToRender[currentPostType].map((post) => {
+									return <ContentCard key={post.id} variant="timeline" post={post} />;
+								})}
+						</Grid>
+					</>
 				)}
-				<Grid variant="col" gap="M" marginBelow="M">
-					{postsToRender[currentPostType] &&
-						postsToRender[currentPostType].map((post) => {
-							return <ContentCard key={post.id} variant="timeline" post={post} />;
-						})}
-				</Grid>
 			</>
 		</MainLayout>
 	);
