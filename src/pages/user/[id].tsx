@@ -8,11 +8,12 @@ import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { ContentCard } from '../../components/ContentCard';
 
-import { Switch, Headline, UserName, IconLink, TimeStamp, Richtext, Grid, Button } from '@smartive-education/pizza-hawaii';
+import { Switch, Headline, UserName, IconLink, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
 
 import { services } from '../../services';
 
 import { TPost, TUser } from '../../types';
+import { FollowUserButton } from '../../components/FollowUserButton';
 
 type TUserPage = {
 	user: TUser;
@@ -131,11 +132,8 @@ const UserPage: FC<TUserPage> = ({
 					</>
 				) : (
 					<>
-						<Button as="button" size="M" colorScheme="violet">
-							Follow
-						</Button>
+						<FollowUserButton />
 						<Grid variant="col" gap="M" marginBelow="M">
-							<span>posts by alien user</span>
 							{postsToRender[currentPostType] &&
 								postsToRender[currentPostType].map((post) => {
 									return <ContentCard key={post.id} variant="timeline" post={post} />;
