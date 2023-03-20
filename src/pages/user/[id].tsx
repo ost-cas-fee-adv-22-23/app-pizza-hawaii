@@ -133,6 +133,7 @@ const UserPage: FC<TUserPage> = ({
 				) : (
 					<>
 						<FollowUserButton />
+						<br />
 						<Grid variant="col" gap="M" marginBelow="M">
 							{postsToRender[currentPostType] &&
 								postsToRender[currentPostType].map((post) => {

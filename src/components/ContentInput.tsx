@@ -59,8 +59,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 	const [file, setFile] = useState<File>();
 	const [filePreview, setFilePreview] = useState<string>('');
 	const [text, setText] = React.useState<string>('');
-
-	// const [imageToUpload, setImageToUpload] = useState<string | null>(null);
+	const setting = ContentInputCardVariantMap[variant] || ContentInputCardVariantMap.newPost;
 	// Dropzone hook
 	const { getRootProps, getInputProps } = useDropzone({
 		accept: {
@@ -69,22 +68,30 @@ export const ContentInput: FC<TContentInput> = (props) => {
 			'image/jpg': [],
 			'image/gif': [],
 		},
-		maxSize: 5000000,
+		maxSize: 100000,
 		onDrop: (acceptedFiles) => {
 			const newFile = acceptedFiles[0];
 
 			if (!newFile) {
 				return null;
 			}
-			// TODO error handling if file too big
 
 			setFile(newFile);
 			setFilePreview(URL.createObjectURL(newFile));
 		},
+		onDropRejected: (rejectedFiles, error) => {
+			console.error('onDropRejected: rejectedFiles', rejectedFiles, error);
+			// TODO: Sedning error message to the user
+			console.log(rejectedFiles[0].errors[0].message);
+		},
+
+		onError: (error) => {
+			if (error) {
+				console.error('onError: error', error);
+			}
+		},
 	});
 
-	// variant settings: reply or new post
-	const setting = ContentInputCardVariantMap[variant] || ContentInputCardVariantMap.newPost;
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setText(e.target.value);
 	};
@@ -96,6 +103,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 	const onChooseImage = () => {
 		setShowModal(false);
 	};
+
 	const closeModal = () => {
 		setShowModal(false);
 		setFile(undefined);
@@ -112,7 +120,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 					replyTo: replyTo?.id,
 				});
 
-			setFile(undefined); // reset file
+			setFile(undefined); // reset file path
 		} catch (error) {
 			console.error('onSubmitPostHandler: error', error);
 		}
