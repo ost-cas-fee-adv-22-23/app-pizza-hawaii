@@ -14,6 +14,7 @@ import {
 	CopyToClipboardButton,
 	UserContentCard,
 	TUserContentCard,
+	Modal,
 } from '@smartive-education/pizza-hawaii';
 
 import { TPost } from '../types';
@@ -65,14 +66,14 @@ const contentCardvariantMap: Record<TContentCard['variant'], TContentCardvariant
 };
 
 export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false, onDeletePost }) => {
+	const [likedByUser, setLikedByUser] = useState(post.likedByUser);
+	const [likeCount, setLikeCount] = useState(post.likeCount);
+	const [showFullscreen, setShowFullscreen] = useState(false);
+
 	const setting = contentCardvariantMap[variant] || contentCardvariantMap.detailpage;
 	const replyCount = post?.replyCount || 0;
 
-	// toggle Like/Dislike
-	const [likedByUser, setLikedByUser] = useState(post.likedByUser);
-	const [likeCount, setLikeCount] = useState(post.likeCount);
-
-	// Like function
+	// like function
 	const handleLike = async () => {
 		if (likedByUser) {
 			postsService.unlike({ id: post.id }).then(() => {
@@ -86,8 +87,15 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 		setLikedByUser(!likedByUser);
 	};
 
+	// delete function
 	const handleDeletePost = async () => {
 		onDeletePost && onDeletePost(post.id);
+	};
+
+	// fullscreen function
+	const toggleFullscreen = () => {
+		setShowFullscreen(!showFullscreen);
+		console.log('fullscreen', showFullscreen);
 	};
 
 	const headerSlotContent = (
@@ -122,7 +130,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 					preset="enlarge"
 					buttonLabel="Open image in fullscreen"
 					onClick={function (): void {
-						throw new Error('Function not implemented.');
+						toggleFullscreen();
 					}}
 				>
 					<Image
@@ -164,17 +172,27 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 					activeButtonText="Link copied"
 					shareText={`${process.env.NEXTAUTH_URL}/mumble/${post.id}`}
 				/>
+
 				{canDelete && (
 					<InteractionButton
 						as="button"
 						type="button"
 						colorScheme="pink"
-						buttonText="Remove"
+						buttonText="Delete"
 						iconName="cancel"
 						onClick={handleDeletePost}
 					/>
 				)}
 			</Grid>
+			{showFullscreen && (
+				<Modal title="The Big Picture" isVisible={showFullscreen} onClose={() => toggleFullscreen()}>
+					<Image width={1000} src={post.mediaUrl} alt={`Image of ${post.user.firstName} ${post.user.lastName}`} />
+					<br />
+					<Label as="legend" size="L">
+						Posted by: {post.user.firstName}
+					</Label>
+				</Modal>
+			)}
 		</UserContentCard>
 	);
 };

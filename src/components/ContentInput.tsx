@@ -121,6 +121,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 				});
 
 			setFile(undefined); // reset file path
+			setText(''); // TODO: reset text only if post was successful
 		} catch (error) {
 			console.error('onSubmitPostHandler: error', error);
 		}
