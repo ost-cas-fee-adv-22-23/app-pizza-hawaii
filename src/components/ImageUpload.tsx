@@ -16,7 +16,7 @@ export const ImageUpload: FC<TImageUpload> = ({ ...props }) => {
 		<div className="p-5 ">
 			<Image src={src} alt={alt} width={width} height={height} caption={src} />
 			<br />
-			<Label as="legend" size="L">
+			<Label as="p" size="L">
 				Cooles Bild! Schreib doch noch ein Text dazu...
 			</Label>
 		</div>
