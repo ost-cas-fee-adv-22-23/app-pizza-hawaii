@@ -68,7 +68,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 			'image/jpg': [],
 			'image/gif': [],
 		},
-		maxSize: 100000,
+		maxSize: 5000000,
 		onDrop: (acceptedFiles) => {
 			const newFile = acceptedFiles[0];
 
