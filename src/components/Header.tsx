@@ -1,7 +1,8 @@
 import { FC, useState, FormEvent } from 'react';
-import Link from 'next/link';
 import { signOut } from 'next-auth/react';
+import Link from 'next/link';
 import Image from 'next/image';
+
 import MumbleLogo from '../assets/svg/mumbleLogo.svg';
 import {
 	Navi,
@@ -17,6 +18,8 @@ import {
 	FormPassword,
 } from '@smartive-education/pizza-hawaii';
 
+import { useThemeContext, THEME } from '../context/useTheme';
+
 import { TUser } from '../types';
 
 type THeader = {
@@ -25,6 +28,8 @@ type THeader = {
 };
 
 export const Header: FC<THeader> = ({ user }) => {
+	const { theme, setTheme } = useThemeContext();
+
 	const [state, setState] = useState({
 		showSettingsModal: false,
 		user: user,
@@ -46,6 +51,9 @@ export const Header: FC<THeader> = ({ user }) => {
 		});
 	};
 
+	function handleToggleTheme() {
+		setTheme(theme === THEME.LIGHT ? THEME.DARK : THEME.LIGHT);
+	}
 	return (
 		<>
 			<header className="Header mb-8 bg-violet-600 text-white">
@@ -72,6 +80,9 @@ export const Header: FC<THeader> = ({ user }) => {
 								</NaviButton>
 								<NaviButton as="button" icon="logout" onClick={() => signOut()}>
 									Log out
+								</NaviButton>
+								<NaviButton as="button" icon="mumble" onClick={handleToggleTheme}>
+									{theme === THEME.DARK ? 'light' : 'dark'}
 								</NaviButton>
 							</Navi>
 						</nav>
