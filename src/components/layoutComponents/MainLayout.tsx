@@ -12,7 +12,7 @@ export const MainLayout: FC<TMainLayout> = ({ children }) => {
 	const currentUser: TUser | undefined = session?.user;
 
 	return (
-		<div className="bg-slate-100">
+		<div className="bg-slate-100 dark:bg-slate-900">
 			{currentUser && <Header user={currentUser} />}
 
 			<main className="px-content">

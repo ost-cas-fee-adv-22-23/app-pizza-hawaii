@@ -195,7 +195,6 @@ type TgetPostsLikedByUser = {
 	accessToken: string;
 };
 
-// TODO: implement this in a better way
 const getPostsLikedByUser = async ({ id, accessToken }: TgetPostsLikedByUser) => {
 	const { posts } = await getPostsByQuery({
 		query: {
@@ -203,7 +202,7 @@ const getPostsLikedByUser = async ({ id, accessToken }: TgetPostsLikedByUser) =>
 		},
 		accessToken,
 	});
-	console.log(posts);
+
 	return posts;
 };
 
