@@ -20,7 +20,6 @@ class ErrorBoundary extends React.Component<Props, State> {
 	static getDerivedStateFromError(error: unknown) {
 		return { hasError: true, error };
 	}
-
 	componentDidCatch(error: Error | unknown, errorInfo: React.ErrorInfo) {
 		// may we also introduce an error logging service here - if there is time for that
 		console.error(error, errorInfo);
