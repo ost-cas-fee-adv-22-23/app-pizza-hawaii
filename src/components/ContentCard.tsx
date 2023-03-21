@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import React, { FC, useState } from 'react';
 
 import {
@@ -73,7 +72,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 	const setting = contentCardvariantMap[variant] || contentCardvariantMap.detailpage;
 	const replyCount = post?.replyCount || 0;
 
-	// like function
+	// like and unlike function
 	const handleLike = async () => {
 		if (likedByUser) {
 			postsService.unlike({ id: post.id }).then(() => {
@@ -92,10 +91,10 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 		onDeletePost && onDeletePost(post.id);
 	};
 
+	// mayby we do a helper function hook or a component for this as fullscreen is used in userpanorama image as well
 	// fullscreen function
 	const toggleFullscreen = () => {
 		setShowFullscreen(!showFullscreen);
-		console.log('fullscreen', showFullscreen);
 	};
 
 	const headerSlotContent = (
@@ -153,9 +152,9 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 					colorScheme="violet"
 					buttonText={replyCount > 0 ? `${replyCount} Comments` : replyCount === 0 ? 'Comment' : '1 Comment'}
 					iconName={replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
-					onClick={function (): void {
-						// throw new Error('Function not implemented.');
-					}}
+					// TODO: remove onclick mandatory in InteractionButton component
+					// eslint-disable-next-line @typescript-eslint/no-empty-function
+					onClick={() => {}}
 				/>
 				<InteractionButton
 					as="button"

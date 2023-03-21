@@ -4,7 +4,6 @@ import { Button, Headline, Label } from '@smartive-education/pizza-hawaii';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import Head from 'next/head';
 
 export default function LoginPage() {
 	const { data: session } = useSession();

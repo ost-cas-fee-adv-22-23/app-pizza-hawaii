@@ -81,7 +81,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		},
 		onDropRejected: (rejectedFiles, error) => {
 			console.error('onDropRejected: rejectedFiles', rejectedFiles, error);
-			// TODO: Sedning error message to the user
+			// TODO: Sedning error message to the user in modal
 			console.log(rejectedFiles[0].errors[0].message);
 		},
 
