@@ -1,44 +1,99 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 
 import { Grid } from '@smartive-education/pizza-hawaii';
 import { ContentCard } from '../../components/ContentCard';
-import { ContentInput } from '../../components/ContentInput';
+import { ContentInput, TAddPostProps } from '../../components/ContentInput';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 
 import { TPost, TUser } from '../../types';
-
 import { services } from '../../services';
-import Head from 'next/head';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 type TUserPage = {
 	currentUser: TUser;
 	post: TPost;
 };
 
-const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const DetailPage: FC<TUserPage> = ({
+	post: initialPost,
+	currentUser,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+	const { data: session } = useSession();
+	const router = useRouter();
+
+	const [post, setPost] = useState(initialPost);
+
+	const onAddReply = async (postData: TAddPostProps) => {
+		try {
+			const newReply = await services.posts.createPost({
+				...postData,
+				accessToken: session?.accessToken as string,
+			});
+
+			setPost({
+				...post,
+				replies: [newReply, ...post.replies],
+			});
+		} catch (error) {
+			console.error('onSubmitHandler: error', error);
+		}
+	};
+
+	const onRemovePost = async (id: string) => {
+		try {
+			const result = await services.api.posts.remove({ id });
+
+			if (result) {
+				if (post.id === id) {
+					// go back to overview page
+					router.push('/');
+				} else {
+					setPost({
+						...post,
+						replies: post.replies.filter((reply: TPost) => reply.id !== id),
+					});
+				}
+			}
+		} catch (error) {
+			console.error('onSubmitHandler: error', error);
+		}
+	};
+
 	return (
 		<MainLayout>
 			<>
-				<Head>
-					<title>Mumble - {post.user.userName}</title>
-					<meta name="description" content={post.text} />
-				</Head>
-
 				<Grid as="div" variant="col" gap="S">
-					{post && <ContentCard variant="detailpage" post={post} />}
-
+					{post && (
+						<ContentCard
+							variant="detailpage"
+							post={post}
+							canDelete={post.creator === currentUser.id}
+							onDeletePost={onRemovePost}
+						/>
+					)}
 					{currentUser && (
 						<ContentInput
 							variant="answerPost"
-							headline="Hey, was geht ab?"
+							headline="Hey, was meinst Du dazu?"
 							author={currentUser}
-							placeHolderText="Deine Meinung zählt"
+							replyTo={post}
+							placeHolderText="Deine Antwort...?"
+							onAddPost={onAddReply}
 						/>
 					)}
 					{post?.replies?.map((reply: TPost) => {
-						return <ContentCard key={reply.id} variant="response" post={reply} />;
+						return (
+							<ContentCard
+								key={reply.id}
+								variant="response"
+								post={reply}
+								canDelete={reply.creator === currentUser.id}
+								onDeletePost={onRemovePost}
+							/>
+						);
 					})}
 				</Grid>
 			</>

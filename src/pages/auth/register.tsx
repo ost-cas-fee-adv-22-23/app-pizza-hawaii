@@ -75,7 +75,7 @@ const RegisterPage = () => {
 				<div className="mt-3 text-center">
 					<Label as="span" size="M">
 						Bereits registriert? &nbsp;
-						<Link href="/login">Jetzt anmelden</Link>
+						<Link href="/auth/login">Jetzt anmelden</Link>
 					</Label>
 				</div>
 				<br />

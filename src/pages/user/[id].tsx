@@ -8,11 +8,12 @@ import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { ContentCard } from '../../components/ContentCard';
 
-import { Switch, Headline, UserName, IconLink, TimeStamp, Richtext, Grid, Button } from '@smartive-education/pizza-hawaii';
+import { Switch, Headline, UserName, IconLink, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
 
 import { services } from '../../services';
 
 import { TPost, TUser } from '../../types';
+import { FollowUserButton } from '../../components/FollowUserButton';
 
 type TUserPage = {
 	user: TUser;
@@ -25,8 +26,14 @@ enum PostType {
 	LIKES = 'likes',
 }
 
-const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const UserPage: FC<TUserPage> = ({
+	user,
+	posts: initialPosts,
+	likes,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const [currentPostType, setCurrentPostType] = useState(PostType.POSTS);
+
+	const [posts, setPosts] = useState(initialPosts);
 	const { data: session } = useSession();
 	const currentUser: TUser | undefined = session?.user;
 
@@ -46,6 +53,23 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	const postsToRender: Record<string, TPost[]> = {
 		posts,
 		likes,
+	};
+
+	const switchoptions = [
+		{ label: 'Meine Mumbles', value: PostType.POSTS },
+		{ label: 'Meine Likes', value: PostType.LIKES },
+	];
+
+	const onRemovePost = async (id: string) => {
+		try {
+			const result = await services.api.posts.remove({ id });
+
+			if (result) {
+				setPosts(posts.filter((post: TPost) => post.id !== id));
+			}
+		} catch (error) {
+			console.error('onSubmitHandler: error', error);
+		}
 	};
 
 	return (
@@ -79,38 +103,45 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 					<Richtext size="M">{user.bio}</Richtext>
 				</div>
 				{isCurrentUser ? (
-					<Grid variant="col" gap="M" marginBelow="M">
-						<Switch
-							label="Wechsle deine angezeigten Mumbles"
-							options={[
-								{
-									label: 'Meine Mumbles',
-									value: PostType.POSTS,
-								},
-								{
-									label: 'Meine Likes',
-									value: PostType.LIKES,
-								},
-							]}
-							value={PostType.POSTS}
-							name="posttype"
-							onChange={(event: ChangeEvent): void => {
-								const value = (event.target as HTMLInputElement).value as PostType;
-								setCurrentPostType(value);
-							}}
-						/>
-					</Grid>
+					<>
+						<Grid variant="col" gap="M" marginBelow="M">
+							<Switch
+								label="Wechsle deine angezeigten Mumbles"
+								options={switchoptions}
+								value={PostType.POSTS}
+								name="posttype"
+								onChange={(event: ChangeEvent): void => {
+									const value = (event.target as HTMLInputElement).value as PostType;
+									setCurrentPostType(value);
+								}}
+							/>
+						</Grid>
+						<Grid variant="col" gap="M" marginBelow="M">
+							{postsToRender[currentPostType] &&
+								postsToRender[currentPostType].map((post) => {
+									return (
+										<ContentCard
+											key={post.id}
+											variant="timeline"
+											post={post}
+											onDeletePost={onRemovePost}
+										/>
+									);
+								})}
+						</Grid>
+					</>
 				) : (
-					<Button as="button" size="M" colorScheme="violet">
-						Follow
-					</Button>
+					<>
+						<FollowUserButton />
+						<br />
+						<Grid variant="col" gap="M" marginBelow="M">
+							{postsToRender[currentPostType] &&
+								postsToRender[currentPostType].map((post) => {
+									return <ContentCard key={post.id} variant="timeline" post={post} />;
+								})}
+						</Grid>
+					</>
 				)}
-				<Grid variant="col" gap="M" marginBelow="M">
-					{postsToRender[currentPostType] &&
-						postsToRender[currentPostType].map((post) => {
-							return <ContentCard key={post.id} variant="timeline" post={post} />;
-						})}
-				</Grid>
 			</>
 		</MainLayout>
 	);
