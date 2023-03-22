@@ -1,19 +1,19 @@
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
-// import Link from 'next/link'; TODO: use Link in Design System
 import Head from 'next/head';
-import ErrorPage from 'next/error';
+// import Link from 'next/link'; TODO: use Link in Design System
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { ContentCard } from '../components/ContentCard';
 import { ContentInput, TAddPostProps } from '../components/ContentInput';
-
 import { Headline, Grid, Button } from '@smartive-education/pizza-hawaii';
+
 import { services } from '../services';
+import useIncreasingInterval from '../hooks/useIncreasingInterval';
 
 import type { TPost } from '../types';
-import { useSession } from 'next-auth/react';
 
 export default function PageHome({
 	currentUser,
@@ -26,20 +26,36 @@ export default function PageHome({
 	const [posts, setPosts] = useState(initialPosts);
 	const [loading, setLoading] = useState(false);
 	const [hasMore, setHasMore] = useState(initialPosts.length < initialPostCount);
+	const [latestPosts, setLatestPosts] = useState<TPost[]>([]);
 
 	if (error) {
 		return <ErrorPage statusCode={500} title={error} />;
 	}
+	const updatePosts = () => {
+		setPosts([...latestPosts, ...posts]);
+		setLatestPosts([]);
+	};
+
+	const loadLatestPosts = async () => {
+		const latestPost = posts[0];
+		const { posts: newPosts } = await services.api.posts.loadmore({
+			newerThan: latestPost.id,
+		});
+
+		if (newPosts?.length > 0) {
+			setLatestPosts(newPosts);
+		}
+	};
 
 	const loadMore = async () => {
 		setLoading(true);
 		try {
-			const { count: newPostCount, posts: newPosts } = await services.api.posts.loadmore({
+			const { count: newOlderPostCount, posts: newOlderPosts } = await services.api.posts.loadmore({
 				olderThan: posts[posts.length - 1].id,
 			});
 
-			setHasMore(newPosts.length < newPostCount);
-			setPosts([...posts, ...newPosts]);
+			setHasMore(newOlderPosts.length < newOlderPostCount);
+			setPosts([...posts, ...newOlderPosts]);
 		} catch (error) {
 			// TODO: find something better
 			console.error(error);
@@ -73,6 +89,10 @@ export default function PageHome({
 		}
 	};
 
+	useIncreasingInterval(() => {
+		loadLatestPosts();
+	});
+
 	return (
 		<MainLayout>
 			<>
@@ -93,6 +113,12 @@ export default function PageHome({
 							<Headline level={4} as="p">
 								Whats new in Mumble....
 							</Headline>
+
+							{latestPosts?.length > 0 && (
+								<Button as="button" colorScheme="slate" onClick={() => updatePosts()}>
+									We have {latestPosts.length} new posts for you!
+								</Button>
+							)}
 						</div>
 
 						<Grid variant="col" gap="M" marginBelow="M">
