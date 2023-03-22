@@ -1,8 +1,10 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Grid, Headline } from '@smartive-education/pizza-hawaii';
-import { services } from '../services';
 import { useSession } from 'next-auth/react';
+
+import { Grid, Headline } from '@smartive-education/pizza-hawaii';
 import { UserCard } from './UserCard';
+import { services } from '../services';
+
 import { TUser } from '../types';
 
 interface TUserRecommender {
