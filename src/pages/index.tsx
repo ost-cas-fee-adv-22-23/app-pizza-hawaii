@@ -41,7 +41,8 @@ export default function PageHome({
 			setHasMore(newPosts.length < newPostCount);
 			setPosts([...posts, ...newPosts]);
 		} catch (error) {
-			<ErrorPage statusCode={500} title={'no more posts'} />;
+			// TODO: find something better
+			console.error(error);
 		}
 
 		setLoading(false);
