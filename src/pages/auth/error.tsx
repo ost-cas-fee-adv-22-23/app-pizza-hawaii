@@ -6,7 +6,6 @@ export default function LogoutPage() {
 		<>
 			<Head>
 				<title>Error</title>
-				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
 			<LoginLayout>

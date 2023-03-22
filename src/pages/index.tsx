@@ -3,6 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 // import Link from 'next/link'; TODO: use Link in Design System
 import Head from 'next/head';
+import ErrorPage from 'next/error';
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { ContentCard } from '../components/ContentCard';
@@ -27,14 +28,7 @@ export default function PageHome({
 	const [hasMore, setHasMore] = useState(initialPosts.length < initialPostCount);
 
 	if (error) {
-		return (
-			<MainLayout>
-				<div className="text-slate-900 text-center">
-					<Headline level={3}>An error occurred while loading the posts. Please try again later.</Headline>
-					Error: {error}
-				</div>
-			</MainLayout>
-		);
+		return <ErrorPage statusCode={500} title={error} />;
 	}
 
 	const loadMore = async () => {
@@ -47,8 +41,8 @@ export default function PageHome({
 			setHasMore(newPosts.length < newPostCount);
 			setPosts([...posts, ...newPosts]);
 		} catch (error) {
-			console.warn(error);
-			// todo: error handling
+			// TODO: find something better
+			console.error(error);
 		}
 
 		setLoading(false);
