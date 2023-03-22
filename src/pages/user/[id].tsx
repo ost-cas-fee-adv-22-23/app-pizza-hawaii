@@ -98,6 +98,9 @@ const UserPage: FC<TUserPage> = ({
 				{isCurrentUser ? (
 					<>
 						<Grid variant="col" gap="M" marginBelow="M">
+							<UserRecommender currentUserId={user.id} />
+						</Grid>
+						<Grid variant="col" gap="M" marginBelow="M">
 							<Switch
 								label="Wechsle deine angezeigten Mumbles"
 								options={switchoptions}
