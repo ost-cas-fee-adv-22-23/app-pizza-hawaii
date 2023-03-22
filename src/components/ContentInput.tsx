@@ -161,6 +161,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 				placeholder={placeHolderText}
 				hideLabel={true}
 				size="L"
+				value={text}
 				onChange={(e) => inputChangeHandler(e)}
 			/>
 
