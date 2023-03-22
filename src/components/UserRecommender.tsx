@@ -7,35 +7,36 @@ import { services } from '../services';
 
 import { TUser } from '../types';
 
-interface TUserRecommender {
+type TUserRecommender = {
 	currentUserId: string;
-}
+};
 
-export const UserRecommender: FC<TUserRecommender> = (props) => {
+export const UserRecommender: FC<TUserRecommender> = ({ currentUserId }: TUserRecommender) => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [recommendedUsers, setRecommendedUsers] = useState([] as TUser[]);
 	const { data: session } = useSession();
-	const { currentUserId } = props;
 	const accessToken = session?.accessToken;
 
-	// its clientside and its working better IMHO
 	useEffect(() => {
 		if (accessToken) {
-			const fetchRecommendedUsers = async (accessToken: string) => {
+			const fetchRecommendedUsers = async () => {
 				const recommendedUsers = await services.users.getUsers({
-					limit: 7,
+					limit: 100, // TODO: this is a workaround, because the API does not support randomization
 					offset: 0,
 					accessToken,
 				});
 				setRecommendedUsers(recommendedUsers.users);
 			};
-			fetchRecommendedUsers(accessToken);
+			fetchRecommendedUsers();
 			setIsLoading(false);
 		}
 	}, [accessToken]);
 
+	// randomize the order of the recommended users
+	const randomizedRecommendedUsers = recommendedUsers.sort(() => Math.random() - 0.5);
+
 	// exclude current user (yourself) from recommended users
-	const pureRecommendedUsers = recommendedUsers.filter((user) => user.id !== currentUserId).splice(0, 6);
+	const pureRecommendedUsers = randomizedRecommendedUsers.filter((user) => user.id !== currentUserId).splice(0, 6);
 
 	return (
 		<>
