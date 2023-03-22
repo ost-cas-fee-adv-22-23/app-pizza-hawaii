@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
+import ErrorPage from 'next/error';
 import Head from 'next/head';
 // import Link from 'next/link'; TODO: use Link in Design System
 

@@ -128,7 +128,7 @@ const UserPage: FC<TUserPage> = ({
 					</>
 				) : (
 					<>
-						<FollowUserButton />
+						<FollowUserButton userId={user.id} />
 						<br />
 						<Grid variant="col" gap="M" marginBelow="M">
 							{postsToRender[currentPostType] &&
