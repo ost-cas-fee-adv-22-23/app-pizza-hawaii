@@ -13,4 +13,5 @@ export type TPost = {
 	type: 'post' | 'reply';
 	user: TUser;
 	replies?: TPost[];
+	parentId?: string;
 };

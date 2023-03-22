@@ -7,12 +7,13 @@ import ErrorPage from 'next/error';
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { ContentCard } from '../components/ContentCard';
-import { ContentInput } from '../components/ContentInput';
+import { ContentInput, TAddPostProps } from '../components/ContentInput';
 
 import { Headline, Grid, Button } from '@smartive-education/pizza-hawaii';
 import { services } from '../services';
 
 import type { TPost } from '../types';
+import { useSession } from 'next-auth/react';
 
 export default function PageHome({
 	currentUser,
@@ -20,6 +21,8 @@ export default function PageHome({
 	posts: initialPosts,
 	error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	const { data: session } = useSession();
+
 	const [posts, setPosts] = useState(initialPosts);
 	const [loading, setLoading] = useState(false);
 	const [hasMore, setHasMore] = useState(initialPosts.length < initialPostCount);
@@ -44,6 +47,31 @@ export default function PageHome({
 		setLoading(false);
 	};
 
+	const onAddPost = async (postData: TAddPostProps) => {
+		try {
+			const newPost = await services.posts.createPost({
+				...postData,
+				accessToken: session?.accessToken as string,
+			});
+
+			setPosts([newPost, ...posts]);
+		} catch (error) {
+			console.error('onSubmitHandler: error', error);
+		}
+	};
+
+	const onRemovePost = async (id: string) => {
+		try {
+			const result = await services.api.posts.remove({ id });
+
+			if (result) {
+				setPosts(posts.filter((post: TPost) => post.id !== id));
+			}
+		} catch (error) {
+			console.error('onSubmitHandler: error', error);
+		}
+	};
+
 	return (
 		<MainLayout>
 			<>
@@ -54,38 +82,42 @@ export default function PageHome({
 						content="Verpassen Sie nicht die neuesten Mumbles von den besten Nutzern der Plattform. Besuchen Sie die Index-Seite von Mumble und bleiben Sie auf dem Laufenden."
 					/>
 				</Head>
-				<section className="mx-auto w-full max-w-content">
-					<div className="mb-2 text-violet-600">
-						<Headline level={2}>Welcome to Mumble</Headline>
-					</div>
+				<main>
+					<section className="mx-auto w-full max-w-content">
+						<div className="mb-2 text-violet-600">
+							<Headline level={2}>Welcome to Mumble</Headline>
+						</div>
 
-					<div className="text-slate-500 mb-8">
-						<Headline level={4} as="p">
-							Whats new in Mumble....
-						</Headline>
-					</div>
+						<div className="text-slate-500 mb-8">
+							<Headline level={4} as="p">
+								Whats new in Mumble....
+							</Headline>
+						</div>
 
-					<Grid variant="col" gap="M" marginBelow="M">
-						<ContentInput
-							variant="newPost"
-							headline="Hey, was geht ab?"
-							author={currentUser}
-							placeHolderText="Deine Meinung zählt"
-						/>
+						<Grid variant="col" gap="M" marginBelow="M">
+							<ContentInput
+								variant="newPost"
+								headline="Hey, was geht ab?"
+								author={currentUser}
+								placeHolderText="Deine Meinung zählt"
+								onAddPost={onAddPost}
+							/>
+							{posts.map((post: TPost) => {
+								return (
+									<ContentCard key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />
+								);
+							})}
+						</Grid>
 
-						{posts.map((post: TPost) => {
-							return <ContentCard key={post.id} variant="timeline" post={post} />;
-						})}
-					</Grid>
-
-					{hasMore ? (
-						<Button as="button" colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
-							{loading ? '...' : 'Load more'}
-						</Button>
-					) : (
-						''
-					)}
-				</section>
+						{hasMore ? (
+							<Button as="button" colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
+								{loading ? '...' : 'Load more'}
+							</Button>
+						) : (
+							''
+						)}
+					</section>
+				</main>
 			</>
 		</MainLayout>
 	);

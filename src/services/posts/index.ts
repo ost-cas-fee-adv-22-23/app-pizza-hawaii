@@ -10,7 +10,6 @@ const statusMessageMap: Record<number, string> = {
 	403: 'Forbidden',
 };
 
-type TUploadImage = File & { preview: string };
 type TRawPost = Omit<TPost, 'createdAt, user, replies'>;
 
 type TBase = {
@@ -210,23 +209,34 @@ const getPostsLikedByUser = async ({ id, accessToken }: TgetPostsLikedByUser) =>
 
 type TCreatePost = {
 	text: string;
-	file: TUploadImage;
+	file?: File;
+	replyTo?: string;
 	accessToken: string;
 };
 
-const createPost = async ({ text, file, accessToken }: TCreatePost) => {
+// direct to db
+const createPost = async ({ text, file, replyTo, accessToken }: TCreatePost) => {
+	let url = 'posts';
+	if (replyTo) {
+		url = `posts/${replyTo}`;
+	}
+
 	const formData = new FormData();
 	formData.append('text', text);
 	if (file) {
 		formData.append('image', file);
 	}
 
-	let post = (await fetchQwackerApi(`posts`, accessToken, {
+	let post = await fetchQwackerApi(url, accessToken, {
 		method: 'POST',
 		body: formData,
-	})) as TRawPost;
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+		},
+	});
 
 	post = transformPost(post);
+
 	return (await addReferencesToPosts([post], false, accessToken))[0];
 };
 
