@@ -7,9 +7,11 @@
 export default function GlobalError({ error }: { error?: Error }) {
 	return (
 		<html>
-			<head>Mumble Global Error Page</head>
+			<head>
+				<title>Mumble Global Error Page</title>
+			</head>
 			<body>
-				<h2>Something went really wrong!</h2>
+				<h1>Something went wrong! Please come back later.</h1>
 				<p>Try to screenshot this page and send it to your friendly printer-fixer admin</p>
 				<br />
 				<p>Error Message: {error?.message}</p>
