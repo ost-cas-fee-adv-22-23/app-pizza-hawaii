@@ -7,6 +7,7 @@ import ErrorPage from 'next/error';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { ContentCard } from '../../components/ContentCard';
+import { UserRecommender } from '../../components/UserRecommender';
 
 import { Switch, Headline, UserName, IconLink, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
 
@@ -42,7 +43,6 @@ const UserPage: FC<TUserPage> = ({
 	}
 
 	const isCurrentUser = currentUser?.id === user.id;
-
 	const postsToRender: Record<string, TPost[]> = {
 		posts,
 		likes,
@@ -97,6 +97,9 @@ const UserPage: FC<TUserPage> = ({
 				</div>
 				{isCurrentUser ? (
 					<>
+						<Grid variant="col" gap="M" marginBelow="M">
+							<UserRecommender currentUserId={user.id} />
+						</Grid>
 						<Grid variant="col" gap="M" marginBelow="M">
 							<Switch
 								label="Wechsle deine angezeigten Mumbles"
