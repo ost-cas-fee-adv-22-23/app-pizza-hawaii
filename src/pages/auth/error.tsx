@@ -9,7 +9,7 @@ export default function LogoutPage() {
 			</Head>
 
 			<LoginLayout>
-				<h1>Error ! &rarr;</h1>
+				<h1>Error &rarr;</h1>
 			</LoginLayout>
 		</>
 	);
