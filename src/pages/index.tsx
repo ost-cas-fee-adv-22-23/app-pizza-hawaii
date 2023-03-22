@@ -3,38 +3,32 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 // import Link from 'next/link'; TODO: use Link in Design System
 import Head from 'next/head';
+import ErrorPage from 'next/error';
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { ContentCard } from '../components/ContentCard';
-import { ContentInput } from '../components/ContentInput';
+import { ContentInput, TAddPostProps } from '../components/ContentInput';
 
 import { Headline, Grid, Button } from '@smartive-education/pizza-hawaii';
 import { services } from '../services';
 
-import type { TPost, TUser } from '../types';
-import { contentCardModel } from '../models/ContentCard';
+import type { TPost } from '../types';
+import { useSession } from 'next-auth/react';
 
 export default function PageHome({
 	currentUser,
 	postCount: initialPostCount,
-	users: initialUsers,
 	posts: initialPosts,
 	error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	const { data: session } = useSession();
+
 	const [posts, setPosts] = useState(initialPosts);
-	const [users] = useState(initialUsers);
 	const [loading, setLoading] = useState(false);
 	const [hasMore, setHasMore] = useState(initialPosts.length < initialPostCount);
 
 	if (error) {
-		return (
-			<MainLayout>
-				<div className="text-slate-900 text-center">
-					<Headline level={3}>An error occurred while loading the posts. Please try again later.</Headline>
-					Error: {error}
-				</div>
-			</MainLayout>
-		);
+		return <ErrorPage statusCode={500} title={error} />;
 	}
 
 	const loadMore = async () => {
@@ -44,39 +38,52 @@ export default function PageHome({
 				olderThan: posts[posts.length - 1].id,
 			});
 
-			const postsToAdd = newPosts
-				.map((post) => {
-					const author = users.find((user: TUser) => user.id === post.creator);
-					if (author) {
-						post.creator = author;
-					}
-					return post;
-				})
-				.filter((post) => typeof post.creator === 'object');
-
-			if (postsToAdd.length !== newPosts.length) {
-				console.warn('Some users could not loaded');
-				// todo: decide what to do here
-			}
-
 			setHasMore(newPosts.length < newPostCount);
-			setPosts([...posts, ...postsToAdd]);
+			setPosts([...posts, ...newPosts]);
 		} catch (error) {
-			console.warn(error);
-			// todo: error handling
+			// TODO: find something better
+			console.error(error);
 		}
 
 		setLoading(false);
 	};
 
-	return (
-		<>
-			<Head>
-				<title>Mumble StartPage - Welcome</title>
-			</Head>
+	const onAddPost = async (postData: TAddPostProps) => {
+		try {
+			const newPost = await services.posts.createPost({
+				...postData,
+				accessToken: session?.accessToken as string,
+			});
 
-			<MainLayout>
-				<main className="px-content">
+			setPosts([newPost, ...posts]);
+		} catch (error) {
+			console.error('onSubmitHandler: error', error);
+		}
+	};
+
+	const onRemovePost = async (id: string) => {
+		try {
+			const result = await services.api.posts.remove({ id });
+
+			if (result) {
+				setPosts(posts.filter((post: TPost) => post.id !== id));
+			}
+		} catch (error) {
+			console.error('onSubmitHandler: error', error);
+		}
+	};
+
+	return (
+		<MainLayout>
+			<>
+				<Head>
+					<title>Mumble - Alle Mumbles</title>
+					<meta
+						name="description"
+						content="Verpassen Sie nicht die neuesten Mumbles von den besten Nutzern der Plattform. Besuchen Sie die Index-Seite von Mumble und bleiben Sie auf dem Laufenden."
+					/>
+				</Head>
+				<main>
 					<section className="mx-auto w-full max-w-content">
 						<div className="mb-2 text-violet-600">
 							<Headline level={2}>Welcome to Mumble</Headline>
@@ -94,10 +101,12 @@ export default function PageHome({
 								headline="Hey, was geht ab?"
 								author={currentUser}
 								placeHolderText="Deine Meinung zählt"
+								onAddPost={onAddPost}
 							/>
-
 							{posts.map((post: TPost) => {
-								return <ContentCard key={post.id} variant="timeline" post={post} />;
+								return (
+									<ContentCard key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />
+								);
 							})}
 						</Grid>
 
@@ -110,36 +119,26 @@ export default function PageHome({
 						)}
 					</section>
 				</main>
-			</MainLayout>
-		</>
+			</>
+		</MainLayout>
 	);
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	const session = await getToken({ req });
+	const accessToken = session?.accessToken as string;
 
 	try {
 		const { count: postCount, posts } = await services.posts.getPosts({
 			limit: 10,
-			accessToken: session?.accessToken as string,
-		});
-		const { users } = await services.users.getUsers({
-			accessToken: session?.accessToken as string,
+			accessToken,
 		});
 
 		return {
 			props: {
 				currentUser: session?.user,
 				postCount,
-				users,
-				posts: posts
-					.map((post) => {
-						return contentCardModel({
-							post: post,
-							user: users.find((user: TUser) => user.id === post.creator) as TUser,
-						});
-					})
-					.filter((post) => typeof post?.creator === 'object'),
+				posts,
 			},
 		};
 	} catch (error) {

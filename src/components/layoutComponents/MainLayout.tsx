@@ -1,6 +1,5 @@
 import { ReactElement, FC } from 'react';
 import { useSession } from 'next-auth/react';
-import Head from 'next/head';
 import { Header } from '../Header';
 import { TUser } from '../../types';
 
@@ -14,10 +13,6 @@ export const MainLayout: FC<TMainLayout> = ({ children }) => {
 
 	return (
 		<div className="bg-slate-100">
-			<Head>
-				<link rel="icon" href="favicon.svg" />
-			</Head>
-
 			{currentUser && <Header user={currentUser} />}
 
 			<main className="px-content">

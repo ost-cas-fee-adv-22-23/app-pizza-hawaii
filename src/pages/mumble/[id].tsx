@@ -1,43 +1,103 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 
 import { Grid } from '@smartive-education/pizza-hawaii';
 import { ContentCard } from '../../components/ContentCard';
-import { ContentInput } from '../../components/ContentInput';
-import { contentCardModel } from '../../models/ContentCard';
-import { Header } from '../../components/Header';
+import { ContentInput, TAddPostProps } from '../../components/ContentInput';
+import { MainLayout } from '../../components/layoutComponents/MainLayout';
 
 import { TPost, TUser } from '../../types';
-
 import { services } from '../../services';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 type TUserPage = {
 	currentUser: TUser;
 	post: TPost;
 };
 
-const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	return (
-		<div className="bg-slate-100">
-			<Header user={currentUser} />
-			<section className="mx-auto w-full max-w-content">
-				<Grid as="div" variant="col" gap="S">
-					<ContentCard variant="detailpage" post={post} />
+const DetailPage: FC<TUserPage> = ({
+	post: initialPost,
+	currentUser,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+	const { data: session } = useSession();
+	const router = useRouter();
 
-					<ContentInput
-						variant="answerPost"
-						headline="Hey, was geht ab?"
-						author={currentUser}
-						placeHolderText="Deine Meinung zählt"
-					/>
+	const [post, setPost] = useState(initialPost);
+
+	const onAddReply = async (postData: TAddPostProps) => {
+		try {
+			const newReply = await services.posts.createPost({
+				...postData,
+				accessToken: session?.accessToken as string,
+			});
+
+			setPost({
+				...post,
+				replies: [newReply, ...post.replies],
+			});
+		} catch (error) {
+			console.error('onSubmitHandler: error', error);
+		}
+	};
+
+	const onRemovePost = async (id: string) => {
+		try {
+			const result = await services.api.posts.remove({ id });
+
+			if (result) {
+				if (post.id === id) {
+					// go back to overview page
+					router.push('/');
+				} else {
+					setPost({
+						...post,
+						replies: post.replies.filter((reply: TPost) => reply.id !== id),
+					});
+				}
+			}
+		} catch (error) {
+			console.error('onSubmitHandler: error', error);
+		}
+	};
+
+	return (
+		<MainLayout>
+			<>
+				<Grid as="div" variant="col" gap="S">
+					{post && (
+						<ContentCard
+							variant="detailpage"
+							post={post}
+							canDelete={post.creator === currentUser.id}
+							onDeletePost={onRemovePost}
+						/>
+					)}
+					{currentUser && (
+						<ContentInput
+							variant="answerPost"
+							headline="Hey, was meinst Du dazu?"
+							author={currentUser}
+							replyTo={post}
+							placeHolderText="Deine Antwort...?"
+							onAddPost={onAddReply}
+						/>
+					)}
 					{post?.replies?.map((reply: TPost) => {
-						console.log(reply);
-						return <ContentCard key={reply.id} variant="response" post={reply} />;
+						return (
+							<ContentCard
+								key={reply.id}
+								variant="response"
+								post={reply}
+								canDelete={reply.creator === currentUser.id}
+								onDeletePost={onRemovePost}
+							/>
+						);
 					})}
 				</Grid>
-			</section>
-		</div>
+			</>
+		</MainLayout>
 	);
 };
 
@@ -51,39 +111,15 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { id:
 		};
 	}
 	try {
-		const postData: TPost = await services.posts.getPostById({
+		const post: TPost = await services.posts.getPost({
 			id: postId as string,
+			loadReplies: true,
 			accessToken: session?.accessToken as string,
 		});
-
-		const repliesData = await services.posts.getRepliesById({
-			id: postId as string,
-			accessToken: session?.accessToken as string,
-		});
-
-		const { users } = await services.users.getUsers({
-			accessToken: session?.accessToken as string,
-		});
-
-		const user = (users.find((user) => user.id === postData.creator) as TUser) || null;
-
-		const replies = repliesData
-			.map((post) => {
-				const author = users.find((user: TUser) => user.id === post.creator);
-				if (author) {
-					post.creator = author;
-				}
-				return post;
-			})
-			.filter((post) => typeof post.creator === 'object');
 
 		return {
 			props: {
-				post: contentCardModel({
-					post: postData,
-					user: user,
-					replies,
-				}),
+				post,
 				currentUser: session?.user,
 			},
 		};

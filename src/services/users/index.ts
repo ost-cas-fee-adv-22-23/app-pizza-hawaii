@@ -1,29 +1,43 @@
 import { TUser } from '../../types';
+import fetchQwackerApi from '../qwacker';
 
 type TRawUser = Omit<TUser, 'createdAt profileLink, displayName, posterImage, bio, city'>;
+
+type TBase = {
+	accessToken: string;
+};
+
+const TTL = 5 * 60 * 1000; // 5 minutes
+
+type TUserCache = {
+	[id: string]: {
+		data: TUser;
+		createdAt: number;
+	};
+};
+
+const userCache: TUserCache = {};
 
 /**
  * Get all users
  *
  * @param {number} limit
  * @param {number} offset
- * @param {string} accessToken
  *
  * @returns {Promise<{ count: number; users: TUser[] }>}
  */
 
-type TGetUser = {
+type TGetUsers = TBase & {
 	limit?: number;
 	offset?: number;
-	accessToken: string;
 };
 
-type TGetUserResult = {
+type TGetUsersResult = {
 	count: number;
 	users: TUser[];
 };
 
-const getUsers = async ({ limit, offset = 0, accessToken }: TGetUser): Promise<TGetUserResult> => {
+const getUsers = async ({ limit, offset = 0, accessToken }: TGetUsers): Promise<TGetUsersResult> => {
 	const maxLimit = 1000;
 	// create url params
 	const urlParams = new URLSearchParams({
@@ -34,30 +48,26 @@ const getUsers = async ({ limit, offset = 0, accessToken }: TGetUser): Promise<T
 		urlParams.set('limit', Math.min(limit, maxLimit).toString());
 	}
 
-	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}users?${urlParams}`;
-
-	const res = await fetch(url, {
+	const { count, data } = (await fetchQwackerApi(`users?${urlParams}`, accessToken, {
 		method: 'GET',
-		headers: {
-			'content-type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
-	});
+	})) as { count: number; data: TRawUser[] };
 
-	const { count, data } = (await res.json()) as { count: number; data: TRawUser[] };
 	const users = data.map(transformUser) as TUser[];
 
-	// load more users if limit is not set and the amount of users is less than the total count
-	if (limit === undefined && users.length < count) {
-		const remainingOffset = offset + users.length;
-		const { users: remainingUsers } = await getUsers({
+	// If there are more entries to fetch, make a recursive call
+	if (count > 0 && (!limit || limit > users.length)) {
+		const remainingLimit = limit ? limit - users.length : undefined;
+		const remainingOffset = limit ? offset + limit : offset + users.length;
+
+		const { users: remainingUsers, count: remainingCount } = await getUsers({
 			offset: remainingOffset,
+			limit: remainingLimit,
 			accessToken,
 		});
 
 		return {
-			count,
-			users: [...users, ...remainingUsers],
+			count: remainingCount,
+			users: [...users, ...remainingUsers].slice(0, limit),
 		};
 	}
 	return {
@@ -66,80 +76,52 @@ const getUsers = async ({ limit, offset = 0, accessToken }: TGetUser): Promise<T
 	};
 };
 
-/**
- * Get a single user by id
- *
- * @param {string} id
- * @param {string} accessToken
- *
- * @returns {Promise<TUser>}
- *
- * @throws {Error} if no valid id was provided
- * @throws {Error} if the response was not ok
- *
- */
-type TGetUserById = {
-	id: string;
-	accessToken: string;
+type TGetUsersByIds = TBase & {
+	ids: string[];
 };
 
-const getUserById = async ({ id, accessToken }: TGetUserById) => {
-	const url = `${process.env.NEXT_PUBLIC_QWACKER_API_URL}users/${id}`;
+async function getUsersByIds({ ids, accessToken }: TGetUsersByIds): Promise<TUser[]> {
+	const uniqueIds = ids.filter((id, index) => ids.indexOf(id) === index);
 
-	const res = await fetch(url, {
-		headers: {
-			'content-type': 'application/json',
-			Authorization: `Bearer ${accessToken}`,
-		},
-	});
-	const user = (await res.json()) as TRawUser;
-	return transformUser(user);
-};
+	const users = await Promise.all(uniqueIds.map((id) => getUser({ id, accessToken })));
+
+	return users;
+}
 
 /**
  * Get a single user by id
  *
  * @param {string} id
- * @param {string} accessToken
  *
  * @returns {Promise<TUser>}
- *
- * @throws {Error} if no valid id was provided
- * @throws {Error} if the response was not ok
- * @throws {Error} if the response was unauthorized
  */
 
-type TgetUserByPostId = {
+type TGetUser = TBase & {
 	id: string;
-	accessToken: string;
 };
 
-const getUserByPostId = async ({ id, accessToken }: TgetUserByPostId) => {
-	if (!id) {
-		throw new Error('getUserByPostId: No valid UserId was provided');
+const getUser = async ({ id, accessToken }: TGetUser) => {
+	// Check if user is already in cache
+	const cachedUser = userCache[id];
+
+	if (cachedUser && Date.now() - cachedUser.createdAt <= TTL) {
+		return cachedUser.data;
 	}
 
-	try {
-		const res = await fetch(`${process.env.NEXT_PUBLIC_QWACKER_API_URL}users/${id}`, {
-			method: 'GET',
-			headers: {
-				Authorization: `Bearer ${accessToken}`,
-			},
-		});
+	// If not, fetch it from the API
+	const post = (await fetchQwackerApi(`users/${id}`, accessToken, {
+		method: 'GET',
+	})) as TRawUser;
 
-		if (res.status === 401) {
-			throw new Error('getUserByPostId: unauthorized');
-		}
+	const userData = transformUser(post);
 
-		if (res.status !== 200) {
-			throw new Error('getUserByPostId: Something went wrong with the response!');
-		}
+	// Add user to cache
+	userCache[id] = {
+		createdAt: Date.now(),
+		data: userData,
+	};
 
-		const user = (await res.json()) as TRawUser;
-		return transformUser(user);
-	} catch (error) {
-		throw new Error('getUserByPostId: could not reach API');
-	}
+	return userData;
 };
 
 const transformUser = (user: TRawUser): TUser => ({
@@ -157,6 +139,6 @@ const transformUser = (user: TRawUser): TUser => ({
 
 export const usersService = {
 	getUsers,
-	getUserById,
-	getUserByPostId,
+	getUser,
+	getUsersByIds,
 };

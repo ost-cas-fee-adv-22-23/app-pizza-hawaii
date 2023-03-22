@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import React, { FC, useState } from 'react';
 
 import {
@@ -14,6 +13,7 @@ import {
 	CopyToClipboardButton,
 	UserContentCard,
 	TUserContentCard,
+	Modal,
 } from '@smartive-education/pizza-hawaii';
 
 import { TPost } from '../types';
@@ -28,7 +28,8 @@ import { postsService } from '../services/api/posts/';
 type TContentCard = {
 	variant: 'detailpage' | 'timeline' | 'response';
 	post: TPost;
-	profileLink?: string;
+	canDelete?: boolean;
+	onDeletePost?: (id: string) => void;
 };
 
 type TContentCardvariantMap = {
@@ -63,15 +64,15 @@ const contentCardvariantMap: Record<TContentCard['variant'], TContentCardvariant
 	},
 };
 
-export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
+export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false, onDeletePost }) => {
+	const [likedByUser, setLikedByUser] = useState(post.likedByUser);
+	const [likeCount, setLikeCount] = useState(post.likeCount);
+	const [showFullscreen, setShowFullscreen] = useState(false);
+
 	const setting = contentCardvariantMap[variant] || contentCardvariantMap.detailpage;
 	const replyCount = post?.replyCount || 0;
 
-	// toggle Like/Dislike
-	const [likedByUser, setLikedByUser] = useState(post.likedByUser);
-	const [likeCount, setLikeCount] = useState(post.likeCount);
-
-	// Like function
+	// like and unlike function
 	const handleLike = async () => {
 		if (likedByUser) {
 			postsService.unlike({ id: post.id }).then(() => {
@@ -85,21 +86,24 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 		setLikedByUser(!likedByUser);
 	};
 
-	if (!post.creator || typeof post.creator === 'string') {
-		return (
-			<div className="flex flex-col items-center justify-center w-full h-full">
-				<p className="text-center">Something went wrong. Please try again later.</p>
-			</div>
-		);
-	}
+	// delete function
+	const handleDeletePost = async () => {
+		onDeletePost && onDeletePost(post.id);
+	};
+
+	// mayby we do a helper function hook or a component for this as fullscreen is used in userpanorama image as well
+	// fullscreen function
+	const toggleFullscreen = () => {
+		setShowFullscreen(!showFullscreen);
+	};
 
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
-				{`${post.creator.displayName}`}
+				{`${post.user.displayName}`}
 			</Label>
 			<Grid variant="row" gap="S">
-				<UserName href={post.creator.profileLink}>{post.creator.userName}</UserName>
+				<UserName href={post.user.profileLink}>{post.user.userName}</UserName>
 				<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
 					<TimeStamp date={post.createdAt} />
 				</IconLink>
@@ -111,9 +115,9 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 		<UserContentCard
 			headline={headerSlotContent}
 			userProfile={{
-				avatar: post.creator.avatarUrl,
-				userName: post.creator.userName,
-				href: post.creator.profileLink,
+				avatar: post.user.avatarUrl,
+				userName: post.user.userName,
+				href: post.user.profileLink,
 			}}
 			avatarVariant={setting.avatarVariant}
 			avatarSize={setting.avatarSize}
@@ -125,7 +129,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 					preset="enlarge"
 					buttonLabel="Open image in fullscreen"
 					onClick={function (): void {
-						throw new Error('Function not implemented.');
+						toggleFullscreen();
 					}}
 				>
 					<Image
@@ -135,7 +139,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 							ProjectSettings.images.post.aspectRatio[1]
 						}
 						src={post.mediaUrl}
-						alt={`Image of ${post.creator.firstName} ${post.creator.lastName}`}
+						alt={`Image of ${post.user.firstName} ${post.user.lastName}`}
 					/>
 				</ImageOverlay>
 			)}
@@ -148,9 +152,9 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 					colorScheme="violet"
 					buttonText={replyCount > 0 ? `${replyCount} Comments` : replyCount === 0 ? 'Comment' : '1 Comment'}
 					iconName={replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
-					onClick={function (): void {
-						// throw new Error('Function not implemented.');
-					}}
+					// TODO: remove onclick mandatory in InteractionButton component
+					// eslint-disable-next-line @typescript-eslint/no-empty-function
+					onClick={() => {}}
 				/>
 				<InteractionButton
 					as="button"
@@ -167,7 +171,27 @@ export const ContentCard: FC<TContentCard> = ({ variant, post }) => {
 					activeButtonText="Link copied"
 					shareText={`${process.env.NEXTAUTH_URL}/mumble/${post.id}`}
 				/>
+
+				{canDelete && (
+					<InteractionButton
+						as="button"
+						type="button"
+						colorScheme="pink"
+						buttonText="Delete"
+						iconName="cancel"
+						onClick={handleDeletePost}
+					/>
+				)}
 			</Grid>
+			{showFullscreen && (
+				<Modal title="The Big Picture" isVisible={showFullscreen} onClose={() => toggleFullscreen()}>
+					<Image width={1000} src={post.mediaUrl} alt={`Image of ${post.user.firstName} ${post.user.lastName}`} />
+					<br />
+					<Label as="legend" size="L">
+						Posted by: {post.user.firstName}
+					</Label>
+				</Modal>
+			)}
 		</UserContentCard>
 	);
 };

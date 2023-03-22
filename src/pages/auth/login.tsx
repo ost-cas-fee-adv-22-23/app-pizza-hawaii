@@ -25,7 +25,7 @@ export default function LoginPage() {
 						Welcome back, <span className="text-violet-600">{session?.user?.firstName}</span>.
 					</span>
 					<br />
-					<Label as="span" size="M">
+					<Label as="p" size="M">
 						Redirecting...
 					</Label>
 				</Headline>
@@ -38,23 +38,13 @@ export default function LoginPage() {
 					</Headline>
 					<br />
 					<Button as="button" onClick={() => signIn('zitadel')} colorScheme="gradient" icon="mumble">
-						Login to Mumble
+						Login via Zitadel
 					</Button>
 					<br />
 
-					<Label as="legend" size="S">
-						Zitadel login needed
-					</Label>
-					<br />
-					<div className="text-right">
-						<Label as="label" size="M">
-							noch kein Account?{' '}
-						</Label>
-						&nbsp;
-						<Link href="/register">
-							<span className="text-violet-600 underline">Jetzt registrieren</span>
-						</Link>
-					</div>
+					<Link href="/auth/register">
+						<span className="text-violet-600 underline">Jetzt registrieren</span>
+					</Link>
 				</>
 			)}
 		</LoginLayout>
