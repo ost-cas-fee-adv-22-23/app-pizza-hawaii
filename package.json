@@ -10,7 +10,7 @@
 		"lint:fix": "next lint --fix",
 		"prettier": "prettier --check .",
 		"prettier:fix": "prettier --write .",
-		"dep-graph:validate": "npx depcruise src --include-only \"^src\" --config .dependency-cruiser.js"
+		"dep-cruise:validate": "npx depcruise src --include-only \"^src\" --config .dependency-cruiser.js"
 	},
 	"dependencies": {
 		"@fontsource/poppins": "^4.5.10",
