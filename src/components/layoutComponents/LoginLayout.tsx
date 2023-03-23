@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { ReactNode, FC } from 'react';
 import Image from 'next/image';
-import { Headline } from '@smartive-education/pizza-hawaii';
+import { Headline, Link } from '@smartive-education/pizza-hawaii';
 import VerticalLogo from '../../assets/svg/verticalLogo.svg';
 
 type TLoginLayout = {

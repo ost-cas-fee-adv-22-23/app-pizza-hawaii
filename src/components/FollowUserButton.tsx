@@ -54,7 +54,7 @@ export const FollowUserButton = ({ userId }: TFollowUserButton) => {
 	}
 
 	return (
-		<Button as="button" size="M" colorScheme={isFollowing ? 'slate' : 'violet'} onClick={() => toggleFollow(userId)}>
+		<Button size="M" colorScheme={isFollowing ? 'slate' : 'violet'} onClick={() => toggleFollow(userId)}>
 			{isFollowing ? 'Unfollow' : 'Follow'}
 		</Button>
 	);

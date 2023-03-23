@@ -1,11 +1,11 @@
 import { FC, useState, FormEvent } from 'react';
-import Link from 'next/link';
 import { signOut } from 'next-auth/react';
+import NextLink from 'next/link';
 import Image from 'next/image';
-import MumbleLogo from '../assets/svg/mumbleLogo.svg';
+
 import {
 	Navi,
-	NaviButton,
+	Link,
 	UserProfile,
 	Modal,
 	Form,
@@ -17,7 +17,11 @@ import {
 	FormPassword,
 } from '@smartive-education/pizza-hawaii';
 
+import { NaviButton } from './NaviButton';
+
 import { TUser } from '../types';
+
+import MumbleLogo from '../assets/svg/mumbleLogo.svg';
 
 type THeader = {
 	user: TUser;
@@ -52,14 +56,14 @@ export const Header: FC<THeader> = ({ user }) => {
 				<div className="px-content py-3">
 					<div className="flex items-center justify-between gap-8 w-full max-w-content mx-auto">
 						<div className="flex w-[209px]">
-							<Link href="/">
+							<Link href="/" component={NextLink}>
 								<Image src={MumbleLogo} alt="Mumble Messenger" />
 								<h1 className="sr-only">Mumble</h1>
 							</Link>
 						</div>
 						<nav className="">
 							<Navi>
-								<NaviButton as="a" href={user.profileLink} title="My Mumble Profile">
+								<NaviButton component={NextLink} href={user.profileLink} title="My Mumble Profile">
 									<UserProfile
 										userName={user.userName}
 										avatar={user.avatarUrl}
@@ -67,10 +71,10 @@ export const Header: FC<THeader> = ({ user }) => {
 										buttonLabel="My Mumble Profile"
 									/>
 								</NaviButton>
-								<NaviButton as="button" icon="settings" onClick={handleSettingsModalClick}>
+								<NaviButton icon="settings" onClick={handleSettingsModalClick}>
 									Settings
 								</NaviButton>
-								<NaviButton as="button" icon="logout" onClick={() => signOut()}>
+								<NaviButton icon="logout" onClick={() => signOut()}>
 									Log out
 								</NaviButton>
 							</Navi>
@@ -134,10 +138,10 @@ export const Header: FC<THeader> = ({ user }) => {
 						</fieldset>
 
 						<Grid variant="row" gap="S" wrapBelowScreen="md">
-							<Button as="button" colorScheme="slate" icon="cross">
+							<Button colorScheme="slate" icon="cross">
 								Abbrechen
 							</Button>
-							<Button as="button" colorScheme="violet" icon="check">
+							<Button colorScheme="violet" icon="check">
 								Speichern
 							</Button>
 						</Grid>
