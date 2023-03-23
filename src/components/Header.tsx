@@ -15,9 +15,8 @@ import {
 	FormInput,
 	FormTextarea,
 	FormPassword,
+	NaviButton,
 } from '@smartive-education/pizza-hawaii';
-
-import { NaviButton } from './NaviButton';
 
 import { TUser } from '../types';
 

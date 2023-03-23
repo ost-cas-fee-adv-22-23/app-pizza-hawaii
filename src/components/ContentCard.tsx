@@ -14,15 +14,13 @@ import {
 	UserContentCard,
 	TUserContentCard,
 	Modal,
+	InteractionButton,
 } from '@smartive-education/pizza-hawaii';
 
-import { InteractionButton } from './InteractionButton';
-
 import { TPost } from '../types';
-
 import ProjectSettings from './../data/ProjectSettings.json';
-
 import { postsService } from '../services/api/posts/';
+
 /*
  * Type
  */
