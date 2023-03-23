@@ -1,4 +1,3 @@
-import { FC } from 'react';
 import NextLink from 'next/link';
 
 import { LoginLayout } from '../components/layoutComponents/LoginLayout';

@@ -28,9 +28,6 @@ export default function PageHome({
 	const [hasMore, setHasMore] = useState(initialPosts?.length < initialPostCount);
 	const [latestPosts, setLatestPosts] = useState<TPost[]>([]);
 
-	if (error || !currentUser) {
-		return <ErrorPage statusCode={500} title={error} />;
-	}
 	const updatePosts = () => {
 		setPosts([...latestPosts, ...posts]);
 		setLatestPosts([]);
@@ -93,6 +90,9 @@ export default function PageHome({
 		loadLatestPosts();
 	});
 
+	if (error || !currentUser) {
+		return <ErrorPage statusCode={500} title={error} />;
+	}
 	return (
 		<MainLayout>
 			<>
