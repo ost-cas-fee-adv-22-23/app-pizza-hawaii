@@ -23,7 +23,7 @@ export const ThemeContextProvider = ({ children }: TThemeContextProps) => {
 		// check if the user has a theme preference in local storage
 		let newTheme = localStorage.getItem('theme');
 
-		if (!theme) {
+		if (!newTheme) {
 			// check if the user has a dark or light mode preference
 			if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
 				newTheme = THEME.DARK;
