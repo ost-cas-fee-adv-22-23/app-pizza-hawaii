@@ -39,7 +39,6 @@ type TGetUsersResult = {
 
 const getUsers = async ({ limit, offset = 0, accessToken }: TGetUsers): Promise<TGetUsersResult> => {
 	const maxLimit = 1000;
-
 	// create url params
 	const urlParams = new URLSearchParams({
 		offset: offset.toString(),
@@ -71,7 +70,6 @@ const getUsers = async ({ limit, offset = 0, accessToken }: TGetUsers): Promise<
 			users: [...users, ...remainingUsers].slice(0, limit),
 		};
 	}
-
 	return {
 		count,
 		users,

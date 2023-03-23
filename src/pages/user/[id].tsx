@@ -3,10 +3,11 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useSession } from 'next-auth/react';
 import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
-
+import ErrorPage from 'next/error';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { ContentCard } from '../../components/ContentCard';
+import { UserRecommender } from '../../components/UserRecommender';
 
 import { Switch, Headline, UserName, IconLink, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
 
@@ -38,18 +39,10 @@ const UserPage: FC<TUserPage> = ({
 	const currentUser: TUser | undefined = session?.user;
 
 	if (!user) {
-		// TODO: better content or 404 page with nice illustration of a lost user
-		return (
-			<MainLayout>
-				<div className="text-slate-900 text-center">
-					<Headline level={3}>User not found</Headline>
-				</div>
-			</MainLayout>
-		);
+		return <ErrorPage statusCode={403} title={'no user'} />;
 	}
 
 	const isCurrentUser = currentUser?.id === user.id;
-
 	const postsToRender: Record<string, TPost[]> = {
 		posts,
 		likes,
@@ -104,6 +97,9 @@ const UserPage: FC<TUserPage> = ({
 				</div>
 				{isCurrentUser ? (
 					<>
+						<Grid variant="col" gap="M" marginBelow="M">
+							<UserRecommender currentUserId={user.id} />
+						</Grid>
 						<Grid variant="col" gap="M" marginBelow="M">
 							<Switch
 								label="Wechsle deine angezeigten Mumbles"
