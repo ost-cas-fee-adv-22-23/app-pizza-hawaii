@@ -76,7 +76,7 @@ const UserPage: FC<TUserPage> = ({
 					/>
 				</Head>
 				<ProfileHeader user={user} canEdit={isCurrentUser} />
-				<div className="mb-2 text-slate-900 pr-48">
+				<div className="mb-2 pr-48">
 					<Headline level={3}>{user.displayName}</Headline>
 				</div>
 
