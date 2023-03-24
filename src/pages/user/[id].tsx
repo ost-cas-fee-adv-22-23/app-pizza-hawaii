@@ -1,15 +1,17 @@
 import { ChangeEvent, useState, FC } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
 import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
 import ErrorPage from 'next/error';
+
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { ContentCard } from '../../components/ContentCard';
 import { UserRecommender } from '../../components/UserRecommender';
 
-import { Switch, Headline, UserName, IconLink, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
+import { Switch, Headline, IconText, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
 
 import { services } from '../../services';
 
@@ -81,15 +83,19 @@ const UserPage: FC<TUserPage> = ({
 				</div>
 
 				<span className="flex flex-row align-baseline gap-3 mb-3">
-					<UserName href={user.profileLink}>{user.userName}</UserName>
+					<NextLink href={user.profileLink}>
+						<IconText icon="profile" colorScheme="violet" size="S">
+							{user.userName}
+						</IconText>
+					</NextLink>
 
-					<IconLink as="span" icon="location" colorScheme="slate" size="S">
+					<IconText icon="location" colorScheme="slate" size="S">
 						{user.city}
-					</IconLink>
+					</IconText>
 
-					<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
+					<IconText icon="calendar" colorScheme="slate" size="S">
 						<TimeStamp date={user.createdAt} prefix="Mitglied seit" />
-					</IconLink>
+					</IconText>
 				</span>
 
 				<div className="text-slate-400 mb-8">
@@ -128,7 +134,7 @@ const UserPage: FC<TUserPage> = ({
 					</>
 				) : (
 					<>
-						<FollowUserButton />
+						<FollowUserButton userId={user.id} />
 						<br />
 						<Grid variant="col" gap="M" marginBelow="M">
 							{postsToRender[currentPostType] &&

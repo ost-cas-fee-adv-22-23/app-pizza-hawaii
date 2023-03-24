@@ -1,11 +1,12 @@
 import { FC } from 'react';
-import Link from 'next/link';
-import { Headline, Richtext } from '@smartive-education/pizza-hawaii';
+import NextLink from 'next/link';
+
+import { Headline, Richtext, Link } from '@smartive-education/pizza-hawaii';
 import { LoginLayout } from '../components/layoutComponents/LoginLayout';
 
-interface TCustom500Page {
+type TCustom500Page = {
 	errorInfo: React.ErrorInfo | unknown | undefined | null;
-}
+};
 
 // pages/500.js
 const Custom500Page: FC<TCustom500Page> = (error) => {
@@ -27,8 +28,8 @@ const Custom500Page: FC<TCustom500Page> = (error) => {
 					<>ErrorMessage: {errorInfo}</>
 				</Richtext>
 				<br />
-				<Link href="/">
-					<span className="text-violet-600">Back Home</span>
+				<Link href="/" component={NextLink}>
+					Back Home
 				</Link>
 			</>
 		</LoginLayout>

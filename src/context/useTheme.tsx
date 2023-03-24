@@ -10,13 +10,13 @@ type TThemeContextProps = {
 };
 
 type TThemeContextData = {
-	theme: string;
-	setTheme: React.Dispatch<SetStateAction<string>>;
+	theme: string | undefined;
+	setTheme: React.Dispatch<SetStateAction<string | undefined>>;
 };
 
 const ThemeContext = createContext({} as TThemeContextData);
 export const ThemeContextProvider = ({ children }: TThemeContextProps) => {
-	const [theme, setTheme] = useState<string>();
+	const [theme, setTheme] = useState<string | undefined>();
 
 	// set the theme on mount
 	useEffect(() => {
