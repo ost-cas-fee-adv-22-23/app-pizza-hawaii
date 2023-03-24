@@ -16,7 +16,7 @@ type TThemeContextData = {
 
 const ThemeContext = createContext({} as TThemeContextData);
 export const ThemeContextProvider = ({ children }: TThemeContextProps) => {
-	const [theme, setTheme] = useState<string | undefined>();
+	const [theme, setTheme] = useState<string>();
 
 	// set the theme on mount
 	useEffect(() => {

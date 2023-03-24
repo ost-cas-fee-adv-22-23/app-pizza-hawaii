@@ -7,5 +7,5 @@ export function ThemeSwitch() {
 		setTheme(theme === THEME.LIGHT ? THEME.DARK : THEME.LIGHT);
 	}
 
-	return <button onClick={handleToggleTheme}>{theme === THEME.DARK ? 'light' : 'dark'}</button>;
+	return <button onClick={handleToggleTheme}>{theme === THEME.DARK ? 'Light Mode' : 'Dark Mode'}</button>;
 }

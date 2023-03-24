@@ -62,7 +62,7 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 					avatar={user.avatarUrl}
 					size="XL"
 					border={true}
-					href={canEdit ? '/profile' : undefined}
+					href={canEdit ? '/profile' : user.profileLink}
 					buttonLabel={canEdit ? 'Change Avatar' : 'View Avatar'}
 				/>
 			</div>
