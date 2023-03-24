@@ -5,9 +5,7 @@ import { Grid, RoundButton, Icon, Link } from '@smartive-education/pizza-hawaii'
 
 import { useThemeContext, THEME } from '../context/useTheme';
 
-type TFooter = {};
-
-export const Footer: FC<TFooter> = () => {
+export const Footer: FC = () => {
 	const { theme, setTheme } = useThemeContext();
 
 	function handleToggleTheme() {
