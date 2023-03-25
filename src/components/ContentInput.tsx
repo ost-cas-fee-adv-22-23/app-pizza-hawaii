@@ -1,11 +1,13 @@
 import React, { FC, useState } from 'react';
+import NextLink from 'next/link';
+
 import { useDropzone } from 'react-dropzone';
 import {
 	Button,
 	Label,
 	Grid,
 	FormTextarea,
-	UserName,
+	IconText,
 	UserContentCard,
 	TUserContentCard,
 	Modal,
@@ -136,7 +138,11 @@ export const ContentInput: FC<TContentInput> = (props) => {
 					{`${author.displayName}`}
 				</Label>
 				<Grid variant="row" gap="S">
-					<UserName href={author.profileLink as string}>{author.userName}</UserName>
+					<NextLink href={author.profileLink}>
+						<IconText icon="profile" colorScheme="violet" size="S">
+							{author.userName}
+						</IconText>
+					</NextLink>
 				</Grid>
 			</Grid>
 		</Grid>

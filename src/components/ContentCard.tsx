@@ -7,8 +7,7 @@ import {
 	Grid,
 	TimeStamp,
 	Richtext,
-	UserName,
-	IconLink,
+	IconText,
 	ImageOverlay,
 	CopyToClipboardButton,
 	UserContentCard,
@@ -103,10 +102,14 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 				{`${post.user.displayName}`}
 			</Label>
 			<Grid variant="row" gap="S">
-				<UserName href={post.user.profileLink}>{post.user.userName}</UserName>
-				<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
+				<NextLink href={post.user.profileLink}>
+					<IconText icon="profile" colorScheme="violet" size="S">
+						{post.user.userName}
+					</IconText>
+				</NextLink>
+				<IconText icon="calendar" colorScheme="slate" size="S">
 					<TimeStamp date={post.createdAt} />
-				</IconLink>
+				</IconText>
 			</Grid>
 		</Grid>
 	);

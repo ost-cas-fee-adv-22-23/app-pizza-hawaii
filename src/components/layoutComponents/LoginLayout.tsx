@@ -2,6 +2,7 @@ import Head from 'next/head';
 import { ReactNode, FC } from 'react';
 import Image from 'next/image';
 import { Headline } from '@smartive-education/pizza-hawaii';
+import { Footer } from '../Footer';
 import VerticalLogo from '../../assets/svg/verticalLogo.svg';
 
 type TLoginLayout = {
@@ -28,6 +29,7 @@ export const LoginLayout: FC<TLoginLayout> = ({ children }) => {
 							</a>
 							.
 						</Headline>
+						<Footer />
 					</div>
 				</header>
 				<div className="column-start-2 column-span-1 row-start-1 row-span-1 md:column-start-1 md:row-start-2 flex items-center justify-center">
