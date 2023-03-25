@@ -33,7 +33,6 @@ export const Footer: FC = () => {
 						</p>
 						<div>
 							<RoundButton
-								as="button"
 								colorScheme="slate"
 								icon="eye"
 								onClick={handleToggleTheme}
