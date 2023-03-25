@@ -1,5 +1,4 @@
 import React, { FormEvent, useState } from 'react';
-import Head from 'next/head';
 import NextLink from 'next/link';
 
 import { Button, Form, FormInput, Headline, Label, Link } from '@smartive-education/pizza-hawaii';
@@ -34,14 +33,10 @@ const RegisterPage = () => {
 	};
 
 	return (
-		<LoginLayout>
-			<Head>
-				<title>Mumble - Registrierung</title>
-				<meta
-					name="description"
-					content="Erstellen Sie ein Konto und beginnen Sie, Ihre Gedanken mit der Welt zu teilen. Registrieren Sie sich noch heute bei Mumble"
-				/>
-			</Head>
+		<LoginLayout
+			title="Mumble - Registrierung"
+			description="Erstellen Sie ein Konto und beginnen Sie, Ihre Gedanken mit der Welt zu teilen. Registrieren Sie sich noch heute bei Mumble"
+		>
 			<main>
 				<Headline level={2}>Register now</Headline>
 				<br />

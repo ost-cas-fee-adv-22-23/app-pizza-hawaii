@@ -17,7 +17,7 @@ export default function LoginPage() {
 	}, [session, router]);
 
 	return (
-		<LoginLayout>
+		<LoginLayout title="Mumble - Login">
 			{!!session && (
 				<Headline level={1} as="h2">
 					👌 Login successful.

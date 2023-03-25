@@ -17,14 +17,9 @@ type TUserPage = {
 	post: TPost;
 };
 
-const DetailPage: FC<TUserPage> = ({
-	post: initialPost,
-	currentUser,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const { data: session } = useSession();
 	const router = useRouter();
-
-	const [post, setPost] = useState(initialPost);
 
 	const onAddReply = async (postData: TAddPostProps) => {
 		try {
@@ -33,10 +28,7 @@ const DetailPage: FC<TUserPage> = ({
 				accessToken: session?.accessToken as string,
 			});
 
-			setPost({
-				...post,
-				replies: [newReply, ...post.replies],
-			});
+			post.replies = [newReply, ...post.replies];
 		} catch (error) {
 			console.error('onSubmitHandler: error', error);
 		}
@@ -51,10 +43,7 @@ const DetailPage: FC<TUserPage> = ({
 					// go back to overview page
 					router.push('/');
 				} else {
-					setPost({
-						...post,
-						replies: post.replies.filter((reply: TPost) => reply.id !== id),
-					});
+					post.replies = post.replies.filter((reply: TPost) => reply.id !== id);
 				}
 			}
 		} catch (error) {
@@ -63,40 +52,38 @@ const DetailPage: FC<TUserPage> = ({
 	};
 
 	return (
-		<MainLayout>
-			<>
-				<Grid as="div" variant="col" gap="S">
-					{post && (
+		<MainLayout title={`Mumble von ${post?.user.userName}`} description={`Mumble von ${post?.user.userName}`}>
+			<Grid as="div" variant="col" gap="S">
+				{post && (
+					<ContentCard
+						variant="detailpage"
+						post={post}
+						canDelete={post.creator === currentUser.id}
+						onDeletePost={onRemovePost}
+					/>
+				)}
+				{currentUser && (
+					<ContentInput
+						variant="answerPost"
+						headline="Hey, was meinst Du dazu?"
+						author={currentUser}
+						replyTo={post}
+						placeHolderText="Deine Antwort...?"
+						onAddPost={onAddReply}
+					/>
+				)}
+				{post?.replies?.map((reply: TPost) => {
+					return (
 						<ContentCard
-							variant="detailpage"
-							post={post}
-							canDelete={post.creator === currentUser.id}
+							key={reply.id}
+							variant="response"
+							post={reply}
+							canDelete={reply.creator === currentUser.id}
 							onDeletePost={onRemovePost}
 						/>
-					)}
-					{currentUser && (
-						<ContentInput
-							variant="answerPost"
-							headline="Hey, was meinst Du dazu?"
-							author={currentUser}
-							replyTo={post}
-							placeHolderText="Deine Antwort...?"
-							onAddPost={onAddReply}
-						/>
-					)}
-					{post?.replies?.map((reply: TPost) => {
-						return (
-							<ContentCard
-								key={reply.id}
-								variant="response"
-								post={reply}
-								canDelete={reply.creator === currentUser.id}
-								onDeletePost={onRemovePost}
-							/>
-						);
-					})}
-				</Grid>
-			</>
+					);
+				})}
+			</Grid>
 		</MainLayout>
 	);
 };

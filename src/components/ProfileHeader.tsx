@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
-import { Image, UserProfile, ImageOverlay } from '@smartive-education/pizza-hawaii';
-
+import { Image, ImageOverlay } from '@smartive-education/pizza-hawaii';
+import { UserProfile } from './UserProfile';
 import { TUser } from '../types';
 import ProjectSettings from '../data/ProjectSettings.json';
 
