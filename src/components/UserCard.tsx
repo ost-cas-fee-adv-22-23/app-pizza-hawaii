@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { Card, Grid, Label, UserName, UserProfile, Button } from '@smartive-education/pizza-hawaii';
+import { Card, Grid, Label, UserName, UserProfile } from '@smartive-education/pizza-hawaii';
+import { FollowUserButton } from './FollowUserButton';
 import { TUser } from '../types/User';
 
 interface TUserCard {
@@ -28,11 +29,7 @@ export const UserCard: FC<TUserCard> = (props) => {
 					</span>
 				</div>
 
-				<Button as="a" href={user.profileLink} size="M" colorScheme="violet" icon="mumble">
-					<Label as="span" size="S">
-						Follow
-					</Label>
-				</Button>
+				<FollowUserButton userId={user.id} />
 			</Grid>
 		</Card>
 	);
