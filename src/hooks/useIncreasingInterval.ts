@@ -12,11 +12,11 @@ const MAX_INTERVAL_MS = 600000; // 10 minutes
  * @param maxInterval The maximum interval in milliseconds
  */
 
-function useIncreasingInterval(
+const useIncreasingInterval = (
 	callbackFn: () => void,
 	minInterval: number = MIN_INTERVAL_MS,
 	maxInterval: number = MAX_INTERVAL_MS
-) {
+) => {
 	const [intervalMs, setIntervalMs] = useState(minInterval);
 
 	useEffect(() => {
@@ -30,7 +30,7 @@ function useIncreasingInterval(
 		}, intervalMs);
 
 		return () => clearInterval(intervalId);
-	}, [callbackFn, intervalMs]);
-}
+	}, [callbackFn, intervalMs, maxInterval]);
+};
 
 export default useIncreasingInterval;
