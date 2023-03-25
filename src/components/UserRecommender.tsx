@@ -28,7 +28,7 @@ export const UserRecommender: FC<TUserRecommender> = ({ currentUserId }: TUserRe
 			fetchRecommendedUsers();
 			setIsLoading(false);
 		}
-	}, [accessToken]);
+	}, [accessToken, currentUserId]);
 
 	return (
 		<>

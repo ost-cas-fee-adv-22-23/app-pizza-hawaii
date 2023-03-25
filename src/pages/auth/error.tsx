@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
 
 export default function LogoutPage() {

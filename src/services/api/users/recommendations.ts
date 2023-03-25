@@ -2,7 +2,6 @@ import { TUserSimple } from '../../../types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_URL;
 
-
 type TRecommendations = {
 	currentUserId: string;
 	excludeUserIds?: string[];

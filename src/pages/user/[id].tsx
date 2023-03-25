@@ -23,16 +23,12 @@ type TUserPage = {
 	likes?: TPost[];
 };
 
-enum PostType {
-	POSTS = 'posts',
-	LIKES = 'likes',
-}
+const PostType = {
+	POSTS: 'posts',
+	LIKES: 'likes',
+};
 
-const UserPage: FC<TUserPage> = ({
-	user,
-	posts,
-	likes,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const [currentPostType, setCurrentPostType] = useState(PostType.POSTS);
 
 	const { data: session } = useSession();
