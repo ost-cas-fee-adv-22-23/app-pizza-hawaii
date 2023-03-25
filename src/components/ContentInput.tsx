@@ -188,17 +188,17 @@ export const ContentInput: FC<TContentInput> = (props) => {
 								</div>
 							</div>
 						)}
-						<Button as="button" colorScheme="gradient" icon="eye">
+						<Button colorScheme="gradient" icon="eye">
 							Dieses Bild wählen
 						</Button>
 					</form>
 				</Modal>
 			)}
 			<Grid variant="row" gap="S" wrapBelowScreen="md">
-				<Button as="button" colorScheme="slate" icon="upload" onClick={() => showImageUploadModal()}>
+				<Button colorScheme="slate" icon="upload" onClick={showImageUploadModal}>
 					Bild Hochladen
 				</Button>
-				<Button as="button" colorScheme="violet" icon="send" onClick={(e) => onSubmitPostHandler(e)}>
+				<Button colorScheme="violet" icon="send" onClick={onSubmitPostHandler}>
 					Absenden
 				</Button>
 			</Grid>

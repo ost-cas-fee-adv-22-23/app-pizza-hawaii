@@ -14,26 +14,29 @@ export const FollowUserButton = ({ userId }: TFollowUserButton) => {
 	console.log('userId', userId);
 
 	useEffect(() => {
-		if (isFollowed(userId)) {
+		const currentFollowerId = getFollowers();
+		if (currentFollowerId.includes(userId)) {
 			setIsFollowing(true);
 		}
 	}, [userId]);
 
-	function isFollowed(userId: string) {
+	const isFollowed = (userId: string) => {
 		const currentFollowerId = getFollowers();
 		return currentFollowerId.includes(userId);
-	}
+	};
 
 	// TODO: use a real database to store the followers and not localstorage :) (extend quacker API 2.0)
-	function getFollowers() {
+
+	const getFollowers = () => {
 		return localStorage.getItem('followers')?.split(',') || [];
-	}
-	function setFollowers(followerList: string[]) {
+	};
+
+	const setFollowers = (followerList: string[]) => {
 		console.log(followerList);
 		localStorage.setItem('followers', followerList.join(','));
-	}
+	};
 
-	function toggleFollow(userId: string) {
+	const toggleFollow = (userId: string) => {
 		// get the current followers from localstorage
 		const currentFollowerId: string[] = getFollowers();
 
@@ -51,10 +54,10 @@ export const FollowUserButton = ({ userId }: TFollowUserButton) => {
 		}
 		setFollowers(newFollowerList);
 		setIsFollowing(!userFollows);
-	}
+	};
 
 	return (
-		<Button as="button" size="M" colorScheme={isFollowing ? 'slate' : 'violet'} onClick={() => toggleFollow(userId)}>
+		<Button size="M" colorScheme={isFollowing ? 'slate' : 'violet'} onClick={() => toggleFollow(userId)}>
 			{isFollowing ? 'Unfollow' : 'Follow'}
 		</Button>
 	);

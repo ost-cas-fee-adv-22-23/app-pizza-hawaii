@@ -1,4 +1,5 @@
 import React, { FC, useState } from 'react';
+import NextLink from 'next/link';
 
 import {
 	Image,
@@ -9,18 +10,17 @@ import {
 	UserName,
 	IconLink,
 	ImageOverlay,
-	InteractionButton,
 	CopyToClipboardButton,
 	UserContentCard,
 	TUserContentCard,
 	Modal,
+	InteractionButton,
 } from '@smartive-education/pizza-hawaii';
 
 import { TPost } from '../types';
-
 import ProjectSettings from './../data/ProjectSettings.json';
-
 import { postsService } from '../services/api/posts/';
+
 /*
  * Type
  */
@@ -146,18 +146,14 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 
 			<Grid variant="row" gap="M" wrapBelowScreen="md">
 				<InteractionButton
-					as="a"
+					component={NextLink}
 					href={`/mumble/${post.id}`}
 					isActive={replyCount > 0}
 					colorScheme="violet"
 					buttonText={replyCount > 0 ? `${replyCount} Comments` : replyCount === 0 ? 'Comment' : '1 Comment'}
 					iconName={replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
-					// TODO: remove onclick mandatory in InteractionButton component
-					// eslint-disable-next-line @typescript-eslint/no-empty-function
-					onClick={() => {}}
 				/>
 				<InteractionButton
-					as="button"
 					type="button"
 					isActive={likeCount > 0}
 					colorScheme="pink"
@@ -174,7 +170,6 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 
 				{canDelete && (
 					<InteractionButton
-						as="button"
 						type="button"
 						colorScheme="pink"
 						buttonText="Delete"

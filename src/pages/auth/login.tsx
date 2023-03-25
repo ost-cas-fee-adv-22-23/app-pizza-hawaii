@@ -1,9 +1,10 @@
-import { signIn, useSession } from 'next-auth/react';
-import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
-import { Button, Headline, Label } from '@smartive-education/pizza-hawaii';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import NextLink from 'next/link';
+
+import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
+import { Button, Headline, Label, Link } from '@smartive-education/pizza-hawaii';
 
 export default function LoginPage() {
 	const { data: session } = useSession();
@@ -37,13 +38,13 @@ export default function LoginPage() {
 						Anmelden
 					</Headline>
 					<br />
-					<Button as="button" onClick={() => signIn('zitadel')} colorScheme="gradient" icon="mumble">
+					<Button onClick={() => signIn('zitadel')} colorScheme="gradient" icon="mumble">
 						Login via Zitadel
 					</Button>
 					<br />
 
-					<Link href="/auth/register">
-						<span className="text-violet-600 underline">Jetzt registrieren</span>
+					<Link href="/auth/register" component={NextLink}>
+						Jetzt registrieren
 					</Link>
 				</>
 			)}

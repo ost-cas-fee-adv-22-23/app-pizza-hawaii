@@ -1,7 +1,8 @@
 import React, { FormEvent, useState } from 'react';
-import { Button, Form, FormInput, Headline, Label } from '@smartive-education/pizza-hawaii';
 import Head from 'next/head';
-import Link from 'next/link';
+import NextLink from 'next/link';
+
+import { Button, Form, FormInput, Headline, Label, Link } from '@smartive-education/pizza-hawaii';
 import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
 
 const RegisterPage = () => {
@@ -61,27 +62,22 @@ const RegisterPage = () => {
 						onChange={(e) => inputChangeHandler(e)}
 					/>
 					<br />
-					<Button
-						as="button"
-						size="L"
-						type="submit"
-						colorScheme="gradient"
-						icon="mumble"
-						onClick={(e) => onSubmitHandler(e)}
-					>
+					<Button size="L" type="submit" colorScheme="gradient" icon="mumble" onClick={onSubmitHandler}>
 						Let&lsquo; Mumble
 					</Button>
 				</Form>
 				<div className="mt-3 text-center">
 					<Label as="span" size="M">
 						Bereits registriert? &nbsp;
-						<Link href="/login">
-							<span className="text-violet-600 underline">Jetzt anmelden</span>
+						<Link href="/login" component={NextLink}>
+							Jetzt anmelden
 						</Link>
 					</Label>
 				</div>
 				<br />
-				<Link href="/">Back to Startpage</Link>
+				<Link href="/" component={NextLink}>
+					Back to Startpage
+				</Link>
 			</main>
 		</LoginLayout>
 	);

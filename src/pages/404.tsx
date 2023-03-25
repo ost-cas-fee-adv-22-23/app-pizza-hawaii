@@ -1,6 +1,7 @@
+import NextLink from 'next/link';
+
 import { LoginLayout } from '../components/layoutComponents/LoginLayout';
-import Link from 'next/link';
-import { Richtext, Headline } from '@smartive-education/pizza-hawaii';
+import { Richtext, Headline, Link } from '@smartive-education/pizza-hawaii';
 
 // replacement for pages/404.js in a mumble layout.
 const FourOhFourPage = () => {
@@ -20,8 +21,8 @@ const FourOhFourPage = () => {
 					ErrorMessage: - Page not Found
 				</Richtext>
 				<br />
-				<Link href="/">
-					<span className="text-violet-600">Back Home</span>
+				<Link href="/" component={NextLink}>
+					Back Home
 				</Link>
 			</>
 		</LoginLayout>
