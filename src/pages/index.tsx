@@ -4,7 +4,6 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 import ErrorPage from 'next/error';
 import Head from 'next/head';
-// import Link from 'next/link'; TODO: use Link in Design System
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { ContentCard } from '../components/ContentCard';
@@ -26,12 +25,9 @@ export default function PageHome({
 
 	const [posts, setPosts] = useState(initialPosts);
 	const [loading, setLoading] = useState(false);
-	const [hasMore, setHasMore] = useState(initialPosts.length < initialPostCount);
+	const [hasMore, setHasMore] = useState(initialPosts?.length < initialPostCount);
 	const [latestPosts, setLatestPosts] = useState<TPost[]>([]);
 
-	if (error) {
-		return <ErrorPage statusCode={500} title={error} />;
-	}
 	const updatePosts = () => {
 		setPosts([...latestPosts, ...posts]);
 		setLatestPosts([]);
@@ -94,6 +90,9 @@ export default function PageHome({
 		loadLatestPosts();
 	});
 
+	if (error || !currentUser) {
+		return <ErrorPage statusCode={500} title={error} />;
+	}
 	return (
 		<MainLayout>
 			<>
@@ -116,7 +115,7 @@ export default function PageHome({
 							</Headline>
 
 							{latestPosts?.length > 0 && (
-								<Button as="button" colorScheme="slate" onClick={() => updatePosts()}>
+								<Button colorScheme="slate" onClick={() => updatePosts()}>
 									We have {latestPosts.length} new posts for you!
 								</Button>
 							)}
@@ -130,7 +129,7 @@ export default function PageHome({
 								placeHolderText="Deine Meinung zählt"
 								onAddPost={onAddPost}
 							/>
-							{posts.map((post: TPost) => {
+							{posts?.map((post: TPost) => {
 								return (
 									<ContentCard key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />
 								);
@@ -138,7 +137,7 @@ export default function PageHome({
 						</Grid>
 
 						{hasMore ? (
-							<Button as="button" colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
+							<Button colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
 								{loading ? '...' : 'Load more'}
 							</Button>
 						) : (
