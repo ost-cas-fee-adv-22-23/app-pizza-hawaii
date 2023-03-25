@@ -4,6 +4,8 @@ import Head from 'next/head';
 import type { Session } from 'next-auth';
 import ErrorBoundary from '../components/ErrorBoundary';
 
+import { ThemeContextProvider } from '../context/useTheme';
+
 import '../styles/globals.css';
 import '@fontsource/poppins/500.css';
 import '@fontsource/poppins/600.css';
@@ -20,7 +22,9 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 			</Head>
 			<SessionProvider session={session}>
 				<ErrorBoundary>
-					<Component {...pageProps} />
+					<ThemeContextProvider>
+						<Component {...pageProps} />
+					</ThemeContextProvider>
 				</ErrorBoundary>
 			</SessionProvider>
 		</>
