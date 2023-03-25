@@ -1,4 +1,4 @@
-import React, { FC, Suspense, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 
 import { Grid, Headline } from '@smartive-education/pizza-hawaii';
@@ -6,7 +6,7 @@ import { UserCard } from './UserCard';
 import { services } from '../services';
 
 import { TUser } from '../types';
-import PreLoader from './helpers/PreLoader';
+import RecommenderPreloader from './helpers/RecommenderPreloader';
 
 type TUserRecommender = {
 	currentUserId: string;
@@ -20,7 +20,7 @@ export const UserRecommender: FC<TUserRecommender> = ({ currentUserId }: TUserRe
 
 	useEffect(() => {
 		setTimeout(() => {
-		if (accessToken) {
+			if (accessToken) {
 				const fetchRecommendedUsers = async () => {
 					const recommendedUsers = await services.users.getUsers({
 						limit: 10, // TODO: this is a workaround, because the API does not support randomization
@@ -32,7 +32,7 @@ export const UserRecommender: FC<TUserRecommender> = ({ currentUserId }: TUserRe
 				fetchRecommendedUsers();
 				setIsLoading(false);
 			}
-		}, 5000)
+		}, 2000);
 	}, [accessToken]);
 
 	// randomize the order of the recommended users
@@ -47,7 +47,7 @@ export const UserRecommender: FC<TUserRecommender> = ({ currentUserId }: TUserRe
 				Empfohlene User
 			</Headline>
 			{isLoading ? (
-				<PreLoader />
+				<RecommenderPreloader />
 			) : (
 				<Grid variant="row" gap="S" marginBelow="M">
 					<div className="mb-8">
