@@ -103,7 +103,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 								value={PostType.POSTS}
 								name="posttype"
 								onChange={(event: ChangeEvent): void => {
-									const value = (event.target as HTMLInputElement).value as PostType;
+									const value = (event.target as HTMLInputElement).value;
 									setCurrentPostType(value);
 								}}
 							/>
