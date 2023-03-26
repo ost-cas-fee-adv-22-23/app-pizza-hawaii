@@ -139,6 +139,16 @@ export default function PageHome({
 						{hasMore ? (
 							<Button colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
 								{loading ? '...' : 'Load more'}
+					<div className="text-slate-500 mb-8">
+						<Headline level={4} as="p">
+							Whats new in Mumble....
+						</Headline>
+					</div>
+
+					<div className="text-slate-500 mb-8">
+						{latestPosts?.length > 0 && (
+							<Button colorScheme="gradient" size="L" icon="repost" onClick={() => updatePosts()}>
+								World is changing, update your feed.
 							</Button>
 						) : (
 							''
