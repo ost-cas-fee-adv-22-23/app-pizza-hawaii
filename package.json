@@ -35,7 +35,6 @@
 		"postcss": "^8.4.21",
 		"prettier": "^2.8.6",
 		"tailwindcss": "^3.2.7",
-		"ts-unused-exports": "^9.0.4",
 		"typescript": "^5.0.2"
 	}
 }
