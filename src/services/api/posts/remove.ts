@@ -1,11 +1,9 @@
-const BASE_URL = process.env.NEXT_PUBLIC_URL;
-
 type TGetPost = {
 	id: string;
 };
 
 export const remove = async ({ id }: TGetPost) => {
-	return await fetch(`${BASE_URL}/api/posts/${id}`, {
+	return await fetch(`/api/posts/${id}`, {
 		method: 'DELETE',
 	});
 };

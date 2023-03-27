@@ -1,7 +1,5 @@
 import { TUserSimple } from '../../../types';
 
-const BASE_URL = process.env.NEXT_PUBLIC_URL;
-
 type TRecommendations = {
 	currentUserId: string;
 	excludeUserIds?: string[];
@@ -15,7 +13,7 @@ export const recommendations = async ({ currentUserId, excludeUserIds }: TRecomm
 		formData.append('excludeUserIds', excludeUserIds.join(','));
 	}
 
-	const res = await fetch(`${BASE_URL}/api/users/recommendations`, {
+	const res = await fetch(`/api/users/recommendations`, {
 		method: 'POST',
 		body: formData,
 	});

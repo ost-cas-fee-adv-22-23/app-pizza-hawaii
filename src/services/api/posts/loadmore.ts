@@ -1,7 +1,5 @@
 import { TPost } from '../../../types';
 
-const BASE_URL = process.env.NEXT_PUBLIC_URL;
-
 type TGetPostResult = {
 	count: number;
 	posts: TPost[];
@@ -24,6 +22,6 @@ export const loadmore = async ({ olderThan, newerThan }: TGetPost): Promise<TGet
 		urlParams.set('newerThan', newerThan);
 	}
 
-	const res = await fetch(`${BASE_URL}/api/posts/loadmore?${urlParams}`);
+	const res = await fetch(`/api/posts/loadmore?${urlParams}`);
 	return (await res.json()) as TGetPostResult;
 };
