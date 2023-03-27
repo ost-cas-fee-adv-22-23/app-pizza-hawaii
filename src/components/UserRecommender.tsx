@@ -9,34 +9,40 @@ import { TUser } from '../types';
 
 type TUserRecommender = {
 	currentUserId: string;
+	excludeUserIds?: string[];
+	limit?: number;
 };
 
-export const UserRecommender: FC<TUserRecommender> = ({ currentUserId }: TUserRecommender) => {
+export const UserRecommender: FC<TUserRecommender> = ({ currentUserId, excludeUserIds, limit = 6 }: TUserRecommender) => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [recommendedUsers, setRecommendedUsers] = useState([] as TUser[]);
 	const { data: session } = useSession();
 	const accessToken = session?.accessToken;
 
+	// TODO: this useEffect is called twice, why?
 	useEffect(() => {
-		if (accessToken) {
+		if (accessToken && currentUserId && limit) {
+			setIsLoading(true);
 			const fetchRecommendedUsers = async () => {
 				const recommendedUsers = await services.api.users.recommendations({
 					currentUserId,
+					excludeUserIds,
+					limit,
 				});
 				setRecommendedUsers(recommendedUsers);
 			};
 			fetchRecommendedUsers();
 			setIsLoading(false);
 		}
-	}, [accessToken, currentUserId]);
+	}, [accessToken, currentUserId, excludeUserIds, limit]);
 
 	return (
 		<>
 			<Headline as="h2" level={3}>
 				Empfohlene User
 			</Headline>
-			{isLoading && !recommendedUsers ? (
-				<span>loading 6 Users specially for your Taste</span>
+			{isLoading ? (
+				<p>Loading...</p>
 			) : (
 				<Grid variant="row" gap="S" marginBelow="M">
 					<div className="mb-8">
