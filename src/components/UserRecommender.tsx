@@ -32,7 +32,7 @@ export const UserRecommender: FC<TUserRecommender> = ({ currentUserId }: TUserRe
 				fetchRecommendedUsers();
 				setIsLoading(false);
 			}
-		}, 2000);
+		}, 1000);
 	}, [accessToken]);
 
 	// randomize the order of the recommended users
@@ -40,27 +40,30 @@ export const UserRecommender: FC<TUserRecommender> = ({ currentUserId }: TUserRe
 
 	// exclude current user (yourself) from recommended users
 	const pureRecommendedUsers = randomizedRecommendedUsers.filter((user) => user.id !== currentUserId).splice(0, 6);
-
+	console.log('isLoading', isLoading);
 	return (
 		<>
 			<Headline as="h2" level={3}>
 				Empfohlene User
+				{/* <RecommenderPreloader showPreloader={isLoading} /> */}
 			</Headline>
-			{isLoading ? (
-				<RecommenderPreloader />
-			) : (
-				<Grid variant="row" gap="S" marginBelow="M">
-					<div className="mb-8">
-						<div className="flex flex-row flex-wrap -m-2">
-							{pureRecommendedUsers.map((user) => (
-								<div key={user.id} className="flex-initial w-4/12 p-3">
-									<UserCard key={user.id} user={user} />
-								</div>
-							))}
+			<div className="min-h-min">
+				{isLoading ? (
+					<RecommenderPreloader />
+				) : (
+					<Grid variant="row" gap="S" marginBelow="M">
+						<div className="mb-8">
+							<div className="flex flex-row flex-wrap -m-2">
+								{pureRecommendedUsers.map((user) => (
+									<div key={user.id} className="flex-initial w-4/12 p-3">
+										<UserCard key={user.id} user={user} />
+									</div>
+								))}
+							</div>
 						</div>
-					</div>
-				</Grid>
-			)}
+					</Grid>
+				)}
+			</div>
 		</>
 	);
 };
