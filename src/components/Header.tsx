@@ -24,7 +24,6 @@ import MumbleLogo from '../assets/svg/mumbleLogo.svg';
 
 type THeader = {
 	user: TUser;
-	profileLink?: string;
 };
 
 export const Header: FC<THeader> = ({ user }) => {
@@ -137,10 +136,10 @@ export const Header: FC<THeader> = ({ user }) => {
 						</fieldset>
 
 						<Grid variant="row" gap="S" wrapBelowScreen="md">
-							<Button colorScheme="slate" icon="cross">
+							<Button colorScheme="slate" icon="cancel">
 								Abbrechen
 							</Button>
-							<Button colorScheme="violet" icon="check">
+							<Button colorScheme="violet" icon="checkmark">
 								Speichern
 							</Button>
 						</Grid>
