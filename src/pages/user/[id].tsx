@@ -3,7 +3,6 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
 import { getToken } from 'next-auth/jwt';
-import Head from 'next/head';
 import ErrorPage from 'next/error';
 
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
@@ -24,19 +23,14 @@ type TUserPage = {
 	likes?: TPost[];
 };
 
-enum PostType {
-	POSTS = 'posts',
-	LIKES = 'likes',
-}
+const PostType = {
+	POSTS: 'posts',
+	LIKES: 'likes',
+};
 
-const UserPage: FC<TUserPage> = ({
-	user,
-	posts: initialPosts,
-	likes,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const [currentPostType, setCurrentPostType] = useState(PostType.POSTS);
 
-	const [posts, setPosts] = useState(initialPosts);
 	const { data: session } = useSession();
 	const currentUser: TUser | undefined = session?.user;
 
@@ -60,7 +54,7 @@ const UserPage: FC<TUserPage> = ({
 			const result = await services.api.posts.remove({ id });
 
 			if (result) {
-				setPosts(posts.filter((post: TPost) => post.id !== id));
+				posts = posts.filter((post: TPost) => post.id !== id) as TPost[];
 			}
 		} catch (error) {
 			console.error('onSubmitHandler: error', error);
@@ -68,15 +62,11 @@ const UserPage: FC<TUserPage> = ({
 	};
 
 	return (
-		<MainLayout>
+		<MainLayout
+			title={`Mumble - ${user.displayName} (${user.userName})`}
+			description={`Entdecken Sie die Mumbles von ${user.userName} - besuchen Sie die Seite eines Mumble-Nutzers.`}
+		>
 			<>
-				<Head>
-					<title>Mumble - {user.userName}</title>
-					<meta
-						name="description"
-						content={`Entdecken Sie die Mumbles von ${user.userName} - besuchen Sie die Seite eines Mumble-Nutzers.`}
-					/>
-				</Head>
 				<ProfileHeader user={user} canEdit={isCurrentUser} />
 				<div className="mb-2 pr-48">
 					<Headline level={3}>{user.displayName}</Headline>
@@ -113,7 +103,7 @@ const UserPage: FC<TUserPage> = ({
 								value={PostType.POSTS}
 								name="posttype"
 								onChange={(event: ChangeEvent): void => {
-									const value = (event.target as HTMLInputElement).value as PostType;
+									const value = (event.target as HTMLInputElement).value;
 									setCurrentPostType(value);
 								}}
 							/>
@@ -137,8 +127,8 @@ const UserPage: FC<TUserPage> = ({
 						<FollowUserButton userId={user.id} />
 						<br />
 						<Grid variant="col" gap="M" marginBelow="M">
-							{postsToRender[currentPostType] &&
-								postsToRender[currentPostType].map((post) => {
+							{posts &&
+								posts.map((post: TPost) => {
 									return <ContentCard key={post.id} variant="timeline" post={post} />;
 								})}
 						</Grid>
