@@ -13,7 +13,7 @@ const Custom500Page: FC<TCustom500Page> = (error) => {
 	console.log('custom500', error);
 	const { errorInfo } = error;
 	return (
-		<LoginLayout>
+		<LoginLayout title="Mumble - 500">
 			<>
 				<Headline level={1} as="h1">
 					<span className="text-pink-600">Ouch! </span>

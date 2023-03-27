@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
 import NextLink from 'next/link';
 
-import { Card, Grid, Label, IconText, UserProfile } from '@smartive-education/pizza-hawaii';
+import { Card, Grid, Label, IconText } from '@smartive-education/pizza-hawaii';
+import { UserProfile } from './UserProfile';
 import { FollowUserButton } from './FollowUserButton';
 import { TUser } from '../types/User';
 
