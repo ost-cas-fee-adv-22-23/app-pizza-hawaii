@@ -142,7 +142,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 							ProjectSettings.images.post.aspectRatio[1]
 						}
 						src={post.mediaUrl}
-						alt={`Image of ${post.user.firstName} ${post.user.lastName}`}
+						alt={`Image of ${post.user.displayName}`}
 					/>
 				</ImageOverlay>
 			)}
@@ -183,9 +183,9 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 			</Grid>
 			{showFullscreen && (
 				<Modal title="The Big Picture" isVisible={showFullscreen} onClose={() => toggleFullscreen()}>
-					<Image width={1000} src={post.mediaUrl} alt={`Image of ${post.user.firstName} ${post.user.lastName}`} />
+					<Image width={1000} src={post.mediaUrl} alt={`Image of ${post.user.displayName}`} />
 					<br />
-					<Label as="legend" size="L">
+					<Label as="span" size="L">
 						Posted by: {post.user.firstName}
 					</Label>
 				</Modal>

@@ -22,30 +22,27 @@ export const UserRecommender: FC<TUserRecommender> = ({ currentUserId }: TUserRe
 		setTimeout(() => {
 			if (accessToken) {
 				const fetchRecommendedUsers = async () => {
-					const recommendedUsers = await services.users.getUsers({
-						limit: 10, // TODO: this is a workaround, because the API does not support randomization
-						offset: 0,
-						accessToken,
+					const recommendedUsers = await services.api.users.recommendations({
+						currentUserId,
 					});
-					setRecommendedUsers(recommendedUsers.users);
+					setRecommendedUsers(recommendedUsers);
 				};
 				fetchRecommendedUsers();
 				setIsLoading(false);
 			}
-		}, 1000);
-	}, [accessToken]);
+		}, 2000);
+	}, [accessToken, currentUserId]);
 
 	// randomize the order of the recommended users
-	const randomizedRecommendedUsers = recommendedUsers.sort(() => Math.random() - 0.5);
+	// const randomizedRecommendedUsers = recommendedUsers.sort(() => Math.random() - 0.5);
 
 	// exclude current user (yourself) from recommended users
-	const pureRecommendedUsers = randomizedRecommendedUsers.filter((user) => user.id !== currentUserId).splice(0, 6);
-	console.log('isLoading', isLoading);
+	// const pureRecommendedUsers = randomizedRecommendedUsers.filter((user) => user.id !== currentUserId).splice(0, 6);
+
 	return (
 		<>
 			<Headline as="h2" level={3}>
 				Empfohlene User
-				{/* <RecommenderPreloader showPreloader={isLoading} /> */}
 			</Headline>
 			<div className="min-h-min">
 				{isLoading ? (
@@ -54,7 +51,7 @@ export const UserRecommender: FC<TUserRecommender> = ({ currentUserId }: TUserRe
 					<Grid variant="row" gap="S" marginBelow="M">
 						<div className="mb-8">
 							<div className="flex flex-row flex-wrap -m-2">
-								{pureRecommendedUsers.map((user) => (
+								{recommendedUsers.map((user) => (
 									<div key={user.id} className="flex-initial w-4/12 p-3">
 										<UserCard key={user.id} user={user} />
 									</div>
