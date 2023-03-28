@@ -168,7 +168,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 				<CopyToClipboardButton
 					defaultButtonText="Copy Link"
 					activeButtonText="Link copied"
-					shareText={`${process.env.NEXTAUTH_URL}/mumble/${post.id}`}
+					shareText={`${process.env.NEXT_PUBLIC_VERCEL_URL}/mumble/${post.id}`}
 				/>
 
 				{canDelete && (
