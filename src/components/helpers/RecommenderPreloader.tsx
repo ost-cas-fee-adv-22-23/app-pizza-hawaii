@@ -7,8 +7,8 @@ const PreLoader = () => {
 		<Grid variant="row" gap="S" marginBelow="M">
 			<div className="mb-8">
 				<div className="flex flex-row flex-wrap -m-2">
-					{index.map((preloader, index) => (
-						<div key={index} className="flex-initial w-4/12 p-3">
+					{index.map((i) => (
+						<div key={i} className="flex-initial w-4/12 p-3">
 							<Card as="div" rounded={true} size="S">
 								<div className="animate-pulse flex flex-col gap-2 p-1">
 									<div className="flex-col inline-flex self-center">

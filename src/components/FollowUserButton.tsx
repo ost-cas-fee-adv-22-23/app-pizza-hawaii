@@ -11,8 +11,6 @@ type TFollowUserButton = {
 export const FollowUserButton = ({ userId }: TFollowUserButton) => {
 	const [isFollowing, setIsFollowing] = useState(false);
 
-	console.log('userId', userId);
-
 	useEffect(() => {
 		const currentFollowerId = getFollowers();
 		if (currentFollowerId.includes(userId)) {
