@@ -6,11 +6,8 @@ import { Grid, RoundButton, Icon, Link } from '@smartive-education/pizza-hawaii'
 import { useThemeContext, THEME } from '../context/useTheme';
 
 export const Footer: FC = () => {
-	const { theme, setTheme } = useThemeContext();
+	const { theme, toggleTheme } = useThemeContext();
 
-	function handleToggleTheme() {
-		setTheme(theme === THEME.LIGHT ? THEME.DARK : THEME.LIGHT);
-	}
 	return (
 		<footer className="Footer">
 			<div className="px-content py-3">
@@ -35,7 +32,7 @@ export const Footer: FC = () => {
 							<RoundButton
 								colorScheme="slate"
 								icon="eye"
-								onClick={handleToggleTheme}
+								onClick={toggleTheme}
 								buttonLabel={theme === THEME.DARK ? 'Light Mode' : 'Dark Mode'}
 							/>
 						</div>
