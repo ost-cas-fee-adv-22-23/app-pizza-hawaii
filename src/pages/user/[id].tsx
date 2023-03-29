@@ -94,14 +94,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 				{isCurrentUser ? (
 					<>
 						<Grid variant="col" gap="M" marginBelow="M">
-							<UserRecommender
-								currentUserId={user.id}
-								limit={6}
-								/*
-								 * We don't pass the prop excludeUserIds, so the component will fetch a list of users that the current user might want to follow or already follows.
-								 */
-								excludeUserIds={[]}
-							/>
+							<UserRecommender currentUserId={user.id} limit={6} excludeUserIds={[]} />
 						</Grid>
 						<Grid variant="col" gap="M" marginBelow="M">
 							<Switch

@@ -8,6 +8,14 @@ import { services } from '../services';
 
 import { TUser } from '../types';
 
+/*
+ * 1. This component is used to display a list of users that the current user might want to follow or already follows.
+ * 2 .we always want to receive 6 users put not ourselves.
+ * 3. We don't pass the prop excludeUserIds, so the component will fetch a list of users that the current user might want to
+ * follow or already follows.
+ * 4. we show the preloader animation while the data is loading. therefore the setTimeout is intended.
+ */
+
 type TUserRecommender = {
 	currentUserId: string;
 	excludeUserIds?: string[];
@@ -21,23 +29,23 @@ export const UserRecommender: FC<TUserRecommender> = ({ currentUserId, excludeUs
 	const accessToken = session?.accessToken;
 	const index = [1, 2, 3, 4, 5, 6];
 
-	// TODO: this useEffect is called twice, why?
 	useEffect(() => {
-		if (accessToken && currentUserId && limit) {
-			setIsLoading(true);
-			const fetchRecommendedUsers = async () => {
-				const recommendedUsers = await services.api.users.recommendations({
-					currentUserId,
-					excludeUserIds,
-					limit,
-				});
-				setRecommendedUsers(recommendedUsers);
-			};
-			fetchRecommendedUsers();
-			setIsLoading(false);
-		}
-	}, [accessToken, currentUserId, excludeUserIds, limit]);
+		setTimeout(() => {
+			if (accessToken && currentUserId && limit) {
+				setIsLoading(true);
+				const fetchRecommendedUsers = async () => {
+					const recommendedUsers = await services.api.users.recommendations({
+						currentUserId,
+						excludeUserIds,
+						limit,
+					});
+					setRecommendedUsers(recommendedUsers);
+					setIsLoading(false);
+				};
+				fetchRecommendedUsers();
+			}
 		}, 600);
+	}, [accessToken, currentUserId, excludeUserIds, limit]);
 
 	return (
 		<>
