@@ -10,29 +10,34 @@ import { TUser } from '../types';
 
 type TUserRecommender = {
 	currentUserId: string;
+	excludeUserIds?: string[];
+	limit?: number;
 };
 
-export const UserRecommender: FC<TUserRecommender> = ({ currentUserId }: TUserRecommender) => {
+export const UserRecommender: FC<TUserRecommender> = ({ currentUserId, excludeUserIds, limit = 6 }: TUserRecommender) => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [recommendedUsers, setRecommendedUsers] = useState([] as TUser[]);
 	const { data: session } = useSession();
 	const accessToken = session?.accessToken;
 	const index = [1, 2, 3, 4, 5, 6];
 
+	// TODO: this useEffect is called twice, why?
 	useEffect(() => {
-		setTimeout(() => {
-			if (accessToken) {
-				const fetchRecommendedUsers = async () => {
-					const recommendedUsers = await services.api.users.recommendations({
-						currentUserId,
-					});
-					setRecommendedUsers(recommendedUsers);
-					setIsLoading(false);
-				};
-				fetchRecommendedUsers();
-			}
+		if (accessToken && currentUserId && limit) {
+			setIsLoading(true);
+			const fetchRecommendedUsers = async () => {
+				const recommendedUsers = await services.api.users.recommendations({
+					currentUserId,
+					excludeUserIds,
+					limit,
+				});
+				setRecommendedUsers(recommendedUsers);
+			};
+			fetchRecommendedUsers();
+			setIsLoading(false);
+		}
+	}, [accessToken, currentUserId, excludeUserIds, limit]);
 		}, 600);
-	}, [accessToken, currentUserId]);
 
 	return (
 		<>

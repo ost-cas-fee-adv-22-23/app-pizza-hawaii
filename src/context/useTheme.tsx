@@ -1,4 +1,4 @@
-import { createContext, ReactElement, useContext, useEffect, useState, SetStateAction } from 'react';
+import { createContext, ReactElement, useContext, useEffect, useState } from 'react';
 
 export const THEME = {
 	LIGHT: 'light',
@@ -11,7 +11,7 @@ type TThemeContextProps = {
 
 type TThemeContextData = {
 	theme: string | undefined;
-	setTheme: React.Dispatch<SetStateAction<string | undefined>>;
+	toggleTheme: () => void;
 };
 
 const ThemeContext = createContext({} as TThemeContextData);
@@ -55,7 +55,13 @@ export const ThemeContextProvider = ({ children }: TThemeContextProps) => {
 		localStorage.setItem('theme', theme);
 	}, [theme]);
 
-	return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;
+	function toggleTheme() {
+		setTheme((prevTheme) => {
+			return prevTheme === THEME.LIGHT ? THEME.DARK : THEME.LIGHT;
+		});
+	}
+
+	return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
 };
 
 export const useThemeContext = () => useContext(ThemeContext);

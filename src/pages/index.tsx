@@ -107,10 +107,12 @@ export default function PageHome({
 						<Headline level={4} as="p">
 							Whats new in Mumble....
 						</Headline>
+					</div>
 
+					<div className="text-slate-500 mb-8">
 						{latestPosts?.length > 0 && (
-							<Button colorScheme="slate" onClick={() => updatePosts()}>
-								We have {latestPosts.length} new posts for you!
+							<Button colorScheme="gradient" size="L" icon="repost" onClick={() => updatePosts()}>
+								World is changing, update your feed.
 							</Button>
 						)}
 					</div>
