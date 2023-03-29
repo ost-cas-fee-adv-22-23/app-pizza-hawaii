@@ -1,7 +1,7 @@
 type TGetPost = {
 	id: string;
 };
-const BASE_URL = process.env.NEXT_PUBLIC_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
 /*
  * Like a post
  *

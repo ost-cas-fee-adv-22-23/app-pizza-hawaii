@@ -92,7 +92,7 @@ export const UserProfile: FC<TUserProfile> = ({ size = 'M', border, href, userNa
 					<NextLink
 						href={href}
 						// eslint-disable-next-line react/forbid-component-props
-						className="transition duration-300 ease-in-out hover:scale-110"
+						className="grid transition duration-300 ease-in-out hover:scale-110"
 					>
 						<Image
 							imageComponent={NextImage}

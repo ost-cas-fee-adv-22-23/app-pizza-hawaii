@@ -1,23 +1,25 @@
 import { TUserSimple } from '../../../types';
 
-const BASE_URL = process.env.NEXT_PUBLIC_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
 
 type TRecommendations = {
 	currentUserId: string;
 	excludeUserIds?: string[];
+	limit?: number;
 };
 
-export const recommendations = async ({ currentUserId, excludeUserIds }: TRecommendations): Promise<TUserSimple[]> => {
-	const formData = new FormData();
-	formData.append('currentUserId', currentUserId);
-
-	if (excludeUserIds) {
-		formData.append('excludeUserIds', excludeUserIds.join(','));
-	}
-
+export const recommendations = async ({
+	currentUserId,
+	excludeUserIds,
+	limit,
+}: TRecommendations): Promise<TUserSimple[]> => {
 	const res = await fetch(`${BASE_URL}/api/users/recommendations`, {
 		method: 'POST',
-		body: formData,
+		body: JSON.stringify({
+			currentUserId,
+			excludeUserIds,
+			limit,
+		}),
 	});
 
 	return (await res.json()) as TUserSimple[];

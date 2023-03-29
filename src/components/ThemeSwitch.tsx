@@ -1,11 +1,7 @@
 import { useThemeContext, THEME } from '../context/useTheme';
 
 export function ThemeSwitch() {
-	const { theme, setTheme } = useThemeContext();
+	const { theme, toggleTheme } = useThemeContext();
 
-	function handleToggleTheme() {
-		setTheme(theme === THEME.LIGHT ? THEME.DARK : THEME.LIGHT);
-	}
-
-	return <button onClick={handleToggleTheme}>{theme === THEME.DARK ? 'Light Mode' : 'Dark Mode'}</button>;
+	return <button onClick={toggleTheme}>{theme === THEME.DARK ? 'Light Mode' : 'Dark Mode'}</button>;
 }
