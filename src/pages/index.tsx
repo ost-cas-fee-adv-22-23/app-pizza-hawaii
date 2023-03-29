@@ -3,7 +3,6 @@ import { useSession } from 'next-auth/react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 import ErrorPage from 'next/error';
-import Head from 'next/head';
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { ContentCard } from '../components/ContentCard';
@@ -94,51 +93,16 @@ export default function PageHome({
 		return <ErrorPage statusCode={500} title={error} />;
 	}
 	return (
-		<MainLayout>
-			<>
-				<Head>
-					<title>Mumble - Alle Mumbles</title>
-					<meta
-						name="description"
-						content="Verpassen Sie nicht die neuesten Mumbles von den besten Nutzern der Plattform. Besuchen Sie die Index-Seite von Mumble und bleiben Sie auf dem Laufenden."
-					/>
-				</Head>
-				<main>
-					<section className="mx-auto w-full max-w-content">
-						<div className="mb-2 text-violet-600">
-							<Headline level={2}>Welcome to Mumble</Headline>
-						</div>
+		<MainLayout
+			title="Mumble - Welcome to Mumble"
+			description="Verpassen Sie nicht die neuesten Mumbles von den besten Nutzern der Plattform. Besuchen Sie die Index-Seite von Mumble und bleiben Sie auf dem Laufenden."
+		>
+			<main>
+				<section className="mx-auto w-full max-w-content">
+					<div className="mb-2 text-violet-600">
+						<Headline level={2}>Welcome to Mumble</Headline>
+					</div>
 
-						<div className="text-slate-500 mb-8">
-							<Headline level={4} as="p">
-								Whats new in Mumble....
-							</Headline>
-
-							{latestPosts?.length > 0 && (
-								<Button colorScheme="slate" onClick={() => updatePosts()}>
-									We have {latestPosts.length} new posts for you!
-								</Button>
-							)}
-						</div>
-
-						<Grid variant="col" gap="M" marginBelow="M">
-							<ContentInput
-								variant="newPost"
-								headline="Hey, was geht ab?"
-								author={currentUser}
-								placeHolderText="Deine Meinung zählt"
-								onAddPost={onAddPost}
-							/>
-							{posts?.map((post: TPost) => {
-								return (
-									<ContentCard key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />
-								);
-							})}
-						</Grid>
-
-						{hasMore ? (
-							<Button colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
-								{loading ? '...' : 'Load more'}
 					<div className="text-slate-500 mb-8">
 						<Headline level={4} as="p">
 							Whats new in Mumble....
@@ -150,12 +114,31 @@ export default function PageHome({
 							<Button colorScheme="gradient" size="L" icon="repost" onClick={() => updatePosts()}>
 								World is changing, update your feed.
 							</Button>
-						) : (
-							''
 						)}
-					</section>
-				</main>
-			</>
+					</div>
+
+					<Grid variant="col" gap="M" marginBelow="M">
+						<ContentInput
+							variant="newPost"
+							headline="Hey, was geht ab?"
+							author={currentUser}
+							placeHolderText="Deine Meinung zählt"
+							onAddPost={onAddPost}
+						/>
+						{posts?.map((post: TPost) => {
+							return <ContentCard key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />;
+						})}
+					</Grid>
+
+					{hasMore ? (
+						<Button colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
+							{loading ? '...' : 'Load more'}
+						</Button>
+					) : (
+						''
+					)}
+				</section>
+			</main>
 		</MainLayout>
 	);
 }
