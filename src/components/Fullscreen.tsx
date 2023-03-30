@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-component-props */
 import React, { Dispatch, FC } from 'react';
 import { Image, Modal, Label } from '@smartive-education/pizza-hawaii';
 import { TPost } from '../types/Post';
@@ -13,15 +14,16 @@ const Fullscreen: FC<TFullscreen> = (props: TFullscreen) => {
 	const close = () => {
 		toggleHandler(false);
 	};
-	//TODO: width with vw and vh
 
 	return (
 		<Modal title={`Posted by: ${post.user.displayName}`} isVisible={true} onClose={() => close()}>
-			<Image width={1000} src={post.mediaUrl} alt="hi there" />
-			<br />
-			<Label as="legend" size="M">
-				{post.user.displayName}: {post.text}
-			</Label>
+			<div className="w-max-10/12 h-auto content-center mx-content ">
+				<Image src={post.mediaUrl} alt={`Mumble-Post by Mumbel User ${post.user.userName}`} />
+				<br />
+				<Label as="legend" size="M">
+					{post.user.displayName}: {post.text}
+				</Label>
+			</div>
 		</Modal>
 	);
 };
