@@ -12,7 +12,6 @@ import {
 	CopyToClipboardButton,
 	UserContentCard,
 	TUserContentCard,
-	Modal,
 	InteractionButton,
 } from '@smartive-education/pizza-hawaii';
 
@@ -133,7 +132,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 					preset="enlarge"
 					buttonLabel="Open image in fullscreen"
 					onClick={function (): void {
-						toggleFullscreen(post);
+						toggleFullscreen();
 					}}
 				>
 					<Image
@@ -183,18 +182,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 				)}
 			</Grid>
 
-			{showFullscreen && <Fullscreen post={post} isVisible={showFullscreen} />}
-			{/* 			
-			{showFullscreen && (
-				<Modal title="The Big Picture" isVisible={showFullscreen} onClose={() => toggleFullscreen()}>
-					<Image width={1000} src={post.mediaUrl} alt={`Image of ${post.user.displayName}`} />
-					<br />
-					<Label as="span" size="L">
-						Posted by: {post.user.firstName}
-					</Label>
-				</Modal>
-			)}
-			*/}
+			{showFullscreen && <Fullscreen post={post} toggleHandler={setShowFullscreen} />}
 		</UserContentCard>
 	);
 };
