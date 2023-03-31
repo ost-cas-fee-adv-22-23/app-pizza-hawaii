@@ -5,14 +5,14 @@ import { getToken } from 'next-auth/jwt';
 import ErrorPage from 'next/error';
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
-import { ContentCard } from '../components/ContentCard';
-import { ContentInput, TAddPostProps } from '../components/ContentInput';
-import { Headline, Grid, Button } from '@smartive-education/pizza-hawaii';
+import { Headline } from '@smartive-education/pizza-hawaii';
 
 import { services } from '../services';
 import useIncreasingInterval from '../hooks/useIncreasingInterval';
 
-import type { TPost } from '../types';
+import { TPost } from '../types';
+import { PostCollection } from '../components/PostCollection';
+import { TAddPostProps } from '../components/ContentInput';
 
 export default function PageHome({
 	currentUser,
@@ -22,15 +22,10 @@ export default function PageHome({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { data: session } = useSession();
 
-	const [posts, setPosts] = useState(initialPosts);
-	const [loading, setLoading] = useState(false);
-	const [hasMore, setHasMore] = useState(initialPosts?.length < initialPostCount);
-	const [latestPosts, setLatestPosts] = useState<TPost[]>([]);
+	const [posts, setPosts] = useState<TPost[]>(initialPosts);
+	const [canLoadmore, setCanLoadmore] = useState<boolean>(initialPostCount > posts.length);
 
-	const updatePosts = () => {
-		setPosts([...latestPosts, ...posts]);
-		setLatestPosts([]);
-	};
+	// TODO: implement a check if posts are deleted
 
 	const loadLatestPosts = async () => {
 		const latestPost = posts[0];
@@ -38,29 +33,32 @@ export default function PageHome({
 			newerThan: latestPost.id,
 		});
 
-		if (newPosts?.length > 0) {
-			setLatestPosts(newPosts);
-		}
+		setPosts([...newPosts, ...posts]);
 	};
 
 	const loadMore = async () => {
-		setLoading(true);
 		try {
-			const { count: newOlderPostCount, posts: newOlderPosts } = await services.api.posts.loadmore({
-				olderThan: posts[posts.length - 1].id,
+			const oldestPost = posts[posts.length - 1];
+			const { count: olderPostCount, posts: olderPosts } = await services.api.posts.loadmore({
+				olderThan: oldestPost.id,
 			});
 
-			setHasMore(newOlderPosts.length < newOlderPostCount);
-			setPosts([...posts, ...newOlderPosts]);
+			if (!olderPosts) {
+				setCanLoadmore(false);
+				return;
+			}
+
+			setPosts((currentPosts: TPost[]) => [...currentPosts, ...olderPosts]);
+			setCanLoadmore(olderPostCount > 0);
+
+			return olderPosts;
 		} catch (error) {
 			// TODO: find something better
 			console.error(error);
 		}
-
-		setLoading(false);
 	};
 
-	const onAddPost = async (postData: TAddPostProps) => {
+	const onAddPost: Promise<TPost> = async (postData: TAddPostProps) => {
 		try {
 			const newPost = await services.posts.createPost({
 				...postData,
@@ -68,6 +66,8 @@ export default function PageHome({
 			});
 
 			setPosts([newPost, ...posts]);
+
+			return newPost;
 		} catch (error) {
 			console.error('onSubmitHandler: error', error);
 		}
@@ -102,41 +102,15 @@ export default function PageHome({
 					<div className="mb-2 text-violet-600">
 						<Headline level={2}>Welcome to Mumble</Headline>
 					</div>
-
-					<div className="text-slate-500 mb-8">
-						<Headline level={4} as="p">
-							Whats new in Mumble....
-						</Headline>
-					</div>
-
-					<div className="text-slate-500 mb-8">
-						{latestPosts?.length > 0 && (
-							<Button colorScheme="gradient" size="L" icon="repost" onClick={() => updatePosts()}>
-								World is changing, update your feed.
-							</Button>
-						)}
-					</div>
-
-					<Grid variant="col" gap="M" marginBelow="M">
-						<ContentInput
-							variant="newPost"
-							headline="Hey, was geht ab?"
-							author={currentUser}
-							placeHolderText="Deine Meinung zählt"
-							onAddPost={onAddPost}
-						/>
-						{posts?.map((post: TPost) => {
-							return <ContentCard key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />;
-						})}
-					</Grid>
-
-					{hasMore ? (
-						<Button colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
-							{loading ? '...' : 'Load more'}
-						</Button>
-					) : (
-						''
-					)}
+					<PostCollection
+						headline="Whats new in Mumble...."
+						posts={posts}
+						canAdd={true}
+						canLoadmore={canLoadmore}
+						onAddPost={onAddPost}
+						onRemovePost={onRemovePost}
+						onLoadmore={loadMore}
+					/>
 				</section>
 			</main>
 		</MainLayout>
