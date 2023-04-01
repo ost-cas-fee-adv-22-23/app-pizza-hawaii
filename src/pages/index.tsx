@@ -9,6 +9,7 @@ import { Headline } from '@smartive-education/pizza-hawaii';
 
 import { services } from '../services';
 import useIncreasingInterval from '../hooks/useIncreasingInterval';
+import { useActiveTabContext } from '../context/useActiveTab';
 
 import { TPost } from '../types';
 import { PostCollection } from '../components/PostCollection';
@@ -21,6 +22,7 @@ export default function PageHome({
 	error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { data: session } = useSession();
+	const { isActive: tabIsActive } = useActiveTabContext();
 
 	const [posts, setPosts] = useState<TPost[]>(initialPosts);
 	const [canLoadmore, setCanLoadmore] = useState<boolean>(initialPostCount > posts.length);
