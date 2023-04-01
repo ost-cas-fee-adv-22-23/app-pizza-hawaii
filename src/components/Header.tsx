@@ -67,6 +67,7 @@ export const Header: FC<THeader> = ({ user }) => {
 										avatar={user.avatarUrl}
 										size="S"
 										buttonLabel="My Mumble Profile"
+										canEdit={false}
 									/>
 								</NaviButton>
 								<NaviButton icon="settings" onClick={handleSettingsModalClick}>
