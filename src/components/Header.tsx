@@ -17,7 +17,7 @@ import {
 	NaviButton,
 } from '@smartive-education/pizza-hawaii';
 
-import { UserProfile } from './UserProfile';
+import { UserProfile } from './user/UserProfile';
 import { TUser } from '../types';
 
 import MumbleLogo from '../assets/svg/mumbleLogo.svg';

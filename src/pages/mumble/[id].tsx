@@ -8,8 +8,8 @@ import { MainLayout } from '../../components/layoutComponents/MainLayout';
 
 import { TPost } from '../../types';
 import { services } from '../../services';
-import { PostDetail } from '../../components/PostDetail';
-import { TAddPostProps } from '../../components/ContentInput';
+import { PostDetail } from '../../components/post/PostDetail';
+import { TAddPostProps } from '../../components/post/PostCreator';
 
 type TUserPage = {
 	post: TPost;

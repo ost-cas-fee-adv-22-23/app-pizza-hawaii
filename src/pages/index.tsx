@@ -11,8 +11,8 @@ import { useActiveTabContext } from '../context/useActiveTab';
 
 import { Headline } from '@smartive-education/pizza-hawaii';
 import { MainLayout } from '../components/layoutComponents/MainLayout';
-import { PostCollection } from '../components/PostCollection';
-import { TAddPostProps } from '../components/ContentInput';
+import { PostCollection } from '../components/post/PostCollection';
+import { TAddPostProps } from '../components/post/PostCreator';
 
 import { TPost } from '../types';
 

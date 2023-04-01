@@ -2,10 +2,10 @@ import React, { FC, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 
 import { Headline } from '@smartive-education/pizza-hawaii';
-import { services } from '../services';
+import { services } from '../../services';
 
-import { TUser } from '../types';
-import { UserCardList } from './UserCardList';
+import { TUser } from '../../types';
+import { UserCardList } from '../user/UserCardList';
 
 /*
  * This component is used to display a list of users that the current user might want to follow or already follows.

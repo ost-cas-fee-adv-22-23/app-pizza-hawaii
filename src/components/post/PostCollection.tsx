@@ -1,10 +1,10 @@
 import { FC, useEffect, useState } from 'react';
 
 import { Grid, Button, Headline } from '@smartive-education/pizza-hawaii';
-import { ContentInput, TAddPostProps } from './ContentInput';
+import { PostCreator, TAddPostProps } from './PostCreator';
 
-import { TPost } from '../types';
-import { PostList } from './PostList';
+import { TPost } from '../../types';
+import { PostList } from '../post/PostList';
 
 type TPostCollectionProps = {
 	headline?: string;
@@ -107,7 +107,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 
 			<Grid variant="col" gap="M" marginBelow="M">
 				{canAdd && (
-					<ContentInput
+					<PostCreator
 						variant="newPost"
 						headline="Hey, was geht ab?"
 						placeHolderText="Deine Meinung zählt"

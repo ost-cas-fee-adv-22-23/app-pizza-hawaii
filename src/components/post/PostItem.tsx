@@ -16,22 +16,22 @@ import {
 	InteractionButton,
 } from '@smartive-education/pizza-hawaii';
 
-import { TPost, TUser } from '../types';
-import ProjectSettings from './../data/ProjectSettings.json';
-import { postsService } from '../services/api/posts/';
+import { TPost, TUser } from '../../types';
+import ProjectSettings from '../../data/ProjectSettings.json';
+import { postsService } from '../../services/api/posts';
 import { useSession } from 'next-auth/react';
 
 /*
  * Type
  */
 
-type TContentCard = {
+type TPostItemProps = {
 	variant: 'detailpage' | 'timeline' | 'response';
 	post: TPost;
 	onDeletePost?: (id: string) => void;
 };
 
-type TContentCardvariantMap = {
+type TPostItemVariantMap = {
 	headlineSize: 'S' | 'M' | 'L' | 'XL';
 	textSize: 'M' | 'L';
 	avatarSize: TUserContentCard['avatarSize'];
@@ -42,7 +42,7 @@ type TContentCardvariantMap = {
  * Style
  */
 
-const contentCardvariantMap: Record<TContentCard['variant'], TContentCardvariantMap> = {
+const postItemVariantMap: Record<TPostItemProps['variant'], TPostItemVariantMap> = {
 	detailpage: {
 		headlineSize: 'XL',
 		textSize: 'L',
@@ -63,7 +63,7 @@ const contentCardvariantMap: Record<TContentCard['variant'], TContentCardvariant
 	},
 };
 
-export const ContentCard: FC<TContentCard> = ({ variant, post, onDeletePost }) => {
+export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost }) => {
 	const [likedByUser, setLikedByUser] = useState(post.likedByUser);
 	const [likeCount, setLikeCount] = useState(post.likeCount);
 	const [showFullscreen, setShowFullscreen] = useState(false);
@@ -71,7 +71,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, onDeletePost }) =
 	const { data: session } = useSession();
 	const currentUser = session?.user as TUser;
 
-	const setting = contentCardvariantMap[variant] || contentCardvariantMap.detailpage;
+	const setting = postItemVariantMap[variant] || postItemVariantMap.detailpage;
 	const replyCount = post?.replyCount || 0;
 
 	// like and unlike function

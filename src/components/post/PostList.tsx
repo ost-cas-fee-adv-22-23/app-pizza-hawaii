@@ -1,10 +1,10 @@
 import { FC } from 'react';
 
 import { Grid } from '@smartive-education/pizza-hawaii';
-import { ContentCard } from './ContentCard';
+import { PostItem } from './PostItem';
 
-import { TPost } from '../types';
-import { PostSkeleton } from './helpers/PostSkeleton';
+import { TPost } from '../../types';
+import { PostSkeleton } from '../helpers/PostSkeleton';
 
 type TPostListProps = {
 	posts?: TPost[];
@@ -28,7 +28,7 @@ export const PostList: FC<TPostListProps> = ({
 			{loadingItems > 0
 				? Array.from(Array(loadingItems).keys()).map((i) => <PostSkeleton key={i} showImage={Math.random() > 0.5} />)
 				: posts?.map((post: TPost) => {
-						return <ContentCard key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />;
+						return <PostItem key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />;
 				  })}
 		</Grid>
 	);

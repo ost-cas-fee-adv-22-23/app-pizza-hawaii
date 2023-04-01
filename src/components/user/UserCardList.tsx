@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 
 import { Grid } from '@smartive-education/pizza-hawaii';
-import { UserCardSkeleton } from './helpers/UserCardSkeleton';
+import { UserCardSkeleton } from '../helpers/UserCardSkeleton';
 import { UserCard } from './UserCard';
 
-import { TUser } from '../types';
+import { TUser } from '../../types';
 
 type TUserCardList = {
 	users: TUser[];

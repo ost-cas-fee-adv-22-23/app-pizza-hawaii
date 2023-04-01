@@ -8,9 +8,9 @@ import ErrorPage from 'next/error';
 import { Switch, Headline, IconText, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { ProfileHeader } from '../../components/ProfileHeader';
-import { UserRecommender } from '../../components/UserRecommender';
+import { UserRecommender } from '../../components/widgets/UserRecommender';
 import { FollowUserButton } from '../../components/FollowUserButton';
-import { PostList } from '../../components/PostList';
+import { PostList } from '../../components/post/PostList';
 
 import { services } from '../../services';
 import { TPost, TUser } from '../../types';

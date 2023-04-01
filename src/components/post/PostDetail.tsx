@@ -1,10 +1,10 @@
 import { FC } from 'react';
 
 import { Grid } from '@smartive-education/pizza-hawaii';
-import { ContentCard } from './ContentCard';
-import { ContentInput, TAddPostProps } from './ContentInput';
+import { PostItem } from './PostItem';
+import { PostCreator, TAddPostProps } from './PostCreator';
 
-import { TPost } from '../types';
+import { TPost } from '../../types';
 import { PostList } from './PostList';
 
 type TPostDetailProps = {
@@ -16,10 +16,10 @@ type TPostDetailProps = {
 export const PostDetail: FC<TPostDetailProps> = ({ post, onRemovePost, onAddReply }) => {
 	return (
 		<Grid as="div" variant="col" gap="S">
-			<ContentCard variant="detailpage" post={post} onDeletePost={onRemovePost} />
+			<PostItem variant="detailpage" post={post} onDeletePost={onRemovePost} />
 
 			<Grid variant="col" gap="M" marginBelow="M">
-				<ContentInput
+				<PostCreator
 					variant="answerPost"
 					headline="Hey, was meinst Du dazu?"
 					replyTo={post}

@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import NextLink from 'next/link';
-
 import { useDropzone } from 'react-dropzone';
+
 import {
 	Button,
 	Label,
@@ -15,8 +15,9 @@ import {
 	Icon,
 	Image,
 } from '@smartive-education/pizza-hawaii';
-import { ImageUpload } from './ImageUpload';
-import { TPost, TUser } from '../types';
+import { ImageUpload } from '../ImageUpload';
+
+import { TPost, TUser } from '../../types';
 
 export type TAddPostProps = {
 	text: string;
@@ -24,7 +25,7 @@ export type TAddPostProps = {
 	replyTo?: string;
 };
 
-type TContentInput = {
+type TPostCreator = {
 	variant: 'newPost' | 'answerPost';
 	headline: string;
 	placeHolderText: string;
@@ -39,7 +40,7 @@ type TContentCardvariantMap = {
 	avatarVariant: TUserContentCard['avatarVariant'];
 };
 
-const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardvariantMap> = {
+const PostCreatorCardVariantMap: Record<TPostCreator['variant'], TContentCardvariantMap> = {
 	newPost: {
 		headlineSize: 'XL',
 		textSize: 'L',
@@ -54,7 +55,7 @@ const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardv
 	},
 };
 
-export const ContentInput: FC<TContentInput> = (props) => {
+export const PostCreator: FC<TPostCreator> = (props) => {
 	const { variant, placeHolderText, replyTo, onAddPost } = props;
 
 	const { data: session } = useSession();
@@ -65,7 +66,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 	const [file, setFile] = useState<File>();
 	const [filePreview, setFilePreview] = useState<string>('');
 	const [text, setText] = React.useState<string>('');
-	const setting = ContentInputCardVariantMap[variant] || ContentInputCardVariantMap.newPost;
+	const setting = PostCreatorCardVariantMap[variant] || PostCreatorCardVariantMap.newPost;
 
 	useEffect(() => {
 		if (text?.length > 0 || file) {
