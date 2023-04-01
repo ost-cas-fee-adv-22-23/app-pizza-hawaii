@@ -16,9 +16,10 @@ import {
 	InteractionButton,
 } from '@smartive-education/pizza-hawaii';
 
-import { TPost } from '../types';
+import { TPost, TUser } from '../types';
 import ProjectSettings from './../data/ProjectSettings.json';
 import { postsService } from '../services/api/posts/';
+import { useSession } from 'next-auth/react';
 
 /*
  * Type
@@ -27,7 +28,6 @@ import { postsService } from '../services/api/posts/';
 type TContentCard = {
 	variant: 'detailpage' | 'timeline' | 'response';
 	post: TPost;
-	canDelete?: boolean;
 	onDeletePost?: (id: string) => void;
 };
 
@@ -63,10 +63,13 @@ const contentCardvariantMap: Record<TContentCard['variant'], TContentCardvariant
 	},
 };
 
-export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false, onDeletePost }) => {
+export const ContentCard: FC<TContentCard> = ({ variant, post, onDeletePost }) => {
 	const [likedByUser, setLikedByUser] = useState(post.likedByUser);
 	const [likeCount, setLikeCount] = useState(post.likeCount);
 	const [showFullscreen, setShowFullscreen] = useState(false);
+
+	const { data: session } = useSession();
+	const currentUser = session?.user as TUser;
 
 	const setting = contentCardvariantMap[variant] || contentCardvariantMap.detailpage;
 	const replyCount = post?.replyCount || 0;
@@ -128,13 +131,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 			<Richtext size={setting.textSize}>{post.text}</Richtext>
 
 			{post.mediaUrl && (
-				<ImageOverlay
-					preset="enlarge"
-					buttonLabel="Open image in fullscreen"
-					onClick={function (): void {
-						toggleFullscreen();
-					}}
-				>
+				<ImageOverlay preset="enlarge" buttonLabel="Open image in fullscreen" onClick={toggleFullscreen}>
 					<Image
 						width={ProjectSettings.images.post.width}
 						height={
@@ -171,7 +168,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 					shareText={`${process.env.NEXT_PUBLIC_VERCEL_URL}/mumble/${post.id}`}
 				/>
 
-				{canDelete && (
+				{currentUser && currentUser.id === post.user.id && (
 					<InteractionButton
 						type="button"
 						colorScheme="pink"
@@ -182,7 +179,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 				)}
 			</Grid>
 			{showFullscreen && (
-				<Modal title="The Big Picture" isVisible={showFullscreen} onClose={() => toggleFullscreen()}>
+				<Modal title="The Big Picture" isVisible={showFullscreen} onClose={toggleFullscreen}>
 					<Image width={1000} src={post.mediaUrl} alt={`Image of ${post.user.displayName}`} />
 					<br />
 					<Label as="span" size="L">

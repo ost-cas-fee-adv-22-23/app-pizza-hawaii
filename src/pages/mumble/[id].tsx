@@ -54,14 +54,7 @@ const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSideProp
 	return (
 		<MainLayout title={`Mumble von ${post?.user.userName}`} description={`Mumble von ${post?.user.userName}`}>
 			<Grid as="div" variant="col" gap="S">
-				{post && (
-					<ContentCard
-						variant="detailpage"
-						post={post}
-						canDelete={post.creator === currentUser.id}
-						onDeletePost={onRemovePost}
-					/>
-				)}
+				{post && <ContentCard variant="detailpage" post={post} onDeletePost={onRemovePost} />}
 				{currentUser && (
 					<ContentInput
 						variant="answerPost"
@@ -73,15 +66,7 @@ const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSideProp
 					/>
 				)}
 				{post?.replies?.map((reply: TPost) => {
-					return (
-						<ContentCard
-							key={reply.id}
-							variant="response"
-							post={reply}
-							canDelete={reply.creator === currentUser.id}
-							onDeletePost={onRemovePost}
-						/>
-					);
+					return <ContentCard key={reply.id} variant="response" post={reply} onDeletePost={onRemovePost} />;
 				})}
 			</Grid>
 		</MainLayout>
