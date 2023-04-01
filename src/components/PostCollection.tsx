@@ -43,10 +43,9 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 
 	useEffect(() => {
 		const { visiblePosts } = state;
+		// Check if there are new or removed posts
 		const newPosts = posts.filter((post) => !visiblePosts.includes(post));
 		const removedPosts = visiblePosts.filter((post) => !posts.includes(post));
-		console.log('newPosts', newPosts);
-		console.log('removedPosts', removedPosts);
 
 		setState((prevState) => ({ ...prevState, hasUpdate: [...newPosts, ...removedPosts].length > 0 }));
 	}, [posts, state.visiblePosts]);

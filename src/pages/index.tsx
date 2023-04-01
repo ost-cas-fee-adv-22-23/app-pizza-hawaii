@@ -4,16 +4,17 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 import ErrorPage from 'next/error';
 
-import { MainLayout } from '../components/layoutComponents/MainLayout';
-import { Headline } from '@smartive-education/pizza-hawaii';
-
+import { encodeTime, decodeTime } from 'ulid';
 import { services } from '../services';
 import useIncreasingInterval from '../hooks/useIncreasingInterval';
 import { useActiveTabContext } from '../context/useActiveTab';
 
-import { TPost } from '../types';
+import { Headline } from '@smartive-education/pizza-hawaii';
+import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { PostCollection } from '../components/PostCollection';
 import { TAddPostProps } from '../components/ContentInput';
+
+import { TPost } from '../types';
 
 export default function PageHome({
 	currentUser,
@@ -29,15 +30,25 @@ export default function PageHome({
 
 	const loadLatestPosts = async (loadFullList = false) => {
 		const latestPost = loadFullList ? posts[posts.length - 1] : posts[0];
+		let lastPostId = latestPost?.id;
+
+		if (loadFullList) {
+			// decrement ULID to make sure to load also last post itself
+			// TODO: could be done better by decrement random part of ULID only
+			lastPostId = encodeTime(decodeTime(lastPostId) - 1, 10) + lastPostId.substring(26 - 16);
+		}
+
 		const { posts: newPosts } = await services.api.posts.loadmore({
-			newerThan: latestPost.id,
+			newerThan: lastPostId,
 		});
 
 		if (!newPosts || newPosts.length < 0) return;
 
 		if (loadFullList) {
+			// replace posts with new posts
 			setPosts(newPosts);
 		} else {
+			// prepend new posts to list
 			setPosts((currentPosts: TPost[]) => [...newPosts, ...currentPosts]);
 		}
 	};
