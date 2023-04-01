@@ -7,8 +7,7 @@ import {
 	Grid,
 	TimeStamp,
 	Richtext,
-	UserName,
-	IconLink,
+	IconText,
 	ImageOverlay,
 	CopyToClipboardButton,
 	UserContentCard,
@@ -103,10 +102,14 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 				{`${post.user.displayName}`}
 			</Label>
 			<Grid variant="row" gap="S">
-				<UserName href={post.user.profileLink}>{post.user.userName}</UserName>
-				<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
+				<NextLink href={post.user.profileLink}>
+					<IconText icon="profile" colorScheme="violet" size="S">
+						{post.user.userName}
+					</IconText>
+				</NextLink>
+				<IconText icon="calendar" colorScheme="slate" size="S">
 					<TimeStamp date={post.createdAt} />
-				</IconLink>
+				</IconText>
 			</Grid>
 		</Grid>
 	);
@@ -139,7 +142,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 							ProjectSettings.images.post.aspectRatio[1]
 						}
 						src={post.mediaUrl}
-						alt={`Image of ${post.user.firstName} ${post.user.lastName}`}
+						alt={`Image of ${post.user.displayName}`}
 					/>
 				</ImageOverlay>
 			)}
@@ -165,7 +168,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 				<CopyToClipboardButton
 					defaultButtonText="Copy Link"
 					activeButtonText="Link copied"
-					shareText={`${process.env.NEXTAUTH_URL}/mumble/${post.id}`}
+					shareText={`${process.env.NEXT_PUBLIC_VERCEL_URL}/mumble/${post.id}`}
 				/>
 
 				{canDelete && (
@@ -180,9 +183,9 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 			</Grid>
 			{showFullscreen && (
 				<Modal title="The Big Picture" isVisible={showFullscreen} onClose={() => toggleFullscreen()}>
-					<Image width={1000} src={post.mediaUrl} alt={`Image of ${post.user.firstName} ${post.user.lastName}`} />
+					<Image width={1000} src={post.mediaUrl} alt={`Image of ${post.user.displayName}`} />
 					<br />
-					<Label as="legend" size="L">
+					<Label as="span" size="L">
 						Posted by: {post.user.firstName}
 					</Label>
 				</Modal>

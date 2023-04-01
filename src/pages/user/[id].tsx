@@ -1,15 +1,16 @@
 import { ChangeEvent, useState, FC } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
 import { getToken } from 'next-auth/jwt';
-import Head from 'next/head';
 import ErrorPage from 'next/error';
+
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { ContentCard } from '../../components/ContentCard';
 import { UserRecommender } from '../../components/UserRecommender';
 
-import { Switch, Headline, UserName, IconLink, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
+import { Switch, Headline, IconText, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
 
 import { services } from '../../services';
 
@@ -22,19 +23,14 @@ type TUserPage = {
 	likes?: TPost[];
 };
 
-enum PostType {
-	POSTS = 'posts',
-	LIKES = 'likes',
-}
+const PostType = {
+	POSTS: 'posts',
+	LIKES: 'likes',
+};
 
-const UserPage: FC<TUserPage> = ({
-	user,
-	posts: initialPosts,
-	likes,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const [currentPostType, setCurrentPostType] = useState(PostType.POSTS);
 
-	const [posts, setPosts] = useState(initialPosts);
 	const { data: session } = useSession();
 	const currentUser: TUser | undefined = session?.user;
 
@@ -58,7 +54,7 @@ const UserPage: FC<TUserPage> = ({
 			const result = await services.api.posts.remove({ id });
 
 			if (result) {
-				setPosts(posts.filter((post: TPost) => post.id !== id));
+				posts = posts.filter((post: TPost) => post.id !== id) as TPost[];
 			}
 		} catch (error) {
 			console.error('onSubmitHandler: error', error);
@@ -66,30 +62,30 @@ const UserPage: FC<TUserPage> = ({
 	};
 
 	return (
-		<MainLayout>
+		<MainLayout
+			title={`Mumble - ${user.displayName} (${user.userName})`}
+			description={`Entdecken Sie die Mumbles von ${user.userName} - besuchen Sie die Seite eines Mumble-Nutzers.`}
+		>
 			<>
-				<Head>
-					<title>Mumble - {user.userName}</title>
-					<meta
-						name="description"
-						content={`Entdecken Sie die Mumbles von ${user.userName} - besuchen Sie die Seite eines Mumble-Nutzers.`}
-					/>
-				</Head>
 				<ProfileHeader user={user} canEdit={isCurrentUser} />
-				<div className="mb-2 text-slate-900 pr-48">
+				<div className="mb-2 pr-48">
 					<Headline level={3}>{user.displayName}</Headline>
 				</div>
 
 				<span className="flex flex-row align-baseline gap-3 mb-3">
-					<UserName href={user.profileLink}>{user.userName}</UserName>
+					<NextLink href={user.profileLink}>
+						<IconText icon="profile" colorScheme="violet" size="S">
+							{user.userName}
+						</IconText>
+					</NextLink>
 
-					<IconLink as="span" icon="location" colorScheme="slate" size="S">
+					<IconText icon="location" colorScheme="slate" size="S">
 						{user.city}
-					</IconLink>
+					</IconText>
 
-					<IconLink as="span" icon="calendar" colorScheme="slate" size="S">
+					<IconText icon="calendar" colorScheme="slate" size="S">
 						<TimeStamp date={user.createdAt} prefix="Mitglied seit" />
-					</IconLink>
+					</IconText>
 				</span>
 
 				<div className="text-slate-400 mb-8">
@@ -98,7 +94,14 @@ const UserPage: FC<TUserPage> = ({
 				{isCurrentUser ? (
 					<>
 						<Grid variant="col" gap="M" marginBelow="M">
-							<UserRecommender currentUserId={user.id} />
+							<UserRecommender
+								currentUserId={user.id}
+								limit={6}
+								/*
+								 * We don't pass the prop excludeUserIds, so the component will fetch a list of users that the current user might want to follow or already follows.
+								 */
+								excludeUserIds={[]}
+							/>
 						</Grid>
 						<Grid variant="col" gap="M" marginBelow="M">
 							<Switch
@@ -107,7 +110,7 @@ const UserPage: FC<TUserPage> = ({
 								value={PostType.POSTS}
 								name="posttype"
 								onChange={(event: ChangeEvent): void => {
-									const value = (event.target as HTMLInputElement).value as PostType;
+									const value = (event.target as HTMLInputElement).value;
 									setCurrentPostType(value);
 								}}
 							/>
@@ -131,8 +134,8 @@ const UserPage: FC<TUserPage> = ({
 						<FollowUserButton userId={user.id} />
 						<br />
 						<Grid variant="col" gap="M" marginBelow="M">
-							{postsToRender[currentPostType] &&
-								postsToRender[currentPostType].map((post) => {
+							{posts &&
+								posts.map((post: TPost) => {
 									return <ContentCard key={post.id} variant="timeline" post={post} />;
 								})}
 						</Grid>

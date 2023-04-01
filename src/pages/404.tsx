@@ -6,7 +6,7 @@ import { Richtext, Headline, Link } from '@smartive-education/pizza-hawaii';
 // replacement for pages/404.js in a mumble layout.
 const FourOhFourPage = () => {
 	return (
-		<LoginLayout>
+		<LoginLayout title="Mumble - 404">
 			<>
 				<Headline level={1} as="h1">
 					<span className="text-pink-600">Upsiii...</span>

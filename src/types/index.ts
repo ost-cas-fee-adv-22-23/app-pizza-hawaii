@@ -1,4 +1,4 @@
-import { TUser } from './User';
+import { TUser, TUserSimple } from './User';
 import { TPost } from './Post';
 
-export type { TUser, TPost };
+export type { TUser, TUserSimple, TPost };

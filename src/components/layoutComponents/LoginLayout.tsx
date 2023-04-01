@@ -2,18 +2,21 @@ import Head from 'next/head';
 import { ReactNode, FC } from 'react';
 import Image from 'next/image';
 import { Headline } from '@smartive-education/pizza-hawaii';
+import { Footer } from '../Footer';
 import VerticalLogo from '../../assets/svg/verticalLogo.svg';
 
 type TLoginLayout = {
+	title: string;
+	description?: string;
 	children: ReactNode;
 };
 
-export const LoginLayout: FC<TLoginLayout> = ({ children }) => {
+export const LoginLayout: FC<TLoginLayout> = ({ title, description, children }) => {
 	return (
 		<>
 			<Head>
-				<link rel="icon" href="/favicon.ico" />
-				<title>Login to Mumble</title>
+				<title>{title}</title>
+				{description && <meta name="description" content={description} />}
 			</Head>
 			<div className="SplitScreen grid grid-rows-1 grid-cols-2 md:grid-cols-1 w-screen min-h-screen">
 				<header className="column-start-1 column-span-1 row-start-1 row-span-1 flex items-center justify-center bg-gradient-to-tl from-violet-600 to-pink-500">
@@ -30,8 +33,9 @@ export const LoginLayout: FC<TLoginLayout> = ({ children }) => {
 						</Headline>
 					</div>
 				</header>
-				<div className="column-start-2 column-span-1 row-start-1 row-span-1 md:column-start-1 md:row-start-2 flex items-center justify-center">
-					<section className="w-8/12">{children}</section>
+				<div className="column-start-2 column-span-1 row-start-1 row-span-1 md:column-start-1 md:row-start-2 flex flex-col items-center justify-center">
+					<section className="w-8/12 flex-auto flex flex-col items-center justify-center">{children}</section>
+					<Footer />
 				</div>
 			</div>
 		</>

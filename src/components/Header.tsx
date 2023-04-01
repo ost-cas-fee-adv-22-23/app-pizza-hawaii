@@ -6,7 +6,6 @@ import Image from 'next/image';
 import {
 	Navi,
 	Link,
-	UserProfile,
 	Modal,
 	Form,
 	Button,
@@ -18,13 +17,13 @@ import {
 	NaviButton,
 } from '@smartive-education/pizza-hawaii';
 
+import { UserProfile } from './UserProfile';
 import { TUser } from '../types';
 
 import MumbleLogo from '../assets/svg/mumbleLogo.svg';
 
 type THeader = {
 	user: TUser;
-	profileLink?: string;
 };
 
 export const Header: FC<THeader> = ({ user }) => {
@@ -56,7 +55,7 @@ export const Header: FC<THeader> = ({ user }) => {
 					<div className="flex items-center justify-between gap-8 w-full max-w-content mx-auto">
 						<div className="flex w-[209px]">
 							<Link href="/" component={NextLink}>
-								<Image src={MumbleLogo} alt="Mumble Messenger" />
+								<Image src={MumbleLogo} alt="Mumble Messenger" priority={true} />
 								<h1 className="sr-only">Mumble</h1>
 							</Link>
 						</div>
@@ -137,10 +136,10 @@ export const Header: FC<THeader> = ({ user }) => {
 						</fieldset>
 
 						<Grid variant="row" gap="S" wrapBelowScreen="md">
-							<Button colorScheme="slate" icon="cross">
+							<Button colorScheme="slate" icon="cancel">
 								Abbrechen
 							</Button>
-							<Button colorScheme="violet" icon="check">
+							<Button colorScheme="violet" icon="checkmark">
 								Speichern
 							</Button>
 						</Grid>

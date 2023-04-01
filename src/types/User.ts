@@ -12,3 +12,13 @@ export type TUser = {
 	posterImage?: string;
 	createdAt?: string;
 };
+
+export type TUserSimple = {
+	id: string;
+	userName: string;
+	firstName: string;
+	lastName: string;
+	displayName: string;
+	profileLink: string;
+	avatarUrl?: string;
+};
