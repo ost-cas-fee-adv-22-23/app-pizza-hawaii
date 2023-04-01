@@ -86,7 +86,16 @@ export default function PageHome({
 	};
 
 	useIncreasingInterval(() => {
-		loadLatestPosts();
+		// only load new posts if tab is active
+		if(tabIsActive === false) return;
+
+		// randomizes if load full list (to detect deleted posts) or check just for new posts (2/3 chance)
+		// to prevent that all users load the full list at the same time when the interval is triggered
+		// full list means to load all already visible posts
+		// for our use case this is not necessary, but was fun to implement ;)
+
+		const loadFullList = Math.random() > 0.66;
+		loadLatestPosts(loadFullList);
 	});
 
 	if (error || !currentUser) {
