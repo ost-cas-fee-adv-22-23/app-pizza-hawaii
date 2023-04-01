@@ -44,7 +44,7 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 				<ImageOverlay
 					preset="edit"
 					buttonLabel={'Hintergrundbild anpassen'}
-					onClick={toggleFullscreen()} // TODO: implement edit function or open modal with edit form
+					onClick={toggleFullscreen()} // TODO: implement edit function or
 					borderRadius="L"
 				>
 					<Image
