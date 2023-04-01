@@ -1,27 +1,33 @@
-import React, { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 import { Grid, Button, Headline } from '@smartive-education/pizza-hawaii';
-import { ContentCard } from './ContentCard';
 import { ContentInput, TAddPostProps } from './ContentInput';
 
 import { TPost, TUser } from '../types';
-import { useSession } from 'next-auth/react';
+import { PostList } from './PostList';
 
-type TPostCollection = {
-	headline: string;
+type TPostCollectionProps = {
+	headline?: string;
 	posts: TPost[];
-	canAdd: boolean;
-	canLoadmore: boolean;
-	onAddPost: (data: TAddPostProps) => TPost;
-	onRemovePost: (id: string) => void;
-	onLoadmore: () => TPost[];
+	canAdd?: boolean;
+	canLoadmore?: boolean;
+	onAddPost?: (data: TAddPostProps) => Promise<TPost | null>;
+	onRemovePost?: (id: string) => void;
+	onLoadmore?: () => Promise<TPost[]>;
 };
 
-export const PostCollection: FC<TPostCollection> = ({
+type TPostCollectionState = {
+	visiblePosts: TPost[];
+	hasUpdate: boolean;
+	loading: boolean;
+};
+
+export const PostCollection: FC<TPostCollectionProps> = ({
 	headline,
 	posts,
-	canAdd,
-	canLoadmore,
+	canAdd = false,
+	canLoadmore = false,
 	onAddPost,
 	onRemovePost,
 	onLoadmore,
@@ -29,47 +35,61 @@ export const PostCollection: FC<TPostCollection> = ({
 	const { data: session } = useSession();
 	const currentUser = session?.user as TUser;
 
-	const [visiblePosts, setVisiblePosts] = useState(posts);
-	const [hasUpdate, setHasUpdate] = useState<boolean>(false);
-	const [loading, setLoading] = useState(false);
+	const [state, setState] = useState<TPostCollectionState>({
+		visiblePosts: posts,
+		hasUpdate: false,
+		loading: false,
+	});
 
 	useEffect(() => {
-		// check if post was added since last render
+		const { visiblePosts } = state;
 		const newPosts = posts.filter((post) => !visiblePosts.includes(post));
-
-		// check if post was removed since last render
 		const removedPosts = visiblePosts.filter((post) => !posts.includes(post));
+		console.log('newPosts', newPosts);
+		console.log('removedPosts', removedPosts);
 
-		// if there are new or removed posts, show update button
-		if ([...newPosts, ...removedPosts].length > 0) {
-			// if there are changed posts, show update button
-			setHasUpdate(true);
-
-			// show list of changed posts
-			setVisiblePosts(posts);
-		}
-	}, [posts, visiblePosts]);
+		setState((prevState) => ({ ...prevState, hasUpdate: [...newPosts, ...removedPosts].length > 0 }));
+	}, [posts, state.visiblePosts]);
 
 	const showLatestPosts = () => {
-		// show all posts
-		setVisiblePosts(posts);
-
-		// hide update button
-		setHasUpdate(false);
+		setState((prevState) => ({ ...prevState, hasUpdate: false, visiblePosts: posts }));
 	};
 
 	const onLoadmoreBtn = async () => {
-		setLoading(true);
-		if (onLoadmore) {
-			const morePosts = await onLoadmore();
-			setVisiblePosts((currentVisiblePosts) => [...currentVisiblePosts, ...morePosts]);
-		}
-		setLoading(false);
+		if (!onLoadmore) return;
+		setState((prevState) => ({ ...prevState, loading: true }));
+		const morePosts = await onLoadmore();
+		setState((prevState) => ({
+			...prevState,
+			visiblePosts: [...prevState.visiblePosts, ...morePosts],
+			loading: false,
+		}));
+	};
+
+	const onRemovePostFn = (id: string) => {
+		if (!onRemovePost) return;
+
+		onRemovePost(id);
+
+		setState((prevState) => ({
+			...prevState,
+			visiblePosts: prevState.visiblePosts.filter((post) => post.id !== id),
+		}));
 	};
 
 	const onAddPostFn = async (data: TAddPostProps) => {
+		if (!onAddPost) return null;
+
 		const newPost = await onAddPost(data);
-		setVisiblePosts((currentVisiblePosts) => [newPost, ...currentVisiblePosts]);
+
+		if (!newPost) return null;
+
+		setState((prevState) => ({
+			...prevState,
+			visiblePosts: [newPost, ...prevState.visiblePosts],
+		}));
+
+		return newPost;
 	};
 
 	return (
@@ -82,7 +102,7 @@ export const PostCollection: FC<TPostCollection> = ({
 				</div>
 			)}
 
-			{hasUpdate && (
+			{state.hasUpdate && (
 				<div className="text-slate-500 mb-8">
 					<Button colorScheme="gradient" size="L" icon="repost" onClick={() => showLatestPosts()}>
 						World is changing, update your feed.
@@ -100,14 +120,12 @@ export const PostCollection: FC<TPostCollection> = ({
 						onAddPost={onAddPostFn}
 					/>
 				)}
-				{visiblePosts?.map((post: TPost) => {
-					return <ContentCard key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />;
-				})}
+				<PostList posts={state.visiblePosts} onRemovePost={onRemovePostFn} />
 			</Grid>
 
 			{canLoadmore && (
-				<Button colorScheme="slate" onClick={() => onLoadmoreBtn()} disabled={loading}>
-					{loading ? '...' : 'Load more'}
+				<Button colorScheme="slate" onClick={() => onLoadmoreBtn()} disabled={state.loading}>
+					{state.loading ? '...' : 'Load more'}
 				</Button>
 			)}
 		</section>

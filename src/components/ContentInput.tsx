@@ -30,7 +30,7 @@ type TContentInput = {
 	author: TUser;
 	placeHolderText: string;
 	replyTo?: TPost;
-	onAddPost: (data: TAddPostProps) => void;
+	onAddPost: (data: TAddPostProps) => Promise<TPost | null>;
 };
 
 type TContentCardvariantMap = {
@@ -111,22 +111,26 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		setFile(undefined);
 	};
 
-	const onSubmitPostHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+	const onSubmitPostHandler = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
-
-		try {
-			onAddPost &&
-				onAddPost({
-					text,
-					file,
-					replyTo: replyTo?.id,
-				});
-
-			setFile(undefined); // reset file path
-			setText(''); // TODO: reset text only if post was successful
-		} catch (error) {
-			console.error('onSubmitPostHandler: error', error);
+		if ((!text && !file) || !onAddPost) {
+			return;
 		}
+
+		const newPost = await onAddPost({
+			text,
+			file,
+			replyTo: replyTo?.id,
+		});
+
+		if (!newPost) {
+			// TODO: Sending error message to the user in modal?
+			return;
+		}
+
+		// Reset input field and file
+		setText('');
+		setFile(undefined);
 	};
 
 	const headerSlotContent = props.headline ? (

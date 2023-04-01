@@ -22,32 +22,25 @@ const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSideProp
 	const router = useRouter();
 
 	const onAddReply = async (postData: TAddPostProps) => {
-		try {
-			const newReply = await services.posts.createPost({
-				...postData,
-				accessToken: session?.accessToken as string,
-			});
+		const newReply = await services.posts.createPost({
+			...postData,
+			accessToken: session?.accessToken as string,
+		});
 
-			post.replies = [newReply, ...post.replies];
-		} catch (error) {
-			console.error('onSubmitHandler: error', error);
-		}
+		post.replies = [newReply, ...post.replies];
+		return newReply;
 	};
 
 	const onRemovePost = async (id: string) => {
-		try {
-			const result = await services.api.posts.remove({ id });
+		const result = await services.api.posts.remove({ id });
 
-			if (result) {
-				if (post.id === id) {
-					// go back to overview page
-					router.push('/');
-				} else {
-					post.replies = post.replies.filter((reply: TPost) => reply.id !== id);
-				}
+		if (result) {
+			if (post.id === id) {
+				// go back to overview page
+				router.push('/');
+			} else {
+				post.replies = post.replies.filter((reply: TPost) => reply.id !== id);
 			}
-		} catch (error) {
-			console.error('onSubmitHandler: error', error);
 		}
 	};
 

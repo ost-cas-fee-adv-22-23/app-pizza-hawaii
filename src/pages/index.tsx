@@ -27,64 +27,57 @@ export default function PageHome({
 	const [posts, setPosts] = useState<TPost[]>(initialPosts);
 	const [canLoadmore, setCanLoadmore] = useState<boolean>(initialPostCount > posts.length);
 
-	// TODO: implement a check if posts are deleted
-
-	const loadLatestPosts = async () => {
-		const latestPost = posts[0];
+	const loadLatestPosts = async (loadFullList = false) => {
+		const latestPost = loadFullList ? posts[posts.length - 1] : posts[0];
 		const { posts: newPosts } = await services.api.posts.loadmore({
 			newerThan: latestPost.id,
 		});
 
-		setPosts([...newPosts, ...posts]);
+		if (!newPosts || newPosts.length < 0) return;
+
+		if (loadFullList) {
+			setPosts(newPosts);
+		} else {
+			setPosts((currentPosts: TPost[]) => [...newPosts, ...currentPosts]);
+		}
 	};
 
 	const loadMore = async () => {
-		try {
-			const oldestPost = posts[posts.length - 1];
-			const { count: olderPostCount, posts: olderPosts } = await services.api.posts.loadmore({
-				olderThan: oldestPost.id,
-			});
+		const oldestPost = posts[posts.length - 1];
+		const { count: olderPostCount, posts: olderPosts } = await services.api.posts.loadmore({
+			olderThan: oldestPost.id,
+		});
 
-			if (!olderPosts) {
-				setCanLoadmore(false);
-				return;
-			}
-
-			setPosts((currentPosts: TPost[]) => [...currentPosts, ...olderPosts]);
-			setCanLoadmore(olderPostCount > 0);
-
-			return olderPosts;
-		} catch (error) {
-			// TODO: find something better
-			console.error(error);
+		if (!olderPosts) {
+			setCanLoadmore(false);
+			return [];
 		}
+
+		setPosts((currentPosts: TPost[]) => [...currentPosts, ...olderPosts]);
+		setCanLoadmore(olderPostCount > 0);
+
+		return olderPosts;
 	};
 
-	const onAddPost: Promise<TPost> = async (postData: TAddPostProps) => {
-		try {
-			const newPost = await services.posts.createPost({
-				...postData,
-				accessToken: session?.accessToken as string,
-			});
+	const onAddPost = async (postData: TAddPostProps): Promise<TPost | null> => {
+		const newPost = await services.posts.createPost({
+			...postData,
+			accessToken: session?.accessToken as string,
+		});
 
-			setPosts([newPost, ...posts]);
+		if (!newPost) return null;
 
-			return newPost;
-		} catch (error) {
-			console.error('onSubmitHandler: error', error);
-		}
+		setPosts([newPost, ...posts]);
+
+		return newPost;
 	};
 
-	const onRemovePost = async (id: string) => {
-		try {
-			const result = await services.api.posts.remove({ id });
-
+	const onRemovePost = (id: string) => {
+		services.api.posts.remove({ id }).then((result) => {
 			if (result) {
 				setPosts(posts.filter((post: TPost) => post.id !== id));
 			}
-		} catch (error) {
-			console.error('onSubmitHandler: error', error);
-		}
+		});
 	};
 
 	useIncreasingInterval(() => {
