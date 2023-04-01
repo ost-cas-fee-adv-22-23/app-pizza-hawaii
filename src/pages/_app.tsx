@@ -6,6 +6,7 @@ import ErrorBoundary from '../components/ErrorBoundary';
 
 import { ThemeContextProvider } from '../context/useTheme';
 import { ActiveTabContextProvider } from '../context/useActiveTab';
+import { FolloweeContextProvider } from '../context/useFollowee';
 
 import '../styles/globals.css';
 import '@fontsource/poppins/500.css';
@@ -24,9 +25,11 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 			<SessionProvider session={session}>
 				<ErrorBoundary>
 					<ThemeContextProvider>
-						<ActiveTabContextProvider>
-							<Component {...pageProps} />
-						</ActiveTabContextProvider>
+						<FolloweeContextProvider>
+							<ActiveTabContextProvider>
+								<Component {...pageProps} />
+							</ActiveTabContextProvider>
+						</FolloweeContextProvider>
 					</ThemeContextProvider>
 				</ErrorBoundary>
 			</SessionProvider>

@@ -112,6 +112,7 @@ export default function PageHome({
 			title="Mumble - Welcome to Mumble"
 			description="Verpassen Sie nicht die neuesten Mumbles von den besten Nutzern der Plattform. Besuchen Sie die Index-Seite von Mumble und bleiben Sie auf dem Laufenden."
 		>
+<<<<<<< HEAD
 			<main>
 				<section className="mx-auto w-full max-w-content">
 					<div className="mb-2 text-violet-600">
@@ -128,6 +129,46 @@ export default function PageHome({
 					/>
 				</section>
 			</main>
+=======
+			<section className="mx-auto w-full max-w-content">
+				<div className="mb-2 text-violet-600">
+					<Headline level={2}>Welcome to Mumble</Headline>
+				</div>
+
+				<div className="text-slate-500 mb-8">
+					<Headline level={4} as="p">
+						Whats new in Mumble....
+					</Headline>
+				</div>
+
+				<div className="text-slate-500 mb-8">
+					{latestPosts?.length > 0 && (
+						<Button colorScheme="gradient" size="L" icon="repost" onClick={() => updatePosts()}>
+							World is changing, update your feed.
+						</Button>
+					)}
+				</div>
+
+				<Grid variant="col" gap="M" marginBelow="M">
+					<ContentInput
+						variant="newPost"
+						headline="Hey, was geht ab?"
+						author={currentUser}
+						placeHolderText="Deine Meinung zählt"
+						onAddPost={onAddPost}
+					/>
+					{posts?.map((post: TPost) => {
+						return <ContentCard key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />;
+					})}
+				</Grid>
+
+				{hasMore && (
+					<Button colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
+						{loading ? '...' : 'Load more'}
+					</Button>
+				)}
+			</section>
+>>>>>>> origin/develop
 		</MainLayout>
 	);
 }

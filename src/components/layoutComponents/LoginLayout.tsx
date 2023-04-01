@@ -34,7 +34,9 @@ export const LoginLayout: FC<TLoginLayout> = ({ title, description, children }) 
 					</div>
 				</header>
 				<div className="column-start-2 column-span-1 row-start-1 row-span-1 md:column-start-1 md:row-start-2 flex flex-col items-center justify-center">
-					<section className="w-8/12 flex-auto flex flex-col items-center justify-center">{children}</section>
+					<main className="w-8/12 flex-auto flex flex-col items-center justify-center">
+						<section>{children}</section>
+					</main>
 					<Footer />
 				</div>
 			</div>
