@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import NextLink from 'next/link';
 
 import { useDropzone } from 'react-dropzone';
@@ -58,10 +58,20 @@ const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardv
 export const ContentInput: FC<TContentInput> = (props) => {
 	const { variant, placeHolderText, author, replyTo, onAddPost } = props;
 	const [showModal, setShowModal] = useState(false);
+	const [isValid, setIsValid] = useState(false);
 	const [file, setFile] = useState<File>();
 	const [filePreview, setFilePreview] = useState<string>('');
 	const [text, setText] = React.useState<string>('');
 	const setting = ContentInputCardVariantMap[variant] || ContentInputCardVariantMap.newPost;
+
+	useEffect(() => {
+		if (text?.length > 0 || file) {
+			setIsValid(true);
+		} else {
+			setIsValid(false);
+		}
+	}, [text, file]);
+
 	// Dropzone hook
 	const { getRootProps, getInputProps } = useDropzone({
 		accept: {
@@ -208,9 +218,12 @@ export const ContentInput: FC<TContentInput> = (props) => {
 				<Button colorScheme="slate" icon="upload" onClick={showImageUploadModal}>
 					Bild Hochladen
 				</Button>
-				<Button colorScheme="violet" icon="send" onClick={onSubmitPostHandler}>
-					Absenden
-				</Button>
+				{/* TODO: disabled state to component lib */}
+				<div className={isValid ? 'w-full' : 'w-full opacity-50'}>
+					<Button colorScheme="violet" icon="send" onClick={onSubmitPostHandler} disabled={!isValid}>
+						Absenden
+					</Button>
+				</div>
 			</Grid>
 		</UserContentCard>
 	);
