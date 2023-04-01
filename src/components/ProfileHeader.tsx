@@ -1,9 +1,10 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
 import { Image, ImageOverlay } from '@smartive-education/pizza-hawaii';
 import { UserProfile } from './UserProfile';
 import { TUser } from '../types';
 import ProjectSettings from '../data/ProjectSettings.json';
+import Fullscreen from './Fullscreen';
 
 /*
  * Type
@@ -14,7 +15,29 @@ type TProfileHeader = {
 	canEdit: boolean;
 };
 
+export type TReducedPost = {
+	mediaUrl?: string;
+	text: string;
+	user: {
+		displayName: string;
+		userName: string;
+	};
+};
+
 export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => {
+	const [showFullscreen, setShowFullscreen] = useState(false);
+
+	const toggleFullscreen = () => (): void => {
+		setShowFullscreen(!showFullscreen);
+	};
+
+	// for fullscreen component to work TReducedPost is enough information.
+	const post: TReducedPost = {
+		mediaUrl: user.posterImage,
+		text: `PosterImage from ${user.displayName}`,
+		user: { displayName: user.displayName, userName: user.userName },
+	};
+
 	return (
 		<div className="relative mb-6">
 			{canEdit ? (
@@ -40,9 +63,7 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 				<ImageOverlay
 					preset="enlarge"
 					buttonLabel={'Hintergrundbild anzeigen'}
-					onClick={function (): void {
-						throw new Error('Function not implemented.');
-					}}
+					onClick={toggleFullscreen()}
 					borderRadius="L"
 				>
 					<Image
@@ -62,10 +83,12 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 					avatar={user.avatarUrl}
 					size="XL"
 					border={true}
+					canEdit={canEdit}
 					href={canEdit ? '/profile' : user.profileLink}
-					buttonLabel={canEdit ? 'Change Avatar' : 'View Avatar'}
+					buttonLabel={canEdit ? 'Change Avatar' : ''}
 				/>
 			</div>
+			{showFullscreen && <Fullscreen post={post} toggleHandler={setShowFullscreen} />}
 		</div>
 	);
 };

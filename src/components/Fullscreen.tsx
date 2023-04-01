@@ -2,15 +2,16 @@
 import React, { Dispatch, FC } from 'react';
 import { Image, Modal, Label } from '@smartive-education/pizza-hawaii';
 import { TPost } from '../types/Post';
+import { TReducedPost } from './ProfileHeader';
 
 type TFullscreen = {
-	post: TPost;
+	post: TPost | TReducedPost;
 	toggleHandler: Dispatch<boolean>;
 };
 
 const Fullscreen: FC<TFullscreen> = (props: TFullscreen) => {
 	const { post, toggleHandler } = props;
-
+	console.log(post);
 	const close = () => {
 		toggleHandler(false);
 	};
@@ -21,7 +22,7 @@ const Fullscreen: FC<TFullscreen> = (props: TFullscreen) => {
 				<Image src={post.mediaUrl} alt={`Mumble-Post by Mumbel User ${post.user.userName}`} />
 				<br />
 				<Label as="legend" size="M">
-					{post.user.displayName}: {post.text}
+					{post?.user.displayName}: {post?.text}
 				</Label>
 			</div>
 		</Modal>
