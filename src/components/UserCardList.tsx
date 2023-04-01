@@ -9,10 +9,17 @@ import { TUser } from '../types';
 type TUserCardList = {
 	users: TUser[];
 	loadingItems?: number;
+	noUsersMessage?: string;
 };
 
-export const UserCardList: FC<TUserCardList> = ({ users, loadingItems = 0 }: TUserCardList) => {
-	if (!loadingItems && !users?.length) return <p>No users in this list.</p>;
+export const UserCardList: FC<TUserCardList> = ({
+	users,
+	loadingItems = 0,
+	noUsersMessage = 'No users in this list.',
+}: TUserCardList) => {
+	if (!users?.length && loadingItems === 0) {
+		return <p>{noUsersMessage}</p>;
+	}
 
 	return (
 		<>

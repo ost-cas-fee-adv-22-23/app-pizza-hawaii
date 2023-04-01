@@ -4,23 +4,32 @@ import { Grid } from '@smartive-education/pizza-hawaii';
 import { ContentCard } from './ContentCard';
 
 import { TPost } from '../types';
+import { PostSkeleton } from './helpers/PostSkeleton';
 
 type TPostListProps = {
 	posts?: TPost[];
 	noPostsMessage?: string;
 	onRemovePost: (id: string) => void;
+	loadingItems?: number;
 };
 
-export const PostList: FC<TPostListProps> = ({ posts, onRemovePost, noPostsMessage = 'Keine Posts vorhanden.' }) => {
-	if (!posts || posts.length === 0) {
+export const PostList: FC<TPostListProps> = ({
+	posts,
+	onRemovePost,
+	loadingItems = 0,
+	noPostsMessage = 'Keine Posts vorhanden.',
+}) => {
+	if (!posts?.length && loadingItems === 0) {
 		return <p>{noPostsMessage}</p>;
 	}
 
 	return (
 		<Grid variant="col" gap="M" marginBelow="M">
-			{posts?.map((post: TPost) => {
-				return <ContentCard key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />;
-			})}
+			{loadingItems > 0
+				? Array.from(Array(loadingItems).keys()).map((i) => <PostSkeleton key={i} showImage={Math.random() > 0.5} />)
+				: posts?.map((post: TPost) => {
+						return <ContentCard key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />;
+				  })}
 		</Grid>
 	);
 };

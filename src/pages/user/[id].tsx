@@ -15,7 +15,6 @@ import { PostList } from '../../components/PostList';
 import { services } from '../../services';
 import { TPost, TUser } from '../../types';
 
-
 type TUserPage = {
 	user: TUser;
 	posts: TPost[];
