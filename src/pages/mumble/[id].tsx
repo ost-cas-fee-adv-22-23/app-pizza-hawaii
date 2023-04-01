@@ -1,23 +1,21 @@
 import { FC } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { getToken } from 'next-auth/jwt';
-
-import { Grid } from '@smartive-education/pizza-hawaii';
-import { ContentCard } from '../../components/ContentCard';
-import { ContentInput, TAddPostProps } from '../../components/ContentInput';
-import { MainLayout } from '../../components/layoutComponents/MainLayout';
-
-import { TPost, TUser } from '../../types';
-import { services } from '../../services';
 import { useSession } from 'next-auth/react';
+import { getToken } from 'next-auth/jwt';
 import { useRouter } from 'next/router';
 
+import { MainLayout } from '../../components/layoutComponents/MainLayout';
+
+import { TPost } from '../../types';
+import { services } from '../../services';
+import { PostDetail } from '../../components/PostDetail';
+import { TAddPostProps } from '../../components/ContentInput';
+
 type TUserPage = {
-	currentUser: TUser;
 	post: TPost;
 };
 
-const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const DetailPage: FC<TUserPage> = ({ post }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const { data: session } = useSession();
 	const router = useRouter();
 
@@ -46,22 +44,7 @@ const DetailPage: FC<TUserPage> = ({ post, currentUser }: InferGetServerSideProp
 
 	return (
 		<MainLayout title={`Mumble von ${post?.user.userName}`} description={`Mumble von ${post?.user.userName}`}>
-			<Grid as="div" variant="col" gap="S">
-				{post && <ContentCard variant="detailpage" post={post} onDeletePost={onRemovePost} />}
-				{currentUser && (
-					<ContentInput
-						variant="answerPost"
-						headline="Hey, was meinst Du dazu?"
-						author={currentUser}
-						replyTo={post}
-						placeHolderText="Deine Antwort...?"
-						onAddPost={onAddReply}
-					/>
-				)}
-				{post?.replies?.map((reply: TPost) => {
-					return <ContentCard key={reply.id} variant="response" post={reply} onDeletePost={onRemovePost} />;
-				})}
-			</Grid>
+			<PostDetail post={post} onAddReply={onAddReply} onRemovePost={onRemovePost} />
 		</MainLayout>
 	);
 };

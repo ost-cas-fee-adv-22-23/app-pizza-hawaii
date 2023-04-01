@@ -1,10 +1,9 @@
 import { FC, useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
 
 import { Grid, Button, Headline } from '@smartive-education/pizza-hawaii';
 import { ContentInput, TAddPostProps } from './ContentInput';
 
-import { TPost, TUser } from '../types';
+import { TPost } from '../types';
 import { PostList } from './PostList';
 
 type TPostCollectionProps = {
@@ -32,9 +31,6 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 	onRemovePost,
 	onLoadmore,
 }) => {
-	const { data: session } = useSession();
-	const currentUser = session?.user as TUser;
-
 	const [state, setState] = useState<TPostCollectionState>({
 		visiblePosts: posts,
 		hasUpdate: false,
@@ -110,17 +106,17 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 			)}
 
 			<Grid variant="col" gap="M" marginBelow="M">
-				{canAdd && currentUser && (
+				{canAdd && (
 					<ContentInput
 						variant="newPost"
 						headline="Hey, was geht ab?"
-						author={currentUser}
 						placeHolderText="Deine Meinung zählt"
 						onAddPost={onAddPostFn}
 					/>
 				)}
-				<PostList posts={state.visiblePosts} onRemovePost={onRemovePostFn} />
 			</Grid>
+
+			<PostList posts={state.visiblePosts} onRemovePost={onRemovePostFn} />
 
 			{canLoadmore && (
 				<Button colorScheme="slate" onClick={() => onLoadmoreBtn()} disabled={state.loading}>

@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import NextLink from 'next/link';
 
 import { useDropzone } from 'react-dropzone';
@@ -14,9 +15,8 @@ import {
 	Icon,
 	Image,
 } from '@smartive-education/pizza-hawaii';
-
-import { TPost, TUser } from '../types';
 import { ImageUpload } from './ImageUpload';
+import { TPost, TUser } from '../types';
 
 export type TAddPostProps = {
 	text: string;
@@ -27,7 +27,6 @@ export type TAddPostProps = {
 type TContentInput = {
 	variant: 'newPost' | 'answerPost';
 	headline: string;
-	author: TUser;
 	placeHolderText: string;
 	replyTo?: TPost;
 	onAddPost: (data: TAddPostProps) => Promise<TPost | null>;
@@ -56,7 +55,11 @@ const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardv
 };
 
 export const ContentInput: FC<TContentInput> = (props) => {
-	const { variant, placeHolderText, author, replyTo, onAddPost } = props;
+	const { variant, placeHolderText, replyTo, onAddPost } = props;
+
+	const { data: session } = useSession();
+	const currentUser = session?.user as TUser;
+
 	const [showModal, setShowModal] = useState(false);
 	const [isValid, setIsValid] = useState(false);
 	const [file, setFile] = useState<File>();
@@ -149,12 +152,12 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		<Grid variant="col" gap="S">
 			<Grid variant="col" gap="S">
 				<Label as="span" size={setting.headlineSize}>
-					{`${author.displayName}`}
+					{currentUser?.displayName}
 				</Label>
 				<Grid variant="row" gap="S">
-					<NextLink href={author.profileLink}>
+					<NextLink href={currentUser?.profileLink}>
 						<IconText icon="profile" colorScheme="violet" size="S">
-							{author.userName}
+							{currentUser?.userName}
 						</IconText>
 					</NextLink>
 				</Grid>
@@ -166,9 +169,9 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		<UserContentCard
 			headline={headerSlotContent}
 			userProfile={{
-				avatar: author.avatarUrl,
-				userName: author.userName,
-				href: author.profileLink,
+				avatar: currentUser?.avatarUrl,
+				userName: currentUser?.userName,
+				href: currentUser?.profileLink,
 			}}
 			avatarVariant={setting.avatarVariant}
 			avatarSize={setting.avatarSize}

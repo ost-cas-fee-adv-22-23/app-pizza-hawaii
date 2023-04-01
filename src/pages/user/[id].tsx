@@ -7,7 +7,6 @@ import ErrorPage from 'next/error';
 
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { ProfileHeader } from '../../components/ProfileHeader';
-import { ContentCard } from '../../components/ContentCard';
 import { UserRecommender } from '../../components/UserRecommender';
 
 import { Switch, Headline, IconText, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
@@ -16,6 +15,7 @@ import { services } from '../../services';
 
 import { TPost, TUser } from '../../types';
 import { FollowUserButton } from '../../components/FollowUserButton';
+import { PostList } from '../../components/PostList';
 
 type TUserPage = {
 	user: TUser;
@@ -115,30 +115,15 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 								}}
 							/>
 						</Grid>
-						<Grid variant="col" gap="M" marginBelow="M">
-							{postsToRender[currentPostType] &&
-								postsToRender[currentPostType].map((post) => {
-									return (
-										<ContentCard
-											key={post.id}
-											variant="timeline"
-											post={post}
-											onDeletePost={onRemovePost}
-										/>
-									);
-								})}
-						</Grid>
+
+						<PostList posts={postsToRender[currentPostType]} onRemovePost={onRemovePost} />
 					</>
 				) : (
 					<>
-						<FollowUserButton userId={user.id} />
-						<br />
 						<Grid variant="col" gap="M" marginBelow="M">
-							{posts &&
-								posts.map((post: TPost) => {
-									return <ContentCard key={post.id} variant="timeline" post={post} />;
-								})}
+							<FollowUserButton userId={user.id} />
 						</Grid>
+						<PostList posts={posts} onRemovePost={onRemovePost} />
 					</>
 				)}
 			</>
