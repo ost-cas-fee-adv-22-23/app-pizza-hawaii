@@ -21,6 +21,7 @@ export const UserCard: FC<TUserCard> = (props) => {
 					size="L"
 					border={true}
 					href={user.profileLink}
+					canEdit={false}
 					buttonLabel="View Profile"
 				/>
 				<div className="flex flex-col gap-2">
