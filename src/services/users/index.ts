@@ -124,11 +124,25 @@ const getUser = async ({ id, accessToken }: TGetUser) => {
 	return userData;
 };
 
+const swissCities = [
+	'Zürich',
+	'St. Gallä',
+	'Bärn',
+	'Wil',
+	'Wallisellen',
+	'Winterthur',
+	'Lyss',
+	'Schaffhausen',
+	'Sion',
+	'Kilchberg',
+];
+const randomNumber = Math.floor(Math.random() * swissCities.length);
+
 const transformUser = (user: TRawUser): TUser => ({
 	posterImage: `//picsum.photos/seed/${user.id}1/1466/1060/`,
 	bio: `Hello my name is ${user.firstName}. I am a big fan of the Qwacker community and I am looking forward to meet you all.`,
-	createdAt: new Date().toISOString(), // TODO: Find correct solution. This is not the correct date of creation but the last update of the user profile.
-	city: 'Switzerland',
+	createdAt: new Date(2022 + Math.random(), Math.floor(Math.random() * 12), Math.floor(Math.random() * 30)).toISOString(),
+	city: swissCities[randomNumber],
 	...user,
 	profileLink: `/user/${user.id}`,
 	displayName: `${user.firstName} ${user.lastName}`,

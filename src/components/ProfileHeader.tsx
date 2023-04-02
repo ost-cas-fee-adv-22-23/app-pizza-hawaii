@@ -5,6 +5,14 @@ import { UserProfile } from './UserProfile';
 import { TUser } from '../types';
 import ProjectSettings from '../data/ProjectSettings.json';
 import Fullscreen from './Fullscreen';
+import UserSettings from './UserSettings';
+
+/**
+ * @description
+ * This page shows Profile Header of any user and the curent user Profile Header with some additional features.
+ * As quacker API is not providing a posterImage for users we are using a placeholder image. It looks much better with a real image.
+ * if the current user is clicking on his posterImage he can change it in the modal UserSettings if we implement that feature within the API v2.0.
+ */
 
 /*
  * Type
@@ -25,7 +33,12 @@ export type TReducedPost = {
 };
 
 export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => {
+	const [showSettingsModal, setShowSettingsModal] = useState(false);
 	const [showFullscreen, setShowFullscreen] = useState(false);
+
+	const toggleSettingsModal = () => (): void => {
+		setShowSettingsModal(!showSettingsModal);
+	};
 
 	const toggleFullscreen = () => (): void => {
 		setShowFullscreen(!showFullscreen);
@@ -44,7 +57,7 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 				<ImageOverlay
 					preset="edit"
 					buttonLabel={'Hintergrundbild anpassen'}
-					onClick={toggleFullscreen()} // TODO: implement edit function or
+					onClick={toggleSettingsModal()}
 					borderRadius="L"
 				>
 					<Image
@@ -82,11 +95,12 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 					size="XL"
 					border={true}
 					canEdit={canEdit}
-					href={canEdit ? '/profile' : user.profileLink}
+					href={user.profileLink}
 					buttonLabel={canEdit ? 'Change Avatar' : ''}
 				/>
 			</div>
 			{showFullscreen && <Fullscreen post={post} toggleHandler={setShowFullscreen} />}
+			{showSettingsModal && <UserSettings user={user} toggleSettingsModal={setShowSettingsModal} />}
 		</div>
 	);
 };

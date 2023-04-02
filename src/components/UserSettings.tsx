@@ -34,7 +34,7 @@ const UserSettings: FC<TUserSettings> = ({ user, toggleSettingsModal }) => {
 			<Form>
 				<fieldset>
 					<Label as="legend" size="XL">
-						USERSETTINGS: Persönliche Einstellungen
+						Persönliche Einstellungen
 					</Label>
 					<div className="mt-4">
 						<Grid variant="col" gap="M" marginBelow="M">
