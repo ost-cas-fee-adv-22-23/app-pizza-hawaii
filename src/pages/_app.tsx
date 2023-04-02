@@ -5,6 +5,7 @@ import type { Session } from 'next-auth';
 import ErrorBoundary from '../components/ErrorBoundary';
 
 import { ThemeContextProvider } from '../context/useTheme';
+import { ActiveTabContextProvider } from '../context/useActiveTab';
 import { FolloweeContextProvider } from '../context/useFollowee';
 
 import '../styles/globals.css';
@@ -25,7 +26,9 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 				<ErrorBoundary>
 					<ThemeContextProvider>
 						<FolloweeContextProvider>
-							<Component {...pageProps} />
+							<ActiveTabContextProvider>
+								<Component {...pageProps} />
+							</ActiveTabContextProvider>
 						</FolloweeContextProvider>
 					</ThemeContextProvider>
 				</ErrorBoundary>
