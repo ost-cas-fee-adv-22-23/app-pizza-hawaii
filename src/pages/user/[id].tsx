@@ -1,21 +1,19 @@
 import { ChangeEvent, useState, FC } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
 import { getToken } from 'next-auth/jwt';
+import NextLink from 'next/link';
 import ErrorPage from 'next/error';
 
+import { Switch, Headline, IconText, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { ContentCard } from '../../components/ContentCard';
 import { UserRecommender } from '../../components/UserRecommender';
-
-import { Switch, Headline, IconText, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
+import { FollowUserButton } from '../../components/FollowUserButton';
 
 import { services } from '../../services';
-
 import { TPost, TUser } from '../../types';
-import { FollowUserButton } from '../../components/FollowUserButton';
 
 /**
  * @description
@@ -37,7 +35,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	const [currentPostType, setCurrentPostType] = useState(PostType.POSTS);
 
 	const { data: session } = useSession();
-	const currentUser: TUser | undefined = session?.user;
+	const currentUser: TUser = session?.user as TUser;
 
 	if (!user) {
 		return <ErrorPage statusCode={403} title={'no user'} />;
@@ -97,14 +95,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 				{isCurrentUser ? (
 					<>
 						<Grid variant="col" gap="M" marginBelow="M">
-							<UserRecommender
-								currentUserId={user.id}
-								limit={6}
-								/*
-								 * We don't pass the prop excludeUserIds, so the component will fetch a list of users that the current user might want to follow or already follows.
-								 */
-								excludeUserIds={[]}
-							/>
+							<UserRecommender currentUserId={user.id} limit={6} />
 						</Grid>
 						<Grid variant="col" gap="M" marginBelow="M">
 							<Switch
