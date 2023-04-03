@@ -1,7 +1,8 @@
 import { decodeTime } from 'ulid';
 import { TPost } from '../../types';
-import fetchQwackerApi from '../qwacker';
+import { fetchItem, fetchList, TBase } from '../qwacker';
 
+import parseRichText from '../../utils/parseRichText';
 import { usersService } from '../users';
 
 const statusMessageMap: Record<number, string> = {
@@ -11,10 +12,6 @@ const statusMessageMap: Record<number, string> = {
 };
 
 type TRawPost = Omit<TPost, 'createdAt, user, replies'>;
-
-type TBase = {
-	accessToken: string;
-};
 
 /**
  * Get all posts
@@ -43,68 +40,33 @@ type TGetPostsResult = {
 };
 
 const getPosts = async (params: TGetPosts): Promise<TGetPostsResult> => {
-	const maxLimit = 1000;
-	const { newerThan, olderThan, limit, offset, creator, accessToken }: TGetPosts = params;
+	const { accessToken, ...searchParams } = params;
 
-	// create url params
-	const urlParams = new URLSearchParams();
-
-	if (offset !== undefined) {
-		urlParams.set('offset', offset.toString());
-	}
-	if (limit !== undefined) {
-		urlParams.set('limit', Math.min(limit, maxLimit).toString());
-	}
-	if (newerThan !== undefined) {
-		urlParams.set('newerThan', newerThan);
-	}
-	if (olderThan !== undefined) {
-		urlParams.set('olderThan', olderThan);
-	}
-	if (creator !== undefined) {
-		urlParams.set('creator', creator);
-	}
-
-	const result = (await fetchQwackerApi(`posts?${urlParams}`, accessToken, {
+	const { count, items } = (await fetchList({
+		endpoint: 'posts',
+		accessToken,
 		method: 'GET',
-	})) as { count: number; data: TRawPost[] };
-
-	let remainingCount = result.count;
-	const lastPostId = result.data[result.data.length - 1]?.id as string;
-	let posts = result.data.map(transformPost) as TPost[];
-
-	// If there are more entries to fetch, make a recursive call
-	if (remainingCount > 0 && (!limit || posts.length < limit)) {
-		const remainingLimit = limit && remainingCount > limit ? limit - posts.length : remainingCount;
-
-		const result = await getPosts({
-			...params,
-			limit: remainingLimit,
-			olderThan: lastPostId,
-			accessToken,
-		});
-
-		remainingCount = result.count;
-		posts = [...posts, ...result.posts];
-	}
+		...searchParams,
+	})) as { count: number; items: TRawPost[] };
 
 	// normalize posts
-	posts = posts.map(transformPost) as TPost[];
+	let allPosts = items.map(transformPost) as TPost[];
 
 	// load users
-	posts = await addReferencesToPosts(posts, false, accessToken);
+	allPosts = await addReferencesToPosts(allPosts, false, accessToken);
 
 	return {
-		count: remainingCount,
-		posts,
+		count,
+		posts: allPosts,
 	};
 };
 
 /**
  * Get a single post by id
  *
- * @param {string} id
- * @param {string} accessToken
+ * @param {string} id id of the post
+ * @param {string} accessToken access token of the user who is fetching the post
+ * @param {string} loadReplies whether to load the replies of the post or not
  *
  */
 type TGetPost = TBase & {
@@ -113,7 +75,9 @@ type TGetPost = TBase & {
 };
 
 const getPost = async ({ id, loadReplies = false, accessToken }: TGetPost) => {
-	let post = (await fetchQwackerApi(`posts/${id}`, accessToken, {
+	let post = (await fetchItem({
+		endpoint: `posts/${id}`,
+		accessToken,
 		method: 'GET',
 	})) as TRawPost;
 
@@ -123,54 +87,71 @@ const getPost = async ({ id, loadReplies = false, accessToken }: TGetPost) => {
 };
 
 const deletePost = async ({ id, accessToken }: TGetPost) => {
-	const res = await fetchQwackerApi(`posts/${id}`, accessToken, {
+	return await fetchItem({
+		endpoint: `posts/${id}`,
+		accessToken,
 		method: 'DELETE',
 	});
-
-	if (res.status !== 204) {
-		console.error(statusMessageMap[res.status]);
-		return false;
-	}
-
-	return true;
 };
 
-const getPostReplies = async ({ id, accessToken }: TGetPost) => {
-	let posts = (await fetchQwackerApi(`posts/${id}/replies`, accessToken)) as TRawPost[];
-
-	posts = posts.map(transformPost) as TPost[];
-	posts = await addReferencesToPosts(posts, false, accessToken);
-
-	return posts;
+type TGetPostReplies = TBase & {
+	id: string;
 };
 
-type TGetPostQueryObj = {
+const getPostReplies = async (params: TGetPostReplies): Promise<TGetPostsResult> => {
+	const { accessToken, id } = params;
+
+	const replies = (await fetchItem({
+		endpoint: `posts/${id}/replies`,
+		accessToken,
+		method: 'GET',
+	})) as TRawPost[];
+
+	// normalize posts
+	let allPosts = replies.map(transformPost) as TPost[];
+
+	// load users
+	allPosts = await addReferencesToPosts(allPosts, false, accessToken);
+
+	// there is no count for replies so we set it to 0 for now (inconsistent API for replies)
+	return {
+		count: 0,
+		posts: allPosts,
+	};
+};
+
+type TGetPostsByQueryQuery = {
 	text?: string;
 	tags?: string[];
 	mentions?: string[];
 	isReply?: boolean;
+	likedBy?: string[];
+
 	offset?: number;
 	limit?: number;
-	likedBy?: string[];
 };
 
-type TGetPostByQuery = {
-	query: TGetPostQueryObj;
-	accessToken: string;
-};
+type TGetPostsByQuery = TBase & TGetPostsByQueryQuery;
 
-// search for posts by a search object
-const getPostsByQuery = async ({ query, accessToken }: TGetPostByQuery) => {
-	const { count, data } = (await fetchQwackerApi(`posts/search`, accessToken, {
+const getPostsByQuery = async (params: TGetPostsByQuery): Promise<TGetPostsResult> => {
+	const { accessToken, ...searchParams } = params;
+
+	const { count, items } = (await fetchList({
+		endpoint: 'posts/search',
+		accessToken,
 		method: 'POST',
-		body: JSON.stringify(query),
-	})) as { count: number; data: TRawPost[] };
+		...searchParams,
+	})) as { count: number; items: TRawPost[] };
 
-	const posts = data.map(transformPost) as TPost[];
+	// normalize posts
+	let allPosts = items.map(transformPost) as TPost[];
+
+	// load users
+	allPosts = await addReferencesToPosts(allPosts, false, accessToken);
 
 	return {
 		count,
-		posts: await addReferencesToPosts(posts, false, accessToken),
+		posts: allPosts,
 	};
 };
 
@@ -190,49 +171,54 @@ const getPostsOfUser = async ({ id, limit, accessToken }: TGetPostByUserId) => {
 	return posts;
 };
 
-type TgetPostsLikedByUser = {
+type TGetPostsLikedByUser = {
 	id: string;
 	accessToken: string;
 };
 
-const getPostsLikedByUser = async ({ id, accessToken }: TgetPostsLikedByUser) => {
+const getPostsLikedByUser = async ({ id, accessToken }: TGetPostsLikedByUser) => {
 	const { posts } = await getPostsByQuery({
-		query: {
-			likedBy: [id],
-		},
+		likedBy: [id as string],
 		accessToken,
 	});
 
 	return posts;
 };
 
-type TCreatePost = {
+type TCreatePostAttributes = {
 	text: string;
 	file?: File;
-	replyTo?: string;
-	accessToken: string;
 };
 
-// direct to db
-const createPost = async ({ text, file, replyTo, accessToken }: TCreatePost) => {
+type TCreatePost = TBase & {
+	replyTo?: string;
+	accessToken: string;
+} & TCreatePostAttributes;
+
+const createPost = async ({ replyTo, accessToken, ...postData }: TCreatePost) => {
 	let url = 'posts';
 	if (replyTo) {
 		url = `posts/${replyTo}`;
 	}
 
+	// add postData to formData if is set (not undefined)
 	const formData = new FormData();
-	formData.append('text', text);
-	if (file) {
-		formData.append('image', file);
-	}
+	Object.keys(postData).forEach((key) => {
+		const value = postData[key as keyof TCreatePostAttributes];
+		if (value) {
+			formData.append(key, value);
+		}
+	});
 
-	let post = await fetchQwackerApi(url, accessToken, {
+	let post = (await fetchItem({
+		endpoint: url,
+		accessToken,
 		method: 'POST',
 		body: formData,
 		headers: {
 			Authorization: `Bearer ${accessToken}`,
 		},
-	});
+	})) as TRawPost;
 
 	post = transformPost(post);
 
@@ -247,20 +233,25 @@ const addReferencesToPosts = async (posts: TRawPost[], loadReplies = false, acce
 	// add users to posts
 	const fullPostsPromises = posts.map(async (post) => {
 		const user = users.find((user) => user.id === post.creator) as TPost['user'];
+
 		if (loadReplies) {
-			const replies = await getPostReplies({ id: post.id, accessToken });
-			return { ...post, user, replies };
+			const res = await getPostReplies({ id: post.id, accessToken });
+			return { ...post, user, replies: res.posts };
 		}
 		return { ...post, user };
 	});
 
 	const fullPosts = await Promise.all(fullPostsPromises);
 
-	return fullPosts;
+	return fullPosts as TPost[];
 };
+
 const transformPost = (post: TRawPost) => {
+	const html = parseRichText(post.text);
+
 	return {
 		...post,
+		text: html,
 		createdAt: new Date(decodeTime(post.id)).toISOString(),
 	};
 };

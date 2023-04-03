@@ -1,5 +1,5 @@
 import { TUser, TUserSimple } from '../../types';
-import fetchQwackerApi from '../qwacker';
+import { fetchList, fetchItem } from '../qwacker';
 
 type TRawUser = Omit<TUser, 'createdAt profileLink, displayName, posterImage, bio, city'>;
 
@@ -48,11 +48,15 @@ const getUsers = async ({ limit, offset = 0, accessToken }: TGetUsers): Promise<
 		urlParams.set('limit', Math.min(limit, maxLimit).toString());
 	}
 
-	const { count, data } = (await fetchQwackerApi(`users?${urlParams}`, accessToken, {
+	const { count, items } = (await fetchList({
+		endpoint: 'users',
+		accessToken,
 		method: 'GET',
-	})) as { count: number; data: TRawUser[] };
+		...urlParams,
+	})) as { count: number; items: TRawUser[] };
 
-	const users = data.map(transformUser) as TUser[];
+
+	const users = items.map(transformUser) as TUser[];
 
 	// If there are more entries to fetch, make a recursive call
 	if (count > 0 && (!limit || limit > users.length)) {
@@ -108,12 +112,13 @@ const getUser = async ({ id, accessToken }: TGetUser) => {
 		return cachedUser.data;
 	}
 
-	// If not, fetch it from the API
-	const post = (await fetchQwackerApi(`users/${id}`, accessToken, {
+	const user = (await fetchItem({
+		endpoint: `users/${id}`,
+		accessToken,
 		method: 'GET',
 	})) as TRawUser;
 
-	const userData = transformUser(post);
+	const userData = transformUser(user);
 
 	// Add user to cache
 	userCache[id] = {
