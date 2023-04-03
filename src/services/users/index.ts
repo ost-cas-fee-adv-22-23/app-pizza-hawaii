@@ -55,7 +55,6 @@ const getUsers = async ({ limit, offset = 0, accessToken }: TGetUsers): Promise<
 		...urlParams,
 	})) as { count: number; items: TRawUser[] };
 
-
 	const users = items.map(transformUser) as TUser[];
 
 	// If there are more entries to fetch, make a recursive call

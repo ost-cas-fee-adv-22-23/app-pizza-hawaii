@@ -19,7 +19,7 @@ export const PostDetail: FC<TPostDetailProps> = ({ post, onRemovePost, onAddRepl
 	const onAnswerPost = (id: string) => {
 		const anserPost = post?.replies?.find((reply) => reply.id === id);
 
-		const textarea = document.getElementById(textAreaId);
+		const textarea = document.getElementById(textAreaId) as HTMLTextAreaElement;
 		if (!textarea) {
 			return;
 		}
@@ -34,7 +34,12 @@ export const PostDetail: FC<TPostDetailProps> = ({ post, onRemovePost, onAddRepl
 		const markdownLink = `[@${anserPost?.user?.userName}](/user/${anserPost?.user?.id})`;
 
 		// set text to textarea and prepend markdownLink and check if there is already a text then add a space
-		textarea?.setRangeText(`${textarea?.value ? ' ' : ''}${markdownLink} `, textarea.selectionStart, textarea.selectionEnd, 'end');
+		textarea?.setRangeText(
+			`${textarea?.nodeValue ? ' ' : ''}${markdownLink} `,
+			textarea.selectionStart,
+			textarea.selectionEnd,
+			'end'
+		);
 	};
 
 	return (

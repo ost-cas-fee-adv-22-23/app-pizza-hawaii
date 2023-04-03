@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, useId } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import NextLink from 'next/link';
 import { useDropzone } from 'react-dropzone';
