@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState, useId } from 'react';
 import { useSession } from 'next-auth/react';
 import NextLink from 'next/link';
 import { useDropzone } from 'react-dropzone';
@@ -30,6 +30,7 @@ type TPostCreator = {
 	headline: string;
 	placeHolderText: string;
 	replyTo?: TPost;
+	textAreaId?: string;
 	onAddPost: (data: TAddPostProps) => Promise<TPost | null>;
 };
 
@@ -56,7 +57,7 @@ const PostCreatorCardVariantMap: Record<TPostCreator['variant'], TContentCardvar
 };
 
 export const PostCreator: FC<TPostCreator> = (props) => {
-	const { variant, placeHolderText, replyTo, onAddPost } = props;
+	const { variant, placeHolderText, replyTo, textAreaId, onAddPost } = props;
 
 	const { data: session } = useSession();
 	const currentUser = session?.user as TUser;
@@ -181,6 +182,7 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 				<Image src={filePreview} width={600} caption="Vorschau: Möchtest Du dieses Bild posten?" alt="preview" />
 			)}
 			<FormTextarea
+				id={textAreaId}
 				label={placeHolderText}
 				placeholder={placeHolderText}
 				hideLabel={true}

@@ -24,11 +24,11 @@ import { useSession } from 'next-auth/react';
 /*
  * Type
  */
-
-type TPostItemProps = {
+export type TPostItemProps = {
 	variant: 'detailpage' | 'timeline' | 'response';
 	post: TPost;
 	onDeletePost?: (id: string) => void;
+	onAnswerPost?: (id: string) => void;
 };
 
 type TPostItemVariantMap = {
@@ -63,7 +63,10 @@ const postItemVariantMap: Record<TPostItemProps['variant'], TPostItemVariantMap>
 	},
 };
 
-export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost }) => {
+export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAnswerPost }) => {
+	if (!post) {
+		return null;
+	}
 	const [likedByUser, setLikedByUser] = useState(post.likedByUser);
 	const [likeCount, setLikeCount] = useState(post.likeCount);
 	const [showFullscreen, setShowFullscreen] = useState(false);
@@ -86,6 +89,11 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost }) =>
 			});
 		}
 		setLikedByUser(!likedByUser);
+	};
+
+	// handle answer function
+	const handleAnswerPost = () => {
+		onAnswerPost && onAnswerPost(post.id);
 	};
 
 	// delete function
@@ -145,14 +153,24 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost }) =>
 			)}
 
 			<Grid variant="row" gap="M" wrapBelowScreen="md">
-				<InteractionButton
-					component={NextLink}
-					href={`/mumble/${post.id}`}
-					isActive={replyCount > 0}
-					colorScheme="violet"
-					buttonText={replyCount > 0 ? `${replyCount} Comments` : replyCount === 0 ? 'Comment' : '1 Comment'}
-					iconName={replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
-				/>
+				{variant === 'response' ? (
+					<InteractionButton
+						type="button"
+						colorScheme="violet"
+						buttonText={'Answer'}
+						iconName={'repost'}
+						onClick={handleAnswerPost}
+					/>
+				) : (
+					<InteractionButton
+						component={NextLink}
+						href={`/mumble/${post.id}`}
+						isActive={replyCount > 0}
+						colorScheme="violet"
+						buttonText={replyCount > 0 ? `${replyCount} Comments` : replyCount === 0 ? 'Comment' : '1 Comment'}
+						iconName={replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
+					/>
+				)}
 				<InteractionButton
 					type="button"
 					isActive={likeCount > 0}
