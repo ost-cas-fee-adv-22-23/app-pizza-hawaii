@@ -29,7 +29,7 @@ const DetailPage: FC<TUserPage> = ({ post: initialPost }: InferGetServerSideProp
 
 		setPost((post: TPost) => ({
 			...post,
-			replies: [...(post.replies as TPost[]), newReply],
+			replies: [newReply, ...(post.replies as TPost[])],
 		}));
 
 		return newReply;
@@ -62,7 +62,7 @@ const DetailPage: FC<TUserPage> = ({ post: initialPost }: InferGetServerSideProp
 
 export default DetailPage;
 
-export const getServerSideProps: GetServerSideProps = async ({ req, query: { id: postId } }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, query: { postId } }) => {
 	const session = await getToken({ req });
 	if (!session) {
 		return {
@@ -79,7 +79,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { id:
 		return {
 			props: {
 				post,
-				currentUser: session?.user,
 			},
 		};
 	} catch (error) {
