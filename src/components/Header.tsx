@@ -1,51 +1,25 @@
-import { FC, useState, FormEvent } from 'react';
+import { FC, useState } from 'react';
 import { signOut } from 'next-auth/react';
 import NextLink from 'next/link';
 import Image from 'next/image';
 
-import {
-	Navi,
-	Link,
-	Modal,
-	Form,
-	Button,
-	Label,
-	Grid,
-	FormInput,
-	FormTextarea,
-	FormPassword,
-	NaviButton,
-} from '@smartive-education/pizza-hawaii';
+import { Navi, Link, NaviButton } from '@smartive-education/pizza-hawaii';
 
 import { UserProfile } from './user/UserProfile';
 import { TUser } from '../types';
 
 import MumbleLogo from '../assets/svg/mumbleLogo.svg';
+import UserSettings from './UserSettings';
 
 type THeader = {
 	user: TUser;
 };
 
 export const Header: FC<THeader> = ({ user }) => {
-	const [state, setState] = useState({
-		showSettingsModal: false,
-		user: user,
-	});
+	const [showSettingsModal, setShowSettingsModal] = useState(false);
 
-	const handleSettingsModalClick = (): void => {
-		setState({ ...state, showSettingsModal: !state.showSettingsModal });
-	};
-
-	const onFieldChange = (e: FormEvent): void => {
-		const { name, value } = e.target as HTMLInputElement;
-
-		setState({
-			...state,
-			user: {
-				...state.user,
-				[name]: value,
-			},
-		});
+	const handleSettingsClick = (): void => {
+		setShowSettingsModal(true);
 	};
 
 	return (
@@ -67,9 +41,10 @@ export const Header: FC<THeader> = ({ user }) => {
 										avatar={user.avatarUrl}
 										size="S"
 										buttonLabel="My Mumble Profile"
+										canEdit={false}
 									/>
 								</NaviButton>
-								<NaviButton icon="settings" onClick={handleSettingsModalClick}>
+								<NaviButton icon="settings" onClick={handleSettingsClick}>
 									Settings
 								</NaviButton>
 								<NaviButton icon="logout" onClick={() => signOut()}>
@@ -80,72 +55,7 @@ export const Header: FC<THeader> = ({ user }) => {
 					</div>
 				</div>
 			</header>
-			{state.showSettingsModal && (
-				<Modal title="Einstellungen" isVisible={state.showSettingsModal} onClose={handleSettingsModalClick}>
-					<Form>
-						<fieldset>
-							<Label as="legend" size="XL">
-								Persönliche Einstellungen
-							</Label>
-							<div className="mt-4">
-								<Grid variant="col" gap="M" marginBelow="M">
-									<FormInput
-										type="text"
-										label="UserName"
-										name="userName"
-										value={state.user.userName}
-										disabled={true}
-										icon="mumble"
-										onChange={onFieldChange}
-									/>
-									<FormInput
-										type="text"
-										label="Vorname"
-										name="firstName"
-										value={state.user.firstName}
-										onChange={onFieldChange}
-									/>
-									<FormInput
-										type="text"
-										label="Name"
-										name="lastName"
-										value={state.user.lastName}
-										onChange={onFieldChange}
-									/>
-									<FormInput
-										type="email"
-										label="E-Mail"
-										name="email"
-										value={state.user.email}
-										onChange={onFieldChange}
-									/>
-									<FormTextarea label="Bio" name="bio" value={state.user.bio} onChange={onFieldChange} />
-								</Grid>
-							</div>
-						</fieldset>
-						<fieldset>
-							<Label as="legend" size="XL">
-								Passwort ändern
-							</Label>
-							<div className="mt-4">
-								<Grid variant="col" gap="M" marginBelow="M">
-									<FormPassword label="Altes Passwort" onChange={onFieldChange} />
-									<FormPassword label="Neues Passwort" onChange={onFieldChange} />
-								</Grid>
-							</div>
-						</fieldset>
-
-						<Grid variant="row" gap="S" wrapBelowScreen="md">
-							<Button colorScheme="slate" icon="cancel">
-								Abbrechen
-							</Button>
-							<Button colorScheme="violet" icon="checkmark">
-								Speichern
-							</Button>
-						</Grid>
-					</Form>
-				</Modal>
-			)}
+			{showSettingsModal && <UserSettings user={user} toggleSettingsModal={setShowSettingsModal} />}
 		</>
 	);
 };
