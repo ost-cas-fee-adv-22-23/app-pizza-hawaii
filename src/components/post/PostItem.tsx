@@ -21,7 +21,6 @@ import ProjectSettings from '../../data/ProjectSettings.json';
 import { postsService } from '../../services/api/posts/';
 import ImageModal from '../ImageModal';
 
-
 /*
  * Type
  */
@@ -132,11 +131,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost }) =>
 			<Richtext size={setting.textSize}>{post.text}</Richtext>
 
 			{post.mediaUrl && (
-				<ImageOverlay
-					preset="enlarge"
-					buttonLabel="Enlarge image in modal"
-					onClick={toggleImageModal}
-				>
+				<ImageOverlay preset="enlarge" buttonLabel="Enlarge image in modal" onClick={toggleImageModal}>
 					<Image
 						width={ProjectSettings.images.post.width}
 						height={
