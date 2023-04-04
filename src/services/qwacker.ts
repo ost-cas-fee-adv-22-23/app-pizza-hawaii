@@ -1,11 +1,23 @@
 export type TBase = {
 	accessToken: string;
 };
-const statusMessageMap: Record<number, string> = {
-	204: 'No Content',
-	401: 'Unauthorized',
-	403: 'Forbidden',
+
+type TFetchSearchParams = TBase & {
+	endpoint: string;
+	method: string;
+
+	text?: string;
+	tags?: string[];
+	mentions?: string[];
+	isReply?: boolean;
+	offset?: number;
+	limit?: number;
+	likedBy?: string[];
+
+	body?: FormData;
+	headers: Record<string, string>;
 };
+
 let counter = 0;
 const BASE_URL = process.env.NEXT_PUBLIC_QWACKER_API_URL;
 
@@ -52,22 +64,6 @@ export function ensureHttpsProtocol(url: string): string {
 
 	return url;
 }
-
-type TFetchSearchParams = TBase & {
-	endpoint: string;
-	method: string;
-
-	text?: string;
-	tags?: string[];
-	mentions?: string[];
-	isReply?: boolean;
-	offset?: number;
-	limit?: number;
-	likedBy?: string[];
-
-	body?: FormData;
-	headers: Record<string, string>;
-};
 
 export async function fetchList(params: object) {
 	const maxLimit = 1000;
