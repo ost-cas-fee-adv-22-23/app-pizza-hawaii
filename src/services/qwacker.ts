@@ -2,7 +2,7 @@ export type TBase = {
 	accessToken: string;
 };
 
-type TFetchSearchParams = TBase & {
+type TFetchParams = TBase & {
 	endpoint: string;
 	method: string;
 
@@ -10,13 +10,17 @@ type TFetchSearchParams = TBase & {
 	tags?: string[];
 	mentions?: string[];
 	isReply?: boolean;
-	offset?: number;
-	limit?: number;
 	likedBy?: string[];
 
 	body?: FormData;
 	headers: Record<string, string>;
 };
+
+type TFetchParamsList = TBase &
+	TFetchParams & {
+		offset?: number;
+		limit?: number;
+	};
 
 let counter = 0;
 const BASE_URL = process.env.NEXT_PUBLIC_QWACKER_API_URL;
@@ -72,7 +76,7 @@ export async function fetchList(params: object) {
 		endpoint: string;
 		accessToken: string;
 		method: string;
-	} & TFetchSearchParams;
+	} & TFetchParamsList;
 
 	let url = generateAPIUrl(endpoint);
 
@@ -144,7 +148,7 @@ export async function fetchItem(params: object) {
 		endpoint: string;
 		accessToken: string;
 		method: string;
-	} & TFetchSearchParams;
+	} & TFetchParams;
 
 	let url = generateAPIUrl(endpoint);
 
