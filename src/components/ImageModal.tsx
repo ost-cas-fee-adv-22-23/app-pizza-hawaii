@@ -3,12 +3,12 @@ import { Image, Modal, Label } from '@smartive-education/pizza-hawaii';
 import { TPost } from '../types/Post';
 import { TReducedPost } from './ProfileHeader';
 
-type TFullscreen = {
+type TImageModal = {
 	post: TPost | TReducedPost;
 	toggleHandler: Dispatch<boolean>;
 };
 
-const Fullscreen: FC<TFullscreen> = (props: TFullscreen) => {
+const ImageModal: FC<TImageModal> = (props: TImageModal) => {
 	const { post, toggleHandler } = props;
 
 	const close = () => {
@@ -28,4 +28,4 @@ const Fullscreen: FC<TFullscreen> = (props: TFullscreen) => {
 	);
 };
 
-export default Fullscreen;
+export default ImageModal;

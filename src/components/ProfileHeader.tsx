@@ -4,7 +4,7 @@ import { Image, ImageOverlay } from '@smartive-education/pizza-hawaii';
 import { UserProfile } from './UserProfile';
 import { TUser } from '../types';
 import ProjectSettings from '../data/ProjectSettings.json';
-import Fullscreen from './Fullscreen';
+import ImageModal from './ImageModal';
 import UserSettings from './UserSettings';
 
 /**
@@ -99,7 +99,7 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 					buttonLabel={canEdit ? 'Change Avatar' : ''}
 				/>
 			</div>
-			{showFullscreen && <Fullscreen post={post} toggleHandler={setShowFullscreen} />}
+			{showFullscreen && <ImageModal post={post} toggleHandler={setShowFullscreen} />}
 			{showSettingsModal && <UserSettings user={user} toggleSettingsModal={setShowSettingsModal} />}
 		</div>
 	);

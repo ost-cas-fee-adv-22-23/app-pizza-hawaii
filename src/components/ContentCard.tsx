@@ -18,7 +18,7 @@ import {
 import { TPost } from '../types';
 import ProjectSettings from './../data/ProjectSettings.json';
 import { postsService } from '../services/api/posts/';
-import Fullscreen from './Fullscreen';
+import ImageModal from './ImageModal';
 
 /*
  * Type
@@ -66,7 +66,7 @@ const contentCardvariantMap: Record<TContentCard['variant'], TContentCardvariant
 export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false, onDeletePost }) => {
 	const [likedByUser, setLikedByUser] = useState(post.likedByUser);
 	const [likeCount, setLikeCount] = useState(post.likeCount);
-	const [showFullscreen, setShowFullscreen] = useState(false);
+	const [showImageModal, setShowImageModal] = useState(false);
 
 	const setting = contentCardvariantMap[variant] || contentCardvariantMap.detailpage;
 	const replyCount = post?.replyCount || 0;
@@ -90,10 +90,10 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 		onDeletePost && onDeletePost(post.id);
 	};
 
-	// mayby we do a helper function hook or a component for this as fullscreen is used in userpanorama image as well
-	// fullscreen function
-	const toggleFullscreen = () => {
-		setShowFullscreen(!showFullscreen);
+	// mayby we do a helper function hook or a component for this as ImageModal is used in userpanorama image as well
+	// ImageModal function
+	const toggleImageModal = () => {
+		setShowImageModal(!showImageModal);
 	};
 
 	const headerSlotContent = (
@@ -130,9 +130,9 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 			{post.mediaUrl && (
 				<ImageOverlay
 					preset="enlarge"
-					buttonLabel="Open image in fullscreen"
+					buttonLabel="Open image in ImageModal"
 					onClick={function (): void {
-						toggleFullscreen();
+						toggleImageModal();
 					}}
 				>
 					<Image
@@ -182,7 +182,7 @@ export const ContentCard: FC<TContentCard> = ({ variant, post, canDelete = false
 				)}
 			</Grid>
 
-			{showFullscreen && <Fullscreen post={post} toggleHandler={setShowFullscreen} />}
+			{showImageModal && <ImageModal post={post} toggleHandler={setShowImageModal} />}
 		</UserContentCard>
 	);
 };
