@@ -1,5 +1,6 @@
 import { TUser, TUserSimple } from '../../types';
 import { fetchList, fetchItem } from '../qwacker';
+import { homeTown, memberSince, shortBio } from '../../data/helpers/dataRandomizer';
 
 type TRawUser = Omit<TUser, 'createdAt profileLink, displayName, posterImage, bio, city'>;
 
@@ -128,11 +129,12 @@ const getUser = async ({ id, accessToken }: TGetUser) => {
 	return userData;
 };
 
+// some data aggregation from dataRandomizer helper to fill the gaps what is not provided by the API
 const transformUser = (user: TRawUser): TUser => ({
 	posterImage: `//picsum.photos/seed/${user.id}1/1466/1060/`,
-	bio: `Hello my name is ${user.firstName}. I am a big fan of the Qwacker community and I am looking forward to meet you all.`,
-	createdAt: new Date().toISOString(), // TODO: Find correct solution. This is not the correct date of creation but the last update of the user profile.
-	city: 'Switzerland',
+	bio: `Hello my name is ${user.firstName}. I am a ${shortBio()}`,
+	createdAt: memberSince(),
+	city: homeTown(),
 	...user,
 	profileLink: `/user/${user.id}`,
 	displayName: `${user.firstName} ${user.lastName}`,

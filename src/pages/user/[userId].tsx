@@ -16,6 +16,11 @@ import { PostList } from '../../components/post/PostList';
 import { services } from '../../services';
 import { TPost, TUser } from '../../types';
 
+/**
+ * @description
+ * This page shows detail of any user and the curent user profile with some additional features.
+ */
+
 type TUserPage = {
 	user: TUser;
 	posts: TPost[];
@@ -75,11 +80,9 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 							{user.userName}
 						</IconText>
 					</NextLink>
-
 					<IconText icon="location" colorScheme="slate" size="S">
 						{user.city}
 					</IconText>
-
 					<IconText icon="calendar" colorScheme="slate" size="S">
 						<TimeStamp date={user.createdAt} prefix="Mitglied seit" />
 					</IconText>

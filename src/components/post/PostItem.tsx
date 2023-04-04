@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react';
 import NextLink from 'next/link';
+import { useSession } from 'next-auth/react';
 
 import {
 	Image,
@@ -12,14 +13,13 @@ import {
 	CopyToClipboardButton,
 	UserContentCard,
 	TUserContentCard,
-	Modal,
 	InteractionButton,
 } from '@smartive-education/pizza-hawaii';
 
 import { TPost, TUser } from '../../types';
 import ProjectSettings from '../../data/ProjectSettings.json';
-import { postsService } from '../../services/api/posts';
-import { useSession } from 'next-auth/react';
+import { postsService } from '../../services/api/posts/';
+import ImageModal from '../ImageModal';
 
 /*
  * Type
@@ -66,7 +66,7 @@ const postItemVariantMap: Record<TPostItemProps['variant'], TPostItemVariantMap>
 export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAnswerPost }) => {
 	const [likedByUser, setLikedByUser] = useState(post?.likedByUser);
 	const [likeCount, setLikeCount] = useState(post?.likeCount);
-	const [showFullscreen, setShowFullscreen] = useState(false);
+	const [showImageModal, setShowImageModal] = useState(false);
 
 	const { data: session } = useSession();
 	const currentUser = session?.user as TUser;
@@ -98,10 +98,10 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAn
 		onDeletePost && onDeletePost(post?.id);
 	};
 
-	// mayby we do a helper function hook or a component for this as fullscreen is used in userpanorama image as well
-	// fullscreen function
-	const toggleFullscreen = () => {
-		setShowFullscreen(!showFullscreen);
+	// mayby we do a helper function hook or a component for this as ImageModal is used in userpanorama image as well
+	// ImageModal function
+	const toggleImageModal = () => {
+		setShowImageModal(!showImageModal);
 	};
 
 	const headerSlotContent = (
@@ -136,7 +136,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAn
 			<Richtext size={setting.textSize}>{post.text}</Richtext>
 
 			{post.mediaUrl && (
-				<ImageOverlay preset="enlarge" buttonLabel="Open image in fullscreen" onClick={toggleFullscreen}>
+				<ImageOverlay preset="enlarge" buttonLabel="Enlarge image in modal" onClick={toggleImageModal}>
 					<Image
 						width={ProjectSettings.images.post.width}
 						height={
@@ -193,15 +193,8 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAn
 					/>
 				)}
 			</Grid>
-			{showFullscreen && (
-				<Modal title="The Big Picture" isVisible={showFullscreen} onClose={toggleFullscreen}>
-					<Image width={1000} src={post.mediaUrl} alt={`Image of ${post.user.displayName}`} />
-					<br />
-					<Label as="span" size="L">
-						Posted by: {post.user.firstName}
-					</Label>
-				</Modal>
-			)}
+
+			{showImageModal && <ImageModal post={post} toggleHandler={setShowImageModal} />}
 		</UserContentCard>
 	);
 };
