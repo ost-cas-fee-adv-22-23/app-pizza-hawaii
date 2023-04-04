@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 
 import { Image, ImageOverlay } from '@smartive-education/pizza-hawaii';
-import { UserProfile } from './UserProfile';
+import { UserProfile } from './user/UserProfile';
 import { TUser } from '../types';
 import ProjectSettings from '../data/ProjectSettings.json';
 import ImageModal from './ImageModal';
@@ -34,17 +34,17 @@ export type TReducedPost = {
 
 export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => {
 	const [showSettingsModal, setShowSettingsModal] = useState(false);
-	const [showFullscreen, setShowFullscreen] = useState(false);
+	const [showImageModal, setShowImageModal] = useState(false);
 
 	const toggleSettingsModal = () => (): void => {
 		setShowSettingsModal(!showSettingsModal);
 	};
 
-	const toggleFullscreen = () => (): void => {
-		setShowFullscreen(!showFullscreen);
+	const toggleImageModal = () => (): void => {
+		setShowImageModal(!showImageModal);
 	};
 
-	// for fullscreen component to work TReducedPost is enough information.
+	// for ImageModal component to work TReducedPost is enough information.
 	const post: TReducedPost = {
 		mediaUrl: user.posterImage,
 		text: `PosterImage from ${user.displayName}`,
@@ -74,7 +74,7 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 				<ImageOverlay
 					preset="enlarge"
 					buttonLabel={'Hintergrundbild anzeigen'}
-					onClick={toggleFullscreen()}
+					onClick={toggleImageModal()}
 					borderRadius="L"
 				>
 					<Image
@@ -99,7 +99,7 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 					buttonLabel={canEdit ? 'Change Avatar' : ''}
 				/>
 			</div>
-			{showFullscreen && <ImageModal post={post} toggleHandler={setShowFullscreen} />}
+			{showImageModal && <ImageModal post={post} toggleHandler={setShowImageModal} />}
 			{showSettingsModal && <UserSettings user={user} toggleSettingsModal={setShowSettingsModal} />}
 		</div>
 	);

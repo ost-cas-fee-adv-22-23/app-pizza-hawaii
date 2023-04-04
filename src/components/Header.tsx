@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 import { Navi, Link, NaviButton } from '@smartive-education/pizza-hawaii';
 
-import { UserProfile } from './UserProfile';
+import { UserProfile } from './user/UserProfile';
 import { TUser } from '../types';
 
 import MumbleLogo from '../assets/svg/mumbleLogo.svg';

@@ -1,6 +1,6 @@
 import fetchQwackerApi from '../qwacker';
 
-const statusMessageMap: Record<number, string> = {
+const STATUS_MESSAGE_MAP: Record<number, string> = {
 	204: 'No Content',
 	401: 'Unauthorized',
 	403: 'Forbidden',
@@ -18,7 +18,7 @@ const like = async ({ id, method, accessToken }: TLikeProps) => {
 	});
 
 	if (res.status !== 204) {
-		console.error(statusMessageMap[res.status]);
+		console.error(STATUS_MESSAGE_MAP[res.status]);
 		return false;
 	}
 

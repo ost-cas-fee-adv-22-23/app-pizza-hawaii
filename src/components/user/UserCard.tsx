@@ -3,8 +3,8 @@ import NextLink from 'next/link';
 
 import { Card, Grid, Label, IconText } from '@smartive-education/pizza-hawaii';
 import { UserProfile } from './UserProfile';
-import { FollowUserButton } from './FollowUserButton';
-import { TUser } from '../types/User';
+import { FollowUserButton } from '../FollowUserButton';
+import { TUser } from '../../types/User';
 
 interface TUserCard {
 	user: TUser;

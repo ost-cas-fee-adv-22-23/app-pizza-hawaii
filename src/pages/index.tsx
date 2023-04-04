@@ -4,15 +4,17 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 import ErrorPage from 'next/error';
 
-import { MainLayout } from '../components/layoutComponents/MainLayout';
-import { ContentCard } from '../components/ContentCard';
-import { ContentInput, TAddPostProps } from '../components/ContentInput';
-import { Headline, Grid, Button } from '@smartive-education/pizza-hawaii';
-
+import { encodeTime, decodeTime } from 'ulid';
 import { services } from '../services';
 import useIncreasingInterval from '../hooks/useIncreasingInterval';
+import { useActiveTabContext } from '../context/useActiveTab';
 
-import type { TPost } from '../types';
+import { Headline } from '@smartive-education/pizza-hawaii';
+import { MainLayout } from '../components/layoutComponents/MainLayout';
+import { PostCollection } from '../components/post/PostCollection';
+import { TAddPostProps } from '../components/post/PostCreator';
+
+import { TPost } from '../types';
 
 export default function PageHome({
 	currentUser,
@@ -21,77 +23,101 @@ export default function PageHome({
 	error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { data: session } = useSession();
+	const { isActive: tabIsActive } = useActiveTabContext();
 
-	const [posts, setPosts] = useState(initialPosts);
-	const [loading, setLoading] = useState(false);
-	const [hasMore, setHasMore] = useState(initialPosts?.length < initialPostCount);
-	const [latestPosts, setLatestPosts] = useState<TPost[]>([]);
+	const [posts, setPosts] = useState<TPost[]>(initialPosts);
+	const [canLoadmore, setCanLoadmore] = useState<boolean>(initialPostCount > posts.length);
 
-	const updatePosts = () => {
-		setPosts([...latestPosts, ...posts]);
-		setLatestPosts([]);
-	};
+	const loadLatestPosts = async (loadFullList = false) => {
+		const latestPost = loadFullList ? posts[posts.length - 1] : posts[0];
+		let lastPostId = latestPost?.id;
 
-	const loadLatestPosts = async () => {
-		const latestPost = posts[0];
+		if (loadFullList) {
+			// decrement ULID to make sure to load also last post itself
+			// TODO: could be done better by decrement random part of ULID only
+			lastPostId = encodeTime(decodeTime(lastPostId) - 1, 10) + lastPostId.substring(26 - 16);
+		}
+
 		const { posts: newPosts } = await services.api.posts.loadmore({
-			newerThan: latestPost.id,
+			newerThan: lastPostId,
 		});
 
-		if (newPosts?.length > 0) {
-			setLatestPosts(newPosts);
+		if (!newPosts || newPosts.length < 0) return;
+
+		if (loadFullList) {
+			// replace posts with new posts
+			setPosts(newPosts);
+		} else {
+			// prepend new posts to list
+			setPosts((currentPosts: TPost[]) => [...newPosts, ...currentPosts]);
 		}
 	};
 
 	const loadMore = async () => {
-		setLoading(true);
-		try {
-			const { count: newOlderPostCount, posts: newOlderPosts } = await services.api.posts.loadmore({
-				olderThan: posts[posts.length - 1].id,
-			});
+		// get oldest post
+		const oldestPost = posts[posts.length - 1];
 
-			setHasMore(newOlderPosts.length < newOlderPostCount);
-			setPosts([...posts, ...newOlderPosts]);
-		} catch (error) {
-			// TODO: find something better
-			console.error(error);
+		// fetch posts older than oldest post
+		const { count: olderPostCount, posts: olderPosts } = await services.api.posts.loadmore({
+			olderThan: oldestPost.id,
+		});
+
+		// if no older posts are available, set canLoadmore to false and return empty array
+		if (!olderPosts) {
+			setCanLoadmore(false);
+			return [];
 		}
 
-		setLoading(false);
+		// append older posts to list
+		setPosts((currentPosts: TPost[]) => [...currentPosts, ...olderPosts]);
+
+		// set canLoadmore to true if there are more posts available
+		setCanLoadmore(olderPostCount > 0);
+
+		// return older posts
+		return olderPosts;
 	};
 
-	const onAddPost = async (postData: TAddPostProps) => {
-		try {
-			const newPost = await services.posts.createPost({
-				...postData,
-				accessToken: session?.accessToken as string,
-			});
+	const onAddPost = async (postData: TAddPostProps): Promise<TPost | null> => {
+		const newPost = await services.posts.createPost({
+			...postData,
+			accessToken: session?.accessToken as string,
+		});
 
-			setPosts([newPost, ...posts]);
-		} catch (error) {
-			console.error('onSubmitHandler: error', error);
-		}
+		if (!newPost) return null;
+
+		setPosts([newPost, ...posts]);
+
+		return newPost;
 	};
 
 	const onRemovePost = async (id: string) => {
-		try {
-			const result = await services.api.posts.remove({ id });
+		const response = await services.api.posts.remove({ id });
 
-			if (result) {
-				setPosts(posts.filter((post: TPost) => post.id !== id));
-			}
-		} catch (error) {
-			console.error('onSubmitHandler: error', error);
+		if (!response.ok) {
+			throw new Error('Failed to delete post');
 		}
+
+		setPosts(posts.filter((post: TPost) => post.id !== id));
 	};
 
 	useIncreasingInterval(() => {
-		loadLatestPosts();
+		// only load new posts if browser tab is active
+		if (!tabIsActive) return;
+
+		// randomizes if load full list (to detect deleted posts) or check just for new posts (2/3 chance)
+		// to prevent that all users load the full list at the same time when the interval is triggered
+		// full list means to load all already visible posts
+		// for our use case this is not necessary, but was fun to implement ;)
+
+		const loadFullList = Math.random() > 0.66;
+		loadLatestPosts(loadFullList);
 	});
 
 	if (error || !currentUser) {
 		return <ErrorPage statusCode={500} title={error} />;
 	}
+
 	return (
 		<MainLayout
 			title="Mumble - Welcome to Mumble"
@@ -101,39 +127,15 @@ export default function PageHome({
 				<div className="mb-2 text-violet-600">
 					<Headline level={2}>Welcome to Mumble</Headline>
 				</div>
-
-				<div className="text-slate-500 mb-8">
-					<Headline level={4} as="p">
-						Whats new in Mumble....
-					</Headline>
-				</div>
-
-				<div className="text-slate-500 mb-8">
-					{latestPosts?.length > 0 && (
-						<Button colorScheme="gradient" size="L" icon="repost" onClick={() => updatePosts()}>
-							World is changing, update your feed.
-						</Button>
-					)}
-				</div>
-
-				<Grid variant="col" gap="M" marginBelow="M">
-					<ContentInput
-						variant="newPost"
-						headline="Hey, was geht ab?"
-						author={currentUser}
-						placeHolderText="Deine Meinung zählt"
-						onAddPost={onAddPost}
-					/>
-					{posts?.map((post: TPost) => {
-						return <ContentCard key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />;
-					})}
-				</Grid>
-
-				{hasMore && (
-					<Button colorScheme="slate" onClick={() => loadMore()} disabled={loading}>
-						{loading ? '...' : 'Load more'}
-					</Button>
-				)}
+				<PostCollection
+					headline="Whats new in Mumble...."
+					posts={posts}
+					canAdd={true}
+					canLoadmore={canLoadmore}
+					onAddPost={onAddPost}
+					onRemovePost={onRemovePost}
+					onLoadmore={loadMore}
+				/>
 			</section>
 		</MainLayout>
 	);
