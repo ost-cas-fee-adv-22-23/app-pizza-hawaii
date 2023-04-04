@@ -31,7 +31,7 @@ export const PostDetail: FC<TPostDetailProps> = ({ post, onRemovePost, onAddRepl
 		textarea?.focus();
 
 		// add markdownLink to PostCreator textarea
-		const markdownLink = `[@${anserPost?.user?.userName}](/user/${anserPost?.user?.id})`;
+		const markdownLink = `@[${anserPost?.user?.userName}|${anserPost?.user?.id}]`;
 
 		// set text to textarea and prepend markdownLink and check if there is already a text then add a space
 		textarea?.setRangeText(

@@ -13,32 +13,32 @@ const defaultSettings: RichtextSettings = {
 	links: true,
 	markdownLinks: true,
 	tags: true,
-	mentions: false, // We can't use this feature because we don't have a username (yet)
+	mentions: true,
 	tagLinkPattern: '/tag/$1',
-	mentionLinkPattern: '/user/$1',
+	mentionLinkPattern: '/user/$3',
 };
 
 const parseRichText = (plainText: string, settings: RichtextSettings = defaultSettings): string => {
 	let richText = plainText;
 
-	if (settings.links) {
-		// Use a regular expression to find URLs in the text and replace URLs with anchor tags
-		richText = richText.replace(/((https?:\/\/|www\.)[^\s]+)/g, '<a href="//$1">$1</a>');
-	}
-
 	if (settings.markdownLinks) {
-		// Use a regular expression to find Markdown-Links in the text and replace with anchor tags
+		// Convert Markdown-Links in the text and replace with anchor tags (e.g. [Link](https://example.com)) to <a href="https://example.com">Link</a>
 		richText = richText.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
 	}
 
+	if (settings.links) {
+		// Convert plain text URLs to anchor tags (e.g. https://example.com) to <a href="https://example.com">https://example.com</a> do not change already existing links
+		richText = richText.replace(/(?<!href=")(https?:\/\/[^\s]+)/g, '<a href="$1">$1</a>');
+	}
+
 	if (settings.tags) {
-		// Use a regular expression to find Hashtag-Links in the text and wrap with anchor tags
+		// Convert Hashtag-Links in the text and wrap with anchor tags (e.g. #tag) to <a href="/tag/tag">#tag</a>
 		richText = richText.replace(/#(\w+)/g, `<a href="${settings.tagLinkPattern}">#$1</a>`);
 	}
 
 	if (settings.mentions) {
-		// Use a regular expression to find @-mentions in the text and wrap with anchor tags
-		richText = richText.replace(/@(\w+)/g, `<a href="${settings.mentionLinkPattern}">@$1</a>`);
+		// Convert @-mentions in the text and wrap with anchor tags. (e.g. @[JohnDoe|123]) to <a href="/user/123">@JohnDoe</a>
+		richText = richText.replace(/@(\[(\w+)\|(\d+)\])/g, `<a href="${settings.mentionLinkPattern}">@$2</a>`);
 	}
 
 	if (settings.basics) {

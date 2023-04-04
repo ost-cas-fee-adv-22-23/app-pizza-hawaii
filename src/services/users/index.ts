@@ -4,7 +4,7 @@ import { homeTown, memberSince, shortBio } from '../../data/helpers/dataRandomiz
 
 type TRawUser = Omit<TUser, 'createdAt profileLink, displayName, posterImage, bio, city'>;
 
-type TBase = {
+type TFetchBase = {
 	accessToken: string;
 };
 
@@ -28,7 +28,7 @@ const userCache: TUserCache = {};
  * @returns {Promise<{ count: number; users: TUser[] }>}
  */
 
-type TGetUsers = TBase & {
+type TGetUsers = TFetchBase & {
 	limit?: number;
 	offset?: number;
 };
@@ -80,7 +80,7 @@ const getUsers = async ({ limit, offset = 0, accessToken }: TGetUsers): Promise<
 	};
 };
 
-type TGetUsersByIds = TBase & {
+type TGetUsersByIds = TFetchBase & {
 	ids: string[];
 };
 
@@ -100,7 +100,7 @@ async function getUsersByIds({ ids, accessToken }: TGetUsersByIds): Promise<TUse
  * @returns {Promise<TUser>}
  */
 
-type TGetUser = TBase & {
+type TGetUser = TFetchBase & {
 	id: string;
 };
 

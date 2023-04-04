@@ -1,15 +1,9 @@
 import { decodeTime } from 'ulid';
 import { TPost } from '../../types';
-import { fetchItem, fetchList, TBase } from '../qwacker';
+import { fetchItem, fetchList, TFetchBase, TFetchListResultPagination, TFetchQuery } from '../qwacker';
 
 import parseRichText from '../../utils/parseRichText';
 import { usersService } from '../users';
-
-const statusMessageMap: Record<number, string> = {
-	204: 'No Content',
-	401: 'Unauthorized',
-	403: 'Forbidden',
-};
 
 type TRawPost = Omit<TPost, 'createdAt, user, replies'>;
 
@@ -26,28 +20,23 @@ type TRawPost = Omit<TPost, 'createdAt, user, replies'>;
  * @returns {Promise<{ count: number; users: TPost[] }>}
  */
 
-type TGetPosts = TBase & {
-	newerThan?: string;
-	olderThan?: string;
-	limit?: number;
-	offset?: number;
-	creator?: string;
-};
+type TGetPosts = TFetchBase & TFetchQuery;
 
 type TGetPostsResult = {
 	count: number;
 	posts: TPost[];
+	pagination?: TFetchListResultPagination;
 };
 
 const getPosts = async (params: TGetPosts): Promise<TGetPostsResult> => {
 	const { accessToken, ...searchParams } = params;
 
-	const { count, items } = (await fetchList({
+	const { count, items, pagination } = (await fetchList({
 		endpoint: 'posts',
 		accessToken,
 		method: 'GET',
 		...searchParams,
-	})) as { count: number; items: TRawPost[] };
+	}) as { count: number; items: TRawPost[]; pagination?: TFetchListResultPagination });
 
 	// normalize posts
 	let allPosts = items.map(transformPost) as TPost[];
@@ -58,6 +47,7 @@ const getPosts = async (params: TGetPosts): Promise<TGetPostsResult> => {
 	return {
 		count,
 		posts: allPosts,
+		pagination,
 	};
 };
 
@@ -69,7 +59,7 @@ const getPosts = async (params: TGetPosts): Promise<TGetPostsResult> => {
  * @param {string} loadReplies whether to load the replies of the post or not
  *
  */
-type TGetPost = TBase & {
+type TGetPost = TFetchBase & {
 	id: string;
 	loadReplies?: boolean;
 };
@@ -94,7 +84,7 @@ const deletePost = async ({ id, accessToken }: TGetPost) => {
 	});
 };
 
-type TGetPostReplies = TBase & {
+type TGetPostReplies = TFetchBase & {
 	id: string;
 };
 
@@ -131,7 +121,7 @@ type TGetPostsByQueryQuery = {
 	limit?: number;
 };
 
-type TGetPostsByQuery = TBase & TGetPostsByQueryQuery;
+type TGetPostsByQuery = TFetchBase & TGetPostsByQueryQuery;
 
 const getPostsByQuery = async (params: TGetPostsByQuery): Promise<TGetPostsResult> => {
 	const { accessToken, ...searchParams } = params;
@@ -190,7 +180,7 @@ type TCreatePostAttributes = {
 	file?: File;
 };
 
-type TCreatePost = TBase & {
+type TCreatePost = TFetchBase & {
 	replyTo?: string;
 	accessToken: string;
 } & TCreatePostAttributes;

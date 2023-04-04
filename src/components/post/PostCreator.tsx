@@ -214,9 +214,11 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 								</div>
 							</div>
 						)}
-						<Button colorScheme="gradient" icon="eye">
-							Dieses Bild wählen
-						</Button>
+						{file && (
+							<Button colorScheme="gradient" icon="eye">
+								Dieses Bild wählen
+							</Button>
+						)}
 					</form>
 				</Modal>
 			)}
