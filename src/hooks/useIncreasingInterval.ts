@@ -26,6 +26,7 @@ const useIncreasingInterval = (
 			// Add a random jitter to avoid thundering herd problem
 			const jitter = Math.random() * 0.1 * intervalMs;
 
+			// Increase interval by 10% with a random jitter
 			setIntervalMs((prevIntervalMs) => Math.floor(Math.min(prevIntervalMs * 1.1 + jitter, maxInterval)));
 		}, intervalMs);
 

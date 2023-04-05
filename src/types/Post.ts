@@ -15,3 +15,5 @@ export type TPost = {
 	replies?: TPost[];
 	parentId?: string;
 };
+
+export type TRawPost = Omit<TPost, 'createdAt, user, replies'>;

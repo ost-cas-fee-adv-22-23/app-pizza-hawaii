@@ -30,6 +30,7 @@ type TPostCreator = {
 	headline: string;
 	placeHolderText: string;
 	replyTo?: TPost;
+	textAreaId?: string;
 	onAddPost: (data: TAddPostProps) => Promise<TPost | null>;
 };
 
@@ -56,7 +57,7 @@ const PostCreatorCardVariantMap: Record<TPostCreator['variant'], TContentCardvar
 };
 
 export const PostCreator: FC<TPostCreator> = (props) => {
-	const { variant, placeHolderText, replyTo, onAddPost } = props;
+	const { variant, placeHolderText, replyTo, textAreaId, onAddPost } = props;
 
 	const { data: session } = useSession();
 	const currentUser = session?.user as TUser;
@@ -181,6 +182,7 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 				<Image src={filePreview} width={600} caption="Vorschau: Möchtest Du dieses Bild posten?" alt="preview" />
 			)}
 			<FormTextarea
+				id={textAreaId}
 				label={placeHolderText}
 				placeholder={placeHolderText}
 				hideLabel={true}
@@ -212,9 +214,11 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 								</div>
 							</div>
 						)}
-						<Button colorScheme="gradient" icon="eye">
-							Dieses Bild wählen
-						</Button>
+						{file && (
+							<Button colorScheme="gradient" icon="eye">
+								Dieses Bild wählen
+							</Button>
+						)}
 					</form>
 				</Modal>
 			)}

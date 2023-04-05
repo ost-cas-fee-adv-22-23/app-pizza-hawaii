@@ -22,3 +22,5 @@ export type TUserSimple = {
 	profileLink: string;
 	avatarUrl?: string;
 };
+
+export type TRawUser = Omit<TUser, 'createdAt profileLink, displayName, posterImage, bio, city'>;

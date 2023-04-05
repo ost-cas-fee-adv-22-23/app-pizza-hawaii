@@ -24,11 +24,11 @@ import ImageModal from '../ImageModal';
 /*
  * Type
  */
-
-type TPostItemProps = {
+export type TPostItemProps = {
 	variant: 'detailpage' | 'timeline' | 'response';
 	post: TPost;
 	onDeletePost?: (id: string) => void;
+	onAnswerPost?: (id: string) => void;
 };
 
 type TPostItemVariantMap = {
@@ -63,9 +63,9 @@ const postItemVariantMap: Record<TPostItemProps['variant'], TPostItemVariantMap>
 	},
 };
 
-export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost }) => {
-	const [likedByUser, setLikedByUser] = useState(post.likedByUser);
-	const [likeCount, setLikeCount] = useState(post.likeCount);
+export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAnswerPost }) => {
+	const [likedByUser, setLikedByUser] = useState(post?.likedByUser);
+	const [likeCount, setLikeCount] = useState(post?.likeCount);
 	const [showImageModal, setShowImageModal] = useState(false);
 
 	const { data: session } = useSession();
@@ -77,20 +77,25 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost }) =>
 	// like and unlike function
 	const handleLike = async () => {
 		if (likedByUser) {
-			postsService.unlike({ id: post.id }).then(() => {
+			postsService.unlike({ id: post?.id }).then(() => {
 				setLikeCount(likeCount - 1);
 			});
 		} else {
-			postsService.like({ id: post.id }).then(() => {
+			postsService.like({ id: post?.id }).then(() => {
 				setLikeCount(likeCount + 1);
 			});
 		}
 		setLikedByUser(!likedByUser);
 	};
 
+	// handle answer function
+	const handleAnswerPost = () => {
+		onAnswerPost && onAnswerPost(post?.id);
+	};
+
 	// delete function
 	const handleDeletePost = async () => {
-		onDeletePost && onDeletePost(post.id);
+		onDeletePost && onDeletePost(post?.id);
 	};
 
 	// mayby we do a helper function hook or a component for this as ImageModal is used in userpanorama image as well
@@ -102,16 +107,16 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost }) =>
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
-				{`${post.user.displayName}`}
+				{`${post?.user.displayName}`}
 			</Label>
 			<Grid variant="row" gap="S">
-				<NextLink href={post.user.profileLink}>
+				<NextLink href={post?.user.profileLink}>
 					<IconText icon="profile" colorScheme="violet" size="S">
-						{post.user.userName}
+						{post?.user.userName}
 					</IconText>
 				</NextLink>
 				<IconText icon="calendar" colorScheme="slate" size="S">
-					<TimeStamp date={post.createdAt} />
+					<TimeStamp date={post?.createdAt} />
 				</IconText>
 			</Grid>
 		</Grid>
@@ -145,14 +150,24 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost }) =>
 			)}
 
 			<Grid variant="row" gap="M" wrapBelowScreen="md">
-				<InteractionButton
-					component={NextLink}
-					href={`/mumble/${post.id}`}
-					isActive={replyCount > 0}
-					colorScheme="violet"
-					buttonText={replyCount > 0 ? `${replyCount} Comments` : replyCount === 0 ? 'Comment' : '1 Comment'}
-					iconName={replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
-				/>
+				{variant === 'response' ? (
+					<InteractionButton
+						type="button"
+						colorScheme="violet"
+						buttonText={'Answer'}
+						iconName={'repost'}
+						onClick={handleAnswerPost}
+					/>
+				) : (
+					<InteractionButton
+						component={NextLink}
+						href={`/mumble/${post.id}`}
+						isActive={replyCount > 0}
+						colorScheme="violet"
+						buttonText={replyCount > 0 ? `${replyCount} Comments` : replyCount === 0 ? 'Comment' : '1 Comment'}
+						iconName={replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
+					/>
+				)}
 				<InteractionButton
 					type="button"
 					isActive={likeCount > 0}
