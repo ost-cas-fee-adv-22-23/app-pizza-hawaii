@@ -1,3 +1,5 @@
+import { TRawPost, TRawUser } from '../types';
+
 export type TFetchBase = {
 	accessToken: string;
 };
@@ -37,7 +39,7 @@ type TFetchListResult =
 	| boolean
 	| {
 			count: number;
-			items: T[];
+			items: TRawPost[] | TRawUser[];
 			pagination: TFetchListResultPagination;
 	  };
 
@@ -129,7 +131,7 @@ export async function fetchList(params: object): Promise<TFetchListResult> {
 
 	return {
 		count: remainingCount,
-		items: allItems as T[],
+		items: allItems,
 		pagination,
 	};
 }
@@ -139,6 +141,7 @@ export async function fetchItem(params: object) {
 		endpoint: string;
 		accessToken: string;
 		method: string;
+		searchParams?: TFetchQuery;
 	} & TFetchParams;
 
 	let url = generateAPIUrl(endpoint);
@@ -184,18 +187,21 @@ export async function fetchItem(params: object) {
  * Helper functions
  */
 
-export function generateAPIUrl(endpoint: string, params?: Record<string, string | number | undefined>): string {
+export function generateAPIUrl(endpoint: string, params?: TFetchQuery): string {
 	let url = `${BASE_URL}${endpoint}`;
 
 	if (params) {
-		url = addUrlParams(url, params);
+		url = addUrlParams(url, params as TAddUrlParams);
 	}
 
 	return url;
 }
 
+type TAddUrlParams = {
+	[key: string]: string | number | undefined;
+};
 // add url params to a url
-export function addUrlParams(url: string, params: Record<string, string | number | undefined>): string {
+export function addUrlParams(url: string, params: TAddUrlParams): string {
 	// filter all undefined or null params
 	Object.keys(params).forEach((key: string) => {
 		if (params[key] === undefined || params[key] === null) {

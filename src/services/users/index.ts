@@ -1,8 +1,6 @@
-import { TUser, TUserSimple } from '../../types';
+import { TUser, TUserSimple, TRawUser } from '../../types';
 import { fetchList, fetchItem } from '../qwacker';
 import { homeTown, memberSince, shortBio } from '../../data/helpers/dataRandomizer';
-
-type TRawUser = Omit<TUser, 'createdAt profileLink, displayName, posterImage, bio, city'>;
 
 type TFetchBase = {
 	accessToken: string;

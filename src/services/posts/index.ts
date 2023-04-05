@@ -1,11 +1,9 @@
 import { decodeTime } from 'ulid';
-import { TPost } from '../../types';
+import { TPost, TRawPost } from '../../types';
 import { fetchItem, fetchList, TFetchBase, TFetchListResultPagination, TFetchQuery } from '../qwacker';
 
 import parseRichText from '../../utils/parseRichText';
 import { usersService } from '../users';
-
-type TRawPost = Omit<TPost, 'createdAt, user, replies'>;
 
 /**
  * Get all posts
@@ -36,7 +34,7 @@ const getPosts = async (params: TGetPosts): Promise<TGetPostsResult> => {
 		accessToken,
 		method: 'GET',
 		...searchParams,
-	}) as { count: number; items: TRawPost[]; pagination?: TFetchListResultPagination });
+	})) as { count: number; items: TRawPost[]; pagination?: TFetchListResultPagination };
 
 	// normalize posts
 	let allPosts = items.map(transformPost) as TPost[];
