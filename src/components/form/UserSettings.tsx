@@ -1,21 +1,17 @@
-import React, { useState, FormEvent, FC, Dispatch } from 'react';
+import React, { useState, FormEvent, FC } from 'react';
 import { Modal, Form, Grid, FormInput, FormTextarea, FormPassword, Button, Label } from '@smartive-education/pizza-hawaii';
 
-import { TUser } from '../types';
+import { TUser } from '../../types';
 
 type TUserSettings = {
 	user: TUser;
-	toggleSettingsModal: Dispatch<boolean>;
+	onClose: () => void;
 };
 
-const UserSettings: FC<TUserSettings> = ({ user, toggleSettingsModal }) => {
+const UserSettings: FC<TUserSettings> = ({ user, onClose }) => {
 	const [state, setState] = useState({
 		user: user,
 	});
-
-	const close = (): void => {
-		toggleSettingsModal(false);
-	};
 
 	const onFieldChange = (e: FormEvent): void => {
 		const { name, value } = e.target as HTMLInputElement;
@@ -30,7 +26,7 @@ const UserSettings: FC<TUserSettings> = ({ user, toggleSettingsModal }) => {
 	};
 
 	return (
-		<Modal title="Einstellungen" isVisible={true} onClose={() => close()}>
+		<Modal title="Einstellungen" isVisible={true} onClose={onClose}>
 			<Form>
 				<fieldset>
 					<Label as="legend" size="XL">

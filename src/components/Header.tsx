@@ -9,7 +9,7 @@ import { UserProfile } from './user/UserProfile';
 import { TUser } from '../types';
 
 import MumbleLogo from '../assets/svg/mumbleLogo.svg';
-import UserSettings from './UserSettings';
+import UserSettings from './form/UserSettings';
 
 type THeader = {
 	user: TUser;
@@ -55,7 +55,7 @@ export const Header: FC<THeader> = ({ user }) => {
 					</div>
 				</div>
 			</header>
-			{showSettingsModal && <UserSettings user={user} toggleSettingsModal={setShowSettingsModal} />}
+			{showSettingsModal && <UserSettings user={user} onClose={() => setShowSettingsModal(false)} />}
 		</>
 	);
 };
