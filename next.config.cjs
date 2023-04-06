@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+import withPWA from 'next-pwa';
+import runtimeCaching from 'next-pwa/cache.js';
+
+const config = {
 	reactStrictMode: true,
 	swcMinify: true,
 	images: {
@@ -13,5 +16,10 @@ const nextConfig = {
 		],
 	},
 };
+
+const nextConfig = withPWA({
+	dest: 'public',
+	runtimeCaching,
+})(config);
 
 module.exports = nextConfig;
