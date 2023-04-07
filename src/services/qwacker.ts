@@ -30,6 +30,8 @@ type TFetchListParams = TFetchBase &
 	TFetchParams & {
 		offset?: number;
 		limit?: number;
+		newerThan?: string;
+		olderThan?: string;
 	};
 export type TFetchListResultPagination = {
 	next?: string | TFetchQuery;
@@ -67,8 +69,8 @@ export async function fetchList(params: object): Promise<TFetchListResult> {
 
 	if (method === 'GET') {
 		url = generateAPIUrl(endpoint, {
-			offset: searchParams.offset || undefined,
 			limit: searchParams.limit ? Math.min(searchParams.limit, maxLimit) : undefined,
+			...searchParams,
 		});
 	} else if (method === 'POST') {
 		fetchParams = {
