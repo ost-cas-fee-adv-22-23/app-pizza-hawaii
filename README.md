@@ -40,6 +40,13 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ### ES Lint
 
+ES Linter configuration checks for following topics
+1. smartive eslint-config
+2. import rules sorting
+3. pretier rules
+4. no consoles
+5. react-hook rules
+
 ```
 npm run lint 
 
