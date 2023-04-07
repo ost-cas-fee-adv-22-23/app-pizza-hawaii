@@ -47,7 +47,14 @@ export const Header: FC<THeader> = ({ user }) => {
 								<NaviButton icon="settings" onClick={handleSettingsClick}>
 									Settings
 								</NaviButton>
-								<NaviButton icon="logout" onClick={() => signOut()}>
+								<NaviButton
+									icon="logout"
+									onClick={() =>
+										signOut({
+											callbackUrl: '/auth/login',
+										})
+									}
+								>
 									Log out
 								</NaviButton>
 							</Navi>
