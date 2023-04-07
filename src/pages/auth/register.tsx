@@ -1,7 +1,7 @@
 import React from 'react';
 import NextLink from 'next/link';
 
-import { Headline, Label, Link } from '@smartive-education/pizza-hawaii';
+import { Grid, Headline, Label, Link } from '@smartive-education/pizza-hawaii';
 import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
 import { RegisterForm, TRegisterFormData } from '../../components/form/RegisterForm';
 import router from 'next/router';
@@ -36,21 +36,26 @@ const RegisterPage = () => {
 			title="Mumble - Registrierung"
 			description="Erstellen Sie ein Konto und beginnen Sie, Ihre Gedanken mit der Welt zu teilen. Registrieren Sie sich noch heute bei Mumble"
 		>
-			<Headline level={2}>Register now</Headline>
-			<br />
-			<RegisterForm onSubmit={onSubmit} />
-			<div className="mt-3 text-center">
-				<Label as="span" size="M">
-					Bereits registriert? &nbsp;
-					<Link href="/login" component={NextLink}>
-						Jetzt anmelden
+			<Grid variant="col" gap="L" centered={false}>
+				<Headline level={2}>Register now</Headline>
+
+				<RegisterForm onSubmit={onSubmit} />
+
+				<div className="mt-3 text-center">
+					<Label as="span" size="M">
+						Bereits registriert? &nbsp;
+						<Link href="/login" component={NextLink}>
+							Jetzt anmelden
+						</Link>
+					</Label>
+				</div>
+
+				<div className="mt-3 text-center">
+					<Link href="/" component={NextLink}>
+						Zurück
 					</Link>
-				</Label>
-			</div>
-			<br />
-			<Link href="/" component={NextLink}>
-				Back to Startpage
-			</Link>
+				</div>
+			</Grid>
 		</LoginLayout>
 	);
 };
