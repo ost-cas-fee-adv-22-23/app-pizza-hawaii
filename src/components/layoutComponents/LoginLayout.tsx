@@ -7,7 +7,7 @@ import VerticalLogo from '../../assets/svg/verticalLogo.svg';
 
 type TLoginLayout = {
 	title: string;
-	seo: {
+	seo?: {
 		description?: string;
 	};
 	children: ReactNode;
@@ -15,16 +15,9 @@ type TLoginLayout = {
 };
 
 export const LoginLayout: FC<TLoginLayout> = ({ title, seo, children, header }) => {
-	function shortenText(text: string, maxLength: number) {
-		if (text.length <= maxLength) {
-			return text;
-		}
+	const seoDescription =
+		seo?.description || 'Die Plattform für die Mumble Community. Registriere dich jetzt und werde Teil der Community.';
 
-		// shorten to the nearest word
-		return `${text.substr(0, text.lastIndexOf(' ', maxLength))}...`;
-	}
-
-	const seoDescription = seo.description ? shortenText(seo.description, 150) : '';
 	const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
 	return (

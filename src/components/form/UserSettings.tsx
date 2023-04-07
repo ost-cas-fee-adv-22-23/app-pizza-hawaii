@@ -10,8 +10,6 @@ type TUserSettings = {
 };
 
 const UserSettings: FC<TUserSettings> = ({ user, onClose }) => {
-
-
 	const onSubmit = (data: TUserFormData) => {
 		console.log(data);
 

@@ -12,7 +12,6 @@ const emptyUser: TUserFormData = {
 	lastName: '',
 };
 const RegisterPage = () => {
-
 	const onSubmit = (data: TUserFormData) => {
 		let errors = {};
 
@@ -37,10 +36,7 @@ const RegisterPage = () => {
 	};
 
 	return (
-		<LoginLayout
-			title="Mumble - Registrierung"
-			description="Erstellen Sie ein Konto und beginnen Sie, Ihre Gedanken mit der Welt zu teilen. Registrieren Sie sich noch heute bei Mumble"
-		>
+		<LoginLayout title="Mumble - Registrierung">
 			<Grid variant="col" gap="L" centered={false}>
 				<Headline level={2}>Register now</Headline>
 
