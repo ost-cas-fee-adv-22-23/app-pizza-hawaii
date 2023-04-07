@@ -21,7 +21,12 @@ const DetailPage: FC<TUserPage> = ({
 	const [posts, setPosts] = useState(initialPosts);
 
 	return (
-		<MainLayout title={`Posts zum Thema "${searchTag}"`} description={`Posts zum Thema "${searchTag}"`}>
+		<MainLayout
+			title={`Posts zum Thema "${searchTag}"`}
+			seo={{
+				description: `Posts zum Thema "${searchTag}"`,
+			}}
+		>
 			<>
 				<div className="mb-8 text-violet-600">
 					<Headline level={2}>

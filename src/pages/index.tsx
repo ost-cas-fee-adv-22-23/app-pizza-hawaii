@@ -120,9 +120,12 @@ export default function PageHome({
 	return (
 		<MainLayout
 			title="Mumble - Welcome to Mumble"
-			description="Verpassen Sie nicht die neuesten Mumbles von den besten Nutzern der Plattform. Besuchen Sie die Index-Seite von Mumble und bleiben Sie auf dem Laufenden."
+			seo={{
+				description: 'Verpassen Sie nicht die neuesten Mumbles. Bleiben Sie auf dem Laufenden.',
+				pageType: 'website',
+			}}
 		>
-			<section className="mx-auto w-full max-w-content">
+			<>
 				<div className="mb-2 text-violet-600">
 					<Headline level={2}>Welcome to Mumble</Headline>
 				</div>
@@ -135,7 +138,7 @@ export default function PageHome({
 					onRemovePost={onRemovePost}
 					onLoadmore={loadMore}
 				/>
-			</section>
+			</>
 		</MainLayout>
 	);
 }

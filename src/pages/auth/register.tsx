@@ -3,21 +3,26 @@ import NextLink from 'next/link';
 
 import { Grid, Headline, Label, Link } from '@smartive-education/pizza-hawaii';
 import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
-import { RegisterForm, TRegisterFormData } from '../../components/form/RegisterForm';
+import { UserForm, TUserFormData } from '../../components/form/UserForm';
 import router from 'next/router';
 
+const emptyUser: TUserFormData = {
+	userName: '',
+	firstName: '',
+	lastName: '',
+};
 const RegisterPage = () => {
-	const onSubmit = (data: TRegisterFormData) => {
+
+	const onSubmit = (data: TUserFormData) => {
 		let errors = {};
 
 		// TODO: Implement the real registration
 		console.error('Function not implemented. But we will throw sometimes some errors anyway. ;)', data);
 
 		// Simulate some errors to show the error messages and annoy the users
-		Math.random() > 0.5 && (errors = { ...errors, fullName: 'Full name is required' });
 		Math.random() > 0.5 && (errors = { ...errors, userName: 'Username already taken' });
-		Math.random() > 0.5 && (errors = { ...errors, email: 'Email already taken' });
-		Math.random() > 0.5 && (errors = { ...errors, password: 'Password is too weak' });
+		Math.random() > 0.5 && (errors = { ...errors, firstName: 'First name is required' });
+		Math.random() > 0.5 && (errors = { ...errors, lastName: 'Last name is required' });
 
 		// If there are errors, return them
 		if (Object.keys(errors).length > 0) {
@@ -39,7 +44,7 @@ const RegisterPage = () => {
 			<Grid variant="col" gap="L" centered={false}>
 				<Headline level={2}>Register now</Headline>
 
-				<RegisterForm onSubmit={onSubmit} />
+				<UserForm onSubmit={onSubmit} user={emptyUser} />
 
 				<div className="mt-3 text-center">
 					<Label as="span" size="M">

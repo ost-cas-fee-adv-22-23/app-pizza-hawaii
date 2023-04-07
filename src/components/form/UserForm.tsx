@@ -1,30 +1,27 @@
 import React, { useState, FormEvent, FC, useEffect } from 'react';
-import { Form, FormInput, Button } from '@smartive-education/pizza-hawaii';
+import { Form, FormInput, Button, Grid, Label } from '@smartive-education/pizza-hawaii';
+import { TUser } from '../../types';
 
-export type TRegisterFormData = {
-	fullName: string;
-	userName: string;
-	email: string;
-	password: string;
+export type TUserFormData = Omit<TUser, 'id' | 'profileLink' | 'email' | 'displayName'>;
+
+export type TUserFormErrors = { [key in keyof TUserFormData]?: string };
+
+export type TUserForm = {
+	onSubmit: (data: TUserFormData) => { status: boolean; errors?: TUserFormErrors };
+	user: TUserFormData;
+	sectionlabel?: string;
 };
 
-type TRegisterFormErrors = { [key in keyof TRegisterFormData]?: string };
-
-type TRegisterForm = {
-	onSubmit: (data: TRegisterFormData) => { status: boolean; errors?: TRegisterFormErrors };
-};
-
-const emptyState: TRegisterFormData = {
-	fullName: '',
+const emptyState: TUserFormData = {
+	firstName: '',
+	lastName: '',
 	userName: '',
-	email: '',
-	password: '',
 };
 
-export const RegisterForm: FC<TRegisterForm> = ({ onSubmit }) => {
-	const [state, setState] = useState(emptyState);
+export const UserForm: FC<TUserForm> = ({ onSubmit, user, sectionlabel }) => {
+	const [state, setState] = useState(user || emptyState);
 	const [formIsValid, setFormIsValid] = useState(false);
-	const [errors, setErrors] = useState<TRegisterFormErrors>({});
+	const [errors, setErrors] = useState<TUserFormErrors>({});
 
 	// check if form is valid
 	useEffect(() => {
@@ -48,10 +45,10 @@ export const RegisterForm: FC<TRegisterForm> = ({ onSubmit }) => {
 		const validationMessages = invalidFields.reduce((acc, field) => {
 			const { name, validationMessage } = field as HTMLInputElement;
 
-			acc[name as keyof TRegisterFormData] = validationMessage;
+			acc[name as keyof TUserFormData] = validationMessage;
 
 			return acc;
-		}, {} as TRegisterFormErrors);
+		}, {} as TUserFormErrors);
 
 		return validationMessages;
 	};
@@ -101,39 +98,42 @@ export const RegisterForm: FC<TRegisterForm> = ({ onSubmit }) => {
 
 	return (
 		<Form onSubmit={onSubmitHandler} noValidate>
-			<FormInput
-				name="fullName"
-				label="Vorname und Name"
-				type="text"
-				onChange={onFieldChange}
-				errorMessage={errors['fullName']}
-				required
-			/>
-			<FormInput
-				name="userName"
-				label="Username"
-				type="text"
-				onChange={onFieldChange}
-				errorMessage={errors['userName']}
-				required
-			/>
-			<FormInput
-				name="email"
-				label="E-mail"
-				type="email"
-				onChange={onFieldChange}
-				errorMessage={errors['email']}
-				required
-			/>
-			<FormInput
-				name="password"
-				label="Password"
-				type="password"
-				icon="eye"
-				onChange={onFieldChange}
-				errorMessage={errors['password']}
-				required
-			/>
+			<fieldset>
+				<Label as="legend" size="XL">
+					{sectionlabel || 'Deine Daten'}
+				</Label>
+				<div className="mt-4">
+					<Grid variant="col" gap="M" marginBelow="M">
+						<FormInput
+							name="userName"
+							label="Username"
+							type="text"
+							onChange={onFieldChange}
+							errorMessage={errors['userName']}
+							required
+						/>
+						<FormInput
+							name="firstName"
+							label="Vorname"
+							type="text"
+							onChange={onFieldChange}
+							errorMessage={errors['firstName']}
+							required
+							autoComplete="given-name"
+						/>
+						<FormInput
+							name="lastName"
+							label="Name"
+							type="text"
+							onChange={onFieldChange}
+							errorMessage={errors['lastName']}
+							required
+							autoComplete="family-name"
+						/>
+					</Grid>
+				</div>
+			</fieldset>
+
 			<br />
 
 			{/*
