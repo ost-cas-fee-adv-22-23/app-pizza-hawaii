@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
 import { Image, Label } from '@smartive-education/pizza-hawaii';
+import React, { FC } from 'react';
 
 type TImageUpload = {
 	Image?: HTMLImageElement | null;

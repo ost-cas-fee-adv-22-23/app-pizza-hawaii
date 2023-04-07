@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
+import { Image, RoundButton } from '@smartive-education/pizza-hawaii';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
-import { Image, RoundButton } from '@smartive-education/pizza-hawaii';
+import React, { FC } from 'react';
 /*
  * Settings
  */

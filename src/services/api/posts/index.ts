@@ -1,7 +1,7 @@
 import { get } from './get';
-import { remove } from './remove';
 import { like, unlike } from './like';
 import { loadmore } from './loadmore';
+import { remove } from './remove';
 
 export const postsService = {
 	get,

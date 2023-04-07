@@ -1,6 +1,6 @@
-import { TUser, TUserSimple, TRawUser } from '../../types';
-import { fetchList, fetchItem } from '../qwacker';
 import { homeTown, memberSince, shortBio } from '../../data/helpers/dataRandomizer';
+import { TRawUser, TUser, TUserSimple } from '../../types';
+import { fetchItem, fetchList } from '../qwacker';
 
 type TFetchBase = {
 	accessToken: string;

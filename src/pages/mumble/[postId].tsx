@@ -1,15 +1,14 @@
-import { FC, useState } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { useSession } from 'next-auth/react';
-import { getToken } from 'next-auth/jwt';
 import { useRouter } from 'next/router';
+import { getToken } from 'next-auth/jwt';
+import { useSession } from 'next-auth/react';
+import { FC, useState } from 'react';
 
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
-
-import { TPost } from '../../types';
-import { services } from '../../services';
-import { PostDetail } from '../../components/post/PostDetail';
 import { TAddPostProps } from '../../components/post/PostCreator';
+import { PostDetail } from '../../components/post/PostDetail';
+import { services } from '../../services';
+import { TPost } from '../../types';
 
 type TUserPage = {
 	post: TPost;

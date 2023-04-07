@@ -1,14 +1,12 @@
-import { FC, useState } from 'react';
-import { signOut } from 'next-auth/react';
-import NextLink from 'next/link';
+import { Link, Navi, NaviButton } from '@smartive-education/pizza-hawaii';
 import Image from 'next/image';
-
-import { Navi, Link, NaviButton } from '@smartive-education/pizza-hawaii';
-
-import { UserProfile } from './user/UserProfile';
-import { TUser } from '../types';
+import NextLink from 'next/link';
+import { signOut } from 'next-auth/react';
+import { FC, useState } from 'react';
 
 import MumbleLogo from '../assets/svg/mumbleLogo.svg';
+import { TUser } from '../types';
+import { UserProfile } from './user/UserProfile';
 import UserSettings from './UserSettings';
 
 type THeader = {

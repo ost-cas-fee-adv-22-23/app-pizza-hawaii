@@ -1,5 +1,6 @@
+import { Image, Label, Modal } from '@smartive-education/pizza-hawaii';
 import React, { Dispatch, FC } from 'react';
-import { Image, Modal, Label } from '@smartive-education/pizza-hawaii';
+
 import { TPost } from '../types/Post';
 import { TReducedPost } from './ProfileHeader';
 
