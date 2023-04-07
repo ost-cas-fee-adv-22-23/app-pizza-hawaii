@@ -17,7 +17,6 @@ import { TAddPostProps } from '../components/post/PostCreator';
 import { TPost } from '../types';
 
 export default function PageHome({
-	currentUser,
 	postCount: initialPostCount,
 	posts: initialPosts,
 	error,
@@ -114,7 +113,7 @@ export default function PageHome({
 		loadLatestPosts(loadFullList);
 	});
 
-	if (error || !currentUser) {
+	if (error) {
 		return <ErrorPage statusCode={500} title={error} />;
 	}
 
@@ -153,7 +152,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
 		return {
 			props: {
-				currentUser: session?.user,
 				postCount,
 				posts,
 			},
@@ -166,6 +164,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 			message = String(error);
 		}
 
-		return { props: { error: message, currentUser: session?.user, posts: [], users: [], postCount: 0 } };
+		return { props: { error: message, posts: [], users: [], postCount: 0 } };
 	}
 };
