@@ -1,7 +1,10 @@
 import React, { FC } from 'react';
-import { Card, Grid, Label, UserName, UserProfile } from '@smartive-education/pizza-hawaii';
-import { FollowUserButton } from './FollowUserButton';
-import { TUser } from '../types/User';
+import NextLink from 'next/link';
+
+import { Card, Grid, Label, IconText } from '@smartive-education/pizza-hawaii';
+import { UserProfile } from './UserProfile';
+import { FollowUserButton } from '../FollowUserButton';
+import { TUser } from '../../types/User';
 
 interface TUserCard {
 	user: TUser;
@@ -18,6 +21,7 @@ export const UserCard: FC<TUserCard> = (props) => {
 					size="L"
 					border={true}
 					href={user.profileLink}
+					canEdit={false}
 					buttonLabel="View Profile"
 				/>
 				<div className="flex flex-col gap-2">
@@ -25,7 +29,11 @@ export const UserCard: FC<TUserCard> = (props) => {
 						{user.displayName}
 					</Label>
 					<span className="flex flex-row align-baseline gap-3">
-						<UserName href={user.profileLink}>{user.userName}</UserName>
+						<NextLink href={user.profileLink}>
+							<IconText icon="profile" colorScheme="violet" size="S">
+								{user.userName}
+							</IconText>
+						</NextLink>
 					</span>
 				</div>
 

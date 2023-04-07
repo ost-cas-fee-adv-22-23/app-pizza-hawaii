@@ -1,20 +1,23 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import NextLink from 'next/link';
 import { useDropzone } from 'react-dropzone';
+
 import {
 	Button,
 	Label,
 	Grid,
 	FormTextarea,
-	UserName,
+	IconText,
 	UserContentCard,
 	TUserContentCard,
 	Modal,
 	Icon,
 	Image,
 } from '@smartive-education/pizza-hawaii';
+import { ImageUpload } from '../ImageUpload';
 
-import { TPost, TUser } from '../types';
-import { ImageUpload } from './ImageUpload';
+import { TPost, TUser } from '../../types';
 
 export type TAddPostProps = {
 	text: string;
@@ -22,13 +25,13 @@ export type TAddPostProps = {
 	replyTo?: string;
 };
 
-type TContentInput = {
+type TPostCreator = {
 	variant: 'newPost' | 'answerPost';
 	headline: string;
-	author: TUser;
 	placeHolderText: string;
 	replyTo?: TPost;
-	onAddPost: (data: TAddPostProps) => void;
+	textAreaId?: string;
+	onAddPost: (data: TAddPostProps) => Promise<TPost | null>;
 };
 
 type TContentCardvariantMap = {
@@ -38,7 +41,7 @@ type TContentCardvariantMap = {
 	avatarVariant: TUserContentCard['avatarVariant'];
 };
 
-const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardvariantMap> = {
+const PostCreatorCardVariantMap: Record<TPostCreator['variant'], TContentCardvariantMap> = {
 	newPost: {
 		headlineSize: 'XL',
 		textSize: 'L',
@@ -53,13 +56,27 @@ const ContentInputCardVariantMap: Record<TContentInput['variant'], TContentCardv
 	},
 };
 
-export const ContentInput: FC<TContentInput> = (props) => {
-	const { variant, placeHolderText, author, replyTo, onAddPost } = props;
+export const PostCreator: FC<TPostCreator> = (props) => {
+	const { variant, placeHolderText, replyTo, textAreaId, onAddPost } = props;
+
+	const { data: session } = useSession();
+	const currentUser = session?.user as TUser;
+
 	const [showModal, setShowModal] = useState(false);
+	const [isValid, setIsValid] = useState(false);
 	const [file, setFile] = useState<File>();
 	const [filePreview, setFilePreview] = useState<string>('');
 	const [text, setText] = React.useState<string>('');
-	const setting = ContentInputCardVariantMap[variant] || ContentInputCardVariantMap.newPost;
+	const setting = PostCreatorCardVariantMap[variant] || PostCreatorCardVariantMap.newPost;
+
+	useEffect(() => {
+		if (text?.length > 0 || file) {
+			setIsValid(true);
+		} else {
+			setIsValid(false);
+		}
+	}, [text, file]);
+
 	// Dropzone hook
 	const { getRootProps, getInputProps } = useDropzone({
 		accept: {
@@ -109,22 +126,26 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		setFile(undefined);
 	};
 
-	const onSubmitPostHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+	const onSubmitPostHandler = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
-
-		try {
-			onAddPost &&
-				onAddPost({
-					text,
-					file,
-					replyTo: replyTo?.id,
-				});
-
-			setFile(undefined); // reset file path
-			setText(''); // TODO: reset text only if post was successful
-		} catch (error) {
-			console.error('onSubmitPostHandler: error', error);
+		if ((!text && !file) || !onAddPost) {
+			return;
 		}
+
+		const newPost = await onAddPost({
+			text,
+			file,
+			replyTo: replyTo?.id,
+		});
+
+		if (!newPost) {
+			// TODO: Sending error message to the user in modal?
+			return;
+		}
+
+		// Reset input field and file
+		setText('');
+		setFile(undefined);
 	};
 
 	const headerSlotContent = props.headline ? (
@@ -133,10 +154,14 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		<Grid variant="col" gap="S">
 			<Grid variant="col" gap="S">
 				<Label as="span" size={setting.headlineSize}>
-					{`${author.displayName}`}
+					{currentUser?.displayName}
 				</Label>
 				<Grid variant="row" gap="S">
-					<UserName href={author.profileLink as string}>{author.userName}</UserName>
+					<NextLink href={currentUser?.profileLink}>
+						<IconText icon="profile" colorScheme="violet" size="S">
+							{currentUser?.userName}
+						</IconText>
+					</NextLink>
 				</Grid>
 			</Grid>
 		</Grid>
@@ -146,9 +171,9 @@ export const ContentInput: FC<TContentInput> = (props) => {
 		<UserContentCard
 			headline={headerSlotContent}
 			userProfile={{
-				avatar: author.avatarUrl,
-				userName: author.userName,
-				href: author.profileLink,
+				avatar: currentUser?.avatarUrl,
+				userName: currentUser?.userName,
+				href: currentUser?.profileLink,
 			}}
 			avatarVariant={setting.avatarVariant}
 			avatarSize={setting.avatarSize}
@@ -157,6 +182,7 @@ export const ContentInput: FC<TContentInput> = (props) => {
 				<Image src={filePreview} width={600} caption="Vorschau: Möchtest Du dieses Bild posten?" alt="preview" />
 			)}
 			<FormTextarea
+				id={textAreaId}
 				label={placeHolderText}
 				placeholder={placeHolderText}
 				hideLabel={true}
@@ -188,9 +214,11 @@ export const ContentInput: FC<TContentInput> = (props) => {
 								</div>
 							</div>
 						)}
-						<Button colorScheme="gradient" icon="eye">
-							Dieses Bild wählen
-						</Button>
+						{file && (
+							<Button colorScheme="gradient" icon="eye">
+								Dieses Bild wählen
+							</Button>
+						)}
 					</form>
 				</Modal>
 			)}
@@ -198,9 +226,12 @@ export const ContentInput: FC<TContentInput> = (props) => {
 				<Button colorScheme="slate" icon="upload" onClick={showImageUploadModal}>
 					Bild Hochladen
 				</Button>
-				<Button colorScheme="violet" icon="send" onClick={onSubmitPostHandler}>
-					Absenden
-				</Button>
+				{/* TODO: disabled state to component lib */}
+				<div className={isValid ? 'w-full' : 'w-full opacity-50'}>
+					<Button colorScheme="violet" icon="send" onClick={onSubmitPostHandler} disabled={!isValid}>
+						Absenden
+					</Button>
+				</div>
 			</Grid>
 		</UserContentCard>
 	);
