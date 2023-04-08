@@ -23,15 +23,15 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 				<link rel="icon" type="image/png" href="./favicon.png" />
 			</Head>
 			<SessionProvider session={session}>
-				<ErrorBoundary>
-					<ThemeContextProvider>
-						<FolloweeContextProvider>
-							<ActiveTabContextProvider>
+				<ThemeContextProvider>
+					<FolloweeContextProvider>
+						<ActiveTabContextProvider>
+							<ErrorBoundary>
 								<Component {...pageProps} />
-							</ActiveTabContextProvider>
-						</FolloweeContextProvider>
-					</ThemeContextProvider>
-				</ErrorBoundary>
+							</ErrorBoundary>
+						</ActiveTabContextProvider>
+					</FolloweeContextProvider>
+				</ThemeContextProvider>
 			</SessionProvider>
 		</>
 	);
