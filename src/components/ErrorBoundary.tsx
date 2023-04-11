@@ -27,8 +27,6 @@ class ErrorBoundary extends React.Component<Props, State> {
 
 	render() {
 		// Check if the error is thrown or pass children to applciation
-		console.log('state error', this.state.error);
-		console.log('this.state.hasError', this.state.hasError);
 		if (this.state.hasError) {
 			return <Custom500Page errorInfo={this.state.error} />;
 		} else {
