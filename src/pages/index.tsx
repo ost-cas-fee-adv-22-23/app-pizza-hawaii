@@ -27,7 +27,7 @@ export default function PageHome({
 	const [posts, setPosts] = useState<TPost[]>(initialPosts);
 	const [canLoadmore, setCanLoadmore] = useState<boolean>(initialPostCount > posts.length);
 
-	const loadLatestPosts = async (loadFullList = false) => {
+	const loadPosts = async (loadFullList = false) => {
 		const latestPost = loadFullList ? posts[posts.length - 1] : posts[0];
 		let lastPostId = latestPost?.id;
 
@@ -110,7 +110,7 @@ export default function PageHome({
 		// for our use case this is not necessary, but was fun to implement ;)
 
 		const loadFullList = Math.random() > 0.66;
-		loadLatestPosts(loadFullList);
+		loadPosts(loadFullList);
 	});
 
 	if (error) {

@@ -6,11 +6,6 @@ import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
 import { UserForm, TUserFormData } from '../../components/form/UserForm';
 import router from 'next/router';
 
-const emptyUser: TUserFormData = {
-	userName: '',
-	firstName: '',
-	lastName: '',
-};
 const RegisterPage = () => {
 	const onSubmit = (data: TUserFormData) => {
 		let errors = {};
@@ -40,7 +35,7 @@ const RegisterPage = () => {
 			<Grid variant="col" gap="L" centered={false}>
 				<Headline level={2}>Register now</Headline>
 
-				<UserForm onSubmit={onSubmit} user={emptyUser} />
+				<UserForm onSubmit={onSubmit} user={undefined} />
 
 				<div className="mt-3 text-center">
 					<Label as="span" size="M">
