@@ -10,7 +10,7 @@ export type TUserFormErrors = { [key in keyof TUserFormData]?: string };
 export type TUserForm = {
 	onSubmit: (data: TUserFormData) => { status: boolean; errors?: TUserFormErrors };
 	user?: TUserFormData;
-	sectionlabel?: string;
+	sectionLabel?: string;
 };
 
 const emptyState: TUserFormData = {
@@ -19,7 +19,7 @@ const emptyState: TUserFormData = {
 	displayName: '',
 };
 
-export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionlabel }) => {
+export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLabel }) => {
 	const [state, setState] = useState(user);
 	const [formIsValid, setFormIsValid] = useState(false);
 	const [errors, setErrors] = useState<TUserFormErrors>({});
@@ -106,7 +106,7 @@ export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionla
 		<Form onSubmit={onSubmitHandler} noValidate>
 			<fieldset>
 				<Label as="legend" size="XL">
-					{sectionlabel || 'Deine Daten'}
+					{sectionLabel || 'Deine Daten'}
 				</Label>
 				<div className="mt-4">
 					<Grid variant="col" gap="M" marginBelow="M">
