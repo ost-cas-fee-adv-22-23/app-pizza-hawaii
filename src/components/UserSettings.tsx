@@ -1,5 +1,5 @@
-import React, { useState, FormEvent, FC, Dispatch } from 'react';
-import { Modal, Form, Grid, FormInput, FormTextarea, FormPassword, Button, Label } from '@smartive-education/pizza-hawaii';
+import { Button, Form, FormInput, FormPassword, FormTextarea, Grid, Label, Modal } from '@smartive-education/pizza-hawaii';
+import React, { Dispatch, FC, FormEvent, useState } from 'react';
 
 import { TUser } from '../types';
 

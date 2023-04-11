@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
+import { Card, Grid, IconText, Label } from '@smartive-education/pizza-hawaii';
 import NextLink from 'next/link';
+import React, { FC } from 'react';
 
-import { Card, Grid, Label, IconText } from '@smartive-education/pizza-hawaii';
-import { UserProfile } from './UserProfile';
-import { FollowUserButton } from '../FollowUserButton';
 import { TUser } from '../../types/User';
+import { FollowUserButton } from '../FollowUserButton';
+import { UserProfile } from './UserProfile';
 
 interface TUserCard {
 	user: TUser;

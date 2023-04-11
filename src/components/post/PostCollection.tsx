@@ -1,10 +1,9 @@
+import { Button, Grid, Headline } from '@smartive-education/pizza-hawaii';
 import { FC, useEffect, useState } from 'react';
-
-import { Grid, Button, Headline } from '@smartive-education/pizza-hawaii';
-import { PostCreator, TAddPostProps } from './PostCreator';
 
 import { TPost } from '../../types';
 import { PostList } from '../post/PostList';
+import { PostCreator, TAddPostProps } from './PostCreator';
 
 type TPostCollectionProps = {
 	headline?: string;
@@ -44,6 +43,8 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 		const removedPosts = visiblePosts.filter((post) => !posts.includes(post));
 
 		setState((prevState) => ({ ...prevState, hasUpdate: [...newPosts, ...removedPosts].length > 0 }));
+		// TODO: this is a question we have and we await the answer for that. adding state is not a solution.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [posts, state.visiblePosts]);
 
 	const showLatestPosts = () => {
