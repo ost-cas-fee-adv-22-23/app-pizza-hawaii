@@ -1,10 +1,10 @@
-import { ReactElement, FC } from 'react';
-import { useSession } from 'next-auth/react';
 import Head from 'next/head';
+import { useSession } from 'next-auth/react';
+import { FC, ReactElement } from 'react';
 
-import { Header } from '../Header';
-import { Footer } from '../Footer';
 import { TUser } from '../../types';
+import { Footer } from '../Footer';
+import { Header } from '../Header';
 
 type TMainLayout = {
 	title: string;

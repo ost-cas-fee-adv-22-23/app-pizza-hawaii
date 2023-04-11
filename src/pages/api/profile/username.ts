@@ -1,5 +1,5 @@
-import { getToken } from 'next-auth/jwt';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { getToken } from 'next-auth/jwt';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const endpoint = `${process.env.ZITADEL_ISSUER}/auth/v1/users/me/username`;

@@ -1,5 +1,5 @@
-import React from 'react';
 import ErrorPage from 'next/error';
+import React from 'react';
 
 type Props = {
 	className?: string;

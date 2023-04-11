@@ -1,7 +1,7 @@
-import { FC } from 'react';
+import { Headline, Link, Richtext } from '@smartive-education/pizza-hawaii';
 import NextLink from 'next/link';
+import { FC } from 'react';
 
-import { Headline, Richtext, Link } from '@smartive-education/pizza-hawaii';
 import { LoginLayout } from '../components/layoutComponents/LoginLayout';
 
 type TCustom500Page = {
@@ -10,7 +10,7 @@ type TCustom500Page = {
 
 // pages/500.js
 const Custom500Page: FC<TCustom500Page> = (error) => {
-	console.log('custom500', error);
+	console.error('custom500', error);
 	const { errorInfo } = error;
 	return (
 		<LoginLayout title="Mumble - 500">

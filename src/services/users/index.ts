@@ -1,7 +1,7 @@
-import { TUser, TUserSimple, TRawUser } from '../../types';
-import { fetchList, fetchItem, TFetchListResultPagination } from '../qwacker';
 import { homeTown, memberSince, shortBio } from '../../data/helpers/dataRandomizer';
+import { TRawUser, TUser, TUserSimple } from '../../types';
 import { ItemCache } from '../../utils/ItemCache';
+import { fetchItem, fetchList, TFetchListResultPagination } from '../qwacker';
 
 const userCache = new ItemCache<TUser>(5 * 60 * 1000); // 5 minutes
 

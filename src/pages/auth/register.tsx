@@ -1,10 +1,10 @@
-import React from 'react';
-import NextLink from 'next/link';
-
 import { Grid, Headline, Label, Link } from '@smartive-education/pizza-hawaii';
-import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
-import { UserForm, TUserFormData } from '../../components/form/UserForm';
+import NextLink from 'next/link';
 import router from 'next/router';
+import React from 'react';
+
+import { TUserFormData, UserForm } from '../../components/form/UserForm';
+import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
 
 const RegisterPage = () => {
 	const onSubmit = (data: TUserFormData) => {

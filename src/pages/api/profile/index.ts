@@ -1,5 +1,6 @@
-import { getToken } from 'next-auth/jwt';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { getToken } from 'next-auth/jwt';
+
 import { TZitadelProfile } from '../../../types/Zitadel';
 
 type TFetchProfile = {

@@ -1,5 +1,5 @@
-import React, { useState, FormEvent, FC, useEffect } from 'react';
-import { Form, FormInput, Button, Grid, Label } from '@smartive-education/pizza-hawaii';
+import { Button, Form, FormInput, Grid, Label } from '@smartive-education/pizza-hawaii';
+import React, { FC, FormEvent, useEffect, useState } from 'react';
 
 import { TZitadelProfile } from '../../types/Zitadel';
 

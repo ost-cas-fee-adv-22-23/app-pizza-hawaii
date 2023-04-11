@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
-import { UserForm, TUserFormData } from './UserForm';
+
+import { TUserFormData, UserForm } from './UserForm';
 
 type TUserSettings = {
 	setSuccess?: () => void;
