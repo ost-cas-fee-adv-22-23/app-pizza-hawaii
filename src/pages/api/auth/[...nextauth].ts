@@ -45,7 +45,7 @@ export const authOptions: NextAuthOptions = {
 			clientSecret: process.env.ZITADEL_CLIENT_SECRET as string,
 			authorization: {
 				params: {
-					scope: `openid email profile offline_access`,
+					scope: `openid email profile offline_access urn:zitadel:iam:org:project:id:zitadel:aud`,
 				},
 			},
 			client: {

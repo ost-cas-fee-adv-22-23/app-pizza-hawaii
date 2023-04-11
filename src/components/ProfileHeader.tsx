@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 
-import { Image, ImageOverlay } from '@smartive-education/pizza-hawaii';
+import { Image, ImageOverlay, Modal } from '@smartive-education/pizza-hawaii';
 import { UserProfile } from './user/UserProfile';
 import { TUser } from '../types';
 import ProjectSettings from '../data/ProjectSettings.json';
@@ -92,7 +92,11 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 				/>
 			</div>
 			{showImageModal && <ImageModal post={post} onClose={() => setShowImageModal(false)} />}
-			{showSettingsModal && <UserSettings user={user} onClose={() => setShowSettingsModal(false)} />}
+			{showSettingsModal && (
+				<Modal title="Einstellungen" isVisible={showSettingsModal} onClose={() => setShowSettingsModal(false)}>
+					<UserSettings setSuccess={() => setShowSettingsModal(false)} />
+				</Modal>
+			)}
 		</div>
 	);
 };

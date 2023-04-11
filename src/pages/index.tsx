@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
@@ -112,6 +112,13 @@ export default function PageHome({
 		const loadFullList = Math.random() > 0.66;
 		loadPosts(loadFullList);
 	});
+
+	useEffect(() => {
+		// load full list of posts when user switches to browser tab
+		if (tabIsActive) {
+			loadPosts(true);
+		}
+	}, [tabIsActive]);
 
 	if (error) {
 		return <ErrorPage statusCode={500} title={error} />;

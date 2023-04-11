@@ -3,7 +3,7 @@ import { signOut } from 'next-auth/react';
 import NextLink from 'next/link';
 import Image from 'next/image';
 
-import { Navi, Link, NaviButton } from '@smartive-education/pizza-hawaii';
+import { Navi, Link, NaviButton, Modal } from '@smartive-education/pizza-hawaii';
 
 import { UserProfile } from './user/UserProfile';
 import { TUser } from '../types';
@@ -62,7 +62,11 @@ export const Header: FC<THeader> = ({ user }) => {
 					</div>
 				</div>
 			</header>
-			{showSettingsModal && <UserSettings user={user} onClose={() => setShowSettingsModal(false)} />}
+			{showSettingsModal && (
+				<Modal title="Einstellungen" isVisible={showSettingsModal} onClose={() => setShowSettingsModal(false)}>
+					<UserSettings setSuccess={() => setShowSettingsModal(false)} />
+				</Modal>
+			)}
 		</>
 	);
 };
