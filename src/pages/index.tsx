@@ -54,19 +54,27 @@ export default function PageHome({
 	};
 
 	const loadMore = async () => {
+		// get oldest post
 		const oldestPost = posts[posts.length - 1];
+
+		// fetch posts older than oldest post
 		const { count: olderPostCount, posts: olderPosts } = await services.api.posts.loadmore({
 			olderThan: oldestPost.id,
 		});
 
+		// if no older posts are available, set canLoadmore to false and return empty array
 		if (!olderPosts) {
 			setCanLoadmore(false);
 			return [];
 		}
 
+		// append older posts to list
 		setPosts((currentPosts: TPost[]) => [...currentPosts, ...olderPosts]);
+
+		// set canLoadmore to true if there are more posts available
 		setCanLoadmore(olderPostCount > 0);
 
+		// return older posts
 		return olderPosts;
 	};
 
@@ -83,17 +91,19 @@ export default function PageHome({
 		return newPost;
 	};
 
-	const onRemovePost = (id: string) => {
-		services.api.posts.remove({ id }).then((result) => {
-			if (result) {
-				setPosts(posts.filter((post: TPost) => post.id !== id));
-			}
-		});
+	const onRemovePost = async (id: string) => {
+		const response = await services.api.posts.remove({ id });
+
+		if (!response.ok) {
+			throw new Error('Failed to delete post');
+		}
+
+		setPosts(posts.filter((post: TPost) => post.id !== id));
 	};
 
 	useIncreasingInterval(() => {
-		// only load new posts if tab is active
-		if (tabIsActive === false) return;
+		// only load new posts if browser tab is active
+		if (!tabIsActive) return;
 
 		// randomizes if load full list (to detect deleted posts) or check just for new posts (2/3 chance)
 		// to prevent that all users load the full list at the same time when the interval is triggered
@@ -107,6 +117,7 @@ export default function PageHome({
 	if (error || !currentUser) {
 		return <ErrorPage statusCode={500} title={error} />;
 	}
+
 	return (
 		<MainLayout
 			title="Mumble - Welcome to Mumble"

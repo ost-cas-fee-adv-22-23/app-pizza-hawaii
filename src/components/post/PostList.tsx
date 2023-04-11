@@ -1,23 +1,27 @@
 import { FC } from 'react';
 
 import { Grid } from '@smartive-education/pizza-hawaii';
-import { PostItem } from './PostItem';
+import { PostItem, TPostItemProps } from './PostItem';
 
 import { TPost } from '../../types';
 import { PostSkeleton } from '../helpers/PostSkeleton';
 
 type TPostListProps = {
 	posts?: TPost[];
+	variant?: TPostItemProps['variant'];
 	noPostsMessage?: string;
-	onRemovePost: (id: string) => void;
 	loadingItems?: number;
+	onRemovePost: (id: string) => void;
+	onAnswerPost?: (id: string) => void;
 };
 
 export const PostList: FC<TPostListProps> = ({
 	posts,
-	onRemovePost,
+	variant = 'timeline',
 	loadingItems = 0,
 	noPostsMessage = 'Keine Posts vorhanden.',
+	onRemovePost,
+	onAnswerPost,
 }) => {
 	if (!posts?.length && loadingItems === 0) {
 		return <p>{noPostsMessage}</p>;
@@ -28,7 +32,15 @@ export const PostList: FC<TPostListProps> = ({
 			{loadingItems > 0
 				? Array.from(Array(loadingItems).keys()).map((i) => <PostSkeleton key={i} showImage={Math.random() > 0.5} />)
 				: posts?.map((post: TPost) => {
-						return <PostItem key={post.id} variant="timeline" post={post} onDeletePost={onRemovePost} />;
+						return (
+							<PostItem
+								key={post.id}
+								variant={variant}
+								post={post}
+								onDeletePost={onRemovePost}
+								onAnswerPost={onAnswerPost}
+							/>
+						);
 				  })}
 		</Grid>
 	);

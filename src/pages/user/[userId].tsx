@@ -6,6 +6,7 @@ import NextLink from 'next/link';
 import ErrorPage from 'next/error';
 
 import { Switch, Headline, IconText, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
+
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { UserRecommender } from '../../components/widgets/UserRecommender';
@@ -15,25 +16,30 @@ import { PostList } from '../../components/post/PostList';
 import { services } from '../../services';
 import { TPost, TUser } from '../../types';
 
+/**
+ * @description
+ * This page shows detail of any user and the curent user profile with some additional features.
+ */
+
 type TUserPage = {
 	user: TUser;
 	posts: TPost[];
-	likes?: TPost[];
+	likes: TPost[];
 };
 
-const PostType = {
+const POST_TYPE: Record<string, string> = {
 	POSTS: 'posts',
 	LIKES: 'likes',
 };
 
 const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	const [currentPostType, setCurrentPostType] = useState(PostType.POSTS);
+	const [currentPostType, setCurrentPostType] = useState(POST_TYPE.POSTS);
 
 	const { data: session } = useSession();
-	const currentUser: TUser = session?.user as TUser;
+	const currentUser = session?.user as TUser;
 
 	if (!user) {
-		return <ErrorPage statusCode={403} title={'no user'} />;
+		return <ErrorPage statusCode={403} title={'User not found.'} />;
 	}
 
 	const isCurrentUser = currentUser?.id === user.id;
@@ -43,20 +49,18 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	};
 
 	const switchoptions = [
-		{ label: 'Meine Mumbles', value: PostType.POSTS },
-		{ label: 'Meine Likes', value: PostType.LIKES },
+		{ label: 'Meine Mumbles', value: POST_TYPE.POSTS },
+		{ label: 'Meine Likes', value: POST_TYPE.LIKES },
 	];
 
 	const onRemovePost = async (id: string) => {
-		try {
-			const result = await services.api.posts.remove({ id });
+		const response = await services.api.posts.remove({ id });
 
-			if (result) {
-				posts = posts.filter((post: TPost) => post.id !== id) as TPost[];
-			}
-		} catch (error) {
-			console.error('onSubmitHandler: error', error);
+		if (!response.ok) {
+			throw new Error('Failed to delete post');
 		}
+
+		posts = posts.filter((post: TPost) => post.id !== id) as TPost[];
 	};
 
 	return (
@@ -76,11 +80,9 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 							{user.userName}
 						</IconText>
 					</NextLink>
-
 					<IconText icon="location" colorScheme="slate" size="S">
 						{user.city}
 					</IconText>
-
 					<IconText icon="calendar" colorScheme="slate" size="S">
 						<TimeStamp date={user.createdAt} prefix="Mitglied seit" />
 					</IconText>
@@ -89,16 +91,22 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 				<div className="text-slate-400 mb-8">
 					<Richtext size="M">{user.bio}</Richtext>
 				</div>
+
+				<Grid variant="col" gap="M" marginBelow="M">
+					{isCurrentUser ? (
+						<UserRecommender currentUserId={user.id} limit={6} />
+					) : (
+						<FollowUserButton userId={user.id} />
+					)}
+				</Grid>
+
 				{isCurrentUser ? (
 					<>
-						<Grid variant="col" gap="M" marginBelow="M">
-							<UserRecommender currentUserId={user.id} limit={6} />
-						</Grid>
 						<Grid variant="col" gap="M" marginBelow="M">
 							<Switch
 								label="Wechsle deine angezeigten Mumbles"
 								options={switchoptions}
-								value={PostType.POSTS}
+								value={POST_TYPE.POSTS}
 								name="posttype"
 								onChange={(event: ChangeEvent): void => {
 									const value = (event.target as HTMLInputElement).value;
@@ -110,12 +118,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 						<PostList posts={postsToRender[currentPostType]} onRemovePost={onRemovePost} />
 					</>
 				) : (
-					<>
-						<Grid variant="col" gap="M" marginBelow="M">
-							<FollowUserButton userId={user.id} />
-						</Grid>
-						<PostList posts={posts} onRemovePost={onRemovePost} />
-					</>
+					<PostList posts={posts} onRemovePost={onRemovePost} />
 				)}
 			</>
 		</MainLayout>
@@ -125,7 +128,8 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 export default UserPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ req, params }) => {
-	const userId = params?.id as string;
+	const userId = params?.userId as string;
+
 	const session = await getToken({ req });
 
 	try {
