@@ -27,12 +27,12 @@ export const UserCardList: FC<TUserCardList> = ({
 					<div className="flex flex-row flex-wrap -m-2">
 						{loadingItems > 0
 							? Array.from(Array(loadingItems).keys()).map((i) => (
-									<div key={i} className="flex-initial w-4/12 p-2">
+									<div key={i} className="flex-initial w-4/12 p-2 sm:w-1/2">
 										<UserCardSkeleton key={i} />
 									</div>
 							  ))
 							: users.map((user) => (
-									<div key={user.id} className="flex-initial w-4/12 p-2">
+									<div key={user.id} className="flex-initial w-4/12 p-2 sm:w-1/2">
 										<UserCard key={user.id} user={user} />
 									</div>
 							  ))}

@@ -23,7 +23,7 @@ export const Header: FC<THeader> = ({ user }) => {
 	return (
 		<>
 			<header className="Header mb-8 bg-violet-600 text-white">
-				<div className="px-content py-3">
+				<div className="px-content sm:px-6 py-3">
 					<div className="flex items-center justify-between gap-8 w-full max-w-content mx-auto">
 						<div className="flex w-[209px]">
 							<Link href="/" component={NextLink}>
