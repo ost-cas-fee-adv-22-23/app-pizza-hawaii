@@ -9,7 +9,7 @@ export type TUserFormErrors = { [key in keyof TUserFormData]?: string };
 
 export type TUserForm = {
 	onSubmit: (data: TUserFormData) => { status: boolean; errors?: TUserFormErrors };
-	user: TUserFormData;
+	user?: TUserFormData;
 	sectionlabel?: string;
 };
 
@@ -19,7 +19,7 @@ const emptyState: TUserFormData = {
 	userName: '',
 };
 
-export const UserForm: FC<TUserForm> = ({ onSubmit, user, sectionlabel }) => {
+export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionlabel }) => {
 	const [state, setState] = useState(user || emptyState);
 	const [formIsValid, setFormIsValid] = useState(false);
 	const [errors, setErrors] = useState<TUserFormErrors>({});
