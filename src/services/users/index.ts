@@ -1,28 +1,13 @@
 import { TUser, TUserSimple, TRawUser } from '../../types';
 import { fetchList, fetchItem, TFetchListResultPagination } from '../qwacker';
 import { homeTown, memberSince, shortBio } from '../../data/helpers/dataRandomizer';
+import { ItemCache } from '../../utils/ItemCache';
+
+const userCache = new ItemCache<TUser>(5 * 60 * 1000); // 5 minutes
 
 type TFetchBase = {
 	accessToken: string;
 };
-
-const TTL = 5 * 60 * 1000; // 5 minutes
-
-type TUserCache = {
-	[id: string]: {
-		data: TUser;
-		createdAt: number;
-	};
-};
-
-const cacheUser = (user: TUser) => {
-	userCache[user.id] = {
-		createdAt: Date.now(),
-		data: user,
-	};
-};
-
-const userCache: TUserCache = {};
 
 /**
  * Get all users
@@ -59,7 +44,7 @@ const getUsers = async (params: TGetUsers): Promise<TGetUsersResult> => {
 
 	// Add users to cache
 	users.forEach((userData) => {
-		cacheUser(userData);
+		userCache.add(userData);
 	});
 
 	return {
@@ -95,10 +80,10 @@ type TGetUser = TFetchBase & {
 
 const getUser = async ({ id, accessToken }: TGetUser) => {
 	// Check if user is already in cache
-	const cachedUser = userCache[id];
+	const cachedUser = userCache.get(id);
 
-	if (cachedUser && Date.now() - cachedUser.createdAt <= TTL) {
-		return cachedUser.data;
+	if (cachedUser) {
+		return cachedUser;
 	}
 
 	const user = (await fetchItem({
@@ -110,7 +95,7 @@ const getUser = async ({ id, accessToken }: TGetUser) => {
 	const userData = transformUser(user);
 
 	// Add user to cache
-	cacheUser(userData);
+	userCache.add(userData);
 
 	return userData;
 };
