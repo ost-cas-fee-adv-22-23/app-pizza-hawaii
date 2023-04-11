@@ -1,6 +1,6 @@
-import { Image, Label, Modal } from '@smartive-education/pizza-hawaii';
+import { Modal } from '@smartive-education/pizza-hawaii';
 import NextImage from 'next/image';
-import React, { Dispatch, FC, useEffect, useRef, useState } from 'react';
+import React, { Dispatch, FC, SyntheticEvent, useEffect, useRef, useState } from 'react';
 
 import ProjectSettings from '../data/ProjectSettings.json';
 import { TPost } from '../types/Post';
@@ -35,8 +35,8 @@ const ImageModal: FC<TImageModal> = (props: TImageModal) => {
 		toggleHandler(false);
 	};
 
-	const handleImageLoad = (event) => {
-		const image = event?.target;
+	const handleImageLoad = (event: SyntheticEvent<HTMLImageElement, Event>) => {
+		const image = event?.target as HTMLImageElement;
 
 		const maxWidth = Math.min(
 			screenDimensions.width - 100,
