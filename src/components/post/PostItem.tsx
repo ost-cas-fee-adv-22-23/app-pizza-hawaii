@@ -11,6 +11,7 @@ import {
 	TUserContentCard,
 	UserContentCard,
 } from '@smartive-education/pizza-hawaii';
+import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
 import React, { FC, useState } from 'react';
@@ -144,6 +145,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAn
 						}
 						src={post.mediaUrl}
 						alt={`Image of ${post.user.displayName}`}
+						imageComponent={NextImage}
 					/>
 				</ImageOverlay>
 			)}

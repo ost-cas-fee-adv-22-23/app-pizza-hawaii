@@ -1,4 +1,5 @@
 import { Image, Label, Modal } from '@smartive-education/pizza-hawaii';
+import NextImage from 'next/image';
 import React, { Dispatch, FC } from 'react';
 
 import { TPost } from '../types/Post';
@@ -17,13 +18,17 @@ const ImageModal: FC<TImageModal> = (props: TImageModal) => {
 	};
 
 	return (
-		<Modal title={`Posted by: ${post.user.displayName}`} isVisible={true} onClose={() => close()}>
-			<div className="w-max-10/12 h-auto content-center mx-content">
-				<Image src={post.mediaUrl} alt={`Mumble-Post by Mumbel User ${post.user.userName}`} />
-				<br />
-				<Label as="legend" size="M">
-					{post?.user.displayName}: {post?.text}
-				</Label>
+		<Modal isVisible={true} onClose={() => close()}>
+			<div className="w-full h-full content-center ">
+				<Image
+					src={post.mediaUrl}
+					width={0}
+					height={0}
+					sizes="100vw"
+					style={{ width: '100%', height: 'auto', maxWidth: '90vw', maxHeight: '90vh' }}
+					alt={`Mumble-Post by Mumbel User ${post.user.userName}`}
+					imageComponent={NextImage}
+				/>
 			</div>
 		</Modal>
 	);

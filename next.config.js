@@ -10,6 +10,10 @@ const nextConfig = {
 				hostname: 'storage.googleapis.com',
 				pathname: '/qwacker-api-prod-data/**',
 			},
+			{
+				protocol: 'https',
+				hostname: 'picsum.photos',
+			},
 		],
 	},
 };

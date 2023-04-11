@@ -1,6 +1,6 @@
 import { Headline } from '@smartive-education/pizza-hawaii';
 import Head from 'next/head';
-import Image from 'next/image';
+import NextImage from 'next/image';
 import { FC, ReactNode } from 'react';
 
 import VerticalLogo from '../../assets/svg/verticalLogo.svg';
@@ -23,7 +23,7 @@ export const LoginLayout: FC<TLoginLayout> = ({ title, description, children }) 
 				<header className="column-start-1 column-span-1 row-start-1 row-span-1 flex items-center justify-center bg-gradient-to-tl from-violet-600 to-pink-500">
 					<div className="w-8/12 text-pink-300 text-center">
 						<div className="inline-block mb-8">
-							<Image src={VerticalLogo} alt="welcome to Mumble" />
+							<NextImage src={VerticalLogo} alt="welcome to Mumble" />
 						</div>
 						<Headline level={1}>
 							Find out what’s new in{' '}

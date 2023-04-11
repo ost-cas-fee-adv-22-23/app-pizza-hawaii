@@ -133,7 +133,7 @@ export const UserProfile: FC<TUserProfile> = ({ size = 'M', border, href, userNa
 
 	return (
 		<div className={[...baseStyle, 'overflow-hidden', sizeMap[size]].join(' ')}>
-			<Image src={avatar} alt={userName} width={imgMap[size]} height={imgMap[size]} />
+			<Image src={avatar} alt={userName} width={imgMap[size]} height={imgMap[size]} imageComponent={NextImage} />
 		</div>
 	);
 };

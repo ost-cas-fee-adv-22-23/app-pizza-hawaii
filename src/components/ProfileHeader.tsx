@@ -1,4 +1,5 @@
 import { Image, ImageOverlay } from '@smartive-education/pizza-hawaii';
+import NextImage from 'next/image';
 import React, { FC, useState } from 'react';
 
 import ProjectSettings from '../data/ProjectSettings.json';
@@ -68,6 +69,7 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 							(ProjectSettings.images.header.width / ProjectSettings.images.header.aspectRatio[0]) *
 							ProjectSettings.images.header.aspectRatio[1]
 						}
+						imageComponent={NextImage}
 					/>
 				</ImageOverlay>
 			) : (
@@ -85,6 +87,7 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 							(ProjectSettings.images.header.width / ProjectSettings.images.header.aspectRatio[0]) *
 							ProjectSettings.images.header.aspectRatio[1]
 						}
+						imageComponent={NextImage}
 					/>
 				</ImageOverlay>
 			)}
