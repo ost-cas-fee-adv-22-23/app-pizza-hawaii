@@ -2,7 +2,7 @@ import { decodeTime } from 'ulid';
 import { TPost, TRawPost } from '../../types';
 import { fetchItem, fetchList, TFetchBase, TFetchListResultPagination, TFetchQuery } from '../qwacker';
 
-import parseRichText from '../../utils/parseRichText';
+import { parse as parseRichText } from '../../utils/RichText';
 import { usersService } from '../users';
 
 /**
