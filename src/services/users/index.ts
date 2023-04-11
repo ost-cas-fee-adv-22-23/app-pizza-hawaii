@@ -1,5 +1,5 @@
 import { TUser, TUserSimple, TRawUser } from '../../types';
-import { fetchList, fetchItem } from '../qwacker';
+import { fetchList, fetchItem, TFetchListResultPagination } from '../qwacker';
 import { homeTown, memberSince, shortBio } from '../../data/helpers/dataRandomizer';
 
 type TFetchBase = {
@@ -12,6 +12,13 @@ type TUserCache = {
 	[id: string]: {
 		data: TUser;
 		createdAt: number;
+	};
+};
+
+const cacheUser = (user: TUser) => {
+	userCache[user.id] = {
+		createdAt: Date.now(),
+		data: user,
 	};
 };
 
@@ -34,47 +41,31 @@ type TGetUsers = TFetchBase & {
 type TGetUsersResult = {
 	count: number;
 	users: TUser[];
+	pagination?: TFetchListResultPagination;
 };
 
-const getUsers = async ({ limit, offset = 0, accessToken }: TGetUsers): Promise<TGetUsersResult> => {
-	const maxLimit = 1000;
-	// create url params
-	const urlParams = new URLSearchParams({
-		offset: offset.toString(),
-	});
+const getUsers = async (params: TGetUsers): Promise<TGetUsersResult> => {
+	const { accessToken, ...searchParams } = params;
 
-	if (limit !== undefined) {
-		urlParams.set('limit', Math.min(limit, maxLimit).toString());
-	}
-
-	const { count, items } = (await fetchList({
+	const { count, items, pagination } = (await fetchList({
 		endpoint: 'users',
 		accessToken,
 		method: 'GET',
-		...urlParams,
-	})) as { count: number; items: TRawUser[] };
+		...searchParams,
+	})) as { count: number; items: TRawUser[]; pagination?: TFetchListResultPagination };
 
+	// normalize users
 	const users = items.map(transformUser) as TUser[];
 
-	// If there are more entries to fetch, make a recursive call
-	if (count > 0 && (!limit || limit > users.length)) {
-		const remainingLimit = limit ? limit - users.length : undefined;
-		const remainingOffset = limit ? offset + limit : offset + users.length;
+	// Add users to cache
+	users.forEach((userData) => {
+		cacheUser(userData);
+	});
 
-		const { users: remainingUsers, count: remainingCount } = await getUsers({
-			offset: remainingOffset,
-			limit: remainingLimit,
-			accessToken,
-		});
-
-		return {
-			count: remainingCount,
-			users: [...users, ...remainingUsers].slice(0, limit),
-		};
-	}
 	return {
 		count,
 		users,
+		pagination,
 	};
 };
 
@@ -119,10 +110,7 @@ const getUser = async ({ id, accessToken }: TGetUser) => {
 	const userData = transformUser(user);
 
 	// Add user to cache
-	userCache[id] = {
-		createdAt: Date.now(),
-		data: userData,
-	};
+	cacheUser(userData);
 
 	return userData;
 };
