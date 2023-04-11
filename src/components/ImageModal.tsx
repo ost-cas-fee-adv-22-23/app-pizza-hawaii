@@ -8,11 +8,11 @@ import { TReducedPost } from './ProfileHeader';
 
 type TImageModal = {
 	post: TPost | TReducedPost;
-	toggleHandler: Dispatch<boolean>;
+	onClose: () => void;
 };
 
 const ImageModal: FC<TImageModal> = (props: TImageModal) => {
-	const { post, toggleHandler } = props;
+	const { post, onClose } = props;
 	const myImageRef = useRef(null);
 
 	const [loading, setLoading] = useState(true);
@@ -31,10 +31,6 @@ const ImageModal: FC<TImageModal> = (props: TImageModal) => {
 		return () => window.removeEventListener('resize', handleResize);
 	}, []);
 
-	const close = () => {
-		toggleHandler(false);
-	};
-
 	const handleImageLoad = (event: SyntheticEvent<HTMLImageElement, Event>) => {
 		const image = event?.target as HTMLImageElement;
 
@@ -50,7 +46,7 @@ const ImageModal: FC<TImageModal> = (props: TImageModal) => {
 
 	// cover image
 	return (
-		<Modal isVisible={true} onClose={() => close()}>
+		<Modal isVisible={true} onClose={onClose}>
 			<div className="content-center">
 				{loading && <div className="animate-pulse h-64 w-full bg-gray-400 rounded-lg" />}
 				<NextImage

@@ -4,7 +4,11 @@ const nextConfig = {
 	swcMinify: true,
 	images: {
 		remotePatterns: [
-			{ protocol: 'https', hostname: 'cas-fee-advanced-ocvdad.zitadel.cloud' },
+			{
+				protocol: 'https',
+				hostname: 'cas-fee-advanced-ocvdad.zitadel.cloud',
+				pathname: '/assets/**',
+			},
 			{
 				protocol: 'https',
 				hostname: 'storage.googleapis.com',
@@ -15,6 +19,11 @@ const nextConfig = {
 				hostname: 'picsum.photos',
 			},
 		],
+	},
+
+	i18n: {
+		locales: ['de'],
+		defaultLocale: 'de',
 	},
 };
 

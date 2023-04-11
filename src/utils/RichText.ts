@@ -1,3 +1,5 @@
+// Description: This file contains a function that converts plain text to rich text (HTML) with links, mentions, hashtags, etc.
+
 export type RichtextSettings = {
 	basics?: boolean;
 	links?: boolean;
@@ -8,7 +10,8 @@ export type RichtextSettings = {
 	mentionLinkPattern?: string;
 };
 
-const defaultSettings: RichtextSettings = {
+// Default settings for the Richtext parser (we export them so that you can use them as a base for your own settings)
+export const defaultSettings: RichtextSettings = {
 	basics: true,
 	links: true,
 	markdownLinks: true,
@@ -18,7 +21,7 @@ const defaultSettings: RichtextSettings = {
 	mentionLinkPattern: '/user/$3',
 };
 
-const parseRichText = (plainText: string, settings: RichtextSettings = defaultSettings): string => {
+export const parse = (plainText: string, settings: RichtextSettings = defaultSettings): string => {
 	let richText = plainText;
 
 	if (settings.markdownLinks) {
@@ -51,5 +54,3 @@ const parseRichText = (plainText: string, settings: RichtextSettings = defaultSe
 
 	return richText;
 };
-
-export default parseRichText;
