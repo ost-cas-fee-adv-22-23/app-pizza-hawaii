@@ -1,9 +1,10 @@
-import Head from 'next/head';
-import { ReactNode, FC } from 'react';
-import Image from 'next/image';
 import { Headline } from '@smartive-education/pizza-hawaii';
-import { Footer } from '../Footer';
+import Head from 'next/head';
+import Image from 'next/image';
+import { FC, ReactNode } from 'react';
+
 import VerticalLogo from '../../assets/svg/verticalLogo.svg';
+import { Footer } from '../Footer';
 
 type TLoginLayout = {
 	title: string;

@@ -1,23 +1,22 @@
-import React, { FC, useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
-import NextLink from 'next/link';
-import { useDropzone } from 'react-dropzone';
-
 import {
 	Button,
-	Label,
-	Grid,
 	FormTextarea,
-	IconText,
-	UserContentCard,
-	TUserContentCard,
-	Modal,
+	Grid,
 	Icon,
+	IconText,
 	Image,
+	Label,
+	Modal,
+	TUserContentCard,
+	UserContentCard,
 } from '@smartive-education/pizza-hawaii';
-import { ImageUpload } from '../ImageUpload';
+import NextLink from 'next/link';
+import { useSession } from 'next-auth/react';
+import React, { FC, useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 
 import { TPost, TUser } from '../../types';
+import { ImageUpload } from '../ImageUpload';
 
 export type TAddPostProps = {
 	text: string;
@@ -99,7 +98,7 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 		onDropRejected: (rejectedFiles, error) => {
 			console.error('onDropRejected: rejectedFiles', rejectedFiles, error);
 			// TODO: Sedning error message to the user in modal
-			console.log(rejectedFiles[0].errors[0].message);
+			//console.log(rejectedFiles[0].errors[0].message);
 		},
 
 		onError: (error) => {

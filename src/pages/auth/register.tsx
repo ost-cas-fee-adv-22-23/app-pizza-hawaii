@@ -1,7 +1,7 @@
-import React, { FormEvent, useState } from 'react';
-import NextLink from 'next/link';
-
 import { Button, Form, FormInput, Headline, Label, Link } from '@smartive-education/pizza-hawaii';
+import NextLink from 'next/link';
+import React, { FormEvent, useState } from 'react';
+
 import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
 
 const RegisterPage = () => {
@@ -28,7 +28,6 @@ const RegisterPage = () => {
 
 	const onSubmitHandler = (e: FormEvent) => {
 		e.preventDefault();
-		console.log('onSubmitHandler newUser:', responseBody);
 		// TODO: send data to zitadel backend and redirect to login page
 	};
 

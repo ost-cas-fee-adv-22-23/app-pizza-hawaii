@@ -1,9 +1,8 @@
-import React, { FC, useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
-
 import { Headline } from '@smartive-education/pizza-hawaii';
-import { services } from '../../services';
+import { useSession } from 'next-auth/react';
+import React, { FC, useEffect, useState } from 'react';
 
+import { services } from '../../services';
 import { TUser } from '../../types';
 import { UserCardList } from '../user/UserCardList';
 
