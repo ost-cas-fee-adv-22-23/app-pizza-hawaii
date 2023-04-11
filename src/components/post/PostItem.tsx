@@ -97,12 +97,6 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAn
 		onDeletePost && onDeletePost(post?.id);
 	};
 
-	// mayby we do a helper function hook or a component for this as ImageModal is used in userpanorama image as well
-	// ImageModal function
-	const toggleImageModal = () => {
-		setShowImageModal(!showImageModal);
-	};
-
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
@@ -135,7 +129,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAn
 			<Richtext size={setting.textSize}>{post.text}</Richtext>
 
 			{post.mediaUrl && (
-				<ImageOverlay preset="enlarge" buttonLabel="Enlarge image in modal" onClick={toggleImageModal}>
+				<ImageOverlay preset="enlarge" buttonLabel="Enlarge image in modal" onClick={() => setShowImageModal(true)}>
 					<Image
 						width={ProjectSettings.images.post.width}
 						height={
@@ -193,7 +187,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAn
 				)}
 			</Grid>
 
-			{showImageModal && <ImageModal post={post} toggleHandler={setShowImageModal} />}
+			{showImageModal && <ImageModal post={post} onClose={() => setShowImageModal(false)} />}
 		</UserContentCard>
 	);
 };

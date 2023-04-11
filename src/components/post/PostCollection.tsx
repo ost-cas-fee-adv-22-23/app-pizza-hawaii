@@ -89,7 +89,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 	};
 
 	return (
-		<section>
+		<>
 			{headline && (
 				<div className="text-slate-500 mb-8">
 					<Headline level={3} as="p">
@@ -124,6 +124,6 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 					{state.loading ? '...' : 'Load more'}
 				</Button>
 			)}
-		</section>
+		</>
 	);
 };

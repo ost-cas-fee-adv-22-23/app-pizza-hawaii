@@ -8,15 +8,16 @@ import { PostList } from './PostList';
 
 type TPostDetailProps = {
 	post: TPost;
+	replies: TPost[];
 	onRemovePost: (id: string) => void;
 	onAddReply: (data: TAddPostProps) => Promise<TPost | null>;
 };
 
-export const PostDetail: FC<TPostDetailProps> = ({ post, onRemovePost, onAddReply }) => {
+export const PostDetail: FC<TPostDetailProps> = ({ post, replies, onRemovePost, onAddReply }) => {
 	const textAreaId = `post-${post?.id}-reply`;
 
 	const onAnswerPost = (id: string) => {
-		const anserPost = post?.replies?.find((reply) => reply.id === id);
+		const anserPost = replies?.find((reply) => reply.id === id);
 
 		const textarea = document.getElementById(textAreaId) as HTMLTextAreaElement;
 		if (!textarea) {
@@ -56,7 +57,7 @@ export const PostDetail: FC<TPostDetailProps> = ({ post, onRemovePost, onAddRepl
 				/>
 			</Grid>
 
-			<PostList posts={post?.replies} variant="response" onRemovePost={onRemovePost} onAnswerPost={onAnswerPost} />
+			<PostList posts={replies} variant="response" onRemovePost={onRemovePost} onAnswerPost={onAnswerPost} />
 		</Grid>
 	);
 };

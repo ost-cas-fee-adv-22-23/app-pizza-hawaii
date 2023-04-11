@@ -1,71 +1,57 @@
-import { Button, Form, FormInput, Headline, Label, Link } from '@smartive-education/pizza-hawaii';
+import { Grid, Headline, Label, Link } from '@smartive-education/pizza-hawaii';
 import NextLink from 'next/link';
-import React, { FormEvent, useState } from 'react';
+import router from 'next/router';
+import React from 'react';
 
+import { TUserFormData, UserForm } from '../../components/form/UserForm';
 import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
 
 const RegisterPage = () => {
-	interface RegisterFormData {
-		fullName: string;
-		userName: string;
-		email: string;
-		password: string;
-	}
+	const onSubmit = (data: TUserFormData) => {
+		let errors = {};
 
-	const formData: RegisterFormData = {
-		fullName: '',
-		userName: '',
-		email: '',
-		password: '',
-	};
+		// TODO: Implement the real registration
+		console.error('Function not implemented. But we will throw sometimes some errors anyway. ;)', data);
 
-	const [responseBody, setResponseBody] = useState<RegisterFormData>(formData);
+		// Simulate some errors to show the error messages and annoy the users
+		Math.random() > 0.5 && (errors = { ...errors, userName: 'Username already taken' });
+		Math.random() > 0.5 && (errors = { ...errors, firstName: 'First name is required' });
+		Math.random() > 0.5 && (errors = { ...errors, lastName: 'Last name is required' });
 
-	const inputChangeHandler = (e: FormEvent<HTMLInputElement>) => {
-		const { name, value } = e.currentTarget;
-		setResponseBody({ ...responseBody, [name]: value });
-	};
+		// If there are errors, return them
+		if (Object.keys(errors).length > 0) {
+			return { status: false, errors: errors };
+		}
 
-	const onSubmitHandler = (e: FormEvent) => {
-		e.preventDefault();
-		// TODO: send data to zitadel backend and redirect to login page
+		// If there are no errors, go to the next step
+		router.push('/');
+
+		// Return true to indicate that the form was submitted successfully for a few milliseconds
+		return { status: true };
 	};
 
 	return (
-		<LoginLayout
-			title="Mumble - Registrierung"
-			description="Erstellen Sie ein Konto und beginnen Sie, Ihre Gedanken mit der Welt zu teilen. Registrieren Sie sich noch heute bei Mumble"
-		>
-			<Headline level={2}>Register now</Headline>
-			<br />
-			<Form>
-				<FormInput name="fullName" label="Vorname und Name" type="text" onChange={(e) => inputChangeHandler(e)} />
-				<FormInput name="userName" label="Username" type="text" onChange={(e) => inputChangeHandler(e)} />
-				<FormInput name="email" label="E-mail" type="email" onChange={(e) => inputChangeHandler(e)} />
-				<FormInput
-					name="password"
-					label="Password"
-					type="password"
-					icon="eye"
-					onChange={(e) => inputChangeHandler(e)}
-				/>
-				<br />
-				<Button size="L" type="submit" colorScheme="gradient" icon="mumble" onClick={onSubmitHandler}>
-					Let&lsquo; Mumble
-				</Button>
-			</Form>
-			<div className="mt-3 text-center">
-				<Label as="span" size="M">
-					Bereits registriert? &nbsp;
-					<Link href="/login" component={NextLink}>
-						Jetzt anmelden
+		<LoginLayout title="Mumble - Registrierung">
+			<Grid variant="col" gap="L" centered={false}>
+				<Headline level={2}>Register now</Headline>
+
+				<UserForm onSubmit={onSubmit} user={undefined} />
+
+				<div className="mt-3 text-center">
+					<Label as="span" size="M">
+						Bereits registriert? &nbsp;
+						<Link href="/login" component={NextLink}>
+							Jetzt anmelden
+						</Link>
+					</Label>
+				</div>
+
+				<div className="mt-3 text-center">
+					<Link href="/" component={NextLink}>
+						Zurück
 					</Link>
-				</Label>
-			</div>
-			<br />
-			<Link href="/" component={NextLink}>
-				Back to Startpage
-			</Link>
+				</div>
+			</Grid>
 		</LoginLayout>
 	);
 };

@@ -64,7 +64,11 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	return (
 		<MainLayout
 			title={`Mumble - ${user.displayName} (${user.userName})`}
-			description={`Entdecken Sie die Mumbles von ${user.userName} - besuchen Sie die Seite eines Mumble-Nutzers.`}
+			seo={{
+				description: `Entdecken Sie die Mumbles von ${user.userName}.`,
+				image: { url: user?.avatar, alt: user?.displayName },
+				pageType: 'profile',
+			}}
 		>
 			<>
 				<ProfileHeader user={user} canEdit={isCurrentUser} />

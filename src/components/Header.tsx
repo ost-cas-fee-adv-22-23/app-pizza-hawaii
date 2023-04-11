@@ -6,8 +6,8 @@ import { FC, useState } from 'react';
 
 import MumbleLogo from '../assets/svg/mumbleLogo.svg';
 import { TUser } from '../types';
+import UserSettings from './form/UserSettings';
 import { UserProfile } from './user/UserProfile';
-import UserSettings from './UserSettings';
 
 type THeader = {
 	user: TUser;
@@ -45,7 +45,14 @@ export const Header: FC<THeader> = ({ user }) => {
 								<NaviButton icon="settings" onClick={handleSettingsClick}>
 									Settings
 								</NaviButton>
-								<NaviButton icon="logout" onClick={() => signOut()}>
+								<NaviButton
+									icon="logout"
+									onClick={() =>
+										signOut({
+											callbackUrl: '/auth/login',
+										})
+									}
+								>
 									Log out
 								</NaviButton>
 							</Navi>
@@ -53,7 +60,7 @@ export const Header: FC<THeader> = ({ user }) => {
 					</div>
 				</div>
 			</header>
-			{showSettingsModal && <UserSettings user={user} toggleSettingsModal={setShowSettingsModal} />}
+			{showSettingsModal && <UserSettings user={user} onClose={() => setShowSettingsModal(false)} />}
 		</>
 	);
 };
