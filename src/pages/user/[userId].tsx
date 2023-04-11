@@ -1,18 +1,16 @@
-import { ChangeEvent, useState, FC } from 'react';
+import { Grid, Headline, IconText, Richtext, Switch, TimeStamp } from '@smartive-education/pizza-hawaii';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { useSession } from 'next-auth/react';
-import { getToken } from 'next-auth/jwt';
-import NextLink from 'next/link';
 import ErrorPage from 'next/error';
+import NextLink from 'next/link';
+import { getToken } from 'next-auth/jwt';
+import { useSession } from 'next-auth/react';
+import { ChangeEvent, FC, useState } from 'react';
 
-import { Switch, Headline, IconText, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
-
+import { FollowUserButton } from '../../components/FollowUserButton';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
+import { PostList } from '../../components/post/PostList';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { UserRecommender } from '../../components/widgets/UserRecommender';
-import { FollowUserButton } from '../../components/FollowUserButton';
-import { PostList } from '../../components/post/PostList';
-
 import { services } from '../../services';
 import { TPost, TUser } from '../../types';
 

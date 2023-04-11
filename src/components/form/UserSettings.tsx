@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
 import { Modal } from '@smartive-education/pizza-hawaii';
+import React, { FC } from 'react';
 
-import { UserForm, TUserFormData } from './UserForm';
 import { TUser } from '../../types';
+import { TUserFormData, UserForm } from './UserForm';
 
 type TUserSettings = {
 	user: TUser;

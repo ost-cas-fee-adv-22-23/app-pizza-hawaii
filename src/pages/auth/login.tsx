@@ -1,11 +1,11 @@
-import { signIn, signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import NextLink from 'next/link';
-import Image from 'next/image';
-
-import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
 import { Button, Grid, Headline, Link } from '@smartive-education/pizza-hawaii';
+import Image from 'next/image';
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+import { signIn, signOut, useSession } from 'next-auth/react';
+
 import VerticalLogo from '../../assets/svg/verticalLogo.svg';
+import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
 
 export default function LoginPage() {
 	const { data: session } = useSession();

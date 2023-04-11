@@ -1,10 +1,9 @@
+import { Grid } from '@smartive-education/pizza-hawaii';
 import { FC } from 'react';
 
-import { Grid } from '@smartive-education/pizza-hawaii';
-import { PostItem } from './PostItem';
-import { PostCreator, TAddPostProps } from './PostCreator';
-
 import { TPost } from '../../types';
+import { PostCreator, TAddPostProps } from './PostCreator';
+import { PostItem } from './PostItem';
 import { PostList } from './PostList';
 
 type TPostDetailProps = {

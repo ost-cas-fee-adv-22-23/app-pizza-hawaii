@@ -1,13 +1,12 @@
-import { FC, useState } from 'react';
+import { Headline } from '@smartive-education/pizza-hawaii';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
+import { FC, useState } from 'react';
 
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
-
-import { TPost } from '../../types';
-import { services } from '../../services';
 import { PostList } from '../../components/post/PostList';
-import { Headline } from '@smartive-education/pizza-hawaii';
+import { services } from '../../services';
+import { TPost } from '../../types';
 
 type TUserPage = {
 	searchTag: string;

@@ -1,7 +1,7 @@
 import { apiService } from './api';
-import { usersService } from './users';
-import { postsService } from './posts';
 import { likesService } from './likes';
+import { postsService } from './posts';
+import { usersService } from './users';
 
 export const services = {
 	api: apiService,

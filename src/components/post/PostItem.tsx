@@ -1,24 +1,23 @@
-import React, { FC, useState } from 'react';
+import {
+	CopyToClipboardButton,
+	Grid,
+	IconText,
+	Image,
+	ImageOverlay,
+	InteractionButton,
+	Label,
+	Richtext,
+	TimeStamp,
+	TUserContentCard,
+	UserContentCard,
+} from '@smartive-education/pizza-hawaii';
 import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
+import React, { FC, useState } from 'react';
 
-import {
-	Image,
-	Label,
-	Grid,
-	TimeStamp,
-	Richtext,
-	IconText,
-	ImageOverlay,
-	CopyToClipboardButton,
-	UserContentCard,
-	TUserContentCard,
-	InteractionButton,
-} from '@smartive-education/pizza-hawaii';
-
-import { TPost, TUser } from '../../types';
 import ProjectSettings from '../../data/ProjectSettings.json';
 import { postsService } from '../../services/api/posts/';
+import { TPost, TUser } from '../../types';
 import ImageModal from '../ImageModal';
 
 /*

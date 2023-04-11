@@ -1,11 +1,11 @@
+import { Image, ImageOverlay } from '@smartive-education/pizza-hawaii';
 import React, { FC, useState } from 'react';
 
-import { Image, ImageOverlay } from '@smartive-education/pizza-hawaii';
-import { UserProfile } from './user/UserProfile';
-import { TUser } from '../types';
 import ProjectSettings from '../data/ProjectSettings.json';
-import ImageModal from './ImageModal';
+import { TUser } from '../types';
 import UserSettings from './form/UserSettings';
+import ImageModal from './ImageModal';
+import { UserProfile } from './user/UserProfile';
 
 /**
  * @description
