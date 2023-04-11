@@ -26,12 +26,18 @@ export class ItemCache<T> {
 
 	get(id: string): T | false {
 		const cacheEntry = this.cache[id];
+
+		// Check if user is already in cache otherwise return false
 		if (!cacheEntry) return false;
+
+		// Check if cache entry is expired - if it is, remove it from the cache and return false
 		const isExpired = Date.now() - cacheEntry.createdAt > this.ttl;
 		if (isExpired) {
 			delete this.cache[id];
 			return false;
 		}
+
+		// Return cached data
 		return cacheEntry.data;
 	}
 }
