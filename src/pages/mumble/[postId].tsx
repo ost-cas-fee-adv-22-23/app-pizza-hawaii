@@ -1,25 +1,24 @@
-import { FC, useState } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { useSession } from 'next-auth/react';
-import { getToken } from 'next-auth/jwt';
 import { useRouter } from 'next/router';
+import { getToken } from 'next-auth/jwt';
+import { useSession } from 'next-auth/react';
+import { FC, useState } from 'react';
 
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
-
-import { TPost } from '../../types';
-import { services } from '../../services';
-import { PostDetail } from '../../components/post/PostDetail';
 import { TAddPostProps } from '../../components/post/PostCreator';
+import { PostDetail } from '../../components/post/PostDetail';
+import { services } from '../../services';
+import { TPost } from '../../types';
 
 type TUserPage = {
 	post: TPost;
 };
 
-const DetailPage: FC<TUserPage> = ({ post: initialPost }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const DetailPage: FC<TUserPage> = ({ post }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const { data: session } = useSession();
 	const router = useRouter();
 
-	const [post, setPost] = useState(initialPost);
+	const [replies, setReplies] = useState(post.replies);
 
 	const onAddReply = async (postData: TAddPostProps) => {
 		const newReply = await services.posts.createPost({
@@ -27,10 +26,7 @@ const DetailPage: FC<TUserPage> = ({ post: initialPost }: InferGetServerSideProp
 			accessToken: session?.accessToken as string,
 		});
 
-		setPost((post: TPost) => ({
-			...post,
-			replies: [newReply, ...(post.replies as TPost[])],
-		}));
+		setReplies([newReply, ...(post.replies as TPost[])]);
 
 		return newReply;
 	};
@@ -46,16 +42,20 @@ const DetailPage: FC<TUserPage> = ({ post: initialPost }: InferGetServerSideProp
 			// go back to overview page
 			router.push('/');
 		} else {
-			setPost((post: TPost) => ({
-				...post,
-				replies: post.replies?.filter((reply: TPost) => reply.id !== id) as TPost[],
-			}));
+			setReplies(replies.filter((reply: TPost) => reply.id !== id));
 		}
 	};
 
 	return (
-		<MainLayout title={`Mumble von ${post?.user.userName}`} description={`Mumble von ${post?.user.userName}`}>
-			<PostDetail post={post} onAddReply={onAddReply} onRemovePost={onRemovePost} />
+		<MainLayout
+			title={`Mumble von ${post?.user.userName}`}
+			seo={{
+				description: `${post?.user.userName} schrieb: ${post?.text}`,
+				image: { url: post?.mediaUrl, type: post?.mediaType },
+				pageType: 'article',
+			}}
+		>
+			<PostDetail post={post} replies={replies} onAddReply={onAddReply} onRemovePost={onRemovePost} />
 		</MainLayout>
 	);
 };

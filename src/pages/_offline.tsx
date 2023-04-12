@@ -1,5 +1,6 @@
-import { LoginLayout } from '../components/layoutComponents/LoginLayout';
 import { Headline } from '@smartive-education/pizza-hawaii';
+
+import { LoginLayout } from '../components/layoutComponents/LoginLayout';
 
 export default function OfflinePage() {
 	return (

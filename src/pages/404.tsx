@@ -1,7 +1,7 @@
+import { Headline, Link, Richtext } from '@smartive-education/pizza-hawaii';
 import NextLink from 'next/link';
 
 import { LoginLayout } from '../components/layoutComponents/LoginLayout';
-import { Richtext, Headline, Link } from '@smartive-education/pizza-hawaii';
 
 // replacement for pages/404.js in a mumble layout.
 const FourOhFourPage = () => {

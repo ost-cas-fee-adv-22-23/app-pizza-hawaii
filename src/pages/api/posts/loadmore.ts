@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getToken } from 'next-auth/jwt';
 
 import { services } from '../../../services';
-import { getToken } from 'next-auth/jwt';
 
 /**
  * @name Loadmore

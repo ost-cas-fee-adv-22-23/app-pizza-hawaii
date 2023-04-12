@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const MIN_INTERVAL_MS = 5000; // 5 seconds
 const MAX_INTERVAL_MS = 600000; // 10 minutes

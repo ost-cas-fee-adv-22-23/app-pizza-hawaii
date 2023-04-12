@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
 import { Button } from '@smartive-education/pizza-hawaii';
+import React, { useEffect, useState } from 'react';
 /*
  * a really simple component as we dont have the follower information
  * but at least it looks cool.

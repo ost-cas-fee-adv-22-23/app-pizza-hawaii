@@ -1,16 +1,15 @@
-import { FC } from 'react';
+import { Grid, Icon, Link, RoundButton } from '@smartive-education/pizza-hawaii';
 import NextLink from 'next/link';
+import { FC } from 'react';
 
-import { Grid, RoundButton, Icon, Link } from '@smartive-education/pizza-hawaii';
-
-import { useThemeContext, THEME } from '../context/useTheme';
+import { THEME, useThemeContext } from '../context/useTheme';
 
 export const Footer: FC = () => {
 	const { theme, toggleTheme } = useThemeContext();
 
 	return (
 		<footer className="Footer">
-			<div className="px-content py-3">
+			<div className="px-content sm:px-6 py-3">
 				<div className="flex items-center justify-between gap-8 w-full max-w-content mx-auto">
 					<Grid variant="row" gap="M" centered={true} wrapBelowScreen="md">
 						<p className="flex-1">
