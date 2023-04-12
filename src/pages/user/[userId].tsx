@@ -1,18 +1,16 @@
-import { ChangeEvent, useState, FC } from 'react';
+import { Grid, Headline, IconText, Richtext, Switch, TimeStamp } from '@smartive-education/pizza-hawaii';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { useSession } from 'next-auth/react';
-import { getToken } from 'next-auth/jwt';
-import NextLink from 'next/link';
 import ErrorPage from 'next/error';
+import NextLink from 'next/link';
+import { getToken } from 'next-auth/jwt';
+import { useSession } from 'next-auth/react';
+import { ChangeEvent, FC, useState } from 'react';
 
-import { Switch, Headline, IconText, TimeStamp, Richtext, Grid } from '@smartive-education/pizza-hawaii';
-
+import { FollowUserButton } from '../../components/FollowUserButton';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
+import { PostList } from '../../components/post/PostList';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { UserRecommender } from '../../components/widgets/UserRecommender';
-import { FollowUserButton } from '../../components/FollowUserButton';
-import { PostList } from '../../components/post/PostList';
-
 import { services } from '../../services';
 import { TPost, TUser } from '../../types';
 
@@ -66,15 +64,19 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	return (
 		<MainLayout
 			title={`Mumble - ${user.displayName} (${user.userName})`}
-			description={`Entdecken Sie die Mumbles von ${user.userName} - besuchen Sie die Seite eines Mumble-Nutzers.`}
+			seo={{
+				description: `Entdecken Sie die Mumbles von ${user.userName}.`,
+				image: { url: user?.avatar, alt: user?.displayName },
+				pageType: 'profile',
+			}}
 		>
 			<>
 				<ProfileHeader user={user} canEdit={isCurrentUser} />
-				<div className="mb-2 pr-48">
+				<div className="mb-2 pr-48 sm:mt-14 sm:pr-0">
 					<Headline level={3}>{user.displayName}</Headline>
 				</div>
 
-				<span className="flex flex-row align-baseline gap-3 mb-3">
+				<Grid variant="row" gap="S" marginBelow="M" wrapBelowScreen="md">
 					<NextLink href={user.profileLink}>
 						<IconText icon="profile" colorScheme="violet" size="S">
 							{user.userName}
@@ -86,7 +88,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 					<IconText icon="calendar" colorScheme="slate" size="S">
 						<TimeStamp date={user.createdAt} prefix="Mitglied seit" />
 					</IconText>
-				</span>
+				</Grid>
 
 				<div className="text-slate-400 mb-8">
 					<Richtext size="M">{user.bio}</Richtext>

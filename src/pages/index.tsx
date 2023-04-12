@@ -1,23 +1,20 @@
-import { useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { getToken } from 'next-auth/jwt';
-import ErrorPage from 'next/error';
-
-import { encodeTime, decodeTime } from 'ulid';
-import { services } from '../services';
-import useIncreasingInterval from '../hooks/useIncreasingInterval';
-import { useActiveTabContext } from '../context/useActiveTab';
-
 import { Headline } from '@smartive-education/pizza-hawaii';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import ErrorPage from 'next/error';
+import { getToken } from 'next-auth/jwt';
+import { useSession } from 'next-auth/react';
+import { useState } from 'react';
+import { decodeTime, encodeTime } from 'ulid';
+
 import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { PostCollection } from '../components/post/PostCollection';
 import { TAddPostProps } from '../components/post/PostCreator';
-
+import { useActiveTabContext } from '../context/useActiveTab';
+import useIncreasingInterval from '../hooks/useIncreasingInterval';
+import { services } from '../services';
 import { TPost } from '../types';
 
 export default function PageHome({
-	currentUser,
 	postCount: initialPostCount,
 	posts: initialPosts,
 	error,
@@ -28,7 +25,7 @@ export default function PageHome({
 	const [posts, setPosts] = useState<TPost[]>(initialPosts);
 	const [canLoadmore, setCanLoadmore] = useState<boolean>(initialPostCount > posts.length);
 
-	const loadLatestPosts = async (loadFullList = false) => {
+	const loadPosts = async (loadFullList = false) => {
 		const latestPost = loadFullList ? posts[posts.length - 1] : posts[0];
 		let lastPostId = latestPost?.id;
 
@@ -111,19 +108,22 @@ export default function PageHome({
 		// for our use case this is not necessary, but was fun to implement ;)
 
 		const loadFullList = Math.random() > 0.66;
-		loadLatestPosts(loadFullList);
+		loadPosts(loadFullList);
 	});
 
-	if (error || !currentUser) {
+	if (error) {
 		return <ErrorPage statusCode={500} title={error} />;
 	}
 
 	return (
 		<MainLayout
 			title="Mumble - Welcome to Mumble"
-			description="Verpassen Sie nicht die neuesten Mumbles von den besten Nutzern der Plattform. Besuchen Sie die Index-Seite von Mumble und bleiben Sie auf dem Laufenden."
+			seo={{
+				description: 'Verpassen Sie nicht die neuesten Mumbles. Bleiben Sie auf dem Laufenden.',
+				pageType: 'website',
+			}}
 		>
-			<section className="mx-auto w-full max-w-content">
+			<>
 				<div className="mb-2 text-violet-600">
 					<Headline level={2}>Welcome to Mumble</Headline>
 				</div>
@@ -136,7 +136,7 @@ export default function PageHome({
 					onRemovePost={onRemovePost}
 					onLoadmore={loadMore}
 				/>
-			</section>
+			</>
 		</MainLayout>
 	);
 }
@@ -153,7 +153,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
 		return {
 			props: {
-				currentUser: session?.user,
 				postCount,
 				posts,
 			},
@@ -166,6 +165,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 			message = String(error);
 		}
 
-		return { props: { error: message, currentUser: session?.user, posts: [], users: [], postCount: 0 } };
+		return { props: { error: message, posts: [], users: [], postCount: 0 } };
 	}
 };

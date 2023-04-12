@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getToken } from 'next-auth/jwt';
 
 import { services } from '../../../services';
-import { getToken } from 'next-auth/jwt';
 
 /**
  * @name UserRecommendations
@@ -44,8 +44,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	if (req.query?.excludeUserIds && Array.isArray(body.excludeUserIds)) {
 		excludeUserIds = [excludeUserIds, ...body.excludeUserIds].flat();
 	}
-
-	console.log('-- excludeUserIds --', excludeUserIds);
 
 	services.users
 		.getUsers({

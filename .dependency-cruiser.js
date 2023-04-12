@@ -204,10 +204,14 @@ module.exports = {
        - dynamic: a boolean indicating whether to ignore dynamic (true) or static (false) dependencies.
           leave out if you want to exclude neither (recommended!)
     */
-    // exclude : {
-    //   path: '',
-    //   dynamic: true
-    // },
+    /* REMARK: Explicitly exclude files from being checked:
+      - middleware: we need the regular expression match config
+      - global error page: is last resort of error handling, so it's ok to have circular dependencies
+    */
+    exclude : {
+      path: ['src/middleware.ts', 'src/pages/global-error.tsx'], 
+      dynamic: true
+    },
 
     /* pattern specifying which files to include (regular expression)
        dependency-cruiser will skip everything not matching this pattern
