@@ -9,7 +9,7 @@ export const Footer: FC = () => {
 
 	return (
 		<footer className="Footer">
-			<div className="px-content py-3">
+			<div className="px-content sm:px-6 py-3">
 				<div className="flex items-center justify-between gap-8 w-full max-w-content mx-auto">
 					<Grid variant="row" gap="M" centered={true} wrapBelowScreen="md">
 						<p className="flex-1">

@@ -1,5 +1,5 @@
 import { Link, Navi, NaviButton } from '@smartive-education/pizza-hawaii';
-import Image from 'next/image';
+import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { signOut } from 'next-auth/react';
 import { FC, useState } from 'react';
@@ -22,12 +22,12 @@ export const Header: FC<THeader> = ({ user }) => {
 
 	return (
 		<>
-			<header className="Header mb-8 bg-violet-600 text-white">
-				<div className="px-content py-3">
+			<header className="Header mb-8 sm:mb-4 bg-violet-600 text-white">
+				<div className="px-content sm:px-6 py-3">
 					<div className="flex items-center justify-between gap-8 w-full max-w-content mx-auto">
 						<div className="flex w-[209px]">
 							<Link href="/" component={NextLink}>
-								<Image src={MumbleLogo} alt="Mumble Messenger" priority={true} />
+								<NextImage src={MumbleLogo} alt="Mumble Messenger" priority={true} />
 								<h1 className="sr-only">Mumble</h1>
 							</Link>
 						</div>
