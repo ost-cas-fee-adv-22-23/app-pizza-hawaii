@@ -1,18 +1,16 @@
 import { Modal } from '@smartive-education/pizza-hawaii';
 import NextImage from 'next/image';
-import React, { Dispatch, FC, SyntheticEvent, useEffect, useRef, useState } from 'react';
+import React, { FC, SyntheticEvent, useEffect, useRef, useState } from 'react';
 
 import ProjectSettings from '../data/ProjectSettings.json';
 import { TPost } from '../types/Post';
-import { TReducedPost } from './ProfileHeader';
 
 type TImageModal = {
-	post: TPost | TReducedPost;
+	post: TPost;
 	onClose: () => void;
 };
 
-const ImageModal: FC<TImageModal> = (props: TImageModal) => {
-	const { post, onClose } = props;
+const ImageModal: FC<TImageModal> = ({ post, onClose }) => {
 	const myImageRef = useRef(null);
 
 	const [loading, setLoading] = useState(true);

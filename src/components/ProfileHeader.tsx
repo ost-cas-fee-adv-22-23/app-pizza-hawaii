@@ -4,10 +4,10 @@ import React, { FC, useState } from 'react';
 
 import ProjectSettings from '../data/ProjectSettings.json';
 import { TUser } from '../types';
+import { TPost } from '../types/Post';
 import UserSettings from './form/UserSettings';
 import ImageModal from './ImageModal';
 import { UserProfile } from './user/UserProfile';
-
 /**
  * @description
  * This page shows Profile Header of any user and the curent user Profile Header with some additional features.
@@ -24,24 +24,39 @@ type TProfileHeader = {
 	canEdit: boolean;
 };
 
-export type TReducedPost = {
-	mediaUrl?: string;
-	text: string;
-	user: {
-		displayName: string;
-		userName: string;
-	};
-};
-
 export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => {
 	const [showSettingsModal, setShowSettingsModal] = useState(false);
 	const [showImageModal, setShowImageModal] = useState(false);
 
-	// for ImageModal component to work TReducedPost is enough information.
-	const post: TReducedPost = {
+	/*
+	 * for ImageModal component to work a reducedPost would be enough information.
+	 * But we need a full post object to pass the user information in the modal that dependancy cruiser is happy
+	 * as he does not accept two different types from two components even the typescript compiler is happy with it.
+	 * We dont have this full information of a Post within the Profile header component. And it makes no sense to pass it down.
+	 * So we create a reduced post object from the full post object to comply with the ImageModal component.
+	 * Maybe we refactor as only the mediaUrl is actually needed.
+	 */
+
+	const reducedPost: TPost = {
 		mediaUrl: user.posterImage,
+		mediaType: 'image',
 		text: `PosterImage from ${user.displayName}`,
-		user: { displayName: user.displayName, userName: user.userName },
+		id: '0000000',
+		creator: '',
+		type: 'post',
+		createdAt: '',
+		likeCount: 0,
+		likedByUser: false,
+		user: {
+			displayName: user.displayName,
+			userName: user.userName,
+			firstName: '',
+			lastName: '',
+			avatarUrl: '',
+			profileLink: '',
+			id: '',
+			createdAt: '',
+		},
 	};
 
 	return (
@@ -94,8 +109,8 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 					buttonLabel={canEdit ? 'Change Avatar' : ''}
 				/>
 			</div>
-			{showImageModal && <ImageModal post={post} onClose={() => setShowImageModal(false)} />}
 			{showSettingsModal && <UserSettings user={user} onClose={() => setShowSettingsModal(false)} />}
+			{showImageModal && <ImageModal post={reducedPost} onClose={() => setShowImageModal(false)} />}
 		</div>
 	);
 };

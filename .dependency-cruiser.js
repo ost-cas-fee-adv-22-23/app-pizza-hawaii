@@ -13,6 +13,10 @@ module.exports = {
         circular: true
       }
     },
+     /* REMARK: Explicitly exclude files from being checked:
+      - middleware: we need the regular expression match config, it is running at compile time
+      - global error page: is last resort of error handling, so it's ok to have circular dependencies
+    */
     {
       name: 'no-orphans',
       comment:
@@ -28,7 +32,9 @@ module.exports = {
           '(^|/)\\.[^/]+\\.(js|cjs|mjs|ts|json)$', // dot files
           '\\.d\\.ts$',                            // TypeScript declaration files
           '(^|/)tsconfig\\.json$',                 // TypeScript config
-          '(^|/)(babel|webpack)\\.config\\.(js|cjs|mjs|ts|json)$' // other configs
+          '(^|/)(babel|webpack)\\.config\\.(js|cjs|mjs|ts|json)$', // other configs
+          'src/middleware.ts',
+          'src/pages/global-error.tsx',
         ]
       },
       to: {},
@@ -200,18 +206,6 @@ module.exports = {
     },
 
     /* conditions specifying which dependencies to exclude
-       - path: a regular expression to match
-       - dynamic: a boolean indicating whether to ignore dynamic (true) or static (false) dependencies.
-          leave out if you want to exclude neither (recommended!)
-    */
-    /* REMARK: Explicitly exclude files from being checked:
-      - middleware: we need the regular expression match config
-      - global error page: is last resort of error handling, so it's ok to have circular dependencies
-    */
-    exclude : {
-      path: ['src/middleware.ts', 'src/pages/global-error.tsx'], 
-      dynamic: true
-    },
 
     /* pattern specifying which files to include (regular expression)
        dependency-cruiser will skip everything not matching this pattern
