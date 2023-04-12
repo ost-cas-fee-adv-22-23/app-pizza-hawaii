@@ -1,6 +1,5 @@
 import { Headline } from '@smartive-education/pizza-hawaii';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import ErrorPage from 'next/error';
 import { getToken } from 'next-auth/jwt';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
@@ -13,6 +12,7 @@ import { useActiveTabContext } from '../context/useActiveTab';
 import useIncreasingInterval from '../hooks/useIncreasingInterval';
 import { services } from '../services';
 import { TPost } from '../types';
+import Custom500Page from './500';
 
 export default function PageHome({
 	postCount: initialPostCount,
@@ -112,7 +112,7 @@ export default function PageHome({
 	});
 
 	if (error) {
-		return <ErrorPage statusCode={500} title={error} />;
+		return <Custom500Page errorInfo={error} />;
 	}
 
 	return (
