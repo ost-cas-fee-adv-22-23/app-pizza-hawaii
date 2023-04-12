@@ -36,11 +36,11 @@ yarn-error.log*
 next-env.d.ts
 
 #next pwa public folder and sw
-**/public/workbox-*.js
-**/public/workbox-*.js.map
-**/public/sw.js
-**/public/sw.js.map
-**/public/fallback-*.js
+#**/public/workbox-*.js
+#**/public/workbox-*.js.map
+#**/public/sw.js
+#**/public/sw.js.map
+#**/public/fallback-*.js
 
 .npmrc
 .env
