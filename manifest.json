@@ -1,27 +1,18 @@
 {
-    "name": "Pizza Hawaii PWA",
-    "short_name": "pizza-hawaii-app",
+    "name": "Mumble Pizza Hawaii PWA",
+    "short_name": "Mumble Pizza-Hawaii-app",
+    "description": "Mumble Pizza Hawaii PWA project for CAS FEE 2023",
     "icons": [
       {
-        "src": "icons/android-chrome-192x192.png",
-        "sizes": "192x192",
+        "src": "/public/favicon.png",
+        "sizes": "48x48",
         "type": "image/png",
         "purpose": "any maskable"
-      },
-      {
-        "src": "/icons/android-chrome-384x384.png",
-        "sizes": "384x384",
-        "type": "image/png"
-      },
-      {
-        "src": "/icons/icon-512x512.png",
-        "sizes": "512x512",
-        "type": "image/png"
       }
     ],
-    "theme_color": "#AAFFFF",
-    "background_color": "#999",
-    "start_url": "/login",
+    "theme_color": "#7c3aed",
+    "background_color": "#e5e7eb",
+    "start_url": "/",
     "display": "standalone",
     "orientation": "portrait"
   }
