@@ -47,7 +47,6 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 	return (
 		<div className="relative mb-6 sm:-mx-4 sm:-mt-2">
 			{canEdit ? (
-
 				<ImageOverlay
 					preset="edit"
 					buttonLabel={'Hintergrundbild anpassen'}
