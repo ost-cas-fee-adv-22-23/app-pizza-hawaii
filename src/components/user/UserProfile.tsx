@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
+import { Image, RoundButton } from '@smartive-education/pizza-hawaii';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
-import { Image, RoundButton } from '@smartive-education/pizza-hawaii';
+import React, { FC } from 'react';
 /*
  * Settings
  */
@@ -56,8 +56,8 @@ type TUserProfile = TUserProfileStyle & TUserProfileData;
  */
 
 const sizeMap: Record<TUserProfile['size'], string> = {
-	S: 'h-10 w-10 md:h-8 md:w-8',
-	M: 'h-16 w-16 md:h-12 md:w-12 sm:h-8 sm:w-8',
+	S: 'h-10 w-10',
+	M: 'h-16 w-16 md:h-12 md:w-12 sm:h-10 sm:w-10',
 	L: 'h-24 w-24 md:h-20 md:w-20 sm:h-16 sm:w-16',
 	XL: 'h-40 w-40 md:h-32 md:w-32 sm:h-24 sm:w-24',
 };
@@ -133,7 +133,7 @@ export const UserProfile: FC<TUserProfile> = ({ size = 'M', border, href, userNa
 
 	return (
 		<div className={[...baseStyle, 'overflow-hidden', sizeMap[size]].join(' ')}>
-			<Image src={avatar} alt={userName} width={imgMap[size]} height={imgMap[size]} />
+			<Image src={avatar} alt={userName} width={imgMap[size]} height={imgMap[size]} imageComponent={NextImage} />
 		</div>
 	);
 };

@@ -1,28 +1,63 @@
-import React, { Dispatch, FC } from 'react';
-import { Image, Modal, Label } from '@smartive-education/pizza-hawaii';
+import { Modal } from '@smartive-education/pizza-hawaii';
+import NextImage from 'next/image';
+import React, { Dispatch, FC, SyntheticEvent, useEffect, useRef, useState } from 'react';
+
+import ProjectSettings from '../data/ProjectSettings.json';
 import { TPost } from '../types/Post';
 import { TReducedPost } from './ProfileHeader';
 
 type TImageModal = {
 	post: TPost | TReducedPost;
-	toggleHandler: Dispatch<boolean>;
+	onClose: () => void;
 };
 
 const ImageModal: FC<TImageModal> = (props: TImageModal) => {
-	const { post, toggleHandler } = props;
+	const { post, onClose } = props;
+	const myImageRef = useRef(null);
 
-	const close = () => {
-		toggleHandler(false);
+	const [loading, setLoading] = useState(true);
+	const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
+	const [screenDimensions, setScreenDimensions] = useState({ width: 0, height: 0 });
+
+	// get actual screen dimensions on resize
+	useEffect(() => {
+		const handleResize = () => {
+			setScreenDimensions({ width: window.innerWidth, height: window.innerHeight });
+		};
+
+		window.addEventListener('resize', handleResize);
+		handleResize();
+
+		return () => window.removeEventListener('resize', handleResize);
+	}, []);
+
+	const handleImageLoad = (event: SyntheticEvent<HTMLImageElement, Event>) => {
+		const image = event?.target as HTMLImageElement;
+
+		const maxWidth = Math.min(
+			screenDimensions.width - 100,
+			Math.max(image?.naturalWidth, ProjectSettings.images.post.width)
+		);
+		const maxHeight = Math.min(screenDimensions.height - 100, image?.naturalHeight);
+
+		setImageDimensions({ width: maxWidth, height: maxHeight });
+		setLoading(false);
 	};
 
+	// cover image
 	return (
-		<Modal title={`Posted by: ${post.user.displayName}`} isVisible={true} onClose={() => close()}>
-			<div className="w-max-10/12 h-auto content-center mx-content">
-				<Image src={post.mediaUrl} alt={`Mumble-Post by Mumbel User ${post.user.userName}`} />
-				<br />
-				<Label as="legend" size="M">
-					{post?.user.displayName}: {post?.text}
-				</Label>
+		<Modal isVisible={true} onClose={onClose}>
+			<div className="content-center">
+				{loading && <div className="animate-pulse h-64 w-full bg-gray-400 rounded-lg" />}
+				<NextImage
+					ref={myImageRef}
+					src={post.mediaUrl as string}
+					onLoad={handleImageLoad}
+					width={imageDimensions.width}
+					height={imageDimensions.height}
+					sizes="(min-width: 640px) 50vw, 80vw"
+					alt={`Image from user ${post.user.userName}`}
+				/>
 			</div>
 		</Modal>
 	);

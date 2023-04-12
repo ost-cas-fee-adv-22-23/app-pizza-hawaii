@@ -30,6 +30,8 @@ type TFetchListParams = TFetchBase &
 	TFetchParams & {
 		offset?: number;
 		limit?: number;
+		newerThan?: string;
+		olderThan?: string;
 	};
 export type TFetchListResultPagination = {
 	next?: string | TFetchQuery;
@@ -43,6 +45,9 @@ type TFetchListResult =
 			pagination: TFetchListResultPagination;
 	  };
 
+// TODO: remove this when the API is tested
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let counter = 0;
 const BASE_URL = process.env.NEXT_PUBLIC_QWACKER_API_URL;
 
@@ -67,8 +72,8 @@ export async function fetchList(params: object): Promise<TFetchListResult> {
 
 	if (method === 'GET') {
 		url = generateAPIUrl(endpoint, {
-			offset: searchParams.offset || undefined,
 			limit: searchParams.limit ? Math.min(searchParams.limit, maxLimit) : undefined,
+			...searchParams,
 		});
 	} else if (method === 'POST') {
 		fetchParams = {
@@ -83,8 +88,9 @@ export async function fetchList(params: object): Promise<TFetchListResult> {
 	let pagination = {};
 
 	while (url) {
+		// TODO: remove this when the API is tested
+		// eslint-disable-next-line no-console
 		console.log(`[${counter++}] Fetching ${url}...`);
-
 		const response = await fetch(ensureHttpsProtocol(url), {
 			...fetchParams,
 		});
@@ -166,6 +172,8 @@ export async function fetchItem(params: object) {
 		};
 	}
 
+	// TODO: remove this when the API is tested
+	// eslint-disable-next-line no-console
 	console.log(`[${counter++}] Fetching ${url}...`);
 
 	const response = await fetch(ensureHttpsProtocol(url), {

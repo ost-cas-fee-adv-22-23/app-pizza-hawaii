@@ -1,17 +1,16 @@
-import { SessionProvider } from 'next-auth/react';
-import type { AppProps } from 'next/app';
-import Head from 'next/head';
-import type { Session } from 'next-auth';
-import ErrorBoundary from '../components/ErrorBoundary';
-
-import { ThemeContextProvider } from '../context/useTheme';
-import { ActiveTabContextProvider } from '../context/useActiveTab';
-import { FolloweeContextProvider } from '../context/useFollowee';
-
 import '../styles/globals.css';
 import '@fontsource/poppins/500.css';
 import '@fontsource/poppins/600.css';
 import '@fontsource/poppins/700.css';
+import type { AppProps } from 'next/app';
+import Head from 'next/head';
+import type { Session } from 'next-auth';
+import { SessionProvider } from 'next-auth/react';
+
+import ErrorBoundary from '../components/ErrorBoundary';
+import { ActiveTabContextProvider } from '../context/useActiveTab';
+import { FolloweeContextProvider } from '../context/useFollowee';
+import { ThemeContextProvider } from '../context/useTheme';
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps<{ session: Session }>) {
 	return (
