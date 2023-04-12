@@ -1,7 +1,7 @@
 import { decodeTime } from 'ulid';
 
 import { TPost, TRawPost } from '../../types';
-import parseRichText from '../../utils/parseRichText';
+import { parse as parseRichText } from '../../utils/RichText';
 import { fetchItem, fetchList, TFetchBase, TFetchListResultPagination, TFetchQuery } from '../qwacker';
 import { usersService } from '../users';
 
