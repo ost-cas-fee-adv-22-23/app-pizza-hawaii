@@ -12,6 +12,15 @@ type TGetPost = {
 	newerThan?: string;
 };
 
+/**
+ * Get a few posts that are older or newer than a given post id
+ *
+ * @param {string} olderThan - Get posts older than this id
+ * @param {string} newerThan - Get posts newer than this id
+ *
+ * @returns {Promise<TGetPostResult>}
+ */
+
 export const loadmore = async ({ olderThan, newerThan }: TGetPost): Promise<TGetPostResult> => {
 	// create url params
 	const urlParams = new URLSearchParams();

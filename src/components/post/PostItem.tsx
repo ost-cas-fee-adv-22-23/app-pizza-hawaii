@@ -102,6 +102,8 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAn
 		onDeletePost && onDeletePost(post?.id);
 	};
 
+	const isFreshPost = new Date(post.createdAt).getTime() > new Date().getTime() - 45 * 60 * 1000;
+
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
@@ -113,9 +115,27 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAn
 						{post?.user.userName}
 					</IconText>
 				</NextLink>
-				<IconText icon="calendar" colorScheme="slate" size="S">
-					<TimeStamp date={post?.createdAt} />
-				</IconText>
+				{post.createdAt && new Date(post.createdAt) && (
+					<IconText icon="calendar" colorScheme="slate" size="S">
+						{isFreshPost ? (
+							<time
+								title={
+									new Date(post.createdAt).toLocaleDateString('de-CH') +
+									' ' +
+									new Date(post.createdAt).toLocaleTimeString('de-CH', {
+										hour: '2-digit',
+										minute: '2-digit',
+									})
+								}
+								dateTime={new Date(post.createdAt).toISOString()}
+							>
+								gerade eben
+							</time>
+						) : (
+							<TimeStamp date={post?.createdAt} />
+						)}
+					</IconText>
+				)}
 			</Grid>
 		</Grid>
 	);

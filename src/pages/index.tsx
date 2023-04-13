@@ -3,7 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ErrorPage from 'next/error';
 import { getToken } from 'next-auth/jwt';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { decodeTime, encodeTime } from 'ulid';
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
@@ -110,6 +110,13 @@ export default function PageHome({
 		const loadFullList = Math.random() > 0.66;
 		loadPosts(loadFullList);
 	});
+
+	useEffect(() => {
+		// load full list of posts when user switches to browser tab
+		if (tabIsActive) {
+			loadPosts(true);
+		}
+	}, [tabIsActive, loadPosts]);
 
 	if (error) {
 		return <ErrorPage statusCode={500} title={error} />;
