@@ -10,7 +10,7 @@ type TPostListProps = {
 	variant?: TPostItemProps['variant'];
 	noPostsMessage?: string;
 	loadingItems?: number;
-	onRemovePost: (id: string) => void;
+	onRemovePost?: (id: string) => void;
 	onAnswerPost?: (id: string) => void;
 };
 

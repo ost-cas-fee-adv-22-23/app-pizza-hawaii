@@ -1,6 +1,6 @@
 import { decodeTime } from 'ulid';
 
-import { TPost, TRawPost } from '../../types';
+import { TPost, TRawPost, TUser } from '../../types';
 import { parse as parseRichText } from '../../utils/RichText';
 import { fetchItem, fetchList, TFetchBase, TFetchListResultPagination, TFetchQuery } from '../qwacker';
 import { usersService } from '../users';
@@ -40,7 +40,7 @@ const getPosts = async (params: TGetPosts): Promise<TGetPostsResult> => {
 	let allPosts = items.map(transformPost) as TPost[];
 
 	// load users
-	allPosts = await addReferencesToPosts(allPosts, false, accessToken);
+	allPosts = await addReferencesToPosts(allPosts, false, accessToken as string );
 
 	return {
 		count,
@@ -71,7 +71,7 @@ const getPost = async ({ id, loadReplies = false, accessToken }: TGetPost) => {
 
 	post = transformPost(post);
 
-	return (await addReferencesToPosts([post], loadReplies, accessToken))[0];
+	return (await addReferencesToPosts([post], loadReplies, accessToken as string))[0];
 };
 
 const deletePost = async ({ id, accessToken }: TGetPost) => {
@@ -99,7 +99,7 @@ const getPostReplies = async (params: TGetPostReplies): Promise<TGetPostsResult>
 	let allPosts = replies.map(transformPost) as TPost[];
 
 	// load users
-	allPosts = await addReferencesToPosts(allPosts, false, accessToken);
+	allPosts = await addReferencesToPosts(allPosts, false, accessToken as string);
 
 	// there is no count for replies so we set it to 0 for now (inconsistent API for replies)
 	return {
@@ -135,7 +135,7 @@ const getPostsByQuery = async (params: TGetPostsByQuery): Promise<TGetPostsResul
 	let allPosts = items.map(transformPost) as TPost[];
 
 	// load users
-	allPosts = await addReferencesToPosts(allPosts, false, accessToken);
+	allPosts = await addReferencesToPosts(allPosts, false, accessToken as string );
 
 	return {
 		count,
@@ -216,15 +216,22 @@ const createPost = async ({ replyTo, accessToken, ...postData }: TCreatePost) =>
 const addReferencesToPosts = async (posts: TRawPost[], loadReplies = false, accessToken: string) => {
 	// load users
 	const userIds = posts.map((post) => post.creator);
-	const users = await usersService.getUsersByIds({ ids: userIds, accessToken });
+	const users: TUser[] = [];
+	if (accessToken) {
+		const fetchedUsers = await usersService.getUsersByIds({
+			accessToken,
+			ids: userIds,
+		});
+		users.push(...fetchedUsers);
+	}
 
 	// add users to posts
 	const fullPostsPromises = posts.map(async (post) => {
-		const user = users.find((user) => user.id === post.creator) as TPost['user'];
+		const user = accessToken ? users.find((user) => user.id === post.creator) : usersService.emptyUser(post.creator);
 
 		if (loadReplies) {
 			const res = await getPostReplies({ id: post.id, accessToken });
-			return { ...post, user, replies: res.posts };
+			return { ...post, user, replies: res.posts || [] };
 		}
 		return { ...post, user };
 	});

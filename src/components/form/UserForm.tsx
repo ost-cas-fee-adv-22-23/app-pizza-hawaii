@@ -3,7 +3,7 @@ import React, { FC, FormEvent, useEffect, useState } from 'react';
 
 import { TUser } from '../../types';
 
-export type TUserFormData = Omit<TUser, 'id' | 'profileLink' | 'email' | 'displayName'>;
+export type TUserFormData = Omit<TUser, 'id' | 'profileLink' | 'email' | 'displayName' | 'avatarUrl'>;
 
 export type TUserFormErrors = { [key in keyof TUserFormData]?: string };
 

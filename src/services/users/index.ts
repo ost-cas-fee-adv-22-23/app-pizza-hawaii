@@ -124,9 +124,27 @@ const reducedUserInformation = (user: TUser): TUserSimple =>
 		createdAt: undefined,
 	} as TUserSimple);
 
+const emptyUser = (id: string): TUser => {
+	// parse from string id a number and use it to get a random user name
+	const userName = `user${parseInt(id, 10) % 1000}`;
+
+	return {
+		id: '',
+		userName: userName,
+		firstName: '',
+		lastName: '',
+		displayName: `A Mumble User`,
+		profileLink: `/user/${id}`,
+		avatarUrl: '',
+		posterImage: '',
+		createdAt: '',
+	};
+};
+
 export const usersService = {
 	getUsers,
 	getUser,
 	getUsersByIds,
 	reducedUserInformation,
+	emptyUser,
 };
