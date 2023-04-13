@@ -1,6 +1,7 @@
 import { Button, Grid, Headline } from '@smartive-education/pizza-hawaii';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useReducer, useState } from 'react';
 
+import { default as PostReducer, initialState as initialPostState } from '../../reducer/postReducer';
 import { TPost } from '../../types';
 import { PostList } from '../post/PostList';
 import { PostCreator, TAddPostProps } from './PostCreator';
@@ -15,12 +16,6 @@ type TPostCollectionProps = {
 	onLoadmore?: () => Promise<TPost[]>;
 };
 
-type TPostCollectionState = {
-	visiblePosts: TPost[];
-	hasUpdate: boolean;
-	loading: boolean;
-};
-
 export const PostCollection: FC<TPostCollectionProps> = ({
 	headline,
 	posts,
@@ -30,60 +25,49 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 	onRemovePost,
 	onLoadmore,
 }) => {
-	const [state, setState] = useState<TPostCollectionState>({
-		visiblePosts: posts,
-		hasUpdate: false,
-		loading: false,
+	const [postState, postDispatch] = useReducer(PostReducer, {
+		...initialPostState,
+		posts,
 	});
+	const [hasUpdate, setHasUpdate] = useState(false);
 
 	useEffect(() => {
-		const { visiblePosts } = state;
+		const { posts } = postState;
 		// Check if there are new or removed posts
-		const newPosts = posts.filter((post) => !visiblePosts.includes(post));
-		const removedPosts = visiblePosts.filter((post) => !posts.includes(post));
+		const newPosts = posts.filter((post) => !posts.includes(post));
+		const removedPosts = posts.filter((post) => !posts.includes(post));
 
-		setState((prevState) => ({ ...prevState, hasUpdate: [...newPosts, ...removedPosts].length > 0 }));
+		setHasUpdate([...newPosts, ...removedPosts].length > 0);
 		// TODO: this is a question we have and we await the answer for that. adding state is not a solution.
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [posts, state.visiblePosts]);
+	}, [posts]);
 
 	const showLatestPosts = () => {
-		setState((prevState) => ({ ...prevState, hasUpdate: false, visiblePosts: posts }));
+		postDispatch({ type: 'posts/set', payload: posts });
 	};
 
 	const onLoadmoreBtn = async () => {
 		if (!onLoadmore) return;
-		setState((prevState) => ({ ...prevState, loading: true }));
+
+		postDispatch({ type: 'posts/fetch' });
+
 		const morePosts = await onLoadmore();
-		setState((prevState) => ({
-			...prevState,
-			visiblePosts: [...prevState.visiblePosts, ...morePosts],
-			loading: false,
-		}));
+		postDispatch({ type: 'posts/add', payload: morePosts });
 	};
 
 	const onRemovePostFn = (id: string) => {
 		if (!onRemovePost) return;
 
 		onRemovePost(id);
-
-		setState((prevState) => ({
-			...prevState,
-			visiblePosts: prevState.visiblePosts.filter((post) => post.id !== id),
-		}));
+		postDispatch({ type: 'posts/remove', payload: id });
 	};
 
 	const onAddPostFn = async (data: TAddPostProps) => {
 		if (!onAddPost) return null;
 
 		const newPost = await onAddPost(data);
-
 		if (!newPost) return null;
-
-		setState((prevState) => ({
-			...prevState,
-			visiblePosts: [newPost, ...prevState.visiblePosts],
-		}));
+		postDispatch({ type: 'posts/add', payload: newPost });
 
 		return newPost;
 	};
@@ -98,7 +82,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 				</div>
 			)}
 
-			{state.hasUpdate && (
+			{hasUpdate && (
 				<div className="text-slate-500 mb-8">
 					<Button colorScheme="gradient" size="L" icon="repost" onClick={() => showLatestPosts()}>
 						World is changing, update your feed.
@@ -117,11 +101,11 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 				)}
 			</Grid>
 
-			<PostList posts={state.visiblePosts} onRemovePost={onRemovePostFn} />
+			<PostList posts={postState.posts} onRemovePost={onRemovePostFn} />
 
 			{canLoadmore && (
-				<Button colorScheme="slate" onClick={() => onLoadmoreBtn()} disabled={state.loading}>
-					{state.loading ? '...' : 'Load more'}
+				<Button colorScheme="slate" onClick={() => onLoadmoreBtn()} disabled={postState.loading}>
+					{postState.loading ? '...' : 'Load more'}
 				</Button>
 			)}
 		</>
