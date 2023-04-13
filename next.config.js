@@ -32,4 +32,8 @@ module.exports = withPWA({
 			},
 		],
 	},
+	i18n: {
+		locales: ['de'],
+		defaultLocale: 'de',
+	},
 });
