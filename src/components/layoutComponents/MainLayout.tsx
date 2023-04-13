@@ -54,7 +54,7 @@ export const MainLayout: FC<TMainLayout> = ({ title, seo, children }) => {
 				<meta property="og:url" content={currentUrl} />
 			</Head>
 
-			{currentUser && <Header user={currentUser} />}
+			<Header user={currentUser} />
 
 			<main className="px-content mb-24 sm:px-6">
 				<section className="mx-auto w-full max-w-content">{children}</section>

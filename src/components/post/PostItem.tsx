@@ -36,6 +36,7 @@ type TPostItemVariantMap = {
 	textSize: 'M' | 'L';
 	avatarSize: TUserContentCard['avatarSize'];
 	avatarVariant: TUserContentCard['avatarVariant'];
+	copyLink: boolean;
 };
 
 /*
@@ -48,18 +49,21 @@ const postItemVariantMap: Record<TPostItemProps['variant'], TPostItemVariantMap>
 		textSize: 'L',
 		avatarSize: 'M',
 		avatarVariant: 'standalone',
+		copyLink: true,
 	},
 	timeline: {
 		headlineSize: 'L',
 		textSize: 'M',
 		avatarSize: 'M',
 		avatarVariant: 'standalone',
+		copyLink: true,
 	},
 	response: {
 		headlineSize: 'M',
 		textSize: 'M',
 		avatarSize: 'S',
 		avatarVariant: 'subcomponent',
+		copyLink: false,
 	},
 };
 
@@ -140,9 +144,9 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAn
 		<UserContentCard
 			headline={headerSlotContent}
 			userProfile={{
-				avatar: post.user.avatarUrl,
-				userName: post.user.userName,
-				href: post.user.profileLink,
+				avatar: post?.user.avatarUrl,
+				userName: post?.user.userName,
+				href: post?.user.profileLink,
 			}}
 			avatarVariant={setting.avatarVariant}
 			avatarSize={setting.avatarSize}
@@ -163,51 +167,61 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAn
 					/>
 				</ImageOverlay>
 			)}
+			{currentUser && (
+				<Grid variant="row" gap="M" wrapBelowScreen="md">
+					{variant === 'response' ? (
+						<>
+							{onAnswerPost && (
+								<InteractionButton
+									type="button"
+									colorScheme="violet"
+									buttonText={'Answer'}
+									iconName={'repost'}
+									onClick={handleAnswerPost}
+								/>
+							)}
+						</>
+					) : (
+						<InteractionButton
+							component={NextLink}
+							href={`/mumble/${post.id}`}
+							isActive={replyCount > 0}
+							colorScheme="violet"
+							buttonText={
+								replyCount > 0 ? `${replyCount} Comments` : replyCount === 0 ? 'Comment' : '1 Comment'
+							}
+							iconName={replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
+						/>
+					)}
+					{currentUser && (
+						<InteractionButton
+							type="button"
+							isActive={likeCount > 0}
+							colorScheme="pink"
+							buttonText={likeCount > 0 ? `${likeCount} Likes` : likeCount === 0 ? 'Like' : '1 Like'}
+							iconName={likedByUser ? 'heart_filled' : 'heart_fillable'}
+							onClick={handleLike}
+						/>
+					)}
+					{setting.copyLink && (
+						<CopyToClipboardButton
+							defaultButtonText="Copy Link"
+							activeButtonText="Link copied"
+							shareText={`${process.env.NEXT_PUBLIC_VERCEL_URL}/mumble/public/${post.id}`}
+						/>
+					)}
 
-			<Grid variant="row" gap="M" wrapBelowScreen="md">
-				{variant === 'response' ? (
-					<InteractionButton
-						type="button"
-						colorScheme="violet"
-						buttonText={'Answer'}
-						iconName={'repost'}
-						onClick={handleAnswerPost}
-					/>
-				) : (
-					<InteractionButton
-						component={NextLink}
-						href={`/mumble/${post.id}`}
-						isActive={replyCount > 0}
-						colorScheme="violet"
-						buttonText={replyCount > 0 ? `${replyCount} Comments` : replyCount === 0 ? 'Comment' : '1 Comment'}
-						iconName={replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
-					/>
-				)}
-				<InteractionButton
-					type="button"
-					isActive={likeCount > 0}
-					colorScheme="pink"
-					buttonText={likeCount > 0 ? `${likeCount} Likes` : likeCount === 0 ? 'Like' : '1 Like'}
-					iconName={likedByUser ? 'heart_filled' : 'heart_fillable'}
-					onClick={handleLike}
-				/>
-
-				<CopyToClipboardButton
-					defaultButtonText="Copy Link"
-					activeButtonText="Link copied"
-					shareText={`${process.env.NEXT_PUBLIC_VERCEL_URL}/mumble/${post.id}`}
-				/>
-
-				{currentUser && currentUser.id === post.user.id && (
-					<InteractionButton
-						type="button"
-						colorScheme="pink"
-						buttonText="Delete"
-						iconName="cancel"
-						onClick={handleDeletePost}
-					/>
-				)}
-			</Grid>
+					{onDeletePost && currentUser && currentUser.id === post.user.id && (
+						<InteractionButton
+							type="button"
+							colorScheme="pink"
+							buttonText="Delete"
+							iconName="cancel"
+							onClick={handleDeletePost}
+						/>
+					)}
+				</Grid>
+			)}
 
 			{showImageModal && <ImageModal post={post} onClose={() => setShowImageModal(false)} />}
 		</UserContentCard>
