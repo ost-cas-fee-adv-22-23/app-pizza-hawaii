@@ -40,7 +40,7 @@ const getPosts = async (params: TGetPosts): Promise<TGetPostsResult> => {
 	let allPosts = items.map(transformPost) as TPost[];
 
 	// load users
-	allPosts = await addReferencesToPosts(allPosts, false, accessToken as string );
+	allPosts = await addReferencesToPosts(allPosts, false, accessToken as string);
 
 	return {
 		count,
@@ -135,7 +135,7 @@ const getPostsByQuery = async (params: TGetPostsByQuery): Promise<TGetPostsResul
 	let allPosts = items.map(transformPost) as TPost[];
 
 	// load users
-	allPosts = await addReferencesToPosts(allPosts, false, accessToken as string );
+	allPosts = await addReferencesToPosts(allPosts, false, accessToken as string);
 
 	return {
 		count,

@@ -1,14 +1,14 @@
+import { Grid, Headline, Label, Link } from '@smartive-education/pizza-hawaii';
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
+import NextLink from 'next/link';
+import router from 'next/router';
 import { useSession } from 'next-auth/react';
 import { FC, useState } from 'react';
-import NextLink from 'next/link';
 
 import { MainLayout } from '../../../components/layoutComponents/MainLayout';
 import { PostDetail } from '../../../components/post/PostDetail';
 import { services } from '../../../services';
 import { TPost, TUser } from '../../../types';
-import { Grid, Headline, Label, Link } from '@smartive-education/pizza-hawaii';
-import router from 'next/router';
 
 type TUserPage = {
 	post: TPost;
@@ -58,10 +58,12 @@ const DetailPage: FC<TUserPage> = ({ post }: InferGetStaticPropsType<typeof getS
 				</div>
 				<PostDetail post={post} />
 
-				{post?.replyCount + post?.likeCount > 0 && (
+				{(post?.replyCount || 0) + (post?.likeCount || 0) > 0 && (
 					<div className="text-slate-500 mt-8">
 						<Label as="p" size="L">
-							{post?.replyCount + post?.likeCount < 5 ? 'Dieser Mumble hat bereits einige Reaktionen. ' : `Dieser Mumble ist sehr beliebt. `}
+							{(post?.replyCount || 0) + (post?.likeCount || 0) < 5
+								? 'Dieser Mumble hat bereits einige Reaktionen. '
+								: `Dieser Mumble ist sehr beliebt. `}
 							Melde dich an, um nichts zu verpassen!
 						</Label>
 					</div>
@@ -81,7 +83,6 @@ export const getStaticProps: GetStaticProps<{ post: TPost }> = async (context) =
 		loadReplies: false,
 	});
 
-
 	return {
 		props: {
 			post,
@@ -96,4 +97,3 @@ export const getStaticPaths = async (): Promise<{ paths: { params: { id: string 
 		fallback: 'blocking', // wait for data to be fetched
 	};
 };
-
