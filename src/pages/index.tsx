@@ -1,19 +1,17 @@
-import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { getToken } from 'next-auth/jwt';
-import ErrorPage from 'next/error';
-
-import { encodeTime, decodeTime } from 'ulid';
-import { services } from '../services';
-import useIncreasingInterval from '../hooks/useIncreasingInterval';
-import { useActiveTabContext } from '../context/useActiveTab';
-
 import { Headline } from '@smartive-education/pizza-hawaii';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import ErrorPage from 'next/error';
+import { getToken } from 'next-auth/jwt';
+import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import { decodeTime, encodeTime } from 'ulid';
+
 import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { PostCollection } from '../components/post/PostCollection';
 import { TAddPostProps } from '../components/post/PostCreator';
-
+import { useActiveTabContext } from '../context/useActiveTab';
+import useIncreasingInterval from '../hooks/useIncreasingInterval';
+import { services } from '../services';
 import { TPost } from '../types';
 
 export default function PageHome({
@@ -118,7 +116,7 @@ export default function PageHome({
 		if (tabIsActive) {
 			loadPosts(true);
 		}
-	}, [tabIsActive]);
+	}, [tabIsActive, loadPosts]);
 
 	if (error) {
 		return <ErrorPage statusCode={500} title={error} />;

@@ -61,6 +61,8 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 		posts = posts.filter((post: TPost) => post.id !== id) as TPost[];
 	};
 
+	const isFreshUser = new Date(user.createdAt).getTime() > new Date().getTime() - 45 * 60 * 1000;
+
 	return (
 		<MainLayout
 			title={`Mumble - ${user.displayName} (${user.userName})`}
@@ -85,12 +87,30 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 					<IconText icon="location" colorScheme="slate" size="S">
 						{user.city}
 					</IconText>
-					<IconText icon="calendar" colorScheme="slate" size="S">
-						<TimeStamp date={user.createdAt} prefix="Mitglied seit" />
-					</IconText>
+					{user.createdAt && new Date(user.createdAt) && (
+						<IconText icon="calendar" colorScheme="slate" size="S">
+							{isFreshUser ? (
+								<time
+									title={
+										new Date(user.createdAt).toLocaleDateString('de-CH') +
+										' ' +
+										new Date(user.createdAt).toLocaleTimeString('de-CH', {
+											hour: '2-digit',
+											minute: '2-digit',
+										})
+									}
+									dateTime={new Date(user.createdAt).toISOString()}
+								>
+									neues Mitglied
+								</time>
+							) : (
+								<TimeStamp date={user.createdAt} prefix="Mitglied seit" />
+							)}
+						</IconText>
+					)}
 				</Grid>
 
-				<div className="text-slate-400 mb-8">
+				<div className="text-slate-500 mb-8">
 					<Richtext size="M">{user.bio}</Richtext>
 				</div>
 

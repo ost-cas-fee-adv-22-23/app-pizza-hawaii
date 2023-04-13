@@ -1,4 +1,4 @@
-import { Link, Navi, NaviButton } from '@smartive-education/pizza-hawaii';
+import { Link, Modal, Navi, NaviButton } from '@smartive-education/pizza-hawaii';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { signOut } from 'next-auth/react';

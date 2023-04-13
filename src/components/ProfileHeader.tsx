@@ -1,4 +1,4 @@
-import { Image, ImageOverlay } from '@smartive-education/pizza-hawaii';
+import { Image, ImageOverlay, Modal } from '@smartive-education/pizza-hawaii';
 import NextImage from 'next/image';
 import React, { FC, useState } from 'react';
 
