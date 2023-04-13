@@ -133,7 +133,7 @@ const getUser = async ({ id, accessToken }: TGetUser) => {
 
 // some data aggregation from dataRandomizer helper to fill the gaps what is not provided by the API
 const transformUser = (user: TRawUser): TUser => ({
-	posterImage: `//picsum.photos/seed/${user.id}1/1466/1060/`,
+	posterImage: `https://picsum.photos/seed/${user.id}1/1466/1060/`,
 	bio: `Hello my name is ${user.firstName}. I am a ${shortBio()}`,
 	createdAt: memberSince(),
 	city: homeTown(),

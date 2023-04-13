@@ -1,4 +1,5 @@
-import { Image, ImageOverlay, Modal } from '@smartive-education/pizza-hawaii';
+import { Image, ImageOverlay } from '@smartive-education/pizza-hawaii';
+import NextImage from 'next/image';
 import React, { FC, useState } from 'react';
 
 import ProjectSettings from '../data/ProjectSettings.json';
@@ -44,7 +45,7 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 	};
 
 	return (
-		<div className="relative mb-6">
+		<div className="relative mb-6 sm:-mx-4 sm:-mt-2">
 			{canEdit ? (
 				<ImageOverlay
 					preset="edit"
@@ -60,6 +61,7 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 							(ProjectSettings.images.header.width / ProjectSettings.images.header.aspectRatio[0]) *
 							ProjectSettings.images.header.aspectRatio[1]
 						}
+						imageComponent={NextImage}
 					/>
 				</ImageOverlay>
 			) : (
@@ -77,10 +79,11 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 							(ProjectSettings.images.header.width / ProjectSettings.images.header.aspectRatio[0]) *
 							ProjectSettings.images.header.aspectRatio[1]
 						}
+						imageComponent={NextImage}
 					/>
 				</ImageOverlay>
 			)}
-			<div className="absolute right-8 bottom-0 translate-y-1/2 z-10">
+			<div className="absolute right-8 bottom-0 translate-y-1/2 z-10 sm:right-1/2 sm:translate-x-1/2">
 				<UserProfile
 					userName={user.userName}
 					avatar={user.avatarUrl}
