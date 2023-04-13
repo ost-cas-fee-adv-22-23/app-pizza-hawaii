@@ -1,4 +1,4 @@
-import { Link, Navi, NaviButton } from '@smartive-education/pizza-hawaii';
+import { Link, Modal, Navi, NaviButton } from '@smartive-education/pizza-hawaii';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { signOut } from 'next-auth/react';
@@ -60,7 +60,11 @@ export const Header: FC<THeader> = ({ user }) => {
 					</div>
 				</div>
 			</header>
-			{showSettingsModal && <UserSettings user={user} onClose={() => setShowSettingsModal(false)} />}
+			{showSettingsModal && (
+				<Modal title="Einstellungen" isVisible={showSettingsModal} onClose={() => setShowSettingsModal(false)}>
+					<UserSettings setSuccess={() => setShowSettingsModal(false)} />
+				</Modal>
+			)}
 		</>
 	);
 };

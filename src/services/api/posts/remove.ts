@@ -1,10 +1,17 @@
 const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
 
-type TGetPost = {
+type TRemovePost = {
 	id: string;
 };
 
-export const remove = async ({ id }: TGetPost) => {
+/**
+ * Remove a post
+ *
+ * @param {string} id
+ * @returns {Promise<TPost>}
+ */
+
+export const remove = async ({ id }: TRemovePost) => {
 	return await fetch(`${BASE_URL}/api/posts/${id}`, {
 		method: 'DELETE',
 	});

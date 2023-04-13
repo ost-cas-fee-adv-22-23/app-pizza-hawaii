@@ -1,36 +1,37 @@
-import { Button, Form, FormInput, Grid, Label } from '@smartive-education/pizza-hawaii';
+import { Button, Form, FormInput, FormPassword, Grid, Label } from '@smartive-education/pizza-hawaii';
 import React, { FC, FormEvent, useEffect, useState } from 'react';
 
-import { TZitadelProfile } from '../../types/Zitadel';
+// import { TZitadelUser } from '../../types/Zitadel';
 
-export type TUserFormData = TZitadelProfile;
-
-export type TUserFormErrors = { [key in keyof TUserFormData]?: string };
-
-export type TUserForm = {
-	onSubmit: (data: TUserFormData) => { status: boolean; errors?: TUserFormErrors };
-	user?: TUserFormData;
-	sectionLabel?: string;
+export type TAccountFormData = {
+	password_1: string;
+	password_2: string;
+	userName: string;
+	email: string;
 };
 
-const emptyState: TUserFormData = {
-	firstName: '',
-	lastName: '',
-	displayName: '',
+export type TAccountFormErrors = { [key in keyof TAccountFormData]?: string };
+
+export type TAccountForm = {
+	onSubmit: (data: TAccountFormData) => { status: boolean; errors?: TAccountFormErrors };
+	user: TAccountFormData;
+	sectionlabel?: string;
 };
 
-export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLabel }) => {
-	const [state, setState] = useState(user);
+const emptyState: TAccountFormData = {
+	password_1: '',
+	password_2: '',
+	userName: '',
+	email: '',
+};
+
+export const AccountForm: FC<TAccountForm> = ({ onSubmit, user, sectionlabel }) => {
+	const [state, setState] = useState(user || emptyState);
 	const [formIsValid, setFormIsValid] = useState(false);
-	const [errors, setErrors] = useState<TUserFormErrors>({});
-
-	useEffect(() => {
-		setState(user);
-	}, [user]);
+	const [errors, setErrors] = useState<TAccountFormErrors>({});
 
 	// check if form is valid
 	useEffect(() => {
-		console.log('state', state);
 		// check if all fields are empty
 		const isEmpty = Object.values(state).every((value) => value === '');
 
@@ -51,10 +52,10 @@ export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLa
 		const validationMessages = invalidFields.reduce((acc, field) => {
 			const { name, validationMessage } = field as HTMLInputElement;
 
-			acc[name as keyof TUserFormData] = validationMessage;
+			acc[name as keyof TAccountFormData] = validationMessage;
 
 			return acc;
-		}, {} as TUserFormErrors);
+		}, {} as TAccountFormErrors);
 
 		return validationMessages;
 	};
@@ -70,7 +71,7 @@ export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLa
 		const validationMessages = validateFields(fields);
 
 		// if it's not ready to submit, set errors and return
-		if (Object.keys(validationMessages).length) {
+		if (!Object.keys(validationMessages).length) {
 			setErrors(validationMessages);
 			return;
 		}
@@ -106,38 +107,44 @@ export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLa
 		<Form onSubmit={onSubmitHandler} noValidate>
 			<fieldset>
 				<Label as="legend" size="XL">
-					{sectionLabel || 'Deine Daten'}
+					{sectionlabel || 'Deine Daten'}
 				</Label>
 				<div className="mt-4">
 					<Grid variant="col" gap="M" marginBelow="M">
 						<FormInput
-							name="displayName"
-							label="Display Name"
+							name="userName"
+							label="Username"
 							type="text"
-							value={state['displayName']}
 							onChange={onFieldChange}
-							errorMessage={errors['displayName']}
+							errorMessage={errors['userName']}
 							required
 						/>
 						<FormInput
-							name="firstName"
+							name="email"
+							label="E-Mail"
+							type="email"
+							onChange={onFieldChange}
+							errorMessage={errors['email']}
+							required
+							autoComplete="email"
+						/>
+						<FormPassword
+							name="password_1"
 							label="Vorname"
 							type="text"
-							value={state['firstName']}
 							onChange={onFieldChange}
-							errorMessage={errors['firstName']}
+							errorMessage={errors['password_1']}
 							required
-							autoComplete="given-name"
+							autoComplete="off"
 						/>
-						<FormInput
-							name="lastName"
+						<FormPassword
+							name="password_2"
 							label="Name"
 							type="text"
-							value={state['lastName']}
 							onChange={onFieldChange}
-							errorMessage={errors['lastName']}
+							errorMessage={errors['password_2']}
 							required
-							autoComplete="family-name"
+							autoComplete="off"
 						/>
 					</Grid>
 				</div>

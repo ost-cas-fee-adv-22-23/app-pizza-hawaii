@@ -1,30 +1,76 @@
-import { Modal } from '@smartive-education/pizza-hawaii';
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
-import { TUser } from '../../types';
 import { TUserFormData, UserForm } from './UserForm';
 
 type TUserSettings = {
-	user: TUser;
-	onClose: () => void;
+	setSuccess?: () => void;
 };
+const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
+const UserSettings: FC<TUserSettings> = ({ setSuccess }) => {
+	const [user, setUser] = useState<TUserFormData>();
 
-const UserSettings: FC<TUserSettings> = ({ user, onClose }) => {
+	const getUser = async () => {
+		const res = await fetch(`${BASE_URL}/api/profile`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+
+		if (!res.ok) {
+			throw new Error('Failed to fetch user info');
+		}
+
+		const data = await res.json();
+		setUser(data);
+
+		return data;
+	};
+
+	const updateUser = async (data: TUserFormData) => {
+		try {
+			const res = await fetch(`${BASE_URL}/api/profile`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(data),
+			});
+
+			if (!res.ok) {
+				throw new Error(`Failed to update user: ${res.statusText}`);
+			}
+			const updatedUser = await res.json();
+
+			return updatedUser;
+		} catch (error) {
+			throw new Error(error as string);
+		}
+	};
+
+	useEffect(() => {
+		getUser();
+	}, []);
+
 	const onSubmit = (data: TUserFormData) => {
-		console.log(data);
+		console.log('onSubmit', data);
 
-		// If there are no errors, go to the next step
-		//set
+		// Update user
+		const updateFN = async () => {
+			const updatedUser = await updateUser(data);
+			setUser(updatedUser);
+		};
+
+		updateFN();
+
+		// Call setSuccess if it was passed
+		setSuccess && setSuccess();
 
 		// Return true to indicate that the form was submitted successfully for a few milliseconds
 		return { status: true };
 	};
 
-	return (
-		<Modal title="Einstellungen" isVisible={true} onClose={onClose}>
-			<UserForm user={user} onSubmit={onSubmit} />
-		</Modal>
-	);
+	return <UserForm user={user as TUserFormData} onSubmit={onSubmit} />;
 };
 
 export default UserSettings;
