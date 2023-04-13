@@ -23,10 +23,9 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 					content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
 				/>
 				<link rel="manifest" crossOrigin="use-credentials" href="/manifest.json" />
-				<link rel="apple-touch-icon" href="/icon-192x192.png" />
-				<link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-				{/* <link rel="icon" type="image/png" href="./favicon.png" /> */}
-				{/* <link rel="apple-touch-icon" href="./favicon.png" /> */}
+				<link rel="apple-touch-icon" href="/static/icon-192x192.png" />
+				<link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+				<link rel="icon" type="image/png" href="/static/favicon.png" />
 			</Head>
 			<SessionProvider session={session}>
 				<ErrorBoundary>
