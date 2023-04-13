@@ -1,6 +1,6 @@
 import { Modal } from '@smartive-education/pizza-hawaii';
 import NextImage from 'next/image';
-import React, { Dispatch, FC, SyntheticEvent, useEffect, useRef, useState } from 'react';
+import React, { FC, SyntheticEvent, useEffect, useRef, useState } from 'react';
 
 import ProjectSettings from '../data/ProjectSettings.json';
 import { TPost } from '../types/Post';

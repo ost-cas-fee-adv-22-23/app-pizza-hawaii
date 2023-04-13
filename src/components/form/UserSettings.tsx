@@ -11,6 +11,7 @@ type TUserSettings = {
 
 const UserSettings: FC<TUserSettings> = ({ user, onClose }) => {
 	const onSubmit = (data: TUserFormData) => {
+		// eslint-disable-next-line no-console
 		console.log(data);
 
 		// If there are no errors, go to the next step

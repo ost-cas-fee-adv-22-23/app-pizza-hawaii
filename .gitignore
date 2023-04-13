@@ -35,7 +35,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-#next pwa public folder and sw
+#next pwa public folder and serviceWorker as they are generated
 **/public/workbox-*.js
 **/public/workbox-*.js.map
 **/public/sw.js
