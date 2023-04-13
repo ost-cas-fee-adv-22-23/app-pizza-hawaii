@@ -16,7 +16,7 @@
 		"@fontsource/poppins": "^4.5.10",
 		"@smartive-education/pizza-hawaii": "^1.57.0",
 		"eslint-plugin-react-hooks": "^4.6.0",
-		"next": "^13.2.4",
+		"next": "^13.3.0",
 		"next-auth": "^4.20.1",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",

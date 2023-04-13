@@ -2,11 +2,18 @@
 
 const withPWA = require('next-pwa')({
 	dest: 'public',
+	register: true,
+	skipWaiting: true,
+	disable: process.env.NODE_ENV === 'development',
 });
 
 module.exports = withPWA({
 	reactStrictMode: true,
 	swcMinify: true,
+	webpack: (config) => {
+		config.resolve.fallback = { fs: false };
+		return config;
+},
 	images: {
 		remotePatterns: [
 			{
@@ -24,9 +31,5 @@ module.exports = withPWA({
 				hostname: 'picsum.photos',
 			},
 		],
-	},
-	i18n: {
-		locales: ['de'],
-		defaultLocale: 'de',
 	},
 });

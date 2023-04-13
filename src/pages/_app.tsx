@@ -17,13 +17,15 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 		<>
 			<Head>
 				<meta charSet="utf-8" />
+				<meta name="theme-color" content="#7c3aed" />
 				<meta
 					name="viewport"
 					content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
 				/>
-				<link rel="manifest" href="/manifest.json" />
+				<link rel="manifest" href="/public/manifest.json" />
 				<link rel="icon" type="image/svg+xml" href="./favicon.svg" />
 				<link rel="icon" type="image/png" href="./favicon.png" />
+				<link rel="apple-touch-icon" href="./favicon.png" />
 			</Head>
 			<SessionProvider session={session}>
 				<ErrorBoundary>
