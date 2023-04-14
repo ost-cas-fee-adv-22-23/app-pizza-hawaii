@@ -1,7 +1,7 @@
 import { TRawPost, TRawUser } from '../types';
 
 export type TFetchBase = {
-	accessToken: string;
+	accessToken?: string;
 };
 export type TFetchQuery =
 	| {

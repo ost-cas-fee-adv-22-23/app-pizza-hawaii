@@ -1,4 +1,4 @@
-import { Image, ImageOverlay } from '@smartive-education/pizza-hawaii';
+import { Image, ImageOverlay, Modal } from '@smartive-education/pizza-hawaii';
 import NextImage from 'next/image';
 import React, { FC, useState } from 'react';
 
@@ -95,7 +95,11 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 				/>
 			</div>
 			{showImageModal && <ImageModal post={post} onClose={() => setShowImageModal(false)} />}
-			{showSettingsModal && <UserSettings user={user} onClose={() => setShowSettingsModal(false)} />}
+			{showSettingsModal && (
+				<Modal title="Einstellungen" isVisible={showSettingsModal} onClose={() => setShowSettingsModal(false)}>
+					<UserSettings setSuccess={() => setShowSettingsModal(false)} />
+				</Modal>
+			)}
 		</div>
 	);
 };

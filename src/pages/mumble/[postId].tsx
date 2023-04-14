@@ -1,4 +1,5 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import { getToken } from 'next-auth/jwt';
 import { useSession } from 'next-auth/react';
@@ -12,13 +13,14 @@ import { TPost } from '../../types';
 
 type TUserPage = {
 	post: TPost;
+	error?: string;
 };
 
-const DetailPage: FC<TUserPage> = ({ post }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const DetailPage: FC<TUserPage> = ({ post, error }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const { data: session } = useSession();
 	const router = useRouter();
 
-	const [replies, setReplies] = useState(post.replies);
+	const [replies, setReplies] = useState<TPost[]>(post?.replies);
 
 	const onAddReply = async (postData: TAddPostProps) => {
 		const newReply = await services.posts.createPost({
@@ -26,7 +28,7 @@ const DetailPage: FC<TUserPage> = ({ post }: InferGetServerSidePropsType<typeof 
 			accessToken: session?.accessToken as string,
 		});
 
-		setReplies([newReply, ...(post.replies as TPost[])]);
+		setReplies([newReply, ...(post?.replies as TPost[])]);
 
 		return newReply;
 	};
@@ -45,6 +47,10 @@ const DetailPage: FC<TUserPage> = ({ post }: InferGetServerSidePropsType<typeof 
 			setReplies(replies.filter((reply: TPost) => reply.id !== id));
 		}
 	};
+
+	if (error) {
+		return <ErrorPage statusCode={500} title={error} />;
+	}
 
 	return (
 		<MainLayout

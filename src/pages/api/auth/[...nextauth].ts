@@ -45,7 +45,7 @@ export const authOptions: NextAuthOptions = {
 			clientSecret: process.env.ZITADEL_CLIENT_SECRET as string,
 			authorization: {
 				params: {
-					scope: `openid email profile offline_access`,
+					scope: `openid email profile offline_access urn:zitadel:iam:org:project:id:zitadel:aud`,
 				},
 			},
 			client: {
@@ -97,7 +97,7 @@ export const authOptions: NextAuthOptions = {
 		signIn: '/auth/login',
 		signOut: '/auth/logout',
 		error: '/auth/error', // Error code passed in query string as ?error=
-		newUser: '/auth/register', // New users will be directed here on first sign in (leave the property out if not of interest)
+		newUser: '/auth/signup', // New users will be directed here on first sign in (leave the property out if not of interest)
 	},
 	secret: process.env.NEXTAUTH_SECRET,
 };
