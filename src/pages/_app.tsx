@@ -21,17 +21,17 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 				<link rel="icon" type="image/svg+xml" href="./favicon.svg" />
 				<link rel="icon" type="image/png" href="./favicon.png" />
 			</Head>
-			<SessionProvider session={session}>
-				<ThemeContextProvider>
-					<FolloweeContextProvider>
-						<ActiveTabContextProvider>
-							<ErrorBoundary>
+			<ErrorBoundary>
+				<SessionProvider session={session}>
+					<ThemeContextProvider>
+						<FolloweeContextProvider>
+							<ActiveTabContextProvider>
 								<Component {...pageProps} />
-							</ErrorBoundary>
-						</ActiveTabContextProvider>
-					</FolloweeContextProvider>
-				</ThemeContextProvider>
-			</SessionProvider>
+							</ActiveTabContextProvider>
+						</FolloweeContextProvider>
+					</ThemeContextProvider>
+				</SessionProvider>
+			</ErrorBoundary>
 		</>
 	);
 }
