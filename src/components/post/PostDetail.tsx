@@ -24,13 +24,15 @@ export const PostDetail: FC<TPostDetailProps> = ({ post }) => {
 	const { data: session } = useSession();
 	const currentUser = session?.user as TUser;
 
+	const textAreaId = `post-${post?.id}-reply`;
+
 	const onAddReply = async (postData: TAddPostProps) => {
 		const newReply = await services.posts.createPost({
 			...postData,
 			accessToken: session?.accessToken as string,
 		});
 
-		postDispatch({ type: PDActionType.COMMENT_ADD, payload: newReply });
+		postDispatch({ type: PDActionType.REPLY_ADD, payload: newReply });
 
 		return newReply;
 	};
@@ -42,15 +44,13 @@ export const PostDetail: FC<TPostDetailProps> = ({ post }) => {
 			throw new Error('Failed to delete post');
 		}
 
-		if (post.id === id) {
+		if (postState.id === id) {
 			// go back to overview page
 			router.push('/');
 		} else {
-			postDispatch({ type: PDActionType.COMMENT_DELETE, payload: id });
+			postDispatch({ type: PDActionType.REPLY_DELETE, payload: id });
 		}
 	};
-
-	const textAreaId = `post-${post?.id}-reply`;
 
 	const onAnswerPost = (id: string) => {
 		const answerPost = postState.replies?.find((reply) => reply.id === id);

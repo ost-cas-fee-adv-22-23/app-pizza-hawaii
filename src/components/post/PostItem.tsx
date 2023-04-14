@@ -14,9 +14,10 @@ import {
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
-import React, { FC, useState } from 'react';
+import React, { FC, useReducer, useState } from 'react';
 
 import ProjectSettings from '../../data/ProjectSettings.json';
+import PDReducer, { ActionType as PDActionType, initialState as initialPDState } from '../../reducer/postDetailReducer';
 import { postsService } from '../../services/api/posts/';
 import { TPost, TUser } from '../../types';
 import ImageModal from '../ImageModal';
@@ -67,40 +68,41 @@ const postItemVariantMap: Record<TPostItemProps['variant'], TPostItemVariantMap>
 	},
 };
 
-export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAnswerPost }) => {
-	const [likedByUser, setLikedByUser] = useState(post?.likedByUser);
-	const [likeCount, setLikeCount] = useState(post?.likeCount || 0);
+export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDeletePost, onAnswerPost }) => {
+	const [post, postDispatch] = useReducer(PDReducer, {
+		...initialPDState,
+		...initialPost,
+	});
+
 	const [showImageModal, setShowImageModal] = useState(false);
 
 	const { data: session } = useSession();
 	const currentUser = session?.user as TUser;
 
 	const setting = postItemVariantMap[variant] || postItemVariantMap.detailpage;
-	const replyCount = post?.replyCount || 0;
 
 	// like and unlike function
 	const handleLike = async () => {
-		if (likedByUser) {
-			postsService.unlike({ id: post?.id }).then(() => {
-				setLikeCount(likeCount - 1);
-			});
+		let response;
+		if (post.likedByUser) {
+			response = await postsService.unlike({ id: post?.id });
 		} else {
-			postsService.like({ id: post?.id }).then(() => {
-				setLikeCount(likeCount + 1);
-			});
+			response = await postsService.like({ id: post?.id });
 		}
-		setLikedByUser(!likedByUser);
+		if (response) {
+			postDispatch({ type: PDActionType.LIKE_TOGGLE });
+		}
 	};
 
 	// handle answer function
 	const handleAnswerPost = () => {
 		onAnswerPost && onAnswerPost(post?.id);
 	};
-
 	// delete function
 	const handleDeletePost = async () => {
 		onDeletePost && onDeletePost(post?.id);
 	};
+
 
 	const isFreshPost = new Date(post.createdAt).getTime() > new Date().getTime() - 45 * 60 * 1000;
 
@@ -185,21 +187,27 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAn
 						<InteractionButton
 							component={NextLink}
 							href={`/mumble/${post.id}`}
-							isActive={replyCount > 0}
+							isActive={post.replyCount > 0}
 							colorScheme="violet"
 							buttonText={
-								replyCount > 0 ? `${replyCount} Comments` : replyCount === 0 ? 'Comment' : '1 Comment'
+								post.replyCount > 0
+									? `${post.replyCount} Comments`
+									: post.replyCount === 0
+									? 'Comment'
+									: '1 Comment'
 							}
-							iconName={replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
+							iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
 						/>
 					)}
 					{currentUser && (
 						<InteractionButton
 							type="button"
-							isActive={likeCount > 0}
+							isActive={post.likeCount > 0}
 							colorScheme="pink"
-							buttonText={likeCount > 0 ? `${likeCount} Likes` : likeCount === 0 ? 'Like' : '1 Like'}
-							iconName={likedByUser ? 'heart_filled' : 'heart_fillable'}
+							buttonText={
+								post.likeCount > 0 ? `${post.likeCount} Likes` : post.likeCount === 0 ? 'Like' : '1 Like'
+							}
+							iconName={post.likedByUser ? 'heart_filled' : 'heart_fillable'}
 							onClick={handleLike}
 						/>
 					)}
