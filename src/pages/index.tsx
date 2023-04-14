@@ -3,7 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ErrorPage from 'next/error';
 import { getToken } from 'next-auth/jwt';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { decodeTime, encodeTime } from 'ulid';
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
@@ -11,6 +11,7 @@ import { PostCollection } from '../components/post/PostCollection';
 import { TAddPostProps } from '../components/post/PostCreator';
 import { useActiveTabContext } from '../context/useActiveTab';
 import useIncreasingInterval from '../hooks/useIncreasingInterval';
+import PCReducer, { ActionType as PCActionType, initialState as initialPCState } from '../reducer/postCollectionReducer';
 import { services } from '../services';
 import { TPost } from '../types';
 
@@ -19,14 +20,17 @@ export default function PageHome({
 	posts: initialPosts,
 	error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	const [postState, postDispatch] = useReducer(PCReducer, {
+		...initialPCState,
+		posts: initialPosts,
+	});
 	const { data: session } = useSession();
 	const { isActive: tabIsActive } = useActiveTabContext();
 
-	const [posts, setPosts] = useState<TPost[]>(initialPosts);
-	const [canLoadmore, setCanLoadmore] = useState<boolean>(initialPostCount > posts.length);
+	const [canLoadmore, setCanLoadmore] = useState<boolean>(initialPostCount > postState.posts.length);
 
 	const loadPosts = async (loadFullList = false) => {
-		const latestPost = loadFullList ? posts[posts.length - 1] : posts[0];
+		const latestPost = loadFullList ? postState.posts[postState.posts.length - 1] : postState.posts[0];
 		let lastPostId = latestPost?.id;
 
 		if (loadFullList) {
@@ -43,16 +47,16 @@ export default function PageHome({
 
 		if (loadFullList) {
 			// replace posts with new posts
-			setPosts(newPosts);
+			postDispatch({ type: PCActionType.POSTS_SET, payload: newPosts });
 		} else {
 			// prepend new posts to list
-			setPosts((currentPosts: TPost[]) => [...newPosts, ...currentPosts]);
+			postDispatch({ type: PCActionType.POSTS_ADD, payload: newPosts });
 		}
 	};
 
 	const loadMore = async () => {
 		// get oldest post
-		const oldestPost = posts[posts.length - 1];
+		const oldestPost = postState.posts[postState.posts.length - 1];
 
 		// fetch posts older than oldest post
 		const { count: olderPostCount, posts: olderPosts } = await services.api.posts.loadmore({
@@ -66,7 +70,7 @@ export default function PageHome({
 		}
 
 		// append older posts to list
-		setPosts((currentPosts: TPost[]) => [...currentPosts, ...olderPosts]);
+		postDispatch({ type: PCActionType.POSTS_ADD, payload: olderPosts });
 
 		// set canLoadmore to true if there are more posts available
 		setCanLoadmore(olderPostCount > 0);
@@ -83,7 +87,7 @@ export default function PageHome({
 
 		if (!newPost) return null;
 
-		setPosts([newPost, ...posts]);
+		postDispatch({ type: PCActionType.POSTS_ADD, payload: newPost });
 
 		return newPost;
 	};
@@ -94,8 +98,7 @@ export default function PageHome({
 		if (!response.ok) {
 			throw new Error('Failed to delete post');
 		}
-
-		setPosts(posts.filter((post: TPost) => post.id !== id));
+		postDispatch({ type: PCActionType.POSTS_DELETE, payload: id });
 	};
 
 	useIncreasingInterval(() => {
@@ -136,7 +139,7 @@ export default function PageHome({
 				</div>
 				<PostCollection
 					headline="Whats new in Mumble...."
-					posts={posts}
+					posts={postState.posts}
 					canAdd={true}
 					canLoadmore={canLoadmore}
 					onAddPost={onAddPost}

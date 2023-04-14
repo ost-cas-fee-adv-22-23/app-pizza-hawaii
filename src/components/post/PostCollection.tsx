@@ -91,16 +91,16 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 				</div>
 			)}
 
-			<Grid variant="col" gap="M" marginBelow="M">
-				{canAdd && (
+			{canAdd && (
+				<Grid variant="col" gap="M" marginBelow="M">
 					<PostCreator
 						variant="newPost"
 						headline="Hey, was geht ab?"
 						placeHolderText="Deine Meinung zählt"
 						onAddPost={onAddPostFn}
 					/>
-				)}
-			</Grid>
+				</Grid>
+			)}
 
 			<PostList posts={postState.posts} onRemovePost={onRemovePostFn} />
 
