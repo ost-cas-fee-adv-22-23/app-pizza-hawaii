@@ -10,9 +10,11 @@ import { UserProfile } from './user/UserProfile';
 /**
  * @description
  * This page shows Profile Header of any user and the curent user Profile Header with some additional features.
- * As quacker API is not providing a posterImage for users we are using a placeholder image. It looks much better with a real image.
- * if the current user is clicking on his posterImage he can change it in the modal UserSettings if we implement that feature within the API v2.0.
- */
+ * As quacker API is not providing a posterImage for users (by now!) we are using a placeholder image.
+ * It looks much better with a real image and inteded by the designer.
+ * if the current user (yourself) is clicking on his posterImage he can change it in the modal UserSettings if we implement that feature within the API v2.0.
+ * for now the setting modal opens.
+ **/
 
 /*
  * Type
@@ -46,13 +48,10 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 					borderRadius="L"
 				>
 					<Image
-						src={user.posterImage}
-						alt={user.userName}
-						width={ProjectSettings.images.header.width}
-						height={
-							(ProjectSettings.images.header.width / ProjectSettings.images.header.aspectRatio[0]) *
-							ProjectSettings.images.header.aspectRatio[1]
-						}
+						src={picture.src}
+						alt={picture.alt}
+						width={picture.width}
+						height={picture.height}
 						imageComponent={NextImage}
 					/>
 				</ImageOverlay>
@@ -64,13 +63,10 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 					borderRadius="L"
 				>
 					<Image
-						src={user.posterImage}
-						alt={user.userName}
-						width={ProjectSettings.images.header.width}
-						height={
-							(ProjectSettings.images.header.width / ProjectSettings.images.header.aspectRatio[0]) *
-							ProjectSettings.images.header.aspectRatio[1]
-						}
+						src={picture.src}
+						alt={picture.alt}
+						width={picture.width}
+						height={picture.height}
 						imageComponent={NextImage}
 					/>
 				</ImageOverlay>

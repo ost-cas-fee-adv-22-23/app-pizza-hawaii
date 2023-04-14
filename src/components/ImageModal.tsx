@@ -17,9 +17,7 @@ type TImageModal = {
 };
 
 const ImageModal: FC<TImageModal> = ({ onClose, picture }) => {
-	console.log('imageModal picture', picture);
 	const myImageRef = useRef(null);
-
 	const [loading, setLoading] = useState(true);
 	const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
 	const [screenDimensions, setScreenDimensions] = useState({ width: 0, height: 0 });
@@ -61,8 +59,7 @@ const ImageModal: FC<TImageModal> = ({ onClose, picture }) => {
 					width={imageDimensions.width}
 					height={imageDimensions.height}
 					sizes="(min-width: 640px) 50vw, 80vw"
-					// alt={`Image from user ${post.user.userName}`}
-					alt={picture.alt as string}
+					alt={picture.alt}
 				/>
 			</div>
 		</Modal>
