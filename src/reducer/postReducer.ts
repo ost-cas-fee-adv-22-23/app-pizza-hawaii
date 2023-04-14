@@ -1,11 +1,19 @@
 import { TPost } from '../types';
 
+export enum PostActionType {
+	LOADING = 'LOADING',
+	POSTS_ADD = 'POSTS_ADD',
+	POSTS_DELETE = 'POSTS_DELETE',
+	POSTS_UPDATE = 'POSTS_UPDATE',
+	POSTS_SET = 'POSTS_SET',
+}
+
 export type TPostAction =
-	| { type: 'posts/fetch' }
-	| { type: 'posts/add'; payload: TPost | TPost[] }
-	| { type: 'posts/remove'; payload: string }
-	| { type: 'posts/update'; payload: TPost }
-	| { type: 'posts/set'; payload: TPost[] };
+	| { type: PostActionType.LOADING; payload: boolean }
+	| { type: PostActionType.POSTS_ADD; payload: TPost | TPost[] }
+	| { type: PostActionType.POSTS_DELETE; payload: string }
+	| { type: PostActionType.POSTS_UPDATE; payload: TPost }
+	| { type: PostActionType.POSTS_SET; payload: TPost[] };
 
 type TPostState = {
 	posts: TPost[];
@@ -17,23 +25,23 @@ export const initialState: TPostState = {
 	loading: false,
 };
 
-export default function appReducer(state = initialState, action: TPostAction) {
+export default function postReducer(state = initialState, action: TPostAction) {
 	switch (action.type) {
-		case 'posts/fetch': {
+		case PostActionType.LOADING: {
 			return {
 				...state,
-				loading: true,
+				loading: action.payload,
 			};
 		}
 
-		case 'posts/set': {
+		case PostActionType.POSTS_SET: {
 			return {
 				...state,
 				loading: false,
 				posts: action.payload,
 			};
 		}
-		case 'posts/add': {
+		case PostActionType.POSTS_ADD: {
 			// add new posts to the existing posts
 			const allPosts = [...state.posts, ...(Array.isArray(action.payload) ? action.payload : [action.payload])];
 
@@ -54,7 +62,7 @@ export default function appReducer(state = initialState, action: TPostAction) {
 			};
 		}
 
-		case 'posts/remove': {
+		case PostActionType.POSTS_DELETE: {
 			return {
 				...state,
 				loading: false,
@@ -62,7 +70,7 @@ export default function appReducer(state = initialState, action: TPostAction) {
 			};
 		}
 
-		case 'posts/update': {
+		case PostActionType.POSTS_UPDATE: {
 			return {
 				...state,
 				loading: false,

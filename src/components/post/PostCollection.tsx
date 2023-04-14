@@ -1,7 +1,7 @@
 import { Button, Grid, Headline } from '@smartive-education/pizza-hawaii';
 import { FC, useEffect, useReducer, useState } from 'react';
 
-import { default as PostReducer, initialState as initialPostState } from '../../reducer/postReducer';
+import { default as PostReducer, initialState as initialPostState, PostActionType } from '../../reducer/postReducer';
 import { TPost } from '../../types';
 import { PostList } from '../post/PostList';
 import { PostCreator, TAddPostProps } from './PostCreator';
@@ -43,23 +43,24 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 	}, [posts]);
 
 	const showLatestPosts = () => {
-		postDispatch({ type: 'posts/set', payload: posts });
+		postDispatch({ type: PostActionType.POSTS_SET, payload: posts });
 	};
 
 	const onLoadmoreBtn = async () => {
 		if (!onLoadmore) return;
 
-		postDispatch({ type: 'posts/fetch' });
+		postDispatch({ type: PostActionType.LOADING, payload: true });
 
 		const morePosts = await onLoadmore();
-		postDispatch({ type: 'posts/add', payload: morePosts });
+		postDispatch({ type: PostActionType.LOADING, payload: false });
+		postDispatch({ type: PostActionType.POSTS_ADD, payload: morePosts });
 	};
 
 	const onRemovePostFn = (id: string) => {
 		if (!onRemovePost) return;
 
 		onRemovePost(id);
-		postDispatch({ type: 'posts/remove', payload: id });
+		postDispatch({ type: PostActionType.POSTS_DELETE, payload: id });
 	};
 
 	const onAddPostFn = async (data: TAddPostProps) => {
@@ -67,7 +68,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 
 		const newPost = await onAddPost(data);
 		if (!newPost) return null;
-		postDispatch({ type: 'posts/add', payload: newPost });
+		postDispatch({ type: PostActionType.POSTS_ADD, payload: newPost });
 
 		return newPost;
 	};
