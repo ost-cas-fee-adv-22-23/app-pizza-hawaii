@@ -1,6 +1,6 @@
 import { TPost } from '../types';
 
-export enum PostActionType {
+export enum ActionType {
 	LOADING = 'LOADING',
 	POSTS_ADD = 'POSTS_ADD',
 	POSTS_DELETE = 'POSTS_DELETE',
@@ -8,12 +8,12 @@ export enum PostActionType {
 	POSTS_SET = 'POSTS_SET',
 }
 
-export type TPostAction =
-	| { type: PostActionType.LOADING; payload: boolean }
-	| { type: PostActionType.POSTS_ADD; payload: TPost | TPost[] }
-	| { type: PostActionType.POSTS_DELETE; payload: string }
-	| { type: PostActionType.POSTS_UPDATE; payload: TPost }
-	| { type: PostActionType.POSTS_SET; payload: TPost[] };
+export type TActionType =
+	| { type: ActionType.LOADING; payload: boolean }
+	| { type: ActionType.POSTS_ADD; payload: TPost | TPost[] }
+	| { type: ActionType.POSTS_DELETE; payload: string }
+	| { type: ActionType.POSTS_UPDATE; payload: TPost }
+	| { type: ActionType.POSTS_SET; payload: TPost[] };
 
 type TPostState = {
 	posts: TPost[];
@@ -25,23 +25,23 @@ export const initialState: TPostState = {
 	loading: false,
 };
 
-export default function postReducer(state = initialState, action: TPostAction) {
+export default function postCollectionReducer(state = initialState, action: TActionType) {
 	switch (action.type) {
-		case PostActionType.LOADING: {
+		case ActionType.LOADING: {
 			return {
 				...state,
 				loading: action.payload,
 			};
 		}
 
-		case PostActionType.POSTS_SET: {
+		case ActionType.POSTS_SET: {
 			return {
 				...state,
 				loading: false,
 				posts: action.payload,
 			};
 		}
-		case PostActionType.POSTS_ADD: {
+		case ActionType.POSTS_ADD: {
 			// add new posts to the existing posts
 			const allPosts = [...state.posts, ...(Array.isArray(action.payload) ? action.payload : [action.payload])];
 
@@ -62,7 +62,7 @@ export default function postReducer(state = initialState, action: TPostAction) {
 			};
 		}
 
-		case PostActionType.POSTS_DELETE: {
+		case ActionType.POSTS_DELETE: {
 			return {
 				...state,
 				loading: false,
@@ -70,7 +70,7 @@ export default function postReducer(state = initialState, action: TPostAction) {
 			};
 		}
 
-		case PostActionType.POSTS_UPDATE: {
+		case ActionType.POSTS_UPDATE: {
 			return {
 				...state,
 				loading: false,

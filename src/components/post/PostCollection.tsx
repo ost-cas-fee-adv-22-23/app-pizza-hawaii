@@ -1,7 +1,7 @@
 import { Button, Grid, Headline } from '@smartive-education/pizza-hawaii';
 import { FC, useEffect, useReducer, useState } from 'react';
 
-import { default as PostReducer, initialState as initialPostState, PostActionType } from '../../reducer/postReducer';
+import PCReducer, { ActionType as PCActionType, initialState as initialPCState } from '../../reducer/postCollectionReducer';
 import { TPost } from '../../types';
 import { PostList } from '../post/PostList';
 import { PostCreator, TAddPostProps } from './PostCreator';
@@ -25,8 +25,8 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 	onRemovePost,
 	onLoadmore,
 }) => {
-	const [postState, postDispatch] = useReducer(PostReducer, {
-		...initialPostState,
+	const [postState, postDispatch] = useReducer(PCReducer, {
+		...initialPCState,
 		posts,
 	});
 	const [hasUpdate, setHasUpdate] = useState(false);
@@ -43,24 +43,24 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 	}, [posts]);
 
 	const showLatestPosts = () => {
-		postDispatch({ type: PostActionType.POSTS_SET, payload: posts });
+		postDispatch({ type: PCActionType.POSTS_SET, payload: posts });
 	};
 
 	const onLoadmoreBtn = async () => {
 		if (!onLoadmore) return;
 
-		postDispatch({ type: PostActionType.LOADING, payload: true });
+		postDispatch({ type: PCActionType.LOADING, payload: true });
 
 		const morePosts = await onLoadmore();
-		postDispatch({ type: PostActionType.LOADING, payload: false });
-		postDispatch({ type: PostActionType.POSTS_ADD, payload: morePosts });
+		postDispatch({ type: PCActionType.LOADING, payload: false });
+		postDispatch({ type: PCActionType.POSTS_ADD, payload: morePosts });
 	};
 
 	const onRemovePostFn = (id: string) => {
 		if (!onRemovePost) return;
 
 		onRemovePost(id);
-		postDispatch({ type: PostActionType.POSTS_DELETE, payload: id });
+		postDispatch({ type: PCActionType.POSTS_DELETE, payload: id });
 	};
 
 	const onAddPostFn = async (data: TAddPostProps) => {
@@ -68,7 +68,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 
 		const newPost = await onAddPost(data);
 		if (!newPost) return null;
-		postDispatch({ type: PostActionType.POSTS_ADD, payload: newPost });
+		postDispatch({ type: PCActionType.POSTS_ADD, payload: newPost });
 
 		return newPost;
 	};
