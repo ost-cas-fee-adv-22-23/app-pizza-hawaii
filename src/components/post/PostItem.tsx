@@ -69,7 +69,7 @@ const postItemVariantMap: Record<TPostItemProps['variant'], TPostItemVariantMap>
 
 export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAnswerPost }) => {
 	const [likedByUser, setLikedByUser] = useState(post?.likedByUser);
-	const [likeCount, setLikeCount] = useState(post?.likeCount);
+	const [likeCount, setLikeCount] = useState(post?.likeCount || 0);
 	const [showImageModal, setShowImageModal] = useState(false);
 
 	const { data: session } = useSession();

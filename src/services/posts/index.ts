@@ -373,6 +373,19 @@ const transformPost = (post: TRawPost) => {
 	};
 };
 
+const emptyPost = (id?: string, user = usersService.emptyUser()): TPost => {
+	return {
+		id: id || '',
+		creator: '',
+		text: '',
+		type: 'post',
+		createdAt: '',
+		likeCount: 0,
+		likedByUser: false,
+		user,
+	};
+};
+
 export const postsService = {
 	getPosts,
 	getPost,
@@ -382,4 +395,5 @@ export const postsService = {
 	getPostsLikedByUser,
 	getPostReplies,
 	getPostsByQuery,
+	emptyPost,
 };
