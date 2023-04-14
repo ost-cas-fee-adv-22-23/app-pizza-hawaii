@@ -16,6 +16,7 @@ module.exports = {
      /* REMARK: Explicitly exclude files from being checked:
       - middleware: we need the regular expression match config, it is running at compile time
       - global error page: is last resort of error handling, so it's ok to have circular dependencies
+      - api- routes: we don't want to check the api routes, as they ar running at compile time. 
     */
     {
       name: 'no-orphans',
@@ -35,6 +36,7 @@ module.exports = {
           '(^|/)(babel|webpack)\\.config\\.(js|cjs|mjs|ts|json)$', // other configs
           'src/middleware.ts',
           'src/pages/global-error.tsx',
+          'src/pages/api/*',
         ]
       },
       to: {},

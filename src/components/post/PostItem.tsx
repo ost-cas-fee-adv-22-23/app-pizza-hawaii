@@ -19,7 +19,7 @@ import React, { FC, useState } from 'react';
 import ProjectSettings from '../../data/ProjectSettings.json';
 import { postsService } from '../../services/api/posts/';
 import { TPost, TUser } from '../../types';
-import ImageModal from '../ImageModal';
+import ImageModal, { TModalPicture } from '../ImageModal';
 
 /*
  * Type
@@ -103,6 +103,14 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAn
 	};
 
 	const isFreshPost = new Date(post.createdAt).getTime() > new Date().getTime() - 45 * 60 * 1000;
+	const picture: TModalPicture = {
+		src: post.mediaUrl,
+		width: ProjectSettings.images.post.width,
+		height:
+			(ProjectSettings.images.header.width / ProjectSettings.images.header.aspectRatio[0]) *
+			ProjectSettings.images.header.aspectRatio[1],
+		alt: `Image of ${post.user.displayName}`,
+	};
 
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
@@ -223,7 +231,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post, onDeletePost, onAn
 				</Grid>
 			)}
 
-			{showImageModal && <ImageModal post={post} onClose={() => setShowImageModal(false)} />}
+			{showImageModal && <ImageModal picture={picture} onClose={() => setShowImageModal(false)} />}
 		</UserContentCard>
 	);
 };

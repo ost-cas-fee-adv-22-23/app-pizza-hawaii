@@ -3,14 +3,21 @@ import NextImage from 'next/image';
 import React, { FC, SyntheticEvent, useEffect, useRef, useState } from 'react';
 
 import ProjectSettings from '../data/ProjectSettings.json';
-import { TPost } from '../types/Post';
+
+export type TModalPicture = {
+	src?: string;
+	width: number;
+	height: number;
+	alt: string;
+};
 
 type TImageModal = {
-	post: TPost;
+	picture: TModalPicture;
 	onClose: () => void;
 };
 
-const ImageModal: FC<TImageModal> = ({ post, onClose }) => {
+const ImageModal: FC<TImageModal> = ({ onClose, picture }) => {
+	console.log('imageModal picture', picture);
 	const myImageRef = useRef(null);
 
 	const [loading, setLoading] = useState(true);
@@ -49,12 +56,13 @@ const ImageModal: FC<TImageModal> = ({ post, onClose }) => {
 				{loading && <div className="animate-pulse h-64 w-full bg-gray-400 rounded-lg" />}
 				<NextImage
 					ref={myImageRef}
-					src={post.mediaUrl as string}
+					src={picture.src as string}
 					onLoad={handleImageLoad}
 					width={imageDimensions.width}
 					height={imageDimensions.height}
 					sizes="(min-width: 640px) 50vw, 80vw"
-					alt={`Image from user ${post.user.userName}`}
+					// alt={`Image from user ${post.user.userName}`}
+					alt={picture.alt as string}
 				/>
 			</div>
 		</Modal>
