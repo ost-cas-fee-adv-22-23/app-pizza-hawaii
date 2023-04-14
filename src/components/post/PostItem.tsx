@@ -103,7 +103,6 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 		onDeletePost && onDeletePost(post?.id);
 	};
 
-
 	const isFreshPost = new Date(post.createdAt).getTime() > new Date().getTime() - 45 * 60 * 1000;
 
 	const headerSlotContent = (
