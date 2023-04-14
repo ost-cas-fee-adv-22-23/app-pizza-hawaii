@@ -8,6 +8,14 @@ type TRecommendations = {
 	limit?: number;
 };
 
+/**
+ * Get a list of recommended users
+ * @param {string} currentUserId
+ * @param {string[]} excludeUserIds
+ * @param {number} limit
+ * @returns {Promise<TUserSimple[]>}
+ */
+
 export const recommendations = async ({
 	currentUserId,
 	excludeUserIds,
