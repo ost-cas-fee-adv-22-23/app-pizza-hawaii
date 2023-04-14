@@ -1,4 +1,4 @@
-import { Link, Navi, NaviButton } from '@smartive-education/pizza-hawaii';
+import { Link, Modal, Navi, NaviButton } from '@smartive-education/pizza-hawaii';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { signOut } from 'next-auth/react';
@@ -10,7 +10,7 @@ import UserSettings from './form/UserSettings';
 import { UserProfile } from './user/UserProfile';
 
 type THeader = {
-	user: TUser;
+	user?: TUser;
 };
 
 export const Header: FC<THeader> = ({ user }) => {
@@ -19,6 +19,33 @@ export const Header: FC<THeader> = ({ user }) => {
 	const handleSettingsClick = (): void => {
 		setShowSettingsModal(true);
 	};
+
+	if (!user) {
+		return (
+			<header className="Header mb-8 bg-violet-600 text-white">
+				<div className="px-content py-3">
+					<div className="flex items-center justify-between gap-8 w-full max-w-content mx-auto">
+						<div className="flex w-[209px]">
+							<Link href="/" component={NextLink}>
+								<NextImage src={MumbleLogo} alt="Mumble Messenger" priority={true} />
+								<h1 className="sr-only">Mumble</h1>
+							</Link>
+						</div>
+						<nav className="">
+							<Navi>
+								<NaviButton component={NextLink} href="/auth/login" title="Login" icon="logout">
+									Login
+								</NaviButton>
+								<NaviButton component={NextLink} href="/auth/signup" title="Sign Up" icon="mumble">
+									Sign Up
+								</NaviButton>
+							</Navi>
+						</nav>
+					</div>
+				</div>
+			</header>
+		);
+	}
 
 	return (
 		<>
@@ -60,7 +87,11 @@ export const Header: FC<THeader> = ({ user }) => {
 					</div>
 				</div>
 			</header>
-			{showSettingsModal && <UserSettings user={user} onClose={() => setShowSettingsModal(false)} />}
+			{showSettingsModal && (
+				<Modal title="Einstellungen" isVisible={showSettingsModal} onClose={() => setShowSettingsModal(false)}>
+					<UserSettings setSuccess={() => setShowSettingsModal(false)} />
+				</Modal>
+			)}
 		</>
 	);
 };
