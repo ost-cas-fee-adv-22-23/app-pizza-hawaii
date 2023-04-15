@@ -11,7 +11,7 @@ import { services } from '../../../services';
  */
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-	const { newerThan, olderThan, limit } = req.query;
+	const { newerThan, olderThan, limit, ...rest } = req.query;
 	const session = await getToken({ req });
 
 	// we don't want to return more than 100 posts at a time to avoid performance and security issues
@@ -29,6 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 	services.posts
 		.getPosts({
+			...rest,
 			limit: currentLimit,
 			newerThan: newerThan as string | undefined,
 			olderThan: olderThan as string | undefined,

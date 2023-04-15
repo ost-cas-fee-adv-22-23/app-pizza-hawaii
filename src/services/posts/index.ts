@@ -184,63 +184,6 @@ const getPostsByQuery = async (params: TGetPostsByQuery): Promise<TGetPostsResul
 
 /**
  *
- * ============== Get posts of a user ==============
- *
- */
-
-type TGetPostByUserId = {
-	id: string;
-	limit?: number;
-	accessToken: string;
-};
-
-/**
- * Get posts of a user
- * @param {string} id id of the user
- * @param {number} limit limit of posts to fetch
- * @param {string} accessToken access token of the user who is fetching the posts
- * @returns {Promise<TPost[]>}
- */
-
-const getPostsOfUser = async ({ id, limit, accessToken }: TGetPostByUserId) => {
-	const { posts } = await getPosts({
-		creator: id,
-		limit,
-		accessToken,
-	});
-
-	return posts;
-};
-
-/**
- *
- * ============== Get posts liked by a user ==============
- *
- */
-
-type TGetPostsLikedByUser = {
-	id: string;
-	accessToken: string;
-};
-
-/**
- * Get posts liked by a user
- * @param {string} id id of the user
- * @param {string} accessToken access token of the user who is fetching the posts
- * @returns {Promise<TPost[]>}
- */
-
-const getPostsLikedByUser = async ({ id, accessToken }: TGetPostsLikedByUser) => {
-	const { posts } = await getPostsByQuery({
-		likedBy: [id as string],
-		accessToken,
-	});
-
-	return posts;
-};
-
-/**
- *
  * ============== Create a post or a reply ==============
  *
  */
@@ -391,8 +334,6 @@ export const postsService = {
 	getPost,
 	createPost,
 	deletePost,
-	getPostsOfUser,
-	getPostsLikedByUser,
 	getPostReplies,
 	getPostsByQuery,
 	emptyPost,

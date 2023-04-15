@@ -10,6 +10,7 @@ type TGetPostResult = {
 type TGetPost = {
 	olderThan?: string;
 	newerThan?: string;
+	creator?: string;
 };
 
 /**
@@ -21,7 +22,7 @@ type TGetPost = {
  * @returns {Promise<TGetPostResult>}
  */
 
-export const loadmore = async ({ olderThan, newerThan }: TGetPost): Promise<TGetPostResult> => {
+export const loadmore = async ({ olderThan, newerThan, creator }: TGetPost): Promise<TGetPostResult> => {
 	// create url params
 	const urlParams = new URLSearchParams();
 
@@ -31,6 +32,10 @@ export const loadmore = async ({ olderThan, newerThan }: TGetPost): Promise<TGet
 
 	if (newerThan !== undefined) {
 		urlParams.set('newerThan', newerThan);
+	}
+
+	if (creator !== undefined) {
+		urlParams.set('creator', creator);
 	}
 
 	const res = await fetch(`${BASE_URL}/api/posts/loadmore?${urlParams}`);

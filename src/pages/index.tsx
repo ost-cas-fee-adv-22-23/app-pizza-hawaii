@@ -34,7 +34,6 @@ export default function PageHome({
 					canLoadMore={postCount > posts.length}
 					canAdd={true}
 					autoUpdate={true}
-					filter="all"
 				/>
 			</>
 		</MainLayout>

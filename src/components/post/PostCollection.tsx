@@ -15,12 +15,18 @@ import { TPost } from '../../types';
 import { PostList } from '../post/PostList';
 import { PostCreator, TAddPostProps } from './PostCreator';
 
+type TPostCollectionFilter = {
+	creator?: string;
+	likedBy?: string[];
+	tags?: string[];
+};
+
 export type TPostCollectionProps = {
 	headline?: string;
 	posts: TPost[];
 	canAdd?: boolean;
 	canLoadMore?: boolean;
-	filter: 'all' | 'mine' | 'liked' | 'hashtag';
+	filter?: TPostCollectionFilter;
 	autoUpdate: boolean;
 };
 
@@ -36,6 +42,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 	posts: initialPosts,
 	canAdd = false,
 	canLoadMore = false,
+	filter = {},
 }) => {
 	const { data: session } = useSession();
 	const { isActive: tabIsActive } = useActiveTabContext();
@@ -59,6 +66,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 
 		// fetch posts older than oldest post
 		const { count: olderPostCount, posts: olderPosts } = await services.api.posts.loadmore({
+			...filter,
 			olderThan: getOldestPostId(),
 		});
 
@@ -98,19 +106,28 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 		const latestPostUlidDate = postState.posts[0].id;
 		const oldestPostId = getOldestPostId();
 
-		let requestObject = {};
+		let requestObject = {
+			...filter,
+			olderThan: encodeTime(new Date().getTime(), 10) + '0000000000000000',
+			newerThan: encodeTime(decodeTime(oldestPostId) - 1, 10) + oldestPostId.substring(26 - 16),
+			limit: 100,
+		};
 
 		switch (loadRequest) {
 			case LoadRequestType.LOAD_ADDED:
+				// olderThan: current Date (to get latest posts)
 				// newerThan: latest post id (to get all new posts)
 				requestObject = {
+					...requestObject,
 					newerThan: postState.posts[0].id,
 				};
 				break;
 
 			case LoadRequestType.LOAD_UPDATED:
 				// olderThan: latest post id + 1 (to get all posts including the latest one)
+				// newerThan: oldest post id - 1 (to get all posts including the oldest one)
 				requestObject = {
+					...requestObject,
 					olderThan: encodeTime(decodeTime(latestPostUlidDate) + 1, 10) + latestPostUlidDate.substring(26 - 16),
 				};
 				break;
@@ -119,9 +136,8 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 				// olderThan: current Date (to get latest posts)
 				// newerThan: oldest post id - 1 (to get all posts including the oldest one)
 				requestObject = {
-					olderThan: encodeTime(new Date().getTime(), 10) + '0000000000000000',
+					...requestObject,
 					newerThan: encodeTime(decodeTime(oldestPostId) - 1, 10) + oldestPostId.substring(26 - 16),
-					limit: 100,
 				};
 				break;
 
@@ -132,7 +148,6 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 		services.api.posts
 			.loadmore(requestObject)
 			.then((response) => {
-				console.log('check response', response);
 				const { posts: newPosts } = response;
 
 				// if no new posts are found, do nothing
@@ -159,23 +174,17 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 					return !postState.posts.find((post) => post.id === newPost.id);
 				});
 
-				console.log('newPostList', newPostList);
-				console.log('deletedPostList', deletedPostList);
-
 				const postHaveChanged = deletedPostList.length > 0 || newPostList.length > 0;
 
 				if (!postHaveChanged) {
 					setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
 					return;
 				}
-				console.log('postHaveChanged', postHaveChanged);
 
 				setUpdateRequest({
 					payload: newPosts,
 					type: updateActionType,
 				});
-
-				console.log('updateRequest', updateRequest);
 
 				setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
 			})
