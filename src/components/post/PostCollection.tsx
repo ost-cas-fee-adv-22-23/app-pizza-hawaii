@@ -1,76 +1,260 @@
 import { Button, Grid, Headline } from '@smartive-education/pizza-hawaii';
+import { useSession } from 'next-auth/react';
 import { FC, useEffect, useReducer, useState } from 'react';
+import { decodeTime, encodeTime } from 'ulid';
 
-import PCReducer, { ActionType as PCActionType, initialState as initialPCState } from '../../reducer/postCollectionReducer';
+import { useActiveTabContext } from '../../context/useActiveTab';
+import useIncreasingInterval from '../../hooks/useIncreasingInterval';
+import PCReducer, {
+	ActionType as PCActionType,
+	initialState as initialPCState,
+	TActionType,
+} from '../../reducer/postCollectionReducer';
+import { services } from '../../services';
 import { TPost } from '../../types';
 import { PostList } from '../post/PostList';
 import { PostCreator, TAddPostProps } from './PostCreator';
 
-type TPostCollectionProps = {
+export type TPostCollectionProps = {
 	headline?: string;
 	posts: TPost[];
 	canAdd?: boolean;
-	canLoadmore?: boolean;
-	onAddPost?: (data: TAddPostProps) => Promise<TPost | null>;
-	onRemovePost?: (id: string) => void;
-	onLoadmore?: () => Promise<TPost[]>;
+	canLoadMore?: boolean;
+	filter: 'all' | 'mine' | 'liked' | 'hashtag';
+	autoUpdate: boolean;
 };
+
+enum LoadRequestType {
+	LOAD_NOT_NEEDED = 'LOAD_NOT_NEEDED',
+	LOAD_ADDED = 'LOAD_ADDED',
+	LOAD_UPDATED = 'LOAD_UPDATED',
+	LOAD_ADDED_AND_UPDATED = 'LOAD_ADDED_AND_UPDATED',
+}
 
 export const PostCollection: FC<TPostCollectionProps> = ({
 	headline,
-	posts,
+	posts: initialPosts,
 	canAdd = false,
-	canLoadmore = false,
-	onAddPost,
-	onRemovePost,
-	onLoadmore,
+	canLoadMore = false,
 }) => {
+	const { data: session } = useSession();
+	const { isActive: tabIsActive } = useActiveTabContext();
+
 	const [postState, postDispatch] = useReducer(PCReducer, {
 		...initialPCState,
-		posts,
+		posts: initialPosts,
 	});
-	const [hasUpdate, setHasUpdate] = useState(false);
 
-	useEffect(() => {
-		const { posts } = postState;
-		// Check if there are new or removed posts
-		const newPosts = posts.filter((post) => !posts.includes(post));
-		const removedPosts = posts.filter((post) => !posts.includes(post));
+	/**
+	 *
+	 * ============== LOAD MORE MECANISM ==============
+	 *
+	 */
 
-		setHasUpdate([...newPosts, ...removedPosts].length > 0);
-		// TODO: this is a question we have and we await the answer for that. adding state is not a solution.
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [posts]);
-
-	const showLatestPosts = () => {
-		postDispatch({ type: PCActionType.POSTS_SET, payload: posts });
-	};
+	const [canLoadmore, setCanLoadmore] = useState(canLoadMore);
 
 	const onLoadmoreBtn = async () => {
-		if (!onLoadmore) return;
-
+		// activate loading state
 		postDispatch({ type: PCActionType.LOADING, payload: true });
 
-		const morePosts = await onLoadmore();
+		// fetch posts older than oldest post
+		const { count: olderPostCount, posts: olderPosts } = await services.api.posts.loadmore({
+			olderThan: getOldestPostId(),
+		});
+
+		// append older posts to list
+		postDispatch({ type: PCActionType.POSTS_ADD, payload: olderPosts });
+
+		// set canLoadmore to true if there are more posts available
+		setCanLoadmore(olderPostCount > 0);
+
+		// deactivate loading state
 		postDispatch({ type: PCActionType.LOADING, payload: false });
-		postDispatch({ type: PCActionType.POSTS_ADD, payload: morePosts });
 	};
 
-	const onRemovePostFn = (id: string) => {
-		if (!onRemovePost) return;
+	/**
+	 *
+	 * ============== UPADTE MECANISM ==============
+	 *
+	 */
 
-		onRemovePost(id);
-		postDispatch({ type: PCActionType.POSTS_DELETE, payload: id });
+	const [loadRequest, setLoadRequest] = useState(LoadRequestType.LOAD_NOT_NEEDED);
+	const [updateRequest, setUpdateRequest] = useState<
+		| TActionType
+		| {
+				type: undefined;
+		  }
+	>({
+		type: undefined,
+	});
+
+	useEffect(() => {
+		// load full list of posts when user switches to browser tab
+		if (!tabIsActive || loadRequest === LoadRequestType.LOAD_NOT_NEEDED) {
+			setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
+			return;
+		}
+
+		const latestPostUlidDate = postState.posts[0].id;
+		const oldestPostId = getOldestPostId();
+
+		let requestObject = {};
+
+		switch (loadRequest) {
+			case LoadRequestType.LOAD_ADDED:
+				// newerThan: latest post id (to get all new posts)
+				requestObject = {
+					newerThan: postState.posts[0].id,
+				};
+				break;
+
+			case LoadRequestType.LOAD_UPDATED:
+				// olderThan: latest post id + 1 (to get all posts including the latest one)
+				requestObject = {
+					olderThan: encodeTime(decodeTime(latestPostUlidDate) + 1, 10) + latestPostUlidDate.substring(26 - 16),
+				};
+				break;
+
+			case LoadRequestType.LOAD_ADDED_AND_UPDATED:
+				// olderThan: current Date (to get latest posts)
+				// newerThan: oldest post id - 1 (to get all posts including the oldest one)
+				requestObject = {
+					olderThan: encodeTime(new Date().getTime(), 10) + '0000000000000000',
+					newerThan: encodeTime(decodeTime(oldestPostId) - 1, 10) + oldestPostId.substring(26 - 16),
+					limit: 100,
+				};
+				break;
+
+			default:
+				break;
+		}
+
+		services.api.posts
+			.loadmore(requestObject)
+			.then((response) => {
+				console.log('check response', response);
+				const { posts: newPosts } = response;
+
+				// if no new posts are found, do nothing
+				if (newPosts.length === 0) {
+					setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
+					return;
+				}
+
+				// define action type for reducer (default: set posts for LOAD_ADDED_AND_UPDATED and LOAD_UPDATED)
+				let updateActionType = PCActionType.POSTS_SET;
+
+				// if only new posts are loaded, add them to the existing posts
+				if (loadRequest === LoadRequestType.LOAD_ADDED) {
+					updateActionType = PCActionType.POSTS_ADD;
+				}
+
+				// list of posts that have been deleted
+				const deletedPostList = postState.posts.filter((post) => {
+					return !newPosts.find((newPost) => newPost.id === post.id);
+				});
+
+				// get List of new Posts
+				const newPostList = newPosts.filter((newPost) => {
+					return !postState.posts.find((post) => post.id === newPost.id);
+				});
+
+				console.log('newPostList', newPostList);
+				console.log('deletedPostList', deletedPostList);
+
+				const postHaveChanged = deletedPostList.length > 0 || newPostList.length > 0;
+
+				if (!postHaveChanged) {
+					setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
+					return;
+				}
+				console.log('postHaveChanged', postHaveChanged);
+
+				setUpdateRequest({
+					payload: newPosts,
+					type: updateActionType,
+				});
+
+				console.log('updateRequest', updateRequest);
+
+				setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
+			})
+			.catch((error) => {
+				setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
+				console.error(error);
+			});
+	}, [loadRequest, tabIsActive]);
+
+	const showLatestPosts = () => {
+		if (!updateRequest.type) {
+			return;
+		}
+
+		postDispatch(updateRequest);
+		setUpdateRequest({ type: undefined });
 	};
 
-	const onAddPostFn = async (data: TAddPostProps) => {
-		if (!onAddPost) return null;
+	/**
+	 * LoadRequest if triggered by interval or by user switching to mumble browser tab
+	 */
 
-		const newPost = await onAddPost(data);
+	useIncreasingInterval(() => {
+		// only load new posts if browser tab is active
+		if (!tabIsActive) return;
+
+		// randomizes if load full list (to detect deleted posts) or check just for new posts (2/3 chance)
+		// to prevent that all users load the full list at the same time when the interval is triggered
+		// full list means to load all already visible posts
+		// for our use case this is not necessary, but was fun to implement ;)
+
+		const loadFullList = Math.random() > 0.66;
+		setLoadRequest(loadFullList ? LoadRequestType.LOAD_UPDATED : LoadRequestType.LOAD_ADDED);
+	});
+
+	useEffect(() => {
+		// load full list of posts when user switches to browser tab
+		if (tabIsActive) {
+			setLoadRequest(LoadRequestType.LOAD_ADDED_AND_UPDATED);
+		}
+	}, [tabIsActive]);
+
+	/**
+	 *
+	 * ============== CRUD FUNCTIONS ==============
+	 *
+	 */
+
+	const onAddPostFn = async (postData: TAddPostProps): Promise<TPost | null> => {
+		const newPost = await services.posts.createPost({
+			...postData,
+			accessToken: session?.accessToken as string,
+		});
+
 		if (!newPost) return null;
+
 		postDispatch({ type: PCActionType.POSTS_ADD, payload: newPost });
 
 		return newPost;
+	};
+
+	const onRemovePostFn = async (id: string) => {
+		const response = await services.api.posts.remove({ id });
+
+		if (!response.ok) {
+			throw new Error('Failed to delete post');
+		}
+		postDispatch({ type: PCActionType.POSTS_DELETE, payload: id });
+	};
+
+	/**
+	 *
+	 * ============== HELPERS ==============
+	 *
+	 */
+
+	const getOldestPostId = () => {
+		const oldestPost = postState.posts[postState.posts.length - 1];
+		return oldestPost ? oldestPost.id : encodeTime(new Date().getTime(), 10) + '0000000000000000';
 	};
 
 	return (
@@ -83,14 +267,6 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 				</div>
 			)}
 
-			{hasUpdate && (
-				<div className="text-slate-500 mb-8">
-					<Button colorScheme="gradient" size="L" icon="repost" onClick={() => showLatestPosts()}>
-						World is changing, update your feed.
-					</Button>
-				</div>
-			)}
-
 			{canAdd && (
 				<Grid variant="col" gap="M" marginBelow="M">
 					<PostCreator
@@ -100,6 +276,14 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 						onAddPost={onAddPostFn}
 					/>
 				</Grid>
+			)}
+
+			{updateRequest.type && (
+				<div className="text-slate-500 mb-8">
+					<Button colorScheme="gradient" size="L" icon="repost" onClick={() => showLatestPosts()}>
+						World is changing, update your feed.
+					</Button>
+				</div>
 			)}
 
 			<PostList posts={postState.posts} onRemovePost={onRemovePostFn} />
