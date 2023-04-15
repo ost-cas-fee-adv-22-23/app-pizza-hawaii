@@ -20,7 +20,7 @@ import ProjectSettings from '../../data/ProjectSettings.json';
 import PDReducer, { ActionType as PDActionType, initialState as initialPDState } from '../../reducer/postDetailReducer';
 import { postsService } from '../../services/api/posts/';
 import { TPost, TUser } from '../../types';
-import ImageModal from '../ImageModal';
+import ImageModal, { TModalPicture } from '../ImageModal';
 
 /*
  * Type
@@ -81,6 +81,16 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 
 	const setting = postItemVariantMap[variant] || postItemVariantMap.detailpage;
 
+	const isFreshPost = new Date(post.createdAt).getTime() > new Date().getTime() - 45 * 60 * 1000;
+	const picture: TModalPicture = {
+		src: post.mediaUrl,
+		width: ProjectSettings.images.post.width,
+		height:
+			(ProjectSettings.images.header.width / ProjectSettings.images.header.aspectRatio[0]) *
+			ProjectSettings.images.header.aspectRatio[1],
+		alt: `Image of ${post.user.displayName}`,
+	};
+
 	// like and unlike function
 	const handleLike = async () => {
 		let response;
@@ -102,8 +112,6 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 	const handleDeletePost = async () => {
 		onDeletePost && onDeletePost(post?.id);
 	};
-
-	const isFreshPost = new Date(post.createdAt).getTime() > new Date().getTime() - 45 * 60 * 1000;
 
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
@@ -157,13 +165,10 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 			{post.mediaUrl && (
 				<ImageOverlay preset="enlarge" buttonLabel="Enlarge image in modal" onClick={() => setShowImageModal(true)}>
 					<Image
-						width={ProjectSettings.images.post.width}
-						height={
-							(ProjectSettings.images.post.width / ProjectSettings.images.post.aspectRatio[0]) *
-							ProjectSettings.images.post.aspectRatio[1]
-						}
-						src={post.mediaUrl}
-						alt={`Image of ${post.user.displayName}`}
+						width={picture.width}
+						height={picture.height}
+						src={picture.src}
+						alt={picture.alt}
 						imageComponent={NextImage}
 					/>
 				</ImageOverlay>
@@ -230,7 +235,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 				</Grid>
 			)}
 
-			{showImageModal && <ImageModal post={post} onClose={() => setShowImageModal(false)} />}
+			{showImageModal && <ImageModal picture={picture} onClose={() => setShowImageModal(false)} />}
 		</UserContentCard>
 	);
 };
