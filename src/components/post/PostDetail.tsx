@@ -1,7 +1,10 @@
 import { Grid } from '@smartive-education/pizza-hawaii';
+import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import { FC } from 'react';
+import { FC, useReducer } from 'react';
 
+import PDReducer, { ActionType as PDActionType, initialState as initialPDState } from '../../reducer/postDetailReducer';
+import { services } from '../../services';
 import { TPost, TUser } from '../../types';
 import { PostCreator, TAddPostProps } from './PostCreator';
 import { PostItem } from './PostItem';
@@ -9,19 +12,48 @@ import { PostList } from './PostList';
 
 type TPostDetailProps = {
 	post: TPost;
-	replies?: TPost[];
-	onRemovePost?: (id: string) => void;
-	onAddReply?: (data: TAddPostProps) => Promise<TPost | null>;
 };
 
-export const PostDetail: FC<TPostDetailProps> = ({ post, replies, onRemovePost, onAddReply }) => {
+export const PostDetail: FC<TPostDetailProps> = ({ post }) => {
+	const [postState, postDispatch] = useReducer(PDReducer, {
+		...initialPDState,
+		...post,
+	});
+
+	const router = useRouter();
 	const { data: session } = useSession();
 	const currentUser = session?.user as TUser;
 
 	const textAreaId = `post-${post?.id}-reply`;
 
+	const onAddReply = async (postData: TAddPostProps) => {
+		const newReply = await services.posts.createPost({
+			...postData,
+			accessToken: session?.accessToken as string,
+		});
+
+		postDispatch({ type: PDActionType.REPLY_ADD, payload: newReply });
+
+		return newReply;
+	};
+
+	const onRemovePost = async (id: string) => {
+		const response = await services.api.posts.remove({ id });
+
+		if (!response.ok) {
+			throw new Error('Failed to delete post');
+		}
+
+		if (postState.id === id) {
+			// go back to overview page
+			router.push('/');
+		} else {
+			postDispatch({ type: PDActionType.REPLY_DELETE, payload: id });
+		}
+	};
+
 	const onAnswerPost = (id: string) => {
-		const anserPost = replies?.find((reply) => reply.id === id);
+		const answerPost = postState.replies?.find((reply) => reply.id === id);
 
 		const textarea = document.getElementById(textAreaId) as HTMLTextAreaElement;
 		if (!textarea) {
@@ -35,7 +67,7 @@ export const PostDetail: FC<TPostDetailProps> = ({ post, replies, onRemovePost, 
 		textarea?.focus();
 
 		// add markdownLink to PostCreator textarea
-		const markdownLink = `@[${anserPost?.user?.userName}|${anserPost?.user?.id}]`;
+		const markdownLink = `@[${answerPost?.user?.userName}|${answerPost?.user?.id}]`;
 
 		// set text to textarea and prepend markdownLink and check if there is already a text then add a space
 		textarea?.setRangeText(
@@ -63,8 +95,13 @@ export const PostDetail: FC<TPostDetailProps> = ({ post, replies, onRemovePost, 
 				</Grid>
 			)}
 
-			{replies && (
-				<PostList posts={replies} variant="response" onRemovePost={onRemovePost} onAnswerPost={onAnswerPost} />
+			{postState.replies && (
+				<PostList
+					posts={postState.replies}
+					variant="response"
+					onRemovePost={onRemovePost}
+					onAnswerPost={onAnswerPost}
+				/>
 			)}
 		</Grid>
 	);

@@ -1,12 +1,9 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ErrorPage from 'next/error';
-import { useRouter } from 'next/router';
 import { getToken } from 'next-auth/jwt';
-import { useSession } from 'next-auth/react';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
-import { TAddPostProps } from '../../components/post/PostCreator';
 import { PostDetail } from '../../components/post/PostDetail';
 import { services } from '../../services';
 import { TPost } from '../../types';
@@ -17,37 +14,6 @@ type TUserPage = {
 };
 
 const DetailPage: FC<TUserPage> = ({ post, error }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	const { data: session } = useSession();
-	const router = useRouter();
-
-	const [replies, setReplies] = useState<TPost[]>(post?.replies);
-
-	const onAddReply = async (postData: TAddPostProps) => {
-		const newReply = await services.posts.createPost({
-			...postData,
-			accessToken: session?.accessToken as string,
-		});
-
-		setReplies([newReply, ...(post?.replies as TPost[])]);
-
-		return newReply;
-	};
-
-	const onRemovePost = async (id: string) => {
-		const response = await services.api.posts.remove({ id });
-
-		if (!response.ok) {
-			throw new Error('Failed to delete post');
-		}
-
-		if (post.id === id) {
-			// go back to overview page
-			router.push('/');
-		} else {
-			setReplies(replies.filter((reply: TPost) => reply.id !== id));
-		}
-	};
-
 	if (error) {
 		return <ErrorPage statusCode={500} title={error} />;
 	}
@@ -61,7 +27,7 @@ const DetailPage: FC<TUserPage> = ({ post, error }: InferGetServerSidePropsType<
 				pageType: 'article',
 			}}
 		>
-			<PostDetail post={post} replies={replies} onAddReply={onAddReply} onRemovePost={onRemovePost} />
+			<PostDetail post={post} />
 		</MainLayout>
 	);
 };
