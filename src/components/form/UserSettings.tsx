@@ -53,7 +53,8 @@ const UserSettings: FC<TUserSettings> = ({ setSuccess }) => {
 	}, []);
 
 	const onSubmit = (data: TUserFormData) => {
-		console.log('onSubmit', data);
+		// eslint-disable-next-line no-console
+		console.log(data);
 
 		// Update user
 		const updateFN = async () => {

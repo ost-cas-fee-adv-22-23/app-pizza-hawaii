@@ -17,9 +17,15 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 		<>
 			<Head>
 				<meta charSet="utf-8" />
-				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-				<link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-				<link rel="icon" type="image/png" href="./favicon.png" />
+				<meta name="theme-color" content="#7c3aed" />
+				<meta
+					name="viewport"
+					content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+				/>
+				<link rel="manifest" crossOrigin="use-credentials" href="/manifest.json" />
+				<link rel="apple-touch-icon" href="/static/icon-192x192.png" />
+				<link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
+				<link rel="icon" type="image/png" href="/static/favicon.png" />
 			</Head>
 			<SessionProvider session={session}>
 				<ErrorBoundary>
