@@ -3,7 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import { getToken } from 'next-auth/jwt';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { PostCollection } from '../components/post/PostCollection';
@@ -16,20 +16,22 @@ export default function PageHome({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	console.log('index postCount', postCount);
 	console.log('index  posts', posts);
+
+	// if posts are undefined we are re-routing (replacing!) to the same page to trigger the getServerSideProps
+	// this happens rarely but we need to handle it, when a user navigates back from a client-side rendered page
+	// and the page is not in the cache anymore or next sends just json data to the client instead of the full page
 	const router = useRouter();
+	useEffect(() => {
+		if (!posts) {
+			router.replace(router.asPath);
+		}
+	}, [posts, router]);
 
 	if (error) {
 		return <ErrorPage statusCode={500} title={error} />;
 	}
 
-	// if posts are undefined we are re-routing (replacing!) to the same page to trigger the getServerSideProps
-	// this happens rarely but we need to handle it, when a user navigates back from a client-side rendered page
-	// and the page is not in the cache anymore or next sends just json data to the client instead of the full page
-	if (!posts) {
-		router.replace(router.asPath);
-	}
-
-	const canLoadMore = postCount > posts?.length || false;
+	const canLoadMore = postCount > 0 || false;
 
 	return (
 		<MainLayout
