@@ -1,6 +1,7 @@
 import { Headline } from '@smartive-education/pizza-hawaii';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ErrorPage from 'next/error';
+import { useRouter } from 'next/router';
 import { getToken } from 'next-auth/jwt';
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
@@ -14,9 +15,14 @@ export default function PageHome({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	console.log('index postCount', postCount);
 	console.log('index  posts', posts);
+	const router = useRouter();
 
 	if (error) {
 		return <ErrorPage statusCode={500} title={error} />;
+	}
+	// if posts are undefined we are re-routing to the same page to trigger the getServerSideProps
+	if (!posts) {
+		router.replace(router.asPath);
 	}
 
 	const canLoadMore = postCount > posts?.length || false;
