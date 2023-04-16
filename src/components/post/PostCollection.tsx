@@ -103,7 +103,10 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 			return;
 		}
 
-		const latestPostUlidDate = postState.posts?.length ? postState.posts[0].id : encodeTime(new Date().getTime(), 10) + '0000000000000000';
+		const latestPostUlidDate = postState.posts?.length
+			? postState.posts[0].id
+			: encodeTime(new Date().getTime(), 10) + '0000000000000000';
+
 		const oldestPostId = getOldestPostId();
 
 		let requestObject = {
