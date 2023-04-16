@@ -2,6 +2,7 @@ import { Headline } from '@smartive-education/pizza-hawaii';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ErrorPage from 'next/error';
 import { getToken } from 'next-auth/jwt';
+import React from 'react';
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { PostCollection } from '../components/post/PostCollection';
@@ -31,7 +32,7 @@ export default function PageHome({
 				<PostCollection
 					headline="Whats new in Mumble...."
 					posts={posts}
-					canLoadMore={postCount > posts.length}
+					canLoadMore={postCount > 0}
 					canAdd={true}
 					autoUpdate={true}
 				/>

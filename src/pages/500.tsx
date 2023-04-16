@@ -1,6 +1,6 @@
 import { Headline, Link, Richtext } from '@smartive-education/pizza-hawaii';
 import NextLink from 'next/link';
-import { FC } from 'react';
+import React, { FC } from 'react';
 
 import { LoginLayout } from '../components/layoutComponents/LoginLayout';
 

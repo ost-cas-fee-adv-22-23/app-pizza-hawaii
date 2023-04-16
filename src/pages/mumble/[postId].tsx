@@ -1,7 +1,7 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ErrorPage from 'next/error';
 import { getToken } from 'next-auth/jwt';
-import { FC } from 'react';
+import React, { FC } from 'react';
 
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { PostDetail } from '../../components/post/PostDetail';

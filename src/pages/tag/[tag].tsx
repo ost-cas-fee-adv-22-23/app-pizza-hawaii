@@ -1,7 +1,7 @@
 import { Headline } from '@smartive-education/pizza-hawaii';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
-import { FC, useState } from 'react';
+import React, { FC, useState } from 'react';
 
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { PostList } from '../../components/post/PostList';

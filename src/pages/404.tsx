@@ -1,5 +1,6 @@
 import { Headline, Link, Richtext } from '@smartive-education/pizza-hawaii';
 import NextLink from 'next/link';
+import React from 'react';
 
 import { LoginLayout } from '../components/layoutComponents/LoginLayout';
 
