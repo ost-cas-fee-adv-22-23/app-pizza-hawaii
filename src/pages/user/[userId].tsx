@@ -9,7 +9,6 @@ import React, { ChangeEvent, FC, useState } from 'react';
 import { FollowUserButton } from '../../components/FollowUserButton';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { PostCollection } from '../../components/post/PostCollection';
-import { PostList } from '../../components/post/PostList';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { UserRecommender } from '../../components/widgets/UserRecommender';
 import { services } from '../../services';
@@ -45,25 +44,11 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	}
 
 	const isCurrentUser = currentUser?.id === user.id;
-	const postsToRender: Record<string, TFetchDataResult> = {
-		posts,
-		likes,
-	};
 
 	const switchoptions = [
 		{ label: 'Meine Mumbles', value: POST_TYPE.POSTS },
 		{ label: 'Meine Likes', value: POST_TYPE.LIKES },
 	];
-
-	const onRemovePost = async (id: string) => {
-		const response = await services.api.posts.remove({ id });
-
-		if (!response.ok) {
-			throw new Error('Failed to delete post');
-		}
-
-		posts = posts.filter((post: TPost) => post.id !== id) as TPost[];
-	};
 
 	const isFreshUser = new Date(user.createdAt).getTime() > new Date().getTime() - 45 * 60 * 1000;
 
