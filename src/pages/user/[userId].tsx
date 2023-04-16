@@ -1,4 +1,4 @@
-import { Grid, Headline, IconText, Richtext, Switch, TimeStamp } from '@smartive-education/pizza-hawaii';
+import { Grid, Headline, IconText, Label, Richtext, Switch, TimeStamp } from '@smartive-education/pizza-hawaii';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ErrorPage from 'next/error';
 import NextLink from 'next/link';
@@ -8,6 +8,7 @@ import { ChangeEvent, FC, useState } from 'react';
 
 import { FollowUserButton } from '../../components/FollowUserButton';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
+import { PostCollection } from '../../components/post/PostCollection';
 import { PostList } from '../../components/post/PostList';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { UserRecommender } from '../../components/widgets/UserRecommender';
@@ -18,11 +19,14 @@ import { TPost, TUser } from '../../types';
  * @description
  * This page shows detail of any user and the curent user profile with some additional features.
  */
-
+type TFetchDataResult = {
+	posts: TPost[];
+	count: number;
+};
 type TUserPage = {
 	user: TUser;
-	posts: TPost[];
-	likes: TPost[];
+	posts: TFetchDataResult;
+	likes: TFetchDataResult;
 };
 
 const POST_TYPE: Record<string, string> = {
@@ -41,7 +45,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	}
 
 	const isCurrentUser = currentUser?.id === user.id;
-	const postsToRender: Record<string, TPost[]> = {
+	const postsToRender: Record<string, TFetchDataResult> = {
 		posts,
 		likes,
 	};
@@ -60,6 +64,8 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 
 		posts = posts.filter((post: TPost) => post.id !== id) as TPost[];
 	};
+
+	const isFreshUser = new Date(user.createdAt).getTime() > new Date().getTime() - 45 * 60 * 1000;
 
 	return (
 		<MainLayout
@@ -85,12 +91,30 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 					<IconText icon="location" colorScheme="slate" size="S">
 						{user.city}
 					</IconText>
-					<IconText icon="calendar" colorScheme="slate" size="S">
-						<TimeStamp date={user.createdAt} prefix="Mitglied seit" />
-					</IconText>
+					{user.createdAt && new Date(user.createdAt) && (
+						<IconText icon="calendar" colorScheme="slate" size="S">
+							{isFreshUser ? (
+								<time
+									title={
+										new Date(user.createdAt).toLocaleDateString('de-CH') +
+										' ' +
+										new Date(user.createdAt).toLocaleTimeString('de-CH', {
+											hour: '2-digit',
+											minute: '2-digit',
+										})
+									}
+									dateTime={new Date(user.createdAt).toISOString()}
+								>
+									neues Mitglied
+								</time>
+							) : (
+								<TimeStamp date={user.createdAt} prefix="Mitglied seit" />
+							)}
+						</IconText>
+					)}
 				</Grid>
 
-				<div className="text-slate-400 mb-8">
+				<div className="text-slate-500 mb-8">
 					<Richtext size="M">{user.bio}</Richtext>
 				</div>
 
@@ -117,10 +141,46 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 							/>
 						</Grid>
 
-						<PostList posts={postsToRender[currentPostType]} onRemovePost={onRemovePost} />
+						{currentPostType === POST_TYPE.POSTS && (
+							<PostCollection
+								posts={posts.posts}
+								canLoadMore={posts.count > 0}
+								canAdd={false}
+								autoUpdate={true}
+								filter={{
+									creator: user.id,
+								}}
+							/>
+						)}
+						{currentPostType === POST_TYPE.LIKES && (
+							<>
+								<PostCollection
+									posts={likes.posts}
+									canLoadMore={false}
+									canAdd={false}
+									autoUpdate={false}
+									filter={{
+										likedBy: [user.id],
+									}}
+								/>
+								{likes.count > 0 && (
+									<Label as="p" size="M">
+										And about {likes.count} more ...
+									</Label>
+								)}
+							</>
+						)}
 					</>
 				) : (
-					<PostList posts={posts} onRemovePost={onRemovePost} />
+					<PostCollection
+						posts={posts.posts}
+						canLoadMore={posts.count > 0}
+						canAdd={false}
+						autoUpdate={true}
+						filter={{
+							creator: user.id,
+						}}
+					/>
 				)}
 			</>
 		</MainLayout>
@@ -140,21 +200,29 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 			accessToken: session?.accessToken as string,
 		});
 
-		const posts = await services.posts.getPostsOfUser({
-			id: userId,
+		const posts = await services.posts.getPosts({
+			creator: userId,
+			limit: 5,
 			accessToken: session?.accessToken as string,
 		});
 
-		const likes = await services.posts.getPostsLikedByUser({
-			id: userId,
+		const likes = await services.posts.getPostsByQuery({
+			likedBy: [userId],
+			limit: 20,
 			accessToken: session?.accessToken as string,
 		});
 
 		return {
 			props: {
 				user,
-				posts,
-				likes,
+				posts: {
+					posts: posts.posts,
+					count: posts.count,
+				},
+				likes: {
+					posts: likes.posts,
+					count: likes.count,
+				},
 			},
 		};
 	} catch (error) {

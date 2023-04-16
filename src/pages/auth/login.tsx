@@ -61,7 +61,7 @@ export default function LoginPage() {
 					>
 						Login via Zitadel
 					</Button>
-					<Link href="/auth/register" component={NextLink}>
+					<Link href="/auth/signup" component={NextLink}>
 						Jetzt registrieren
 					</Link>
 				</Grid>

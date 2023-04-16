@@ -5,9 +5,9 @@ export type TPost = {
 	creator: string;
 	text: string;
 	mediaUrl?: string;
-	mediaType: string;
-	likeCount: number;
-	likedByUser: boolean;
+	mediaType?: string;
+	likeCount?: number;
+	likedByUser?: boolean;
 	replyCount?: number;
 	createdAt: string;
 	type: 'post' | 'reply';
@@ -16,4 +16,4 @@ export type TPost = {
 	parentId?: string;
 };
 
-export type TRawPost = Omit<TPost, 'createdAt, user, replies'>;
+export type TRawPost = Omit<TPost, 'createdAt' | 'user' | 'replies'>;

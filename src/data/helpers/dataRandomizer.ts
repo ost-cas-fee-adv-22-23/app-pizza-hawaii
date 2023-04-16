@@ -4,7 +4,7 @@
  * @returns hometown, memberSince, shortBio
  */
 
-export const homeTown = () => {
+export const homeTown = (id: string) => {
 	const swissCities = [
 		'Zürich',
 		'St. Gallä',
@@ -18,24 +18,17 @@ export const homeTown = () => {
 		'Kilchberg',
 	];
 
-	const randomNumber = Math.floor(Math.random() * swissCities.length);
-
-	const homeTown = swissCities[randomNumber];
-	return homeTown;
+	return swissCities[parseInt(id, 10) % swissCities.length];
 };
 
-export const memberSince = () => {
-	const randomNumber = new Date(
-		2022 + Math.random(),
-		Math.floor(Math.random() * 12),
-		Math.floor(Math.random() * 30)
-	).toISOString();
-
-	const memberSince = randomNumber;
-	return memberSince;
+export const memberSince = (id: string) => {
+	const fixedDate = new Date(2023, 0, 1);
+	const randomOffset = parseInt(id.slice(-6), 16) % 365;
+	const offsetDate = new Date(fixedDate.getFullYear(), fixedDate.getMonth(), fixedDate.getDate() + randomOffset);
+	return offsetDate.toISOString();
 };
 
-export const shortBio = () => {
+export const shortBio = (id: string) => {
 	const randomLifeStory = [
 		'Internet geek. Friendly introvert. Prone to fits of apathy. Passionate thinker. Beer fan.',
 		'Award-winning internet fanatic. General communicator. Tv maven. Incurable zombie practitioner.',
@@ -52,7 +45,5 @@ export const shortBio = () => {
 		'Amateur social media Mumble maven. Extreme Snowboard advocate. Infuriatingly humble internet geek. Web fanatic. Creator.',
 	];
 
-	const randomNumber = Math.floor(Math.random() * randomLifeStory.length);
-	const shortBio = randomLifeStory[randomNumber];
-	return shortBio;
+	return randomLifeStory[parseInt(id, 10) % randomLifeStory.length];
 };

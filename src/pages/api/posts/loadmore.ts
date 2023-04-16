@@ -11,8 +11,14 @@ import { services } from '../../../services';
  */
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-	const { newerThan, olderThan } = req.query;
+	const { newerThan, olderThan, limit, ...rest } = req.query;
 	const session = await getToken({ req });
+
+	// we don't want to return more than 100 posts at a time to avoid performance and security issues
+	const DEFAULT_LIMIT = 15;
+	const MAX_LIMIT = 100;
+
+	const currentLimit = Math.min(MAX_LIMIT, limit ? parseInt(limit as string, 10) : DEFAULT_LIMIT);
 
 	if (!session) {
 		return res.status(401).json({
@@ -23,7 +29,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 	services.posts
 		.getPosts({
-			limit: 15, // limit is hardcoded so nobody can request more than 10 posts via the api
+			...rest,
+			limit: currentLimit,
 			newerThan: newerThan as string | undefined,
 			olderThan: olderThan as string | undefined,
 			accessToken: session?.accessToken as string,
