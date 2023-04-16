@@ -31,7 +31,7 @@ export default function PageHome({
 				</div>
 				<PostCollection
 					headline="Whats new in Mumble...."
-					posts={posts}
+					posts={posts || []}
 					canLoadMore={postCount > 0}
 					canAdd={true}
 					autoUpdate={true}

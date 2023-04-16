@@ -17,7 +17,7 @@ type TPostListProps = {
 export const PostList: FC<TPostListProps> = ({
 	posts,
 	variant = 'timeline',
-	loadingItems = 0,
+	loadingItems = 3,
 	noPostsMessage = 'Keine Posts vorhanden.',
 	onRemovePost,
 	onAnswerPost,
@@ -28,8 +28,8 @@ export const PostList: FC<TPostListProps> = ({
 
 	return (
 		<Grid variant="col" gap="M" marginBelow="M">
-			{loadingItems > 0
-				? Array.from(Array(loadingItems).keys()).map((i) => <PostSkeleton key={i} showImage={Math.random() > 0.5} />)
+			{loadingItems > 0 && !posts?.length
+				? Array.from(Array(loadingItems).keys()).map((i) => <PostSkeleton key={i} showImage={(i % 2 === 1)} />)
 				: posts?.map((post: TPost) => {
 						return (
 							<PostItem
