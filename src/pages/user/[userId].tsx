@@ -4,7 +4,7 @@ import ErrorPage from 'next/error';
 import NextLink from 'next/link';
 import { getToken } from 'next-auth/jwt';
 import { useSession } from 'next-auth/react';
-import { ChangeEvent, FC, useState } from 'react';
+import React, { ChangeEvent, FC, useState } from 'react';
 
 import { FollowUserButton } from '../../components/FollowUserButton';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';

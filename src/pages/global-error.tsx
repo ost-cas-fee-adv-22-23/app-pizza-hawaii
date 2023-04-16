@@ -2,6 +2,8 @@
 /* eslint-disable @next/next/no-head-element */
 'use client';
 
+import React from 'react';
+
 // global-error.js replaces the root layout.js when
 // active and so must define its own <html> and <body> tags
 export default function GlobalError({ error }: { error?: Error }) {
