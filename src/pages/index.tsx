@@ -20,12 +20,16 @@ export default function PageHome({
 	if (error) {
 		return <ErrorPage statusCode={500} title={error} />;
 	}
-	// if posts are undefined we are re-routing to the same page to trigger the getServerSideProps
+
+	// if posts are undefined we are re-routing (replacing!) to the same page to trigger the getServerSideProps
+	// this happens rarely but we need to handle it, when a user navigates back from a client-side rendered page
+	// and the page is not in the cache anymore or next sends just json data to the client instead of the full page
 	if (!posts) {
 		router.replace(router.asPath);
 	}
 
 	const canLoadMore = postCount > posts?.length || false;
+
 	return (
 		<MainLayout
 			title="Mumble - Welcome to Mumble"
