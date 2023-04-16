@@ -1,5 +1,8 @@
-[![.github/workflows/deploy.yml](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/deploy.yml)
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# CAS FEE ADV Application - Pizza Hawaii 🍕 
+
+This Webapplication, developed by [Felix Adam](https://github.com/flxtagi) and [Jürgen Rudigier](https://github.com/rudigier), is a fictional Twitter clone named "Mumble".
+
+It is created as a part of a Frontend Engineering Advanced (CAS) course, to implement our [component Library](https://smartive-education.github.io/design-system-component-library-pizza-hawaii/) and with data endpoint provided by [qwacker API](https://qwacker-api-http-prod-4cxdci3drq-oa.a.run.app/rest/#/) and the [zitadel](https://zitadel.cloud/) login provider.
 
 
 ## Live Demopage
@@ -20,7 +23,7 @@ We need a github Token and a `.npmrc` to get access to the mumble npm package at
 
 1. Create a <b>classic</b> github token and add to `.npmrc`. (create this file manually)
 
-[Instructions](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-personal-access-token-classic) on the Github page
+[Github Token Instructions](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-personal-access-token-classic) on the Github page
 
 To authenticate by adding your personal access token (classic) to your `~/.npmrc` file, edit the `~/.npmrc` file for your project to include the following line, replacing TOKEN with your personal access token.
 
@@ -31,7 +34,6 @@ To authenticate by adding your personal access token (classic) to your `~/.npmrc
 ```
 Tip: You can then set the token as an environment variable with the name `NPM_TOKEN` or add it to your `.npmrc` file.
 **Please make sure to keep your token secure and not to share it with anyone.**
-
 
 
 2. Create a `.env` file copy these keys and insert confidential values 
@@ -60,10 +62,11 @@ npm run dev
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser.
+
+4. Register a User at Zitadel. 
 
 You are good to go!  🎉
-
 
 ## Scripts
 
@@ -106,6 +109,16 @@ npm run prettier:fix
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
 
+
+## PWA
+
+The application uses the default settings of [next-pwa](https://github.com/shadowwalker/next-pwa) lib, which provides the following main features:
+
+- caching static assets 
+- install on native device (add-to-Homescreen)
+- offline fallback page
+
+
 ## git semantic commit message 
 
 We use these semantics while committing to maintain a meaningful commit history:
@@ -125,11 +138,9 @@ We use these semantics while committing to maintain a meaningful commit history:
 `chore:` updating scripts, libraries changes, configurations
 
 ## License
-The Pizza Hawaii App is open source software licensed under the MIT license. See the LICENSE file for more information. 
+The Pizza Hawaii App is open source software licensed under the MIT license.
 
 
-## Contact
-If you have any questions or feedback about the Pizza Hawaii App, please contact us at 
 
 
 
