@@ -14,7 +14,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 	if (req.method === 'PUT') {
 		const { userName } = req.body;
-		console.log(userName);
 		body = JSON.stringify({
 			userName,
 		});

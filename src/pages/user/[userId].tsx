@@ -3,7 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import NextLink from 'next/link';
 import { getToken } from 'next-auth/jwt';
 import { useSession } from 'next-auth/react';
-import { ChangeEvent, FC, useState } from 'react';
+import React, { ChangeEvent, FC, useState } from 'react';
 
 import { FollowUserButton } from '../../components/FollowUserButton';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
@@ -43,29 +43,11 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	}
 
 	const isCurrentUser = currentUser?.id === user.id;
-	// TODO is this still needed here?
-
-	const postsToRender: Record<string, TFetchDataResult> = {
-		posts,
-		likes,
-	};
 
 	const switchoptions = [
 		{ label: 'Meine Mumbles', value: POST_TYPE.POSTS },
 		{ label: 'Meine Likes', value: POST_TYPE.LIKES },
 	];
-
-	// TODO is this still needed here?
-
-	const onRemovePost = async (id: string) => {
-		const response = await services.api.posts.remove({ id });
-
-		if (!response.ok) {
-			throw new Error('Failed to delete post');
-		}
-
-		posts = posts.filter((post: TPost) => post.id !== id) as TPost[];
-	};
 
 	const isFreshUser = new Date(user.createdAt).getTime() > new Date().getTime() - 45 * 60 * 1000;
 

@@ -14,7 +14,7 @@ import {
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
-import React, { FC, useReducer, useState } from 'react';
+import React, { FC, useEffect, useReducer, useState } from 'react';
 
 import ProjectSettings from '../../data/ProjectSettings.json';
 import PDReducer, { ActionType as PDActionType, initialState as initialPDState } from '../../reducer/postDetailReducer';
@@ -75,13 +75,17 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 	});
 
 	const [showImageModal, setShowImageModal] = useState(false);
+	const [hydrationDone, setHydrationDone] = useState(false);
+
+	useEffect(() => {
+		setHydrationDone(true);
+	}, []);
 
 	const { data: session } = useSession();
 	const currentUser = session?.user as TUser;
 
 	const setting = postItemVariantMap[variant] || postItemVariantMap.detailpage;
 
-	const isFreshPost = new Date(post.createdAt).getTime() > new Date().getTime() - 45 * 60 * 1000;
 	const picture: TModalPicture = {
 		src: post.mediaUrl,
 		width: ProjectSettings.images.post.width,
@@ -113,36 +117,27 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 		onDeletePost && onDeletePost(post?.id);
 	};
 
+	const limitSizeOfText = (text: string, limit: number) => {
+		if (text.length > limit) {
+			return text.slice(0, limit) + '...';
+		}
+		return text;
+	};
+
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
-				{`${post?.user.displayName}`}
+				{limitSizeOfText(post?.user.displayName, 30)}
 			</Label>
 			<Grid variant="row" gap="S">
 				<NextLink href={post?.user.profileLink}>
 					<IconText icon="profile" colorScheme="violet" size="S">
-						{post?.user.userName}
+						{limitSizeOfText(post?.user.userName, 20)}
 					</IconText>
 				</NextLink>
 				{post.createdAt && new Date(post.createdAt) && (
 					<IconText icon="calendar" colorScheme="slate" size="S">
-						{isFreshPost ? (
-							<time
-								title={
-									new Date(post.createdAt).toLocaleDateString('de-CH') +
-									' ' +
-									new Date(post.createdAt).toLocaleTimeString('de-CH', {
-										hour: '2-digit',
-										minute: '2-digit',
-									})
-								}
-								dateTime={new Date(post.createdAt).toISOString()}
-							>
-								gerade eben
-							</time>
-						) : (
-							<TimeStamp date={post?.createdAt} />
-						)}
+						{hydrationDone && <TimeStamp date={post?.createdAt} />}
 					</IconText>
 				)}
 			</Grid>

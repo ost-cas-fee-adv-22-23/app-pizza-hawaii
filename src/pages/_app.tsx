@@ -6,6 +6,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
+import React from 'react';
 
 import ErrorBoundary from '../components/ErrorBoundary';
 import { ActiveTabContextProvider } from '../context/useActiveTab';

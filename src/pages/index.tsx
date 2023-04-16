@@ -3,6 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import { getToken } from 'next-auth/jwt';
+import React from 'react';
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { PostCollection } from '../components/post/PostCollection';

@@ -30,7 +30,6 @@ export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLa
 
 	// check if form is valid
 	useEffect(() => {
-		console.log('state', state);
 		// check if all fields are empty
 		const isEmpty = Object.values(state).every((value) => value === '');
 
