@@ -103,7 +103,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 			return;
 		}
 
-		const latestPostUlidDate = postState.posts[0].id;
+		const latestPostUlidDate = postState.posts?.length ? postState.posts[0].id : encodeTime(new Date().getTime(), 10) + '0000000000000000';
 		const oldestPostId = getOldestPostId();
 
 		let requestObject = {
@@ -119,7 +119,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 				// newerThan: latest post id (to get all new posts)
 				requestObject = {
 					...requestObject,
-					newerThan: postState.posts[0].id,
+					newerThan: latestPostUlidDate,
 				};
 				break;
 
