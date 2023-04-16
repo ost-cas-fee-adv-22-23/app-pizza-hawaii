@@ -29,7 +29,7 @@ export const PostList: FC<TPostListProps> = ({
 	return (
 		<Grid variant="col" gap="M" marginBelow="M">
 			{loadingItems > 0 && !posts?.length
-				? Array.from(Array(loadingItems).keys()).map((i) => <PostSkeleton key={i} showImage={(i % 2 === 1)} />)
+				? Array.from(Array(loadingItems).keys()).map((i) => <PostSkeleton key={i} showImage={i % 2 === 1} />)
 				: posts?.map((post: TPost) => {
 						return (
 							<PostItem
