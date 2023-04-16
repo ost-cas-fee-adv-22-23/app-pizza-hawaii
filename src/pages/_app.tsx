@@ -24,8 +24,8 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 				/>
 				<link rel="manifest" crossOrigin="use-credentials" href="/manifest.json" />
 				<link rel="apple-touch-icon" href="/public/icon-192x192.png" />
-				<link rel="icon" type="image/svg+xml" href="/public/favicon.svg" />
-				<link rel="icon" type="image/png" href="/public/favicon.png" />
+				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+				<link rel="icon" type="image/png" href="/favicon.png" />
 			</Head>
 			<SessionProvider session={session}>
 				<ErrorBoundary>

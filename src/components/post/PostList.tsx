@@ -31,7 +31,7 @@ export const PostList: FC<TPostListProps> = ({
 		setTimeout(() => {
 			setShowPosts(posts);
 			setIsLoading(false);
-		}, 500);
+		}, 150);
 	}, [posts]);
 
 	if (!showPosts && !isLoading) {

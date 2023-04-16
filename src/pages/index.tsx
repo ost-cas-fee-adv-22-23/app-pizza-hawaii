@@ -12,13 +12,14 @@ export default function PageHome({
 	posts,
 	error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	if (error) {
-		return <ErrorPage statusCode={500} title={error} />;
-	}
-	const loadMorePosts = postCount > posts?.length || false;
 	console.log('index postCount', postCount);
 	console.log('index  posts', posts);
 
+	if (error) {
+		return <ErrorPage statusCode={500} title={error} />;
+	}
+
+	const canLoadMore = postCount > posts?.length || false;
 	return (
 		<MainLayout
 			title="Mumble - Welcome to Mumble"
@@ -31,13 +32,17 @@ export default function PageHome({
 				<div className="mb-2 text-violet-600">
 					<Headline level={2}>Welcome to Mumble</Headline>
 				</div>
-				<PostCollection
-					headline="Whats new in Mumble...."
-					posts={posts}
-					canLoadMore={loadMorePosts}
-					canAdd={true}
-					autoUpdate={true}
-				/>
+				{!posts ? (
+					<div className="flex justify-center">loading newest mumbles...</div>
+				) : (
+					<PostCollection
+						headline="Whats new in Mumble...."
+						posts={posts}
+						canLoadMore={canLoadMore}
+						canAdd={true}
+						autoUpdate={true}
+					/>
+				)}
 			</>
 		</MainLayout>
 	);

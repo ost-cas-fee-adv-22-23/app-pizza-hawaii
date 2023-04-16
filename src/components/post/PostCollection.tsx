@@ -25,7 +25,7 @@ export type TPostCollectionProps = {
 	headline?: string;
 	posts: TPost[];
 	canAdd?: boolean;
-	canLoadMore?: boolean;
+	canLoadMore: boolean;
 	filter?: TPostCollectionFilter;
 	autoUpdate: boolean;
 };
@@ -299,7 +299,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 
 			{canLoadmore && (
 				<Button colorScheme="slate" onClick={() => onLoadmoreBtn()} disabled={postState.loading}>
-					{postState.loading ? '...' : 'Load more'}
+					{postState.loading ? 'loading ...' : 'Load more'}
 				</Button>
 			)}
 		</>
