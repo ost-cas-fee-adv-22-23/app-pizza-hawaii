@@ -41,7 +41,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	const currentUser = session?.user as TUser;
 
 	if (!user) {
-		return <ErrorPage statusCode={403} title={'User not found.'} />;
+		throw new Error('User not found');
 	}
 
 	const isCurrentUser = currentUser?.id === user.id;
