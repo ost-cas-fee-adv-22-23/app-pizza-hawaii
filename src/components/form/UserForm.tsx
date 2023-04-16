@@ -1,9 +1,12 @@
 import { Button, Form, FormInput, Grid, Label } from '@smartive-education/pizza-hawaii';
 import React, { FC, FormEvent, useEffect, useState } from 'react';
 
-import { TZitadelProfile } from '../../types/Zitadel';
-
-export type TUserFormData = TZitadelProfile;
+export type TUserFormData = {
+	userName: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+};
 
 export type TUserFormErrors = { [key in keyof TUserFormData]?: string };
 
@@ -11,15 +14,17 @@ export type TUserForm = {
 	onSubmit: (data: TUserFormData) => { status: boolean; errors?: TUserFormErrors };
 	user?: TUserFormData;
 	sectionLabel?: string;
+	isLoading?: boolean;
 };
 
 const emptyState: TUserFormData = {
+	userName: '',
 	firstName: '',
 	lastName: '',
-	displayName: '',
+	email: '',
 };
 
-export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLabel }) => {
+export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLabel, isLoading }) => {
 	const [state, setState] = useState(user);
 	const [formIsValid, setFormIsValid] = useState(false);
 	const [errors, setErrors] = useState<TUserFormErrors>({});
@@ -107,16 +112,29 @@ export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLa
 				<Label as="legend" size="XL">
 					{sectionLabel || 'Deine Daten'}
 				</Label>
-				<div className="mt-4">
+				<div className={['mt-4', isLoading && 'opacity-50 animate-pulse'].join(" ")}>
 					<Grid variant="col" gap="M" marginBelow="M">
 						<FormInput
-							name="displayName"
-							label="Display Name"
+							name="userName"
+							label="User Name"
 							type="text"
-							value={state['displayName']}
+							value={state['userName']}
 							onChange={onFieldChange}
-							errorMessage={errors['displayName']}
+							errorMessage={errors['userName']}
 							required
+							icon="mumble"
+							readOnly={!!state['userName']}
+							disabled={!!state['userName']}
+						/>
+						<FormInput
+							name="email"
+							label="Name"
+							type="text"
+							value={state['email']}
+							onChange={onFieldChange}
+							errorMessage={errors['email']}
+							required
+							autoComplete="email"
 						/>
 						<FormInput
 							name="firstName"

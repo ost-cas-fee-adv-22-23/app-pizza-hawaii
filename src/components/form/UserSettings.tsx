@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 
+import { TZitadelUser } from '../../types/Zitadel';
 import { TUserFormData, UserForm } from './UserForm';
 
 type TUserSettings = {
@@ -8,6 +9,7 @@ type TUserSettings = {
 const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
 const UserSettings: FC<TUserSettings> = ({ setSuccess }) => {
 	const [user, setUser] = useState<TUserFormData>();
+	const [isLoading, setIsLoading] = useState(true);
 
 	const getUser = async () => {
 		const res = await fetch(`${BASE_URL}/api/profile`, {
@@ -23,8 +25,13 @@ const UserSettings: FC<TUserSettings> = ({ setSuccess }) => {
 
 		const data = await res.json();
 
-		if (data?.profile) {
-			setUser(data.profile);
+		if (data) {
+			setUser({
+				userName: data.userName,
+				email: data.email.email,
+				firstName: data.profile.firstName,
+				lastName: data.profile.lastName,
+			});
 		}
 	};
 
@@ -35,7 +42,17 @@ const UserSettings: FC<TUserSettings> = ({ setSuccess }) => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify(data),
+				body: JSON.stringify({
+					userName: data.userName,
+					email: {
+						email: data.email,
+					},
+					profile: {
+						firstName: data.firstName,
+						lastName: data.lastName,
+						displayName: `${data.firstName} ${data.lastName}`,
+					},
+				} as TZitadelUser),
 			});
 
 			if (!res.ok) {
@@ -47,7 +64,10 @@ const UserSettings: FC<TUserSettings> = ({ setSuccess }) => {
 	};
 
 	useEffect(() => {
-		getUser();
+		setIsLoading(true);
+		getUser().then(() => {
+			setIsLoading(false);
+		});
 	}, []);
 
 	const onSubmit = (data: TUserFormData) => {
@@ -63,7 +83,7 @@ const UserSettings: FC<TUserSettings> = ({ setSuccess }) => {
 		return { status: true };
 	};
 
-	return <UserForm user={user as TUserFormData} onSubmit={onSubmit} />;
+	return <UserForm user={user as TUserFormData} onSubmit={onSubmit} isLoading={isLoading} />;
 };
 
 export default UserSettings;
