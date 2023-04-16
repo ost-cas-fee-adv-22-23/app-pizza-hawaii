@@ -43,7 +43,8 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	}
 
 	const isCurrentUser = currentUser?.id === user.id;
-	// TODO is this still needed here? 
+	// TODO is this still needed here?
+
 	const postsToRender: Record<string, TFetchDataResult> = {
 		posts,
 		likes,
@@ -54,7 +55,8 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 		{ label: 'Meine Likes', value: POST_TYPE.LIKES },
 	];
 
-	// TODO is this still needed here? 
+	// TODO is this still needed here?
+
 	const onRemovePost = async (id: string) => {
 		const response = await services.api.posts.remove({ id });
 
