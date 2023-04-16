@@ -1,6 +1,10 @@
 import { Card, Grid } from '@smartive-education/pizza-hawaii';
 
-export const PostSkeleton = () => {
+type TPostSkeletonProps = {
+	showImage?: boolean;
+};
+
+export const PostSkeleton = (props: TPostSkeletonProps) => {
 	return (
 		<Card as="div" rounded={true} size="M">
 			<div className="animate-pulse">
@@ -20,12 +24,19 @@ export const PostSkeleton = () => {
 					</Grid>
 
 					<Grid variant="col" gap="S">
-						<div className="h-4 w-3/4 bg-gray-400 rounded-lg" />
-						<div className="h-4 w-full bg-gray-400 rounded-lg" />
-						<div className="h-4 w-1/2 bg-gray-400 rounded-lg" />
+						{props.showImage ? (
+							<div className="h-64 w-full bg-gray-400 rounded-lg" />
+						) : (
+							<>
+								<div className="h-4 w-3/4 bg-gray-400 rounded-lg" />
+								<div className="h-4 w-full bg-gray-400 rounded-lg" />
+								<div className="h-4 w-1/2 bg-gray-400 rounded-lg" />
+							</>
+						)}
 					</Grid>
 				</Grid>
 			</div>
 		</Card>
 	);
 };
+

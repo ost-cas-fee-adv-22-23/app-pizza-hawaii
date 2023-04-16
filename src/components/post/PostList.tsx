@@ -9,7 +9,6 @@ type TPostListProps = {
 	posts: TPost[];
 	variant?: TPostItemProps['variant'];
 	noPostsMessage?: string;
-	// loadingItems?: number;
 	onRemovePost?: (id: string) => void;
 	onAnswerPost?: (id: string) => void;
 };
@@ -31,7 +30,7 @@ export const PostList: FC<TPostListProps> = ({
 		setTimeout(() => {
 			setShowPosts(posts);
 			setIsLoading(false);
-		}, 150);
+		}, 0);
 	}, [posts]);
 
 	if (!showPosts && !isLoading) {
@@ -41,7 +40,7 @@ export const PostList: FC<TPostListProps> = ({
 	return (
 		<Grid variant="col" gap="M" marginBelow="M">
 			{isLoading
-				? skeletonArray.map((i) => <PostSkeleton key={i} />)
+				? skeletonArray.map((i) => <PostSkeleton key={i} showImage={i % 2 === 0} />)
 				: showPosts.map((post: TPost) => {
 						return (
 							<PostItem
