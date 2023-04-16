@@ -34,7 +34,7 @@ export const PostList: FC<TPostListProps> = ({
 		}, 500);
 	}, [posts]);
 
-	if (!showPosts.length && !isLoading) {
+	if (!showPosts && !isLoading) {
 		return <p>{noPostsMessage}</p>;
 	}
 

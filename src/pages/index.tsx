@@ -15,6 +15,9 @@ export default function PageHome({
 	if (error) {
 		return <ErrorPage statusCode={500} title={error} />;
 	}
+	const loadMorePosts = postCount > posts?.length || false;
+	console.log('index postCount', postCount);
+	console.log('index  posts', posts);
 
 	return (
 		<MainLayout
@@ -31,7 +34,7 @@ export default function PageHome({
 				<PostCollection
 					headline="Whats new in Mumble...."
 					posts={posts}
-					canLoadMore={postCount > posts.length}
+					canLoadMore={loadMorePosts}
 					canAdd={true}
 					autoUpdate={true}
 				/>
