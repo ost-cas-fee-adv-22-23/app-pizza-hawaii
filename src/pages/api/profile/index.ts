@@ -34,7 +34,7 @@ const fetchProfileData = async ({
 		throw new Error(data.message || 'Something went wrong!');
 	}
 
-	return data.profile;
+	return data;
 };
 
 const getProfileData = async ({ user = 'me', accessToken }: TFetchProfile) => {
@@ -55,7 +55,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 	const currentProfileData = await getProfileData({ accessToken: token.accessToken });
 	let data;
-	console.log('currentProfileData', currentProfileData);
 	switch (method) {
 		case 'GET':
 			data = currentProfileData;

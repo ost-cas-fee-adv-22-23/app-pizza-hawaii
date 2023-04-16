@@ -22,9 +22,10 @@ const UserSettings: FC<TUserSettings> = ({ setSuccess }) => {
 		}
 
 		const data = await res.json();
-		setUser(data);
 
-		return data;
+		if (data?.profile) {
+			setUser(data.profile);
+		}
 	};
 
 	const updateUser = async (data: TUserFormData) => {
@@ -40,9 +41,7 @@ const UserSettings: FC<TUserSettings> = ({ setSuccess }) => {
 			if (!res.ok) {
 				throw new Error(`Failed to update user: ${res.statusText}`);
 			}
-			const updatedUser = await res.json();
 
-			return updatedUser;
 		} catch (error) {
 			throw new Error(error as string);
 		}
@@ -57,12 +56,9 @@ const UserSettings: FC<TUserSettings> = ({ setSuccess }) => {
 		console.log(data);
 
 		// Update user
-		const updateFN = async () => {
-			const updatedUser = await updateUser(data);
-			setUser(updatedUser);
-		};
-
-		updateFN();
+		(async () => {
+			await updateUser(data);
+		})();
 
 		// Call setSuccess if it was passed
 		setSuccess && setSuccess();
