@@ -1,6 +1,5 @@
 import { Grid, Headline, IconText, Label, Richtext, Switch, TimeStamp } from '@smartive-education/pizza-hawaii';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import ErrorPage from 'next/error';
 import NextLink from 'next/link';
 import { getToken } from 'next-auth/jwt';
 import { useSession } from 'next-auth/react';
@@ -9,7 +8,6 @@ import { ChangeEvent, FC, useState } from 'react';
 import { FollowUserButton } from '../../components/FollowUserButton';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { PostCollection } from '../../components/post/PostCollection';
-import { PostList } from '../../components/post/PostList';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { UserRecommender } from '../../components/widgets/UserRecommender';
 import { services } from '../../services';
@@ -45,6 +43,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	}
 
 	const isCurrentUser = currentUser?.id === user.id;
+	// TODO is this still needed here? 
 	const postsToRender: Record<string, TFetchDataResult> = {
 		posts,
 		likes,
@@ -55,6 +54,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 		{ label: 'Meine Likes', value: POST_TYPE.LIKES },
 	];
 
+	// TODO is this still needed here? 
 	const onRemovePost = async (id: string) => {
 		const response = await services.api.posts.remove({ id });
 

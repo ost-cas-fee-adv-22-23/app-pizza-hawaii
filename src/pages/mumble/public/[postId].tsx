@@ -3,7 +3,7 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import NextLink from 'next/link';
 import router from 'next/router';
 import { useSession } from 'next-auth/react';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 import { MainLayout } from '../../../components/layoutComponents/MainLayout';
 import { PostDetail } from '../../../components/post/PostDetail';
