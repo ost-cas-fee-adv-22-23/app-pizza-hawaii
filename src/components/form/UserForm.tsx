@@ -112,7 +112,7 @@ export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLa
 				<Label as="legend" size="XL">
 					{sectionLabel || 'Deine Daten'}
 				</Label>
-				<div className={['mt-4', isLoading && 'opacity-50 animate-pulse'].join(" ")}>
+				<div className={['mt-4', isLoading && 'opacity-50 animate-pulse'].join(' ')}>
 					<Grid variant="col" gap="M" marginBelow="M">
 						<FormInput
 							name="userName"
