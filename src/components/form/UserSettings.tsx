@@ -41,7 +41,6 @@ const UserSettings: FC<TUserSettings> = ({ setSuccess }) => {
 			if (!res.ok) {
 				throw new Error(`Failed to update user: ${res.statusText}`);
 			}
-
 		} catch (error) {
 			throw new Error(error as string);
 		}
