@@ -195,6 +195,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 				setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
 				console.error(error);
 			});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loadRequest, tabIsActive]);
 
 	const showLatestPosts = () => {
