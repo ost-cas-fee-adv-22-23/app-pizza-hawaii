@@ -22,32 +22,15 @@ export default function PageHome({
 	 * if posts are undefined we are re-routing (replacing!) to the same page to trigger the getServerSideProps
 	 * This happens rarely but we need to handle it, when a user navigates back from a client-side rendered page
 	 * and the page is not in the cache anymore or next sends just json data to the client instead of the full page
+	 * see: https://github.com/vercel/next.js/issues/34365
 	 */
 
 	const router = useRouter();
-
+	const postsLoaded = posts === undefined ? false : true;
 	const refreshData = () => {
 		console.log('refreshing page');
 		router.replace(router.asPath);
 	};
-
-	if (posts === undefined) {
-		return (
-			<>
-				<Headline level={3}>No Mumbles Posts - there must be a Hickup somewhere... </Headline>
-				<Button colorScheme="gradient" size="L" icon="repost" onClick={() => refreshData()}>
-					Load Mumbles again.
-				</Button>
-			</>
-		);
-	}
-
-	if (!posts) {
-		console.log('no posts - refreshing page');
-		setTimeout(() => {
-			router.replace(router.asPath);
-		}, 500);
-	}
 
 	if (error) {
 		return <ErrorPage statusCode={500} title={error} />;
@@ -67,14 +50,22 @@ export default function PageHome({
 				<div className="mb-2 text-violet-600">
 					<Headline level={2}>Welcome to Mumble</Headline>
 				</div>
-
-				<PostCollection
-					headline="Whats new in Mumble...."
-					posts={posts || []}
-					canLoadMore={canLoadMore}
-					canAdd={true}
-					autoUpdate={true}
-				/>
+				{postsLoaded ? (
+					<PostCollection
+						headline="Whats new in Mumble...."
+						posts={posts || []}
+						canLoadMore={canLoadMore}
+						canAdd={true}
+						autoUpdate={true}
+					/>
+				) : (
+					<>
+						<Headline level={3}>No Mumbles Posts - there must be a Hickup somewhere... </Headline>
+						<Button colorScheme="gradient" size="L" icon="repost" onClick={() => refreshData()}>
+							Load Mumbles again.
+						</Button>
+					</>
+				)}
 			</>
 		</MainLayout>
 	);
