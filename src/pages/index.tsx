@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { Button, Headline, Label } from '@smartive-education/pizza-hawaii';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ErrorPage from 'next/error';
