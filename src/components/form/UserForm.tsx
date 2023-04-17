@@ -128,7 +128,7 @@ export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLa
 						/>
 						<FormInput
 							name="email"
-							label="Name"
+							label="Email"
 							type="text"
 							value={state['email']}
 							onChange={onFieldChange}

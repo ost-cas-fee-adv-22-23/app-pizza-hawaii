@@ -16,12 +16,12 @@ import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
 import React, { FC, useEffect, useReducer, useState } from 'react';
 
+import shortenString from '../../data/helpers/shortenString';
 import ProjectSettings from '../../data/ProjectSettings.json';
 import PDReducer, { ActionType as PDActionType, initialState as initialPDState } from '../../reducer/postDetailReducer';
 import { postsService } from '../../services/api/posts/';
 import { TPost, TUser } from '../../types';
 import ImageModal, { TModalPicture } from '../ImageModal';
-import shortenString from '../../data/helpers/shortenString';
 
 /*
  * Type
