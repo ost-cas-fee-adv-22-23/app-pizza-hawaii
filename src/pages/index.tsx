@@ -31,7 +31,7 @@ export default function PageHome({
 		router.replace(router.asPath);
 	};
 
-	if (typeof posts === null || posts.length == 0) {
+	if (posts === undefined) {
 		return (
 			<>
 				<Headline level={3}>No Mumbles Posts - there must be a Hickup somewhere... </Headline>
@@ -41,6 +41,14 @@ export default function PageHome({
 			</>
 		);
 	}
+
+	if (!posts) {
+		console.log('no posts - refreshing page');
+		setTimeout(() => {
+			router.replace(router.asPath);
+		}, 500);
+	}
+
 	if (error) {
 		return <ErrorPage statusCode={500} title={error} />;
 	}
