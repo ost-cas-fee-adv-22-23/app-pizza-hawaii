@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Headline } from '@smartive-education/pizza-hawaii';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ErrorPage from 'next/error';
@@ -25,8 +26,11 @@ export default function PageHome({
 
 	const router = useRouter();
 	useEffect(() => {
-		if (!posts) {
-			router.replace(router.asPath);
+		if (posts.length === 0 || posts === undefined) {
+			console.log('refreshing page');
+			setTimeout(() => {
+				router.replace(router.asPath);
+			}, 500);
 		}
 	}, [posts, router]);
 
