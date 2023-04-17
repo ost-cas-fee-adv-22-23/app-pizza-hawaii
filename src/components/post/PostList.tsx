@@ -8,7 +8,7 @@ import { PostItem, TPostItemProps } from './PostItem';
 type TPostListProps = {
 	posts?: TPost[];
 	variant?: TPostItemProps['variant'];
-	noPostsMessage?: string;
+	noPostsMessage?: boolean | string;
 	showLoadingItems?: number;
 	onRemovePost?: (id: string) => void;
 	onAnswerPost?: (id: string) => void;
