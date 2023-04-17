@@ -39,4 +39,3 @@ export const PostSkeleton = (props: TPostSkeletonProps) => {
 		</Card>
 	);
 };
-
