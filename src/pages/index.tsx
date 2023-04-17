@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { Button, Headline } from '@smartive-education/pizza-hawaii';
+import { Button, Headline, Label } from '@smartive-education/pizza-hawaii';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
@@ -15,28 +15,33 @@ export default function PageHome({
 	posts,
 	error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	console.log('index postCount', postCount);
-	console.log('index  posts', posts);
-
 	/**
 	 * if posts are undefined we are re-routing (replacing!) to the same page to trigger the getServerSideProps
-	 * This happens rarely but we need to handle it, when a user navigates back from a client-side rendered page
-	 * and the page is not in the cache anymore or next sends just json data to the client instead of the full page
-	 * see: https://github.com/vercel/next.js/issues/34365
+	 * This happens rarely but we need to handle it, when a user navigates back from a page
+	 * and the getServerSide props are not in the cache anymore or next sends just json data to the client instead of the full page.
+	 * next.js issue see: https://github.com/vercel/next.js/issues/34365
 	 */
 
 	const router = useRouter();
-	const postsLoaded = posts === undefined ? false : true;
+	const postsAvailable = posts === undefined ? false : true;
+	const canLoadMore = postCount > 0 || false;
 	const refreshData = () => {
-		console.log('refreshing page');
 		router.replace(router.asPath);
 	};
+	const manualRefresh = (
+		<>
+			<Label as="p" size="L">
+				No Mumbles Posts ? - there must be a Hickup somewhere...{' '}
+			</Label>
+			<Button colorScheme="gradient" size="L" icon="repost" onClick={() => refreshData()}>
+				Load Mumbles again.
+			</Button>
+		</>
+	);
 
 	if (error) {
 		return <ErrorPage statusCode={500} title={error} />;
 	}
-
-	const canLoadMore = postCount > 0 || false;
 
 	return (
 		<MainLayout
@@ -50,7 +55,7 @@ export default function PageHome({
 				<div className="mb-2 text-violet-600">
 					<Headline level={2}>Welcome to Mumble</Headline>
 				</div>
-				{postsLoaded ? (
+				{postsAvailable ? (
 					<PostCollection
 						headline="Whats new in Mumble...."
 						posts={posts || []}
@@ -59,12 +64,7 @@ export default function PageHome({
 						autoUpdate={true}
 					/>
 				) : (
-					<>
-						<Headline level={3}>No Mumbles Posts - there must be a Hickup somewhere... </Headline>
-						<Button colorScheme="gradient" size="L" icon="repost" onClick={() => refreshData()}>
-							Load Mumbles again.
-						</Button>
-					</>
+					manualRefresh
 				)}
 			</>
 		</MainLayout>
