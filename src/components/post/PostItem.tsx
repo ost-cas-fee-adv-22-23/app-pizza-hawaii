@@ -21,6 +21,7 @@ import PDReducer, { ActionType as PDActionType, initialState as initialPDState }
 import { postsService } from '../../services/api/posts/';
 import { TPost, TUser } from '../../types';
 import ImageModal, { TModalPicture } from '../ImageModal';
+import shortenString from '../../data/helpers/shortenString';
 
 /*
  * Type
@@ -117,22 +118,15 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 		onDeletePost && onDeletePost(post?.id);
 	};
 
-	const limitSizeOfText = (text: string, limit: number) => {
-		if (text.length > limit) {
-			return text.slice(0, limit) + '...';
-		}
-		return text;
-	};
-
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
-				{limitSizeOfText(post?.user.displayName, 30)}
+				{shortenString(post?.user.displayName, 30)}
 			</Label>
 			<Grid variant="row" gap="S">
 				<NextLink href={post?.user.profileLink}>
 					<IconText icon="profile" colorScheme="violet" size="S">
-						{limitSizeOfText(post?.user.userName, 20)}
+						{shortenString(post?.user.userName, 20)}
 					</IconText>
 				</NextLink>
 				{post.createdAt && new Date(post.createdAt) && (

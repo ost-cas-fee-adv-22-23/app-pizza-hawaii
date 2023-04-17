@@ -39,7 +39,7 @@ enum LoadRequestType {
 
 export const PostCollection: FC<TPostCollectionProps> = ({
 	headline,
-	posts: initialPosts,
+	posts: initialPosts = [],
 	canAdd = false,
 	canLoadMore = false,
 	filter = {},
@@ -67,7 +67,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 		// fetch posts older than oldest post
 		const { count: olderPostCount, posts: olderPosts } = await services.api.posts.loadmore({
 			...filter,
-			olderThan: getOldestPostId(),
+			olderThan: getOldestPostUlid(),
 		});
 
 		// append older posts to list
@@ -82,7 +82,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 
 	/**
 	 *
-	 * ============== UPADTE MECANISM ==============
+	 * ============== UPDATE MECHANISM ==============
 	 *
 	 */
 
@@ -102,14 +102,14 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 			setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
 			return;
 		}
-
-		const latestPostUlidDate = postState.posts[0].id;
-		const oldestPostId = getOldestPostId();
+		const currentUlid = encodeTime(new Date().getTime(), 10) + '0000000000000000';
+		const latestPostUlid = postState.posts?.length ? postState.posts[0].id : currentUlid;
+		const oldestPostUlid = getOldestPostUlid();
 
 		let requestObject = {
 			...filter,
-			olderThan: encodeTime(new Date().getTime(), 10) + '0000000000000000',
-			newerThan: encodeTime(decodeTime(oldestPostId) - 1, 10) + oldestPostId.substring(26 - 16),
+			olderThan: currentUlid,
+			newerThan: encodeTime(decodeTime(oldestPostUlid) - 1, 10) + oldestPostUlid.substring(26 - 16),
 			limit: 100,
 		};
 
@@ -119,7 +119,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 				// newerThan: latest post id (to get all new posts)
 				requestObject = {
 					...requestObject,
-					newerThan: postState.posts[0].id,
+					newerThan: latestPostUlid,
 				};
 				break;
 
@@ -128,7 +128,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 				// newerThan: oldest post id - 1 (to get all posts including the oldest one)
 				requestObject = {
 					...requestObject,
-					olderThan: encodeTime(decodeTime(latestPostUlidDate) + 1, 10) + latestPostUlidDate.substring(26 - 16),
+					olderThan: encodeTime(decodeTime(latestPostUlid) + 1, 10) + latestPostUlid.substring(26 - 16),
 				};
 				break;
 
@@ -137,7 +137,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 				// newerThan: oldest post id - 1 (to get all posts including the oldest one)
 				requestObject = {
 					...requestObject,
-					newerThan: encodeTime(decodeTime(oldestPostId) - 1, 10) + oldestPostId.substring(26 - 16),
+					newerThan: encodeTime(decodeTime(oldestPostUlid) - 1, 10) + oldestPostUlid.substring(26 - 16),
 				};
 				break;
 
@@ -192,6 +192,8 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 				setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
 				console.error(error);
 			});
+
+		// TODO: check with mirco dependency array
 	}, [loadRequest, tabIsActive]);
 
 	const showLatestPosts = () => {
@@ -261,7 +263,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 	 *
 	 */
 
-	const getOldestPostId = () => {
+	const getOldestPostUlid = () => {
 		const oldestPost = postState.posts[postState.posts.length - 1];
 		return oldestPost ? oldestPost.id : encodeTime(new Date().getTime(), 10) + '0000000000000000';
 	};
