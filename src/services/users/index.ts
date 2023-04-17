@@ -45,13 +45,11 @@ const getUsers = async (params: TGetUsers): Promise<TGetUsersResult> => {
 		...searchParams,
 	})) as { count: number; items: TRawUser[]; pagination?: TFetchListResultPagination };
 
-	// normalize users
+	// Enrich user data
 	const users = items.map(transformUser) as TUser[];
 
 	// Add users to cache
-	users.forEach((userData) => {
-		userCache.add(userData);
-	});
+	users.forEach((user) => userCache.add(user));
 
 	return {
 		count,
@@ -104,9 +102,10 @@ type TGetUser = TFetchBase & {
  */
 
 const getUser = async ({ id, accessToken }: TGetUser) => {
-	// Check if user is already in cache
+	// Get user from cache
 	const cachedUser = userCache.get(id);
 
+	// Use cached user if available
 	if (cachedUser) {
 		return cachedUser;
 	}
@@ -130,6 +129,11 @@ const getUser = async ({ id, accessToken }: TGetUser) => {
  * ============== HELPERS ==============
  *
  */
+
+// Invalidate user cache
+const invalidateUserCache = (id: string) => {
+	userCache.remove(id);
+};
 
 // some data aggregation from dataRandomizer helper to fill the gaps what is not provided by the API
 const transformUser = (user: TRawUser): TUser => ({
@@ -178,5 +182,6 @@ export const usersService = {
 	getUser,
 	getUsersByIds,
 	reducedUserInformation,
+	invalidateUserCache,
 	emptyUser,
 };
