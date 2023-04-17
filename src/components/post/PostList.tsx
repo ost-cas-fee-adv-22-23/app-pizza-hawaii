@@ -6,13 +6,15 @@ import { PostSkeleton } from '../helpers/PostSkeleton';
 import { PostItem, TPostItemProps } from './PostItem';
 
 type TPostListProps = {
-	posts?: TPost[];
+	posts: TPost[];
 	variant?: TPostItemProps['variant'];
 	noPostsMessage?: boolean | string;
 	showLoadingItems?: number;
 	onRemovePost?: (id: string) => void;
 	onAnswerPost?: (id: string) => void;
 };
+
+// TODO: is loadingItems still needed? or can we replace skeletonArray with loadingItems?
 
 export const PostList: FC<TPostListProps> = ({
 	posts = [],

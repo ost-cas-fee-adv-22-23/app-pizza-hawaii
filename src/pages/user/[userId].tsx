@@ -1,6 +1,5 @@
 import { Grid, Headline, IconText, Label, Richtext, Switch, TimeStamp } from '@smartive-education/pizza-hawaii';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import ErrorPage from 'next/error';
 import NextLink from 'next/link';
 import { getToken } from 'next-auth/jwt';
 import { useSession } from 'next-auth/react';
@@ -45,7 +44,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	const [currentTab, setCurrentTab] = useState(TAB_NAME.POSTS);
 
 	if (!user) {
-		return <ErrorPage statusCode={403} title={'User not found.'} />;
+		throw new Error('User not found');
 	}
 
 	const isCurrentUser = currentUser?.id === user.id;

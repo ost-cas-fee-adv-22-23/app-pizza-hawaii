@@ -5,11 +5,11 @@ export const config = {
 		/*
 		 * Match all request paths except for the ones starting with:
 		 * - api (API routes)
-		 * - _next/static (static files)
+		 * - _next/public (static files are now moved to public folder)
 		 * - _next/image (image optimization files)
 		 * - favicon.ico (favicon file)
 		 */
-		'/((?!api|_next/static|_next/image|auth|favicon.ico|mumble/public).*)',
+		'/((?!api|_next/public|_next/image|auth|favicon.ico|mumble/public).*)',
 		'/',
 	],
 };
