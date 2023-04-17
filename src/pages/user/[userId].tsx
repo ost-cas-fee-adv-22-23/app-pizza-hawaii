@@ -10,9 +10,12 @@ import { FollowUserButton } from '../../components/FollowUserButton';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { PostCollection } from '../../components/post/PostCollection';
 import { ProfileHeader } from '../../components/ProfileHeader';
+import { UserCardList } from '../../components/user/UserCardList';
 import { UserRecommender } from '../../components/widgets/UserRecommender';
+import { useFolloweeContext } from '../../context/useFollowee';
 import { services } from '../../services';
 import { TPost, TUser } from '../../types';
+import { FollowerList } from '../../components/widgets/FollowerList';
 
 /**
  * @description
@@ -28,16 +31,18 @@ type TUserPage = {
 	likes: TFetchDataResult;
 };
 
-const POST_TYPE: Record<string, string> = {
+const TAB_NAME: Record<string, string> = {
 	POSTS: 'posts',
 	LIKES: 'likes',
+	FOLLOWER: 'follower',
 };
 
 const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	const [currentPostType, setCurrentPostType] = useState(POST_TYPE.POSTS);
-
+	const { followees } = useFolloweeContext();
 	const { data: session } = useSession();
 	const currentUser = session?.user as TUser;
+
+	const [currentTab, setCurrentTab] = useState(TAB_NAME.POSTS);
 
 	if (!user) {
 		return <ErrorPage statusCode={403} title={'User not found.'} />;
@@ -46,9 +51,13 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 	const isCurrentUser = currentUser?.id === user.id;
 
 	const switchoptions = [
-		{ label: 'Meine Mumbles', value: POST_TYPE.POSTS },
-		{ label: 'Meine Likes', value: POST_TYPE.LIKES },
+		{ label: 'Meine Mumbles', value: TAB_NAME.POSTS },
+		{ label: 'Meine Likes', value: TAB_NAME.LIKES },
 	];
+
+	if (followees?.length || currentTab === TAB_NAME.FOLLOWER) {
+		switchoptions.push({ label: `Meine Follower (${followees?.length})`, value: TAB_NAME.FOLLOWER });
+	}
 
 	const isFreshUser = new Date(user.createdAt).getTime() > new Date().getTime() - 45 * 60 * 1000;
 
@@ -117,16 +126,16 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 							<Switch
 								label="Wechsle deine angezeigten Mumbles"
 								options={switchoptions}
-								value={POST_TYPE.POSTS}
+								value={TAB_NAME.POSTS}
 								name="posttype"
 								onChange={(event: ChangeEvent): void => {
 									const value = (event.target as HTMLInputElement).value;
-									setCurrentPostType(value);
+									setCurrentTab(value);
 								}}
 							/>
 						</Grid>
 
-						{currentPostType === POST_TYPE.POSTS && (
+						{currentTab === TAB_NAME.POSTS && (
 							<PostCollection
 								posts={posts.posts}
 								canLoadMore={posts.count > 0}
@@ -137,7 +146,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 								}}
 							/>
 						)}
-						{currentPostType === POST_TYPE.LIKES && (
+						{currentTab === TAB_NAME.LIKES && (
 							<>
 								<PostCollection
 									posts={likes.posts}
@@ -155,6 +164,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 								)}
 							</>
 						)}
+						{currentTab === TAB_NAME.FOLLOWER && <FollowerList />}
 					</>
 				) : (
 					<PostCollection
