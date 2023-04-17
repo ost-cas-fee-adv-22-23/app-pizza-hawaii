@@ -1,5 +1,5 @@
 import { Grid } from '@smartive-education/pizza-hawaii';
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 
 import { TPost } from '../../types';
 import { PostSkeleton } from '../helpers/PostSkeleton';
@@ -9,6 +9,7 @@ type TPostListProps = {
 	posts: TPost[];
 	variant?: TPostItemProps['variant'];
 	noPostsMessage?: string;
+	loadingItems?: number;
 	onRemovePost?: (id: string) => void;
 	onAnswerPost?: (id: string) => void;
 };
@@ -18,30 +19,20 @@ type TPostListProps = {
 export const PostList: FC<TPostListProps> = ({
 	posts,
 	variant = 'timeline',
+	loadingItems = 3,
 	noPostsMessage = 'Keine Posts vorhanden.',
 	onRemovePost,
 	onAnswerPost,
 }) => {
-	const [isLoading, setIsLoading] = useState(true);
-	const [showPosts, setShowPosts] = useState<TPost[]>([]);
-	const skeletonArray = [1, 2, 3];
-
-	useEffect(() => {
-		setTimeout(() => {
-			setShowPosts(posts);
-			setIsLoading(false);
-		}, 0);
-	}, [posts]);
-
-	if (!showPosts && !isLoading) {
+	if (!posts?.length && loadingItems === 0) {
 		return <p>{noPostsMessage}</p>;
 	}
 
 	return (
 		<Grid variant="col" gap="M" marginBelow="M">
-			{isLoading
-				? skeletonArray.map((i) => <PostSkeleton key={i} showImage={i % 2 === 0} />)
-				: showPosts.map((post: TPost) => {
+			{loadingItems > 0 && !posts?.length
+				? Array.from(Array(loadingItems).keys()).map((i) => <PostSkeleton key={i} showImage={i % 2 === 1} />)
+				: posts?.map((post: TPost) => {
 						return (
 							<PostItem
 								key={post.id}

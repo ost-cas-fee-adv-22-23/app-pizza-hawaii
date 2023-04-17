@@ -17,9 +17,12 @@ export default function PageHome({
 	console.log('index postCount', postCount);
 	console.log('index  posts', posts);
 
-	// if posts are undefined we are re-routing (replacing!) to the same page to trigger the getServerSideProps
-	// this happens rarely but we need to handle it, when a user navigates back from a client-side rendered page
-	// and the page is not in the cache anymore or next sends just json data to the client instead of the full page
+	/**
+	 * if posts are undefined we are re-routing (replacing!) to the same page to trigger the getServerSideProps
+	 * This happens rarely but we need to handle it, when a user navigates back from a client-side rendered page
+	 * and the page is not in the cache anymore or next sends just json data to the client instead of the full page
+	 */
+
 	const router = useRouter();
 	useEffect(() => {
 		if (!posts) {
@@ -45,17 +48,13 @@ export default function PageHome({
 				<div className="mb-2 text-violet-600">
 					<Headline level={2}>Welcome to Mumble</Headline>
 				</div>
-				{!posts ? (
-					<div className="flex justify-center">loading newest mumbles...</div>
-				) : (
-					<PostCollection
-						headline="Whats new in Mumble...."
-						posts={posts}
-						canLoadMore={canLoadMore}
-						canAdd={true}
-						autoUpdate={true}
-					/>
-				)}
+				<PostCollection
+					headline="Whats new in Mumble...."
+					posts={posts || []}
+					canLoadMore={canLoadMore}
+					canAdd={true}
+					autoUpdate={true}
+				/>
 			</>
 		</MainLayout>
 	);
