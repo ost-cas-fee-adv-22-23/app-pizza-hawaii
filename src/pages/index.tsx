@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
-import { Headline } from '@smartive-education/pizza-hawaii';
+import { Button, Headline } from '@smartive-education/pizza-hawaii';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import { getToken } from 'next-auth/jwt';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { PostCollection } from '../components/post/PostCollection';
@@ -25,15 +25,22 @@ export default function PageHome({
 	 */
 
 	const router = useRouter();
-	useEffect(() => {
-		if (posts.length === 0 || posts === undefined) {
-			console.log('refreshing page');
-			setTimeout(() => {
-				router.replace(router.asPath);
-			}, 500);
-		}
-	}, [posts, router]);
 
+	const refreshData = () => {
+		console.log('refreshing page');
+		router.replace(router.asPath);
+	};
+
+	if (typeof posts === null || posts.length == 0) {
+		return (
+			<>
+				<Headline level={3}>No Mumbles Posts - there must be a Hickup somewhere... </Headline>
+				<Button colorScheme="gradient" size="L" icon="repost" onClick={() => refreshData()}>
+					Load Mumbles again.
+				</Button>
+			</>
+		);
+	}
 	if (error) {
 		return <ErrorPage statusCode={500} title={error} />;
 	}
@@ -52,6 +59,7 @@ export default function PageHome({
 				<div className="mb-2 text-violet-600">
 					<Headline level={2}>Welcome to Mumble</Headline>
 				</div>
+
 				<PostCollection
 					headline="Whats new in Mumble...."
 					posts={posts || []}
@@ -69,7 +77,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	const accessToken = session?.accessToken as string;
 
 	try {
-		const { count: postCount, posts } = await services.posts.getPosts({
+		const { count: postCount, posts = undefined } = await services.posts.getPosts({
 			limit: 15,
 			accessToken,
 		});
