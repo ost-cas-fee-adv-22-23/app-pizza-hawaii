@@ -27,7 +27,7 @@ const DetailPage: FC<TUserPage> = ({ post, error }: InferGetServerSidePropsType<
 				pageType: 'article',
 			}}
 		>
-			<PostDetail post={post} />
+			<PostDetail post={post} canWrite={true} />
 		</MainLayout>
 	);
 };

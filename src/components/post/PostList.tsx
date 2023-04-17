@@ -8,8 +8,8 @@ import { PostItem, TPostItemProps } from './PostItem';
 type TPostListProps = {
 	posts: TPost[];
 	variant?: TPostItemProps['variant'];
-	noPostsMessage?: string;
-	loadingItems?: number;
+	noPostsMessage?: boolean | string;
+	showLoadingItems?: number;
 	onRemovePost?: (id: string) => void;
 	onAnswerPost?: (id: string) => void;
 };
@@ -17,21 +17,21 @@ type TPostListProps = {
 // TODO: is loadingItems still needed? or can we replace skeletonArray with loadingItems?
 
 export const PostList: FC<TPostListProps> = ({
-	posts,
+	posts = [],
 	variant = 'timeline',
-	loadingItems = 3,
+	showLoadingItems = 3,
 	noPostsMessage = 'Keine Posts vorhanden.',
 	onRemovePost,
 	onAnswerPost,
 }) => {
-	if (!posts?.length && loadingItems === 0) {
+	if (noPostsMessage && posts?.length === 0) {
 		return <p>{noPostsMessage}</p>;
 	}
-
+	// if there are no posts yet, show skeletons
 	return (
 		<Grid variant="col" gap="M" marginBelow="M">
-			{loadingItems > 0 && !posts?.length
-				? Array.from(Array(loadingItems).keys()).map((i) => <PostSkeleton key={i} showImage={i % 2 === 1} />)
+			{!posts && showLoadingItems > 0
+				? Array.from(Array(showLoadingItems).keys()).map((i) => <PostSkeleton key={i} showImage={i % 2 === 1} />)
 				: posts?.map((post: TPost) => {
 						return (
 							<PostItem
