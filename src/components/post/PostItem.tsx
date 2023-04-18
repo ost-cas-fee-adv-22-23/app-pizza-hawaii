@@ -21,7 +21,7 @@ import ProjectSettings from '../../data/ProjectSettings.json';
 import PDReducer, { ActionType as PDActionType, initialState as initialPDState } from '../../reducer/postDetailReducer';
 import { postsService } from '../../services/api/posts/';
 import { TPost, TUser } from '../../types';
-import ImageModal, { TModalPicture } from '../ImageModal';
+import ImageModal, { TImageModalPicture } from '../ImageModal';
 
 /*
  * Type
@@ -103,7 +103,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 
 	const setting = postItemVariantMap[variant] || postItemVariantMap.detailpage;
 
-	const picture: TModalPicture = {
+	const picture: TImageModalPicture = {
 		src: post.mediaUrl,
 		width: ProjectSettings.images.post.width,
 		height:
@@ -136,16 +136,14 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 
 	// Scroll page to Item on click
 	const handlePostClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-		// get item from event
-		const item = (event.target as HTMLInputElement).closest('.bg-white');
+		// get item and header element
+		const item = (event.target as HTMLElement).closest('.Card');
+		const header = document.querySelector('header') as HTMLElement;
+
+		if (!item || !header) return;
 
 		// get item position
 		const itemPosition = item.getBoundingClientRect().top;
-
-		// get header
-		const header = document.querySelector('header');
-
-		if (!header) return;
 
 		// get header height
 		const headerHeight = header.clientHeight;
@@ -183,6 +181,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 		</Grid>
 	);
 
+	// TODO: check with Mirco ref in UserContentCard would like to use useRef
 	return (
 		<UserContentCard
 			headline={headerSlotContent}
