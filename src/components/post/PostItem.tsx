@@ -135,7 +135,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 	};
 
 	// Scroll page to Item on click
-	const handlePostClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+	const handlePostClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
 		// get item and header element
 		const item = (event.target as HTMLElement).closest('.Card');
 		const header = document.querySelector('header') as HTMLElement;
