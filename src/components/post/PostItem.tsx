@@ -38,7 +38,11 @@ type TPostItemVariantMap = {
 	textSize: 'M' | 'L';
 	avatarSize: TUserContentCard['avatarSize'];
 	avatarVariant: TUserContentCard['avatarVariant'];
-	copyLink: boolean;
+	showAnswerButton: boolean;
+	showDeleteButton: boolean;
+	showShareButton: boolean;
+	showCommentButton: boolean;
+	showLikeButton: boolean;
 };
 
 /*
@@ -51,25 +55,37 @@ const postItemVariantMap: Record<TPostItemProps['variant'], TPostItemVariantMap>
 		textSize: 'L',
 		avatarSize: 'M',
 		avatarVariant: 'standalone',
-		copyLink: true,
+		showAnswerButton: true,
+		showDeleteButton: true,
+		showShareButton: true,
+		showCommentButton: false,
+		showLikeButton: true,
 	},
 	timeline: {
 		headlineSize: 'L',
 		textSize: 'M',
 		avatarSize: 'M',
 		avatarVariant: 'standalone',
-		copyLink: true,
+		showAnswerButton: false,
+		showDeleteButton: true,
+		showShareButton: true,
+		showCommentButton: true,
+		showLikeButton: true,
 	},
 	response: {
 		headlineSize: 'M',
 		textSize: 'M',
 		avatarSize: 'S',
 		avatarVariant: 'subcomponent',
-		copyLink: false,
+		showAnswerButton: true,
+		showDeleteButton: true,
+		showShareButton: false,
+		showCommentButton: false,
+		showLikeButton: true,
 	},
 };
 
-export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDeletePost, onAnswerPost }) => {
+export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDeletePost, onAnswerPost, ...props }) => {
 	const [post, postDispatch] = useReducer(PDReducer, {
 		...initialPDState,
 		...initialPost,
@@ -118,6 +134,35 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 		onDeletePost && onDeletePost(post?.id);
 	};
 
+	// Scroll page to Item on click
+	const handlePostClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+		// get item from event
+		const item = (event.target as HTMLInputElement).closest('.bg-white');
+
+		// get item position
+		const itemPosition = item.getBoundingClientRect().top;
+
+		// get header
+		const header = document.querySelector('header');
+
+		if (!header) return;
+
+		// get header height
+		const headerHeight = header.clientHeight;
+
+		// get header margin
+		const headerMargin = parseInt(window.getComputedStyle(header).getPropertyValue('margin-bottom'));
+
+		// get scroll position
+		const scrollPosition = window.pageYOffset;
+
+		// scroll to item
+		window.scrollTo({
+			top: itemPosition + scrollPosition - headerHeight - headerMargin,
+			behavior: 'smooth',
+		});
+	};
+
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
@@ -164,35 +209,35 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 			)}
 			{currentUser && (
 				<Grid variant="row" gap="M" wrapBelowScreen="md">
-					{variant === 'response' ? (
-						<>
-							{onAnswerPost && (
-								<InteractionButton
-									type="button"
-									colorScheme="violet"
-									buttonText={'Answer'}
-									iconName={'repost'}
-									onClick={handleAnswerPost}
-								/>
-							)}
-						</>
-					) : (
+					{setting.showAnswerButton && onAnswerPost && (
 						<InteractionButton
-							component={NextLink}
-							href={`/mumble/${post.id}`}
-							isActive={post.replyCount > 0}
+							type="button"
 							colorScheme="violet"
-							buttonText={
-								post.replyCount > 0
-									? `${post.replyCount} Comments`
-									: post.replyCount === 0
-									? 'Comment'
-									: '1 Comment'
-							}
-							iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
+							buttonText={'Answer'}
+							iconName={'repost'}
+							onClick={handleAnswerPost}
 						/>
 					)}
-					{currentUser && (
+					{
+						setting.showCommentButton && currentUser && (
+							<InteractionButton
+								component={NextLink}
+								href={`/mumble/${post.id}`}
+								isActive={post.replyCount > 0}
+								colorScheme="violet"
+								buttonText={
+									post.replyCount > 0
+										? `${post.replyCount} Comments`
+										: post.replyCount === 0
+										? 'Comment'
+										: '1 Comment'
+								}
+								iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
+								onClick={handlePostClick}
+							/>
+						) // TODO: have a look at this onClick (check with mirco)
+					}
+					{setting.showLikeButton && currentUser && (
 						<InteractionButton
 							type="button"
 							isActive={post.likeCount > 0}
@@ -204,7 +249,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 							onClick={handleLike}
 						/>
 					)}
-					{setting.copyLink && (
+					{setting.showShareButton && (
 						<CopyToClipboardButton
 							defaultButtonText="Copy Link"
 							activeButtonText="Link copied"
@@ -212,7 +257,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 						/>
 					)}
 
-					{onDeletePost && currentUser && currentUser.id === post.user.id && (
+					{setting.showDeleteButton && onDeletePost && currentUser && currentUser.id === post.user.id && (
 						<InteractionButton
 							type="button"
 							colorScheme="pink"
