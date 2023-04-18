@@ -32,7 +32,7 @@ export const LoginLayout: FC<TLoginLayout> = ({ title, seo, children, header }) 
 				<meta property="og:site_name" content="Mumble" />
 				<meta property="og:url" content={currentUrl} />
 			</Head>
-			<div className="SplitScreen grid grid-rows-1 grid-cols-2 md:grid-cols-1 w-screen min-h-screen">
+			<div className="SplitScreen grid grid-rows-1 grid-cols-2 md:grid-rows-2 md:grid-cols-1 w-screen min-h-screen md:h-auto">
 				<header className="column-start-1 column-span-1 row-start-1 row-span-1 flex items-center justify-center bg-gradient-to-tl from-violet-600 to-pink-500">
 					{header ? (
 						header

@@ -22,9 +22,11 @@ export default function LoginPage() {
 			<div className="inline-block mb-8">
 				<Image src={VerticalLogo} alt="welcome to Mumble" />
 			</div>
-			<Headline level={1}>
-				Find out what’s new in <span className="text-white">#Frontend Engineering</span>.
-			</Headline>
+			<div className="md:hidden">
+				<Headline level={1}>
+					Find out what’s new in <span className="text-white">#Frontend Engineering</span>.
+				</Headline>
+			</div>
 		</div>
 	);
 
