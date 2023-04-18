@@ -5,7 +5,7 @@ import React, { FC, useState } from 'react';
 import ProjectSettings from '../data/ProjectSettings.json';
 import { TUser } from '../types';
 import UserSettings from './form/UserSettings';
-import ImageModal, { TModalPicture } from './ImageModal';
+import ImageModal, { TImageModalPicture } from './ImageModal';
 import { UserProfile } from './user/UserProfile';
 /**
  * @description
@@ -29,7 +29,7 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 	const [showSettingsModal, setShowSettingsModal] = useState(false);
 	const [showImageModal, setShowImageModal] = useState(false);
 
-	const picture: TModalPicture = {
+	const picture: TImageModalPicture = {
 		src: user.posterImage,
 		width: ProjectSettings.images.header.width,
 		height:

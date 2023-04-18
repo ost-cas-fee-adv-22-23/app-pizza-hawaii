@@ -54,7 +54,7 @@ export const PostDetail: FC<TPostDetailProps> = ({ post, canWrite }) => {
 	};
 
 	const onAnswerPost = (id: string) => {
-		const answerPost = postState.replies?.find((reply) => reply.id === id);
+		const answerPost = post.id === id ? post : postState.replies?.find((reply) => reply.id === id);
 
 		const textarea = document.getElementById(textAreaId) as HTMLTextAreaElement;
 		if (!textarea) {
@@ -81,7 +81,7 @@ export const PostDetail: FC<TPostDetailProps> = ({ post, canWrite }) => {
 
 	return (
 		<Grid as="div" variant="col" gap="S">
-			{post && <PostItem variant="detailpage" post={post} onDeletePost={onRemovePost} />}
+			{post && <PostItem variant="detailpage" post={post} onDeletePost={onRemovePost} onAnswerPost={onAnswerPost} />}
 
 			{currentUser && canWrite && (
 				<Grid variant="col" gap="M" marginBelow="M">

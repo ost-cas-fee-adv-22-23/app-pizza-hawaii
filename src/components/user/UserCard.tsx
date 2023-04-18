@@ -24,18 +24,20 @@ export const UserCard: FC<TUserCard> = (props) => {
 					canEdit={false}
 					buttonLabel="View Profile"
 				/>
-				<div className="flex flex-col gap-2">
+				<p className="grid overflow-hidden text-center whitespace-nowrap text-ellipsis w-full">
 					<Label as="span" size="M">
 						{user.displayName}
 					</Label>
-					<span className="flex flex-row align-baseline gap-3">
-						<NextLink href={user.profileLink}>
+				</p>
+				<p className="grid overflow-hidden whitespace-nowrap text-ellipsis w-full">
+					<span className="flex flex-row align-baseline gap-3 justify-center">
+						<NextLink href={user.profileLink} title={user.userName}>
 							<IconText icon="profile" colorScheme="violet" size="S">
 								{user.userName}
 							</IconText>
 						</NextLink>
 					</span>
-				</div>
+				</p>
 
 				<FollowUserButton userId={user.id} />
 			</Grid>
