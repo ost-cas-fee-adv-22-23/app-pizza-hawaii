@@ -49,7 +49,8 @@ const DetailPage: FC<TUserPage> = ({ post }: InferGetStaticPropsType<typeof getS
 				<div className="text-slate-500 mb-8">
 					<Grid variant="col" gap="M">
 						<Label as="p" size="XL">
-							Angemeldete Nutzer haben die Möglichkeit, vollständige Beiträge und Nutzerdetails zu sehen.
+							Als angemeldeter Nutzer kannst du Beiträge lesen, eigene Beiträge erstellen, auf andere Beiträge
+							antworten und anderen Nutzern folgen.
 						</Label>
 						{currentUser ? (
 							<>
@@ -59,9 +60,15 @@ const DetailPage: FC<TUserPage> = ({ post }: InferGetStaticPropsType<typeof getS
 									bist bereits angemeldet.
 								</Label>
 								<Label as="p" size="L">
-									{counter > 0
-										? `Du wirst in ${counter} Sekunden automatisch weitergeleitet.`
-										: 'Du wirst automatisch weitergeleitet.'}
+									{counter > 0 ? (
+										<>
+											Du wirst in{' '}
+											<span className="text-violet-600 dark:text-violet-200">{counter} Sekunden</span>{' '}
+											automatisch weitergeleitet.
+										</>
+									) : (
+										'Du wirst jetzt weitergeleitet.'
+									)}
 								</Label>
 								<Link href={`/mumble/${post.id}`} component={NextLink}>
 									Weiter
@@ -70,11 +77,7 @@ const DetailPage: FC<TUserPage> = ({ post }: InferGetStaticPropsType<typeof getS
 						) : (
 							<>
 								<Label as="p" size="L">
-									Zusätzlich kannst du eigene Beiträge erstellen, auf andere Beiträge antworten und anderen
-									Nutzern folgen.
-								</Label>
-								<Label as="p" size="L">
-									Werde Teil der Mumble Community und melde dich an! Wir freuen uns auf dich!
+									Registriere dich jetzt und werde Teil unserer Community.
 								</Label>
 								<Link href="/auth/signup" component={NextLink}>
 									Jetzt registrieren

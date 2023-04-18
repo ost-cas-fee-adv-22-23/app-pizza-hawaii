@@ -10,11 +10,11 @@ import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { PostCollection } from '../../components/post/PostCollection';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { UserCardList } from '../../components/user/UserCardList';
+import { FollowerList } from '../../components/widgets/FollowerList';
 import { UserRecommender } from '../../components/widgets/UserRecommender';
 import { useFolloweeContext } from '../../context/useFollowee';
 import { services } from '../../services';
 import { TPost, TUser } from '../../types';
-import { FollowerList } from '../../components/widgets/FollowerList';
 
 /**
  * @description
