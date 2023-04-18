@@ -42,6 +42,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 	posts: initialPosts = [],
 	canAdd = false,
 	canLoadMore = false,
+	autoUpdate = true,
 	filter = {},
 }) => {
 	const { data: session } = useSession();
@@ -97,6 +98,8 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 	});
 
 	useEffect(() => {
+		if (!autoUpdate) return;
+
 		// load full list of posts when user switches to browser tab
 		if (!tabIsActive || loadRequest === LoadRequestType.LOAD_NOT_NEEDED) {
 			setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
@@ -289,7 +292,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 				</Grid>
 			)}
 
-			{updateRequest.type && (
+			{autoUpdate && updateRequest.type && (
 				<div className="text-slate-500 mb-8">
 					<Button colorScheme="gradient" size="L" icon="repost" onClick={() => showLatestPosts()}>
 						World is changing, update your feed.
