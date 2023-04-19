@@ -3,7 +3,7 @@ import Head from 'next/head';
 import NextImage from 'next/image';
 import { FC, ReactNode } from 'react';
 
-import VerticalLogo from '../../assets/svg/verticalLogo.svg';
+import VerticalLogo from '../../../public/assets/svg/verticalLogo.svg';
 import { Footer } from '../Footer';
 
 type TLoginLayout = {
