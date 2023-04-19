@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import React from 'react';
 
-import VerticalLogo from '../../assets/svg/verticalLogo.svg';
+import VerticalLogo from '../../../public/assets/svg/verticalLogo.svg';
 import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
 
 export default function LoginPage() {

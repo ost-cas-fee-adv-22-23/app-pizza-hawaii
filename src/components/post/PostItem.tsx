@@ -85,7 +85,7 @@ const postItemVariantMap: Record<TPostItemProps['variant'], TPostItemVariantMap>
 	},
 };
 
-export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDeletePost, onAnswerPost, ...props }) => {
+export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDeletePost, onAnswerPost }) => {
 	const [post, postDispatch] = useReducer(PDReducer, {
 		...initialPDState,
 		...initialPost,
