@@ -96,11 +96,13 @@ ES Linter configuration checks for following topics
 4.  no consoles
 5.  react-hook rules
 
+´´´
 
     npm run lint 
 
     npm run lint --fix
-
+    
+´´´
 ### Dependency cruiser
 
     npm run dep-cruise:validate
