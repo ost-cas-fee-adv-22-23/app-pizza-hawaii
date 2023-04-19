@@ -5,9 +5,10 @@ import { TUserFormData, UserForm } from './UserForm';
 
 type TUserSettings = {
 	setSuccess?: () => void;
+	onCancel?: () => void;
 };
 const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
-const UserSettings: FC<TUserSettings> = ({ setSuccess }) => {
+const UserSettings: FC<TUserSettings> = ({ setSuccess, onCancel }) => {
 	const [user, setUser] = useState<TUserFormData>();
 	const [isLoading, setIsLoading] = useState(true);
 
@@ -83,7 +84,16 @@ const UserSettings: FC<TUserSettings> = ({ setSuccess }) => {
 		return { status: true };
 	};
 
-	return <UserForm user={user as TUserFormData} onSubmit={onSubmit} isLoading={isLoading} />;
+	return (
+		<UserForm
+			user={user as TUserFormData}
+			onSubmit={onSubmit}
+			onCancel={() => {
+				onCancel && onCancel();
+			}}
+			isLoading={isLoading}
+		/>
+	);
 };
 
 export default UserSettings;

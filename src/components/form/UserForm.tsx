@@ -1,4 +1,5 @@
-import { Button, Form, FormInput, Grid, Label } from '@smartive-education/pizza-hawaii';
+import { Button, Form, FormInput, Grid, Label, Link } from '@smartive-education/pizza-hawaii';
+import NextLink from 'next/link';
 import React, { FC, FormEvent, useEffect, useState } from 'react';
 
 export type TUserFormData = {
@@ -12,6 +13,7 @@ export type TUserFormErrors = { [key in keyof TUserFormData]?: string };
 
 export type TUserForm = {
 	onSubmit: (data: TUserFormData) => { status: boolean; errors?: TUserFormErrors };
+	onCancel?: () => void;
 	user?: TUserFormData;
 	sectionLabel?: string;
 	isLoading?: boolean;
@@ -24,14 +26,22 @@ const emptyState: TUserFormData = {
 	email: '',
 };
 
-export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLabel, isLoading }) => {
+export const UserForm: FC<TUserForm> = ({ onCancel, onSubmit, user = emptyState, sectionLabel, isLoading }) => {
 	const [state, setState] = useState(user);
-	const [formIsValid, setFormIsValid] = useState(false);
+	const [isUntouched, setIsUntouched] = useState(true);
+	const [isValid, setIsValid] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [errors, setErrors] = useState<TUserFormErrors>({});
 
 	useEffect(() => {
 		setState(user);
 	}, [user]);
+
+	useEffect(() => {
+		// check if form is untouched
+		const isUntouched = Object.entries(state).every(([key, value]) => value === user[key]);
+		setIsUntouched(isUntouched);
+	}, [state]);
 
 	// check if form is valid
 	useEffect(() => {
@@ -39,8 +49,8 @@ export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLa
 		const isEmpty = Object.values(state).every((value) => value === '');
 
 		// if there are no validation errors and
-		// the form is not empty, set formIsValid to true
-		setFormIsValid(Object.keys(errors).length === 0 && !isEmpty);
+		// the form is not empty, set isValid to true
+		setIsValid(Object.keys(errors).length === 0 && !isEmpty);
 	}, [state, errors]);
 
 	const validateFields = (fields: HTMLFormControlsCollection) => {
@@ -66,6 +76,8 @@ export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLa
 	const onSubmitHandler = (e: FormEvent) => {
 		e.preventDefault();
 
+		setIsSubmitting(true);
+
 		// get all fields from event target
 		const { target } = e;
 		const fields = (target as HTMLFormElement).elements;
@@ -88,6 +100,7 @@ export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLa
 		} else {
 			setErrors(res.errors || {});
 		}
+		setIsSubmitting(false);
 	};
 
 	const onFieldChange = (e: FormEvent): void => {
@@ -163,15 +176,31 @@ export const UserForm: FC<TUserForm> = ({ onSubmit, user = emptyState, sectionLa
 			<br />
 
 			{/*
-				We use the readyToSubmit state to enable/disable the submit button only visually.
+				We use the isValid state to enable/disable the submit button only visually.
 				We don't want to disable the button completely, because then the user wouldn't be able to see the errors.
 			*/}
-
-			<div className={formIsValid ? 'opacity-100' : 'opacity-50'}>
-				<Button size="L" type="submit" colorScheme="gradient" icon="mumble">
-					Let&lsquo; Mumble
-				</Button>
-			</div>
+			<Grid variant="row" gap="M" marginBelow="M">
+				<div className="flex-1">
+					<Button
+						size="L"
+						type="button"
+						colorScheme="slate"
+						onClick={() => {
+							onCancel && onCancel();
+						}}
+						icon="mumble"
+					>
+						Zurück
+					</Button>
+				</div>
+				{!isUntouched && (
+					<div className={['flex-1', isValid ? 'opacity-50' : undefined].join(' ')}>
+						<Button size="L" type="submit" colorScheme="gradient" icon="mumble" disabled={isSubmitting}>
+							Speichern
+						</Button>
+					</div>
+				)}
+			</Grid>
 		</Form>
 	);
 };

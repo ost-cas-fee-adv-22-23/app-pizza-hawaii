@@ -85,7 +85,7 @@ export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => 
 			{showImageModal && <ImageModal picture={picture} onClose={() => setShowImageModal(false)} />}
 			{showSettingsModal && (
 				<Modal title="Einstellungen" isVisible={showSettingsModal} onClose={() => setShowSettingsModal(false)}>
-					<UserSettings setSuccess={() => setShowSettingsModal(false)} />
+					<UserSettings setSuccess={() => setShowSettingsModal(false)} onCancel={() => setShowSettingsModal(false)} />
 				</Modal>
 			)}
 		</div>
