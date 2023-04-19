@@ -28,8 +28,8 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 				<link rel="icon" type="image/png" href="/favicon.png" />
 			</Head>
-			<SessionProvider session={session}>
-				<ErrorBoundary>
+			<ErrorBoundary>
+				<SessionProvider session={session}>
 					<ThemeContextProvider>
 						<FolloweeContextProvider>
 							<ActiveTabContextProvider>
@@ -37,8 +37,8 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 							</ActiveTabContextProvider>
 						</FolloweeContextProvider>
 					</ThemeContextProvider>
-				</ErrorBoundary>
-			</SessionProvider>
+				</SessionProvider>
+			</ErrorBoundary>
 		</>
 	);
 }

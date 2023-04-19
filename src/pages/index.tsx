@@ -39,7 +39,7 @@ export default function PageHome({
 	);
 
 	if (error) {
-		return <ErrorPage statusCode={500} title={error} />;
+		return <ErrorPage statusCode={500} errorInfo={error} />;
 	}
 
 	return (
@@ -91,7 +91,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 		if (error instanceof Error) {
 			message = error.message;
 		} else {
-			message = String(error);
+			message = String('could not load Mumbles posts');
 		}
 
 		return { props: { error: message, posts: [], users: [], postCount: 0 } };

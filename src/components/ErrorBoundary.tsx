@@ -1,5 +1,6 @@
-import ErrorPage from 'next/error';
 import React from 'react';
+
+import Custom500Page from '../pages/500';
 
 type Props = {
 	className?: string;
@@ -28,7 +29,7 @@ class ErrorBoundary extends React.Component<Props, State> {
 	render() {
 		// Check if the error is thrown or pass children to applciation
 		if (this.state.hasError) {
-			return <ErrorPage statusCode={500} title={this?.state?.error?.message} />;
+			return <Custom500Page errorInfo={this.state.error} />;
 		} else {
 			return this.props.children;
 		}

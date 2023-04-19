@@ -15,7 +15,7 @@ type TUserPage = {
 
 const DetailPage: FC<TUserPage> = ({ post, error }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	if (error) {
-		return <ErrorPage statusCode={500} title={error} />;
+		return <ErrorPage statusCode={500} errorInfo={error} />;
 	}
 
 	return (

@@ -10,7 +10,6 @@ type TCustom500Page = {
 
 // pages/500.js
 const Custom500Page: FC<TCustom500Page> = (error) => {
-	console.error('custom500', error);
 	const { errorInfo } = error;
 	return (
 		<LoginLayout title="Mumble - 500">
@@ -24,9 +23,11 @@ const Custom500Page: FC<TCustom500Page> = (error) => {
 					Something went south... A Server Side error occured.
 				</Headline>
 				<br />
-				<Richtext size="M" as="div">
-					<>ErrorMessage: {errorInfo}</>
-				</Richtext>
+				{errorInfo && (
+					<Richtext as="div" size="M">
+						ErrorMessage: {errorInfo.toString()}
+					</Richtext>
+				)}
 				<br />
 				<Link href="/" component={NextLink}>
 					Back Home
