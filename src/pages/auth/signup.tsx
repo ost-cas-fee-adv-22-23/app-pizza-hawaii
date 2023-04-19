@@ -45,12 +45,6 @@ const RegisterPage = () => {
 						</Link>
 					</Label>
 				</div>
-
-				<div className="mt-3 text-center">
-					<Link href="/" component={NextLink}>
-						Zurück
-					</Link>
-				</div>
 			</Grid>
 		</LoginLayout>
 	);

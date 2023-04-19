@@ -12,9 +12,10 @@ import { PostList } from './PostList';
 
 type TPostDetailProps = {
 	post: TPost;
+	canWrite?: boolean;
 };
 
-export const PostDetail: FC<TPostDetailProps> = ({ post }) => {
+export const PostDetail: FC<TPostDetailProps> = ({ post, canWrite }) => {
 	const [postState, postDispatch] = useReducer(PDReducer, {
 		...initialPDState,
 		...post,
@@ -53,7 +54,7 @@ export const PostDetail: FC<TPostDetailProps> = ({ post }) => {
 	};
 
 	const onAnswerPost = (id: string) => {
-		const answerPost = postState.replies?.find((reply) => reply.id === id);
+		const answerPost = post.id === id ? post : postState.replies?.find((reply) => reply.id === id);
 
 		const textarea = document.getElementById(textAreaId) as HTMLTextAreaElement;
 		if (!textarea) {
@@ -80,9 +81,9 @@ export const PostDetail: FC<TPostDetailProps> = ({ post }) => {
 
 	return (
 		<Grid as="div" variant="col" gap="S">
-			{post && <PostItem variant="detailpage" post={post} onDeletePost={onRemovePost} />}
+			{post && <PostItem variant="detailpage" post={post} onDeletePost={onRemovePost} onAnswerPost={onAnswerPost} />}
 
-			{currentUser && onAddReply && (
+			{currentUser && canWrite && (
 				<Grid variant="col" gap="M" marginBelow="M">
 					<PostCreator
 						textAreaId={textAreaId}
@@ -101,6 +102,7 @@ export const PostDetail: FC<TPostDetailProps> = ({ post }) => {
 					variant="response"
 					onRemovePost={onRemovePost}
 					onAnswerPost={onAnswerPost}
+					noPostsMessage={false}
 				/>
 			)}
 		</Grid>

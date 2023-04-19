@@ -4,7 +4,7 @@ import React, { FC, SyntheticEvent, useEffect, useRef, useState } from 'react';
 
 import ProjectSettings from '../data/ProjectSettings.json';
 
-export type TModalPicture = {
+export type TImageModalPicture = {
 	src?: string;
 	width: number;
 	height: number;
@@ -12,7 +12,7 @@ export type TModalPicture = {
 };
 
 type TImageModal = {
-	picture: TModalPicture;
+	picture: TImageModalPicture;
 	onClose: () => void;
 };
 

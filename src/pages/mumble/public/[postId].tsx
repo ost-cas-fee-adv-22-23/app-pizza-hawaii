@@ -3,7 +3,7 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import NextLink from 'next/link';
 import router from 'next/router';
 import { useSession } from 'next-auth/react';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { MainLayout } from '../../../components/layoutComponents/MainLayout';
 import { PostDetail } from '../../../components/post/PostDetail';
@@ -18,10 +18,18 @@ const DetailPage: FC<TUserPage> = ({ post }: InferGetStaticPropsType<typeof getS
 	const { data: session } = useSession();
 	const currentUser = session?.user as TUser;
 
-	// redirect if current user is available
-	if (currentUser) {
-		router.push(`/mumble/${post.id}`);
-	}
+	const [counter, setCounter] = useState(7);
+
+	useEffect(() => {
+		if (currentUser) {
+			if (counter > 0) {
+				const timer = setInterval(() => setCounter(counter - 1), 1000);
+				return () => clearInterval(timer);
+			} else {
+				router.push(`/mumble/${post.id}`);
+			}
+		}
+	}, [counter, currentUser, post.id]);
 
 	return (
 		<MainLayout
@@ -41,22 +49,44 @@ const DetailPage: FC<TUserPage> = ({ post }: InferGetStaticPropsType<typeof getS
 				<div className="text-slate-500 mb-8">
 					<Grid variant="col" gap="M">
 						<Label as="p" size="XL">
-							Angemeldete Nutzer haben die Möglichkeit, vollständige Beiträge und Nutzerdetails zu sehen.
+							Als angemeldeter Nutzer kannst du Beiträge lesen, eigene Beiträge erstellen, auf andere Beiträge
+							antworten und anderen Nutzern folgen.
 						</Label>
-						<Label as="p" size="L">
-							Zusätzlich kannst du eigene Beiträge erstellen, auf andere Beiträge antworten und anderen Nutzern
-							folgen.
-						</Label>
-						<Label as="p" size="L">
-							Werde Teil der Mumble Community und melde dich an! Wir freuen uns auf dich!
-						</Label>
-
-						<Link href="/auth/signup" component={NextLink}>
-							Jetzt registrieren
-						</Link>
+						{currentUser ? (
+							<>
+								<Label as="p" size="L">
+									Hallo{' '}
+									<span className="text-violet-600 dark:text-violet-200">{currentUser.userName}</span>, du
+									bist bereits angemeldet.
+								</Label>
+								<Label as="p" size="L">
+									{counter > 0 ? (
+										<>
+											Du wirst in{' '}
+											<span className="text-violet-600 dark:text-violet-200">{counter} Sekunden</span>{' '}
+											automatisch weitergeleitet.
+										</>
+									) : (
+										'Du wirst jetzt weitergeleitet.'
+									)}
+								</Label>
+								<Link href={`/mumble/${post.id}`} component={NextLink}>
+									Weiter
+								</Link>
+							</>
+						) : (
+							<>
+								<Label as="p" size="L">
+									Registriere dich jetzt und werde Teil unserer Community.
+								</Label>
+								<Link href="/auth/signup" component={NextLink}>
+									Jetzt registrieren
+								</Link>
+							</>
+						)}
 					</Grid>
 				</div>
-				<PostDetail post={post} />
+				<PostDetail post={post} canWrite={false} />
 
 				{(post?.replyCount || 0) + (post?.likeCount || 0) > 0 && (
 					<div className="text-slate-500 mt-8">

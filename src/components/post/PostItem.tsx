@@ -14,13 +14,14 @@ import {
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
-import React, { FC, useReducer, useState } from 'react';
+import React, { FC, useEffect, useReducer, useState } from 'react';
 
+import shortenString from '../../data/helpers/shortenString';
 import ProjectSettings from '../../data/ProjectSettings.json';
 import PDReducer, { ActionType as PDActionType, initialState as initialPDState } from '../../reducer/postDetailReducer';
 import { postsService } from '../../services/api/posts/';
 import { TPost, TUser } from '../../types';
-import ImageModal, { TModalPicture } from '../ImageModal';
+import ImageModal, { TImageModalPicture } from '../ImageModal';
 
 /*
  * Type
@@ -37,7 +38,11 @@ type TPostItemVariantMap = {
 	textSize: 'M' | 'L';
 	avatarSize: TUserContentCard['avatarSize'];
 	avatarVariant: TUserContentCard['avatarVariant'];
-	copyLink: boolean;
+	showAnswerButton: boolean;
+	showDeleteButton: boolean;
+	showShareButton: boolean;
+	showCommentButton: boolean;
+	showLikeButton: boolean;
 };
 
 /*
@@ -50,39 +55,55 @@ const postItemVariantMap: Record<TPostItemProps['variant'], TPostItemVariantMap>
 		textSize: 'L',
 		avatarSize: 'M',
 		avatarVariant: 'standalone',
-		copyLink: true,
+		showAnswerButton: true,
+		showDeleteButton: true,
+		showShareButton: true,
+		showCommentButton: false,
+		showLikeButton: true,
 	},
 	timeline: {
 		headlineSize: 'L',
 		textSize: 'M',
 		avatarSize: 'M',
 		avatarVariant: 'standalone',
-		copyLink: true,
+		showAnswerButton: false,
+		showDeleteButton: true,
+		showShareButton: true,
+		showCommentButton: true,
+		showLikeButton: true,
 	},
 	response: {
 		headlineSize: 'M',
 		textSize: 'M',
 		avatarSize: 'S',
 		avatarVariant: 'subcomponent',
-		copyLink: false,
+		showAnswerButton: true,
+		showDeleteButton: true,
+		showShareButton: false,
+		showCommentButton: false,
+		showLikeButton: true,
 	},
 };
 
-export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDeletePost, onAnswerPost }) => {
+export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDeletePost, onAnswerPost, ...props }) => {
 	const [post, postDispatch] = useReducer(PDReducer, {
 		...initialPDState,
 		...initialPost,
 	});
 
 	const [showImageModal, setShowImageModal] = useState(false);
+	const [hydrationDone, setHydrationDone] = useState(false);
+
+	useEffect(() => {
+		setHydrationDone(true);
+	}, []);
 
 	const { data: session } = useSession();
 	const currentUser = session?.user as TUser;
 
 	const setting = postItemVariantMap[variant] || postItemVariantMap.detailpage;
 
-	const isFreshPost = new Date(post.createdAt).getTime() > new Date().getTime() - 45 * 60 * 1000;
-	const picture: TModalPicture = {
+	const picture: TImageModalPicture = {
 		src: post.mediaUrl,
 		width: ProjectSettings.images.post.width,
 		height:
@@ -113,42 +134,54 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 		onDeletePost && onDeletePost(post?.id);
 	};
 
+	// Scroll page to Item on click
+	const handlePostClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+		// get item and header element
+		const item = (event.target as HTMLElement).closest('.Card');
+		const header = document.querySelector('header') as HTMLElement;
+
+		if (!item || !header) return;
+
+		// get item position
+		const itemPosition = item.getBoundingClientRect().top;
+
+		// get header height
+		const headerHeight = header.clientHeight;
+
+		// get header margin
+		const headerMargin = parseInt(window.getComputedStyle(header).getPropertyValue('margin-bottom'));
+
+		// get scroll position
+		const scrollPosition = window.pageYOffset;
+
+		// scroll to item
+		window.scrollTo({
+			top: itemPosition + scrollPosition - headerHeight - headerMargin,
+			behavior: 'smooth',
+		});
+	};
+
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
-				{`${post?.user.displayName}`}
+				{shortenString(post?.user.displayName, 30)}
 			</Label>
 			<Grid variant="row" gap="S">
 				<NextLink href={post?.user.profileLink}>
 					<IconText icon="profile" colorScheme="violet" size="S">
-						{post?.user.userName}
+						{shortenString(post?.user.userName, 20)}
 					</IconText>
 				</NextLink>
 				{post.createdAt && new Date(post.createdAt) && (
 					<IconText icon="calendar" colorScheme="slate" size="S">
-						{isFreshPost ? (
-							<time
-								title={
-									new Date(post.createdAt).toLocaleDateString('de-CH') +
-									' ' +
-									new Date(post.createdAt).toLocaleTimeString('de-CH', {
-										hour: '2-digit',
-										minute: '2-digit',
-									})
-								}
-								dateTime={new Date(post.createdAt).toISOString()}
-							>
-								gerade eben
-							</time>
-						) : (
-							<TimeStamp date={post?.createdAt} />
-						)}
+						{hydrationDone && <TimeStamp date={post?.createdAt} />}
 					</IconText>
 				)}
 			</Grid>
 		</Grid>
 	);
 
+	// TODO: check with Mirco ref in UserContentCard would like to use useRef
 	return (
 		<UserContentCard
 			headline={headerSlotContent}
@@ -175,35 +208,35 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 			)}
 			{currentUser && (
 				<Grid variant="row" gap="M" wrapBelowScreen="md">
-					{variant === 'response' ? (
-						<>
-							{onAnswerPost && (
-								<InteractionButton
-									type="button"
-									colorScheme="violet"
-									buttonText={'Answer'}
-									iconName={'repost'}
-									onClick={handleAnswerPost}
-								/>
-							)}
-						</>
-					) : (
+					{setting.showAnswerButton && onAnswerPost && (
 						<InteractionButton
-							component={NextLink}
-							href={`/mumble/${post.id}`}
-							isActive={post.replyCount > 0}
+							type="button"
 							colorScheme="violet"
-							buttonText={
-								post.replyCount > 0
-									? `${post.replyCount} Comments`
-									: post.replyCount === 0
-									? 'Comment'
-									: '1 Comment'
-							}
-							iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
+							buttonText={'Answer'}
+							iconName={'repost'}
+							onClick={handleAnswerPost}
 						/>
 					)}
-					{currentUser && (
+					{
+						setting.showCommentButton && currentUser && (
+							<InteractionButton
+								component={NextLink}
+								href={`/mumble/${post.id}`}
+								isActive={post.replyCount > 0}
+								colorScheme="violet"
+								buttonText={
+									post.replyCount > 0
+										? `${post.replyCount} Comments`
+										: post.replyCount === 0
+										? 'Comment'
+										: '1 Comment'
+								}
+								iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
+								onClick={handlePostClick}
+							/>
+						) // TODO: have a look at this onClick (check with mirco)
+					}
+					{setting.showLikeButton && currentUser && (
 						<InteractionButton
 							type="button"
 							isActive={post.likeCount > 0}
@@ -215,7 +248,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 							onClick={handleLike}
 						/>
 					)}
-					{setting.copyLink && (
+					{setting.showShareButton && (
 						<CopyToClipboardButton
 							defaultButtonText="Copy Link"
 							activeButtonText="Link copied"
@@ -223,7 +256,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 						/>
 					)}
 
-					{onDeletePost && currentUser && currentUser.id === post.user.id && (
+					{setting.showDeleteButton && onDeletePost && currentUser && currentUser.id === post.user.id && (
 						<InteractionButton
 							type="button"
 							colorScheme="pink"

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { signIn, signOut, useSession } from 'next-auth/react';
+import React from 'react';
 
 import VerticalLogo from '../../assets/svg/verticalLogo.svg';
 import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
@@ -21,9 +22,11 @@ export default function LoginPage() {
 			<div className="inline-block mb-8">
 				<Image src={VerticalLogo} alt="welcome to Mumble" />
 			</div>
-			<Headline level={1}>
-				Find out what’s new in <span className="text-white">#Frontend Engineering</span>.
-			</Headline>
+			<div className="md:hidden">
+				<Headline level={1}>
+					Find out what’s new in <span className="text-white">#Frontend Engineering</span>.
+				</Headline>
+			</div>
 		</div>
 	);
 

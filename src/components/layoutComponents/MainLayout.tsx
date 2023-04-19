@@ -1,7 +1,9 @@
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import { FC, ReactElement } from 'react';
+import { FC, ReactElement, useEffect, useState } from 'react';
 
+import shortenString from '../../data/helpers/shortenString';
 import { TUser } from '../../types';
 import { Footer } from '../Footer';
 import { Header } from '../Header';
@@ -21,20 +23,21 @@ type TMainLayout = {
 };
 
 export const MainLayout: FC<TMainLayout> = ({ title, seo, children }) => {
+	const router = useRouter();
 	const { data: session } = useSession();
 	const currentUser: TUser | undefined = session?.user;
 
-	function shortenText(text: string, maxLength: number) {
-		if (text.length <= maxLength) {
-			return text;
-		}
+	const [isNavigating, setIsNavigating] = useState(false);
+	useEffect(() => {
+		router.events.on('routeChangeStart', () => {
+			setIsNavigating(true);
+		});
+		router.events.on('routeChangeComplete', () => {
+			setIsNavigating(false);
+		});
+	}, [router.events]);
 
-		// shorten to the nearest word
-		return `${text.substr(0, text.lastIndexOf(' ', maxLength))}...`;
-	}
-
-	const seoDescription = seo.description ? shortenText(seo.description, 150) : '';
-
+	const seoDescription = seo.description ? shortenString(seo.description, 150, true) : '';
 	const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
 	return (
@@ -56,7 +59,7 @@ export const MainLayout: FC<TMainLayout> = ({ title, seo, children }) => {
 
 			<Header user={currentUser} />
 
-			<main className="px-content mb-24 sm:px-6">
+			<main className={`px-content mb-24 sm:px-6 ${isNavigating && 'opacity-50 animate-pulse'}`}>
 				<section className="mx-auto w-full max-w-content">{children}</section>
 			</main>
 			<Footer />

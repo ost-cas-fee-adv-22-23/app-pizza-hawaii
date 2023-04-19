@@ -6,8 +6,9 @@ import { services } from '../../../services';
 /**
  * @name Loadmore
  * @description
- * This api endpoint is used to get older or newer posts than the one with the given id (newerThan, olderThan).
- * It is used to load more posts when scrolling down or fetch new posts when FE need.
+ * This api endpoint is used to get posts from the API.
+ * The two parameters `newerThan` and `olderThan` are used to fetch posts before or after a specific postID or ULID date.
+ * The parameter `limit` is used to limit the number of posts returned. The default is 15 and the maximum is 100.
  */
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

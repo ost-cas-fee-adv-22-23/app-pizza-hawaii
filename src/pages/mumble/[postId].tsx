@@ -1,7 +1,7 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import ErrorPage from 'next/error';
 import { getToken } from 'next-auth/jwt';
-import { FC } from 'react';
+import React, { FC } from 'react';
 
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { PostDetail } from '../../components/post/PostDetail';
@@ -15,7 +15,7 @@ type TUserPage = {
 
 const DetailPage: FC<TUserPage> = ({ post, error }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	if (error) {
-		return <ErrorPage statusCode={500} title={error} />;
+		return <ErrorPage statusCode={500} errorInfo={error} />;
 	}
 
 	return (
@@ -27,7 +27,7 @@ const DetailPage: FC<TUserPage> = ({ post, error }: InferGetServerSidePropsType<
 				pageType: 'article',
 			}}
 		>
-			<PostDetail post={post} />
+			<PostDetail post={post} canWrite={true} />
 		</MainLayout>
 	);
 };

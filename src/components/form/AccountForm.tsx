@@ -107,7 +107,7 @@ export const AccountForm: FC<TAccountForm> = ({ onSubmit, user, sectionlabel }) 
 		<Form onSubmit={onSubmitHandler} noValidate>
 			<fieldset>
 				<Label as="legend" size="XL">
-					{sectionlabel || 'Deine Daten'}
+					{sectionlabel || 'Deine Daten 1'}
 				</Label>
 				<div className="mt-4">
 					<Grid variant="col" gap="M" marginBelow="M">

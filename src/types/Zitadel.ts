@@ -1,7 +1,7 @@
 /* Zitadel types */
 
 export type TZitadelUser = {
-	userName: string;
+	userName: TZitadelUserName;
 	profile: TZitadelProfile;
 	email: TZitadelEmail;
 	phone?: TZitadelPhone;
@@ -12,15 +12,16 @@ export type TZitadelUser = {
 	otpCode?: string;
 	idps?: TZitadelIdp[];
 };
+export type TZitadelUserName = string;
 
 export type TZitadelEmail = {
 	email: string;
-	isEmailVerified: boolean;
+	isEmailVerified?: boolean;
 };
 
 export type TZitadelPhone = {
 	phone: string;
-	isPhoneVerified: boolean;
+	isPhoneVerified?: boolean;
 };
 
 export type TZitadelHashedPassword = {
@@ -31,7 +32,7 @@ export type TZitadelHashedPassword = {
 export type TZitadelProfile = {
 	firstName: string;
 	lastName: string;
-	displayName: string;
+	displayName?: string;
 	avatarUrl?: string;
 	gender?: 'GENDER_UNSPECIFIED' | 'GENDER_FEMALE' | 'GENDER_MALE' | 'GENDER_DIVERSE';
 	nickName?: string;
