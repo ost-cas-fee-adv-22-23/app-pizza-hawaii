@@ -225,12 +225,9 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 				<Button colorScheme="slate" icon="upload" onClick={showImageUploadModal}>
 					Bild Hochladen
 				</Button>
-				{/* TODO: disabled state to component lib */}
-				<div className={isValid ? 'w-full' : 'w-full opacity-50'}>
-					<Button colorScheme="violet" icon="send" onClick={onSubmitPostHandler} disabled={!isValid}>
-						Absenden
-					</Button>
-				</div>
+				<Button colorScheme="violet" icon="send" onClick={onSubmitPostHandler} disabled={!isValid}>
+					Absenden
+				</Button>
 			</Grid>
 		</UserContentCard>
 	);
