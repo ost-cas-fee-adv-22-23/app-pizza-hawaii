@@ -2,7 +2,6 @@ import {
 	Button,
 	FormTextarea,
 	Grid,
-	Icon,
 	IconText,
 	Image,
 	Label,
@@ -14,7 +13,6 @@ import {
 import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
 import React, { FC, useEffect, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
 
 import { TPost, TUser } from '../../types';
 import { PostImageUpload } from './PostImageUpload';

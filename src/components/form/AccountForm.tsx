@@ -27,7 +27,7 @@ const emptyState: TAccountFormData = {
 	email: '',
 };
 
-export const AccountForm: FC<TAccountForm> = ({ onCancel, onSubmit, user = emptyState, sectionLabel, isLoading }) => {
+export const AccountForm: FC<TAccountForm> = ({ onSubmit, user = emptyState, sectionLabel, isLoading }) => {
 	const [state, setState] = useState(user);
 	const [isUntouched, setIsUntouched] = useState(true);
 	const [isValid, setIsValid] = useState(false);

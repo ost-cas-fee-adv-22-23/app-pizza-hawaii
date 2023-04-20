@@ -32,6 +32,7 @@ export default function LoginPage() {
 	);
 
 	const handleLogin = (loginFormData: TLoginFormData) => {
+		throw new Error(`Function not yet implemented. ${JSON.stringify(loginFormData)}`);
 		return { status: true, errors: {} as TLoginFormErrors };
 	};
 
