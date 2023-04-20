@@ -22,7 +22,7 @@ export default function GlobalError({ error }: { error?: Error }) {
 				<br />
 				<br /> ¯\_(ツ)_/¯
 				<br />
-				<a href="/login">Go back home to Login</a>
+				<a href="/auth/login">Go back home to Login</a>
 			</body>
 		</html>
 	);

@@ -6,6 +6,7 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import React from 'react';
 
 import VerticalLogo from '../../../public/assets/svg/verticalLogo.svg';
+import { LoginForm, TLoginFormData, TLoginFormErrors } from '../../components/form/LoginForm';
 import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
 
 export default function LoginPage() {
@@ -30,6 +31,11 @@ export default function LoginPage() {
 		</div>
 	);
 
+	const handleLogin = (loginFormData: TLoginFormData) => {
+		throw new Error(`Function not yet implemented. ${JSON.stringify(loginFormData)}`);
+		return { status: true, errors: {} as TLoginFormErrors };
+	};
+
 	return (
 		<LoginLayout title="Mumble - Login" header={header}>
 			{!!session && (
@@ -53,6 +59,8 @@ export default function LoginPage() {
 					<Headline as="h1" level={1}>
 						Anmelden
 					</Headline>
+					<LoginForm onSubmit={handleLogin} />
+					<hr />
 					<Button
 						onClick={() =>
 							signIn('zitadel', {
