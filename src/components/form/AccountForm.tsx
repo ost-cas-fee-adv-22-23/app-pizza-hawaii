@@ -2,8 +2,8 @@ import { Button, Form, FormInput, FormPassword, Grid, Label } from '@smartive-ed
 import React, { FC, FormEvent, useEffect, useState } from 'react';
 
 export type TAccountFormData = {
-	password_1: string;
-	password_2: string;
+	password: string;
+	confirmPassword: string;
 	userName: string;
 	email: string;
 };
@@ -21,8 +21,8 @@ export type TAccountForm = {
 };
 
 const emptyState: TAccountFormData = {
-	password_1: '',
-	password_2: '',
+	password: '',
+	confirmPassword: '',
 	userName: '',
 	email: '',
 };
@@ -55,10 +55,10 @@ export const AccountForm: FC<TAccountForm> = ({ onCancel, onSubmit, user = empty
 
 	useEffect(() => {
 		// check if passwords match
-		if (state.password_1 !== state.password_2) {
-			setErrors((prev) => ({ ...prev, password_2: 'Die Passwörter stimmen nicht überein.' }));
+		if (state.password !== state.confirmPassword) {
+			setErrors((prev) => ({ ...prev, confirmPassword: 'Die Passwörter stimmen nicht überein.' }));
 		} else {
-			setErrors((prev) => ({ ...prev, password_2: undefined }));
+			setErrors((prev) => ({ ...prev, confirmPassword: undefined }));
 		}
 	}, [state]);
 
@@ -158,20 +158,20 @@ export const AccountForm: FC<TAccountForm> = ({ onCancel, onSubmit, user = empty
 							autoComplete="email"
 						/>
 						<FormPassword
-							name="password_1"
+							name="password"
 							label="Passwort"
-							value={state['password_1']}
+							value={state['password']}
 							onChange={onFieldChange}
-							errorMessage={errors['password_1']}
+							errorMessage={errors['password']}
 							required
 							autoComplete="off"
 						/>
 						<FormPassword
-							name="password_2"
+							name="confirmPassword"
 							label="Passwort wiederholen"
-							value={state['password_2']}
+							value={state['confirmPassword']}
 							onChange={onFieldChange}
-							errorMessage={errors['password_2']}
+							errorMessage={errors['confirmPassword']}
 							required
 							autoComplete="off"
 						/>
