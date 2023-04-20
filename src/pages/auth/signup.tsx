@@ -3,11 +3,11 @@ import NextLink from 'next/link';
 import router from 'next/router';
 import React from 'react';
 
-import { TUserFormData, UserForm } from '../../components/form/UserForm';
+import { AccountForm, TAccountFormData } from '../../components/form/AccountForm';
 import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
 
 const RegisterPage = () => {
-	const onSubmit = (data: TUserFormData) => {
+	const onSubmit = (data: TAccountFormData) => {
 		let errors = {};
 
 		// TODO: Implement the real registration
@@ -35,7 +35,7 @@ const RegisterPage = () => {
 			<Grid variant="col" gap="L" centered={false}>
 				<Headline level={2}>Register now</Headline>
 
-				<UserForm onSubmit={onSubmit} user={undefined} />
+				<AccountForm onSubmit={onSubmit} />
 
 				<div className="mt-3 text-center">
 					<Label as="span" size="M">
