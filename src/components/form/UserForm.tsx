@@ -1,5 +1,4 @@
-import { Button, Form, FormInput, Grid, Label, Link } from '@smartive-education/pizza-hawaii';
-import NextLink from 'next/link';
+import { Button, Form, FormInput, Grid, Label } from '@smartive-education/pizza-hawaii';
 import React, { FC, FormEvent, useEffect, useState } from 'react';
 
 export type TUserFormData = {
@@ -8,6 +7,8 @@ export type TUserFormData = {
 	lastName: string;
 	email: string;
 };
+
+type TUserFormDataKeys = keyof TUserFormData;
 
 export type TUserFormErrors = { [key in keyof TUserFormData]?: string };
 
@@ -39,9 +40,9 @@ export const UserForm: FC<TUserForm> = ({ onCancel, onSubmit, user = emptyState,
 
 	useEffect(() => {
 		// check if form is untouched
-		const isUntouched = Object.entries(state).every(([key, value]) => value === user[key]);
+		const isUntouched = Object.entries(state).every(([key, value]) => value === user[key as TUserFormDataKeys]);
 		setIsUntouched(isUntouched);
-	}, [state]);
+	}, [state, user]);
 
 	// check if form is valid
 	useEffect(() => {
@@ -142,7 +143,7 @@ export const UserForm: FC<TUserForm> = ({ onCancel, onSubmit, user = emptyState,
 						<FormInput
 							name="email"
 							label="Email"
-							type="text"
+							type="email"
 							value={state['email']}
 							onChange={onFieldChange}
 							errorMessage={errors['email']}
@@ -173,13 +174,11 @@ export const UserForm: FC<TUserForm> = ({ onCancel, onSubmit, user = emptyState,
 				</div>
 			</fieldset>
 
-			<br />
-
 			{/*
 				We use the isValid state to enable/disable the submit button only visually.
 				We don't want to disable the button completely, because then the user wouldn't be able to see the errors.
 			*/}
-			<Grid variant="row" gap="M" marginBelow="M">
+			<Grid variant="row" gap="M" marginBelow="XS">
 				<div className="flex-1">
 					<Button
 						size="L"
@@ -188,14 +187,14 @@ export const UserForm: FC<TUserForm> = ({ onCancel, onSubmit, user = emptyState,
 						onClick={() => {
 							onCancel && onCancel();
 						}}
-						icon="mumble"
+						icon="cancel"
 					>
 						Zurück
 					</Button>
 				</div>
 				{!isUntouched && (
 					<div className={['flex-1', isValid ? 'opacity-50' : undefined].join(' ')}>
-						<Button size="L" type="submit" colorScheme="gradient" icon="mumble" disabled={isSubmitting}>
+						<Button size="L" type="submit" colorScheme="gradient" icon="send" disabled={isSubmitting}>
 							Speichern
 						</Button>
 					</div>
