@@ -7,6 +7,7 @@ import {
 	Image,
 	Label,
 	Modal,
+	RoundButton,
 	TUserContentCard,
 	UserContentCard,
 } from '@smartive-education/pizza-hawaii';
@@ -16,11 +17,11 @@ import React, { FC, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 import { TPost, TUser } from '../../types';
-import { ImageUpload } from '../ImageUpload';
+import { PostImageUpload } from './PostImageUpload';
 
 export type TAddPostProps = {
 	text: string;
-	file?: File;
+	image?: File;
 	replyTo?: string;
 };
 
@@ -76,64 +77,30 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 		}
 	}, [text, file]);
 
-	// Dropzone hook
-	const { getRootProps, getInputProps } = useDropzone({
-		accept: {
-			'image/png': [],
-			'image/jpeg': [],
-			'image/jpg': [],
-			'image/gif': [],
-		},
-		maxSize: 5000000,
-		onDrop: (acceptedFiles) => {
-			const newFile = acceptedFiles[0];
-
-			if (!newFile) {
-				return null;
-			}
-
-			setFile(newFile);
-			setFilePreview(URL.createObjectURL(newFile));
-		},
-		onDropRejected: (rejectedFiles, error) => {
-			console.error('onDropRejected: rejectedFiles', rejectedFiles, error);
-			// TODO: Sedning error message to the user in modal
-			//console.log(rejectedFiles[0].errors[0].message);
-		},
-
-		onError: (error) => {
-			if (error) {
-				console.error('onError: error', error);
-			}
-		},
-	});
+	useEffect(() => {
+		if (file) {
+			setShowModal(false);
+			setFilePreview(URL.createObjectURL(file));
+		} else {
+			setFilePreview('');
+		}
+	}, [file]);
 
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setText(e.target.value);
 	};
 
-	const showImageUploadModal = () => {
-		setShowModal(true);
-	};
-
-	const onChooseImage = () => {
-		setShowModal(false);
-	};
-
-	const closeModal = () => {
-		setShowModal(false);
-		setFile(undefined);
-	};
-
 	const onSubmitPostHandler = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
+
+		// return if no text or file is set or no onAddPost function is passed
 		if ((!text && !file) || !onAddPost) {
 			return;
 		}
 
 		const newPost = await onAddPost({
-			text,
-			file,
+			text: text || '',
+			image: file,
 			replyTo: replyTo?.id,
 		});
 
@@ -178,8 +145,20 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 			avatarSize={setting.avatarSize}
 		>
 			{!showModal && file && (
-				<Image src={filePreview} width={600} caption="Vorschau: Möchtest Du dieses Bild posten?" alt="preview" />
+				<div className="relative">
+					<Image src={filePreview} width={600} alt="" />
+					<div className="absolute top-0 right-0 translate-x-2/4 -translate-y-2/4">
+						<RoundButton
+							colorScheme="slate"
+							icon="cancel"
+							onClick={() => setFile(undefined)}
+							buttonLabel="Bild verwerfen"
+							title="Bild verwerfen"
+						/>
+					</div>
+				</div>
 			)}
+
 			<FormTextarea
 				id={textAreaId}
 				label={placeHolderText}
@@ -187,43 +166,17 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 				hideLabel={true}
 				size="L"
 				value={text}
-				onChange={(e) => inputChangeHandler(e)}
+				onChange={inputChangeHandler}
 			/>
 
 			{showModal && (
-				<Modal title="Bild Hochladen" isVisible={showModal} onClose={() => closeModal()}>
-					<form onSubmit={() => onChooseImage()}>
-						{file ? (
-							<ImageUpload src={filePreview as string} />
-						) : (
-							<div className="p-2 h-48 cursor-pointer flex justify-center align-middle bg-slate-100">
-								<div {...getRootProps({ className: 'dropzone' })}>
-									<input {...getInputProps()} placeholder="Um Datei uploaden hierhinziehen oder clicken" />
-									<div className="block justify-center text-center align-middle p-10">
-										<Icon size="L" name="upload" />
-										<br />
-										<Label as="span" size="M">
-											Datei hier hineinziehen oder clicken
-										</Label>
-										<br />
-										<Label as="span" size="S">
-											JPG, GIF oder PNG, maximal 5 MB
-										</Label>
-									</div>
-								</div>
-							</div>
-						)}
-						{file && (
-							<Button colorScheme="gradient" icon="eye">
-								Dieses Bild wählen
-							</Button>
-						)}
-					</form>
+				<Modal title="Bild Hochladen" isVisible={showModal} onClose={() => setShowModal(false)}>
+					<PostImageUpload onNewFile={setFile} />
 				</Modal>
 			)}
 			<Grid variant="row" gap="S" wrapBelowScreen="md">
-				<Button colorScheme="slate" icon="upload" onClick={showImageUploadModal}>
-					Bild Hochladen
+				<Button colorScheme="slate" icon="upload" onClick={() => setShowModal(true)}>
+					Bild auswählen
 				</Button>
 				<Button colorScheme="violet" icon="send" onClick={onSubmitPostHandler} disabled={!isValid}>
 					Absenden
