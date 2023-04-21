@@ -48,13 +48,13 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 
 	const isCurrentUser = currentUser?.id === user.id;
 
-	const switchoptions = [
+	const switchOptions = [
 		{ label: 'Meine Mumbles', value: TAB_NAME.POSTS },
 		{ label: 'Meine Likes', value: TAB_NAME.LIKES },
 	];
 
 	if (followees?.length || currentTab === TAB_NAME.FOLLOWER) {
-		switchoptions.push({ label: `Meine Follower (${followees?.length})`, value: TAB_NAME.FOLLOWER });
+		switchOptions.push({ label: `Meine Follower (${followees?.length})`, value: TAB_NAME.FOLLOWER });
 	}
 
 	const isFreshUser = new Date(user.createdAt).getTime() > new Date().getTime() - 45 * 60 * 1000;
@@ -123,7 +123,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 						<Grid variant="col" gap="M" marginBelow="M">
 							<Switch
 								label="Wechsle deine angezeigten Mumbles"
-								options={switchoptions}
+								options={switchOptions}
 								value={TAB_NAME.POSTS}
 								name="posttype"
 								onChange={(event: ChangeEvent): void => {
