@@ -63,6 +63,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { tag
 
 		return {
 			props: {
+				session,
 				searchTag,
 				count,
 				posts,

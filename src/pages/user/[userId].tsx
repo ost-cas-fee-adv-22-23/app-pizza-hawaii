@@ -208,6 +208,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 		return {
 			props: {
 				user,
+				session,
 				posts: {
 					posts: posts.posts,
 					count: posts.count,
