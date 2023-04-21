@@ -14,51 +14,28 @@ type TThemeContextData = {
 	toggleTheme: () => void;
 };
 
+// TODO: add document page to check in the header what user prefers and set it to html element
+
 const ThemeContext = createContext({} as TThemeContextData);
 export const ThemeContextProvider = ({ children }: TThemeContextProps) => {
-	const [theme, setTheme] = useState<string | undefined>();
-
-	// set the theme on mount
-	useEffect(() => {
-		// check if the user has a theme preference in local storage
-		let newTheme = localStorage.getItem('theme');
-
-		if (!newTheme) {
-			// check if the user has a dark or light mode preference
-			if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-				newTheme = THEME.DARK;
-			}
-			if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-				newTheme = THEME.LIGHT;
-			}
-		}
-
-		if (newTheme) {
-			setTheme(newTheme);
-		}
-	}, []);
-
-	// toggle the theme
-	useEffect(() => {
+	const [theme, setTheme] = useState<string | undefined>(undefined);
+	function toggleTheme() {
+		const oldTheme = localStorage.getItem('theme');
+		const newTheme = oldTheme === THEME.LIGHT ? THEME.DARK : THEME.LIGHT;
 		const root = window.document.documentElement;
 
 		root.classList.remove(THEME.LIGHT);
 		root.classList.remove(THEME.DARK);
 
-		if (!root || !theme) {
+		if (!root || !newTheme) {
 			return;
 		}
 
-		root.classList.add(theme);
+		root.classList.add(newTheme);
 
-		// save the theme in local storage
-		localStorage.setItem('theme', theme);
-	}, [theme]);
-
-	function toggleTheme() {
-		setTheme((prevTheme) => {
-			return prevTheme === THEME.LIGHT ? THEME.DARK : THEME.LIGHT;
-		});
+		// save the newTheme in local storage
+		localStorage.setItem('theme', newTheme);
+		setTheme(newTheme);
 	}
 
 	return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
