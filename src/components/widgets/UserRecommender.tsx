@@ -8,7 +8,7 @@ import { UserCardList } from '../user/UserCardList';
 
 /*
  * This component is used to display a list of users that the current user might want to follow or already follows.
- * We show a loading state while the data is being fetched.
+ * We show a loading skeleton while the data is being fetched. We dont show the own user in the list.
  */
 
 type TUserRecommender = {
@@ -25,24 +25,24 @@ export const UserRecommender: FC<TUserRecommender> = ({ currentUserId, excludeUs
 	const accessToken = session?.accessToken;
 
 	useEffect(() => {
-		if (accessToken && currentUserId && limit) {
-			setIsLoading(true);
-
-			services.api.users
-				.recommendations({
-					currentUserId,
-					excludeUserIds,
-					limit,
-				})
-				.then((users) => {
+		const fetchUsers = async () => {
+			if (accessToken && currentUserId && limit) {
+				try {
+					const users = await services.api.users.recommendations({
+						currentUserId,
+						excludeUserIds,
+						limit,
+					});
 					setRecommendedUsers(users);
 					setIsLoading(false);
-				})
-				.catch((error) => {
+				} catch (error) {
 					console.error(error);
 					setIsLoading(false);
-				});
-		}
+				}
+			}
+		};
+
+		fetchUsers();
 	}, [accessToken, currentUserId, excludeUserIds, limit]);
 
 	return (
