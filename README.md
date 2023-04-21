@@ -1,12 +1,13 @@
 [![.github/workflows/deploy.yml](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/deploy.yml)
 
+
 # CAS FEE ADV Application - Pizza Hawaii 🍕
 
 ## Introduction
 
 This Webapplication, developed by [Felix Adam](https://github.com/flxtagi) and [Jürgen Rudigier](https://github.com/rudigier), is a fictional Twitter clone named "Mumble".
 
-It is created as a part of a Frontend Engineering Advanced (CAS) course at [OST](https://www.ost.ch/de/weiterbildung/weiterbildungsangebot/informatik/software-engineering-testing/cas-frontend-engineering-advanced) Rapperswil, to implement our [component Library](https://smartive-education.github.io/design-system-component-library-pizza-hawaii/) and with data endpoint provided by [qwacker API](https://qwacker-api-http-prod-4cxdci3drq-oa.a.run.app/rest/#/) and the [Zitadel](https://zitadel.cloud/) Login provider.
+It is created as a part of a Frontend Engineering Advanced (CAS) course at [OST](https://www.ost.ch/de/weiterbildung/weiterbildungsangebot/informatik/software-engineering-testing/cas-frontend-engineering-advanced) Rapperswil, to implement our [component Library](https://smartive-education.github.io/design-system-component-library-pizza-hawaii/) and with data endpoint provided by [qwacker API](https://qwacker-api-http-prod-4cxdci3drq-oa.a.run.app/rest/#/) and the [zitadel](https://zitadel.cloud/) Login provider.
 
 ## Live Demopage
 
@@ -36,7 +37,10 @@ To authenticate by adding your personal access token (classic) to your `~/.npmrc
 >Tip: You can then set the token as an environment variable with the name `NPM_TOKEN` or add it to your `.npmrc` file.
 **Please make sure to keep your token secure and not to share it with anyone.**
 
-## 2. Create a `.env` file and copy these keys and insert confidential values
+## 2. Create a local security environment file for variables.
+
+Create a `.env` file and copy these keys and insert confidential values
+
 
     # Qwacker backend
     NEXT_PUBLIC_QWACKER_API_URL= [insert prod QWACKER_API_URL]
@@ -52,9 +56,11 @@ To authenticate by adding your personal access token (classic) to your `~/.npmrc
     NEXT_PUBLIC_URL=http://localhost:3000
     NEXT_PUBLIC_VERCEL_URL=http://localhost:3000
 
-## 3. Register a User at [Zitadel](https://zitadel.cloud/).
+## 3. Register a User 
 
-## 4. Run the development Server on localhost:
+Register a User at [Zitadel](https://zitadel.cloud/).
+
+## 4. run the Development Server on localhost:
 
 ```bash
 npm run dev
@@ -90,8 +96,8 @@ We use these semantics while committing to maintain a meaningful commit history:
 
 ### ES Lint for code quality and
 
-ES Linter configuration checks for following topics & rules.
-    We know: sometimes a console.log is needed on the server. Therefore it is on a `warning` level as a reminder before starting a PR.
+ES Linter configuration checks for following topics
+ We know: sometimes a console.log is needed on the server. Therefore it is on a `warning` level as a reminder.
 
 1.  smartive eslint-config
 2.  import rules sorting
@@ -104,8 +110,8 @@ ES Linter configuration checks for following topics & rules.
     npm run lint 
 
     npm run lint --fix
-
 ´´´
+
 ### Dependency cruiser
 
     npm run dep-cruise:validate
@@ -126,7 +132,7 @@ and start locally built with
 
 ### API routes
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on . This endpoint can be edited in `pages/api/hello.ts`.
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on . This endpoint can be edited in `pages/api/auth`.
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
