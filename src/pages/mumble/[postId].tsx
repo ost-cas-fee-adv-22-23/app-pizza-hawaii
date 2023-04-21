@@ -51,6 +51,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { pos
 		return {
 			props: {
 				post,
+				session,
 			},
 		};
 	} catch (error) {
