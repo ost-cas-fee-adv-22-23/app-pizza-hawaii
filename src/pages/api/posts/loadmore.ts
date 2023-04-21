@@ -28,18 +28,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		});
 	}
 
-	services.posts
-		.getPosts({
+	try {
+		const result = await services.posts.getPosts({
 			...rest,
 			limit: currentLimit,
 			newerThan: newerThan as string | undefined,
 			olderThan: olderThan as string | undefined,
 			accessToken: session?.accessToken as string,
-		})
-		.then((result) => {
-			res.status(200).json(result);
-		})
-		.catch((err) => {
-			res.status(500).json(err);
 		});
+
+		return res.status(200).json(result);
+	} catch (error) {
+		return res.status(500).json({
+			status: false,
+			error: error,
+		});
+	}
 }

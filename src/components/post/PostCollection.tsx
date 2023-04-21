@@ -195,9 +195,9 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 				setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
 				console.error(error);
 			});
-		// TODO: check with mirco dependency array
+		// TODO: check with mirco dependency array -> need to check if everything what is needed is there (add comment)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loadRequest, tabIsActive]);
+	}, [loadRequest, tabIsActive, filter]);
 
 	const showLatestPosts = () => {
 		if (!updateRequest.type) {

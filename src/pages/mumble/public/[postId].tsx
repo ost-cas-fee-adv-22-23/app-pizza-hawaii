@@ -31,6 +31,8 @@ const DetailPage: FC<TUserPage> = ({ post }: InferGetStaticPropsType<typeof getS
 		}
 	}, [counter, currentUser, post.id]);
 
+	// TODO: If loggein user should get redirected from middleware (nice to have)
+
 	return (
 		<MainLayout
 			title={`Mumble von ${post?.user.userName}`}
