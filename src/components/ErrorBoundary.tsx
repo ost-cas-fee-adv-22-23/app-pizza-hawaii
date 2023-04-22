@@ -29,7 +29,7 @@ class ErrorBoundary extends React.Component<Props, State> {
 	render() {
 		// Check if the error is thrown or pass children to applciation
 		if (this.state.hasError) {
-			return <Custom500Page errorInfo={this.state.errorInfo} />;
+			return <Custom500Page errorInfo={this.state.error} />;
 		}
 
 		return this.props.children;
