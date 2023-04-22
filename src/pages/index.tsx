@@ -84,10 +84,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 		if (error instanceof Error) {
 			message = error.message;
 		} else {
-			message = String('Could not load Mumbles posts');
+			message = 'An error occurred while loading the data.';
 		}
 
-		// TODO: we need to check this (do this on all pages)
 		throw new Error(message);
 	}
 };

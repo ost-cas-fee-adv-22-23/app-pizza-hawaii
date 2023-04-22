@@ -5,11 +5,11 @@ import { getToken } from 'next-auth/jwt';
 import { useSession } from 'next-auth/react';
 import React, { ChangeEvent, FC, useState } from 'react';
 
-import { FollowUserButton } from '../../components/widgets/FollowUserButton';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { PostCollection } from '../../components/post/PostCollection';
 import { ProfileHeader } from '../../components/ProfileHeader';
 import { FollowerList } from '../../components/widgets/FollowerList';
+import { FollowUserButton } from '../../components/widgets/FollowUserButton';
 import { UserRecommender } from '../../components/widgets/UserRecommender';
 import { useFolloweeContext } from '../../context/useFollowee';
 import { services } from '../../services';
@@ -23,6 +23,7 @@ type TFetchDataResult = {
 	posts: TPost[];
 	count: number;
 };
+
 type TUserPage = {
 	user: TUser;
 	posts: TFetchDataResult;
@@ -224,9 +225,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 		if (error instanceof Error) {
 			message = error.message;
 		} else {
-			message = String(error);
+			message = 'An error occurred while loading the data.';
 		}
 
-		return { props: { error: message } };
+		throw new Error(message);
 	}
 };

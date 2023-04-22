@@ -109,18 +109,28 @@ export default DetailPage;
 
 export const getStaticProps: GetStaticProps<{ post: TPost }> = async (context) => {
 	const postId = context.params?.postId;
+	try {
+		const post: TPost = await services.posts.getPost({
+			id: postId as string,
+			loadReplies: false,
+		});
 
-	const post: TPost = await services.posts.getPost({
-		id: postId as string,
-		loadReplies: false,
-	});
+		return {
+			props: {
+				post,
+			},
+			revalidate: 60, // 60 seconds
+		};
+	} catch (error) {
+		let message;
+		if (error instanceof Error) {
+			message = error.message;
+		} else {
+			message = 'An error occurred while loading the data.';
+		}
 
-	return {
-		props: {
-			post,
-		},
-		revalidate: 60, // 60 seconds
-	};
+		throw new Error(message);
+	}
 };
 
 export const getStaticPaths = async (): Promise<{ paths: { params: { id: string } }[]; fallback: string }> => {

@@ -74,9 +74,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { tag
 		if (error instanceof Error) {
 			message = error.message;
 		} else {
-			message = String(error);
+			message = 'An error occurred while loading the data.';
 		}
 
-		return { props: { error: message } };
+		throw new Error(message);
 	}
 };
