@@ -3,7 +3,7 @@ import NextLink from 'next/link';
 import React, { FC } from 'react';
 
 import { TUser } from '../../types/User';
-import { FollowUserButton } from '../FollowUserButton';
+import { FollowUserButton } from '../widgets/FollowUserButton';
 import { UserProfile } from './UserProfile';
 
 interface TUserCard {

@@ -5,7 +5,7 @@ import { getToken } from 'next-auth/jwt';
 import { useSession } from 'next-auth/react';
 import React, { ChangeEvent, FC, useState } from 'react';
 
-import { FollowUserButton } from '../../components/FollowUserButton';
+import { FollowUserButton } from '../../components/widgets/FollowUserButton';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { PostCollection } from '../../components/post/PostCollection';
 import { ProfileHeader } from '../../components/ProfileHeader';
