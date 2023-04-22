@@ -72,6 +72,52 @@ Open  with your browser.
 
 You are good to go!  🎉
 
+# App Features
+
+## Design Features
+
+- Mobile & Desktop optimized
+- Dark Mode (icon in the Footer)
+- Lightbox Preview before posting images.
+- All image format supported.
+- User Collection of all User following you
+- Get a random PosterImages when not available
+
+## Functional Features
+
+- User Recommender
+- Un/ Follow favorite User 
+- Share a Post by copy function without beeing loged in
+- Public Post Detail page
+- Richtext editor
+- Post links with Markdown
+- Hashtag highlighting
+- Answer to a single
+- Scroll to selected Post
+- View all Post sorted by Hashtag
+- Link to a User in a post
+
+## Behind the Scenes Features
+
+- Change User settings (Zitadel account!)
+- NextJS API Routes
+- polling only on active tab
+- cache invalidation
+- custom Error Pages for 400- and 500- http states.
+- polling intervall decreases over time when user apears to be inactive
+- notice for Post Update when a new Post is avaliable
+- PWA is ready to use on server. (Desktop / Mobile)
+- W3C validity
+
+
+## Rendering Strategies
+
+- Login & Register: Static
+- Timeline: ServerSide
+- User: ClientSide
+- PostPreview: GetStaticProps
+
+
 # Development
 
 ## git semantic commit message
