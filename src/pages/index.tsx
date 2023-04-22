@@ -76,7 +76,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 			props: {
 				postCount,
 				posts,
-				session, // Todo: check if everywhere a session is in the props (do this on all pages)
+				session,
 			},
 		};
 	} catch (error) {
