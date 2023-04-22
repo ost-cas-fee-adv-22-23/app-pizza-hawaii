@@ -65,7 +65,7 @@ export default function PageHome({ postCount: postCount, posts }: InferGetServer
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	const session = await getToken({ req });
 	// TODO: add accessToken (just for testing)
-	const accessToken = '' || (session?.accessToken as string);
+	const accessToken = '-' || (session?.accessToken as string);
 
 	try {
 		const { count: postCount, posts } = await services.posts.getPosts({
