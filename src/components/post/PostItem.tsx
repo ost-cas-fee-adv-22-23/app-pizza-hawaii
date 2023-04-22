@@ -254,7 +254,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 						<CopyToClipboardButton
 							defaultButtonText="Copy Link"
 							activeButtonText="Link copied"
-							shareText={`${process.env.NEXT_PUBLIC_VERCEL_URL}/mumble/public/${post.id}`}
+							shareText={`${process.env.NEXT_PUBLIC_VERCEL_URL}/mumble/${post.id}`}
 						/>
 					)}
 
