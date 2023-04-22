@@ -14,18 +14,6 @@ import { FolloweeContextProvider } from '../context/useFollowee';
 import { ThemeContextProvider } from '../context/useTheme';
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps<{ session: Session }>) {
-
-	function fallbackRender({ error, resetErrorBoundary }) {
-		// Call resetErrorBoundary() to reset the error boundary and retry the render.
-
-		return (
-			<div role="alert">
-				<p>Something went wrong:</p>
-				<pre style={{ color: 'red' }}>{error.message}</pre>
-			</div>
-		);
-	}
-
 	return (
 		<>
 			<Head>
@@ -40,7 +28,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 				<link rel="icon" type="image/png" href="/favicon.png" />
 			</Head>
-			<ErrorBoundary fallbackRender={fallbackRender}>
+			<ErrorBoundary>
 				<SessionProvider session={session}>
 					<ThemeContextProvider>
 						<FolloweeContextProvider>
