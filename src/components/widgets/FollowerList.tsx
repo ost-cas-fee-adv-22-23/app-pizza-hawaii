@@ -14,7 +14,7 @@ export const FollowerList = () => {
 	const accessToken = session?.accessToken;
 
 	useEffect(() => {
-		const fetchUsers = async () => {
+		(async () => {
 			if (accessToken) {
 				try {
 					const users = await services.api.users.users({
@@ -28,9 +28,7 @@ export const FollowerList = () => {
 			return () => {
 				setUsers([]);
 			};
-		};
-
-		fetchUsers();
+		})();
 	}, [accessToken, followees]);
 
 	return <UserCardList users={users} />;

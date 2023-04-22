@@ -25,7 +25,7 @@ export const UserRecommender: FC<TUserRecommender> = ({ currentUserId, excludeUs
 	const accessToken = session?.accessToken;
 
 	useEffect(() => {
-		const fetchUsers = async () => {
+		(async () => {
 			if (accessToken && currentUserId && limit) {
 				try {
 					const users = await services.api.users.recommendations({
@@ -40,9 +40,7 @@ export const UserRecommender: FC<TUserRecommender> = ({ currentUserId, excludeUs
 					setIsLoading(false);
 				}
 			}
-		};
-
-		fetchUsers();
+		})();
 	}, [accessToken, currentUserId, excludeUserIds, limit]);
 
 	return (
