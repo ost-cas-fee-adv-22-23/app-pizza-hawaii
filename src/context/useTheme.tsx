@@ -14,8 +14,6 @@ type TThemeContextData = {
 	toggleTheme: () => void;
 };
 
-// TODO: add document page to check in the header what user prefers and set it to html element
-
 const ThemeContext = createContext({} as TThemeContextData);
 export const ThemeContextProvider = ({ children }: TThemeContextProps) => {
 	const [theme, setTheme] = useState<string | undefined>(undefined);
