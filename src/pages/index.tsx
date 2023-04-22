@@ -64,8 +64,7 @@ export default function PageHome({ postCount: postCount, posts }: InferGetServer
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	const session = await getToken({ req });
-	// TODO: add accessToken (just for testing)
-	const accessToken = '-' || (session?.accessToken as string);
+	const accessToken = session?.accessToken as string;
 
 	try {
 		const { count: postCount, posts } = await services.posts.getPosts({
@@ -86,6 +85,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 		} else {
 			message = 'An error occurred while loading the data.';
 		}
+		// TODO: how could we display the error message in the UI?
 
 		throw new Error(message);
 	}
