@@ -109,6 +109,7 @@ export default DetailPage;
 
 export const getStaticProps: GetStaticProps<{ post: TPost }> = async (context) => {
 	const postId = context.params?.postId;
+
 	try {
 		const post: TPost = await services.posts.getPost({
 			id: postId as string,

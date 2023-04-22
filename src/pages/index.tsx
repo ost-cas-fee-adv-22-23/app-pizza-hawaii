@@ -69,7 +69,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	try {
 		const { count: postCount, posts } = await services.posts.getPosts({
 			limit: 15,
-			accessToken: accessToken,
+			accessToken,
 		});
 		return {
 			props: {

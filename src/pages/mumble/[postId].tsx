@@ -31,16 +31,13 @@ export default DetailPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query: { postId } }) => {
 	const session = await getToken({ req });
-	if (!session) {
-		return {
-			props: { userData: null, error: 'not logged in, no session' },
-		};
-	}
+	const accessToken = session?.accessToken as string;
+
 	try {
 		const post: TPost = await services.posts.getPost({
 			id: postId as string,
 			loadReplies: true,
-			accessToken: session?.accessToken as string,
+			accessToken,
 		});
 
 		return {

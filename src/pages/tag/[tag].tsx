@@ -48,17 +48,12 @@ export default DetailPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query: { tag: searchTag } }) => {
 	const session = await getToken({ req });
-
-	if (!session) {
-		return {
-			props: { userData: null, error: 'not logged in, no session' },
-		};
-	}
+	const accessToken = session?.accessToken as string;
 
 	try {
 		const { count, posts } = await services.posts.getPostsByQuery({
 			tags: [searchTag as string],
-			accessToken: session?.accessToken as string,
+			accessToken,
 		});
 
 		return {

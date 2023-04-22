@@ -187,23 +187,24 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 	const userId = params?.userId as string;
 
 	const session = await getToken({ req });
+	const accessToken = session?.accessToken as string;
 
 	try {
 		const user = await services.users.getUser({
 			id: userId,
-			accessToken: session?.accessToken as string,
+			accessToken,
 		});
 
 		const posts = await services.posts.getPosts({
 			creator: userId,
 			limit: 5,
-			accessToken: session?.accessToken as string,
+			accessToken,
 		});
 
 		const likes = await services.posts.getPostsByQuery({
 			likedBy: [userId],
 			limit: 20,
-			accessToken: session?.accessToken as string,
+			accessToken,
 		});
 
 		return {
