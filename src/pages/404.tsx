@@ -9,7 +9,7 @@ const FourOhFourPage = () => {
 	return (
 		<LoginLayout title="Mumble - 404">
 			<Headline level={1} as="p">
-				<span className="text-pink-600">Upsiii...</span>
+				<span className="text-pink-600">Oops!</span>
 			</Headline>
 			<Headline level={2} as="h1">
 				<span className="text-violet-600">HTTP 404 - Page not Found</span>

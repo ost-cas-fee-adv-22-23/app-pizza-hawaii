@@ -5,7 +5,7 @@ import React, { FC } from 'react';
 import { LoginLayout } from '../components/layoutComponents/LoginLayout';
 
 type TCustom500Page = {
-	errorInfo: React.ErrorInfo | unknown | undefined | null;
+	errorInfo?: React.ErrorInfo | unknown | null;
 };
 
 // pages/500.js
@@ -15,7 +15,7 @@ const Custom500Page: FC<TCustom500Page> = (error) => {
 		<LoginLayout title="Mumble - 500">
 			<>
 				<Headline level={1} as="p">
-					<span className="text-pink-600">Ouch! </span>
+					<span className="text-pink-600">Oops!</span>
 				</Headline>
 				<Headline level={2} as="h1">
 					<span className="text-violet-600">HTTP 500 - Internal Server Error</span>

@@ -10,7 +10,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	}
 
 	// create body for request if PUT
-	let body = undefined;
+	let body;
 
 	if (req.method === 'PUT') {
 		const { userName } = req.body;
