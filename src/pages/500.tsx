@@ -1,4 +1,4 @@
-import { Headline, Link, Richtext } from '@smartive-education/pizza-hawaii';
+import { Headline, Label, Link, Richtext } from '@smartive-education/pizza-hawaii';
 import NextLink from 'next/link';
 import React, { FC } from 'react';
 
