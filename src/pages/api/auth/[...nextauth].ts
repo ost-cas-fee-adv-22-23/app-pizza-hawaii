@@ -92,24 +92,6 @@ export const authOptions: NextAuthOptions = {
 			session.accessToken = token.accessToken;
 			return session;
 		},
-
-		signIn: async ({ user, account, profile }) => {
-			console.log('signIn', user, account, profile);
-			// Handle sign-in logic here
-			return true;
-		},
-	},
-	cookies: {
-		state: {
-			name: `__Secure-next-auth.state`,
-			options: {
-				httpOnly: true,
-				sameSite: 'lax',
-				path: '/',
-				secure: true,
-				maxAge: 900,
-			},
-		},
 	},
 	pages: {
 		signIn: '/auth/login',
