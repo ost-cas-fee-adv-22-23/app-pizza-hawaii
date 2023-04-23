@@ -85,7 +85,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 		} else {
 			message = 'An error occurred while loading the data.';
 		}
-		// TODO: how could we display the error message in the UI?
 
 		throw new Error(message);
 	}
