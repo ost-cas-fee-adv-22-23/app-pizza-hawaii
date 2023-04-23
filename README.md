@@ -15,29 +15,33 @@ The latest version of our Pizza Hawaii App is available [here](https://app-pizza
 
 ## Getting Started
 
-Clone the repo. 
+Make sure you work with Node v.16 or later. 
+## 1. Clone the repo. 
 
 `git clone https://github.com/smartive-education/app-pizza-hawaii.git`
 
-Install the dependencies with `npm install` or `npm ci`
 
 ### Get a personal Github Token
 
 We need a github Token and a `.npmrc` to get access to the mumble npm package at smartive education on github.
 
-## 1. Create a classic github token and add to `.npmrc`. (create this file manually)
+## 2. Create a <i>classic</i> github token.
 
-[Github Token Instructions](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-personal-access-token-classic) on the Github page
+### 2.1 create  a`.npmrc` file. place this file manually in the root directory. 
+
+### 2.2 create a <i>classic</i> github token with `read and write ` packages token and append the generated token to your local `.npmrc`file 
+
+See [Github Token Instructions](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-personal-access-token-classic) on the Github page.
 
 To authenticate by adding your personal access token (classic) to your `~/.npmrc` file, edit the `~/.npmrc` file for your project to include the following line, replacing TOKEN with your personal access token.
 
     @smartive-education:registry=https://npm.pkg.github.com
-    //npm.pkg.github.com/:_authToken=
+    //npm.pkg.github.com/:_authToken=[insert TOKEN here]
 
 >Tip: You can then set the token as an environment variable with the name `NPM_TOKEN` or add it to your `.npmrc` file.
 **Please make sure to keep your token secure and not to share it with anyone.**
 
-## 2. Create a local security environment file for variables.
+## 3. Create a local security environment file for variables.   
 
 Create a `.env` file and copy these keys and insert confidential values
 
@@ -47,20 +51,25 @@ Create a `.env` file and copy these keys and insert confidential values
 
     # Authentication
     NEXTAUTH_URL=http://localhost:3000
-    NEXTAUTH_SECRET= [insert NEXTAUTH_SECRET]
+    NEXTAUTH_SECRET=[insert NEXTAUTH_SECRET]
 
-    ZITADEL_ISSUER= [insert ZITADEL ISSUER URL]
-    ZITADEL_CLIENT_ID= [insert ZITADEL CLIENT ID]
+    ZITADEL_ISSUER=[insert ZITADEL ISSUER URL]
+    ZITADEL_CLIENT_ID=[insert ZITADEL CLIENT ID]
 
     # Frontend
     NEXT_PUBLIC_URL=http://localhost:3000
     NEXT_PUBLIC_VERCEL_URL=http://localhost:3000
 
-## 3. Register a User 
+
+## 4. Install
+Install the dependencies with `npm install`.
+
+
+## 5. Register a User 
 
 Register a User at [Zitadel](https://zitadel.cloud/).
 
-## 4. run the Development Server on localhost:
+## 6. run the Development Server on localhost:
 
 ```bash
 npm run dev
@@ -68,7 +77,7 @@ npm run dev
 yarn dev
 ```
 
-Open  with your browser.
+Open  with your browser on http://localhost:3000.
 
 You are good to go!  🎉
 
