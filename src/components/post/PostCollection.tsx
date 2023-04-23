@@ -106,6 +106,14 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 			...requestObject,
 		});
 
+		if (!loadedPosts?.length) {
+			return {
+				posts: [],
+				newPosts: [],
+				deletedPosts: [],
+			};
+		}
+
 		// list of posts that have been deleted
 		const deletedPostList = postState.posts.filter((post) => {
 			return !loadedPosts.find((p) => p.id === post.id);
