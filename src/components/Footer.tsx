@@ -2,10 +2,10 @@ import { Grid, Icon, Link, RoundButton } from '@smartive-education/pizza-hawaii'
 import NextLink from 'next/link';
 import { FC } from 'react';
 
-import { THEME, useThemeContext } from '../context/useTheme';
+import { useThemeContext } from '../context/useTheme';
 
 export const Footer: FC = () => {
-	const { theme, toggleTheme } = useThemeContext();
+	const { toggleTheme } = useThemeContext();
 
 	return (
 		<footer className="Footer">
@@ -32,7 +32,8 @@ export const Footer: FC = () => {
 								colorScheme="slate"
 								icon="eye"
 								onClick={toggleTheme}
-								buttonLabel={theme === THEME.DARK ? 'Light Mode' : 'Dark Mode'}
+								buttonLabel="Toggle theme"
+								title="Toggle theme"
 							/>
 						</div>
 					</Grid>

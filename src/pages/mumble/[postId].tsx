@@ -1,5 +1,4 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import ErrorPage from 'next/error';
 import { getToken } from 'next-auth/jwt';
 import React, { FC } from 'react';
 
@@ -13,11 +12,7 @@ type TUserPage = {
 	error?: string;
 };
 
-const DetailPage: FC<TUserPage> = ({ post, error }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	if (error) {
-		return <ErrorPage statusCode={500} errorInfo={error} />;
-	}
-
+const DetailPage: FC<TUserPage> = ({ post }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	return (
 		<MainLayout
 			title={`Mumble von ${post?.user.userName}`}
@@ -36,21 +31,19 @@ export default DetailPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query: { postId } }) => {
 	const session = await getToken({ req });
-	if (!session) {
-		return {
-			props: { userData: null, error: 'not logged in, no session' },
-		};
-	}
+	const accessToken = session?.accessToken as string;
+
 	try {
 		const post: TPost = await services.posts.getPost({
 			id: postId as string,
 			loadReplies: true,
-			accessToken: session?.accessToken as string,
+			accessToken,
 		});
 
 		return {
 			props: {
 				post,
+				session,
 			},
 		};
 	} catch (error) {
@@ -58,9 +51,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { pos
 		if (error instanceof Error) {
 			message = error.message;
 		} else {
-			message = String(error);
+			message = 'An error occurred while loading the data.';
 		}
 
-		return { props: { error: message } };
+		throw new Error(message);
 	}
 };

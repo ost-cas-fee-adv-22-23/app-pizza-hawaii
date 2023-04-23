@@ -15,22 +15,6 @@ type TUserPage = {
 };
 
 const DetailPage: FC<TUserPage> = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
-	const { data: session } = useSession();
-	const currentUser = session?.user as TUser;
-
-	const [counter, setCounter] = useState(7);
-
-	useEffect(() => {
-		if (currentUser) {
-			if (counter > 0) {
-				const timer = setInterval(() => setCounter(counter - 1), 1000);
-				return () => clearInterval(timer);
-			} else {
-				router.push(`/mumble/${post.id}`);
-			}
-		}
-	}, [counter, currentUser, post.id]);
-
 	return (
 		<MainLayout
 			title={`Mumble von ${post?.user.userName}`}
@@ -52,38 +36,12 @@ const DetailPage: FC<TUserPage> = ({ post }: InferGetStaticPropsType<typeof getS
 							Als angemeldeter Nutzer kannst du Beiträge lesen, eigene Beiträge erstellen, auf andere Beiträge
 							antworten und anderen Nutzern folgen.
 						</Label>
-						{currentUser ? (
-							<>
-								<Label as="p" size="L">
-									Hallo{' '}
-									<span className="text-violet-600 dark:text-violet-200">{currentUser.userName}</span>, du
-									bist bereits angemeldet.
-								</Label>
-								<Label as="p" size="L">
-									{counter > 0 ? (
-										<>
-											Du wirst in{' '}
-											<span className="text-violet-600 dark:text-violet-200">{counter} Sekunden</span>{' '}
-											automatisch weitergeleitet.
-										</>
-									) : (
-										'Du wirst jetzt weitergeleitet.'
-									)}
-								</Label>
-								<Link href={`/mumble/${post.id}`} component={NextLink}>
-									Weiter
-								</Link>
-							</>
-						) : (
-							<>
-								<Label as="p" size="L">
-									Registriere dich jetzt und werde Teil unserer Community.
-								</Label>
-								<Link href="/auth/signup" component={NextLink}>
-									Jetzt registrieren
-								</Link>
-							</>
-						)}
+						<Label as="p" size="L">
+							Registriere dich jetzt und werde Teil unserer Community.
+						</Label>
+						<Link href="/auth/signup" component={NextLink}>
+							Jetzt registrieren
+						</Link>
 					</Grid>
 				</div>
 				<PostDetail post={post} canWrite={false} />
@@ -108,17 +66,28 @@ export default DetailPage;
 export const getStaticProps: GetStaticProps<{ post: TPost }> = async (context) => {
 	const postId = context.params?.postId;
 
-	const post: TPost = await services.posts.getPost({
-		id: postId as string,
-		loadReplies: false,
-	});
+	try {
+		const post: TPost = await services.posts.getPost({
+			id: postId as string,
+			loadReplies: false,
+		});
 
-	return {
-		props: {
-			post,
-		},
-		revalidate: 60, // 60 seconds
-	};
+		return {
+			props: {
+				post,
+			},
+			revalidate: 60, // 60 seconds
+		};
+	} catch (error) {
+		let message;
+		if (error instanceof Error) {
+			message = error.message;
+		} else {
+			message = 'An error occurred while loading the data.';
+		}
+
+		throw new Error(message);
+	}
 };
 
 export const getStaticPaths = async (): Promise<{ paths: { params: { id: string } }[]; fallback: string }> => {

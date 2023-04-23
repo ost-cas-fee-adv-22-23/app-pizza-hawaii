@@ -137,7 +137,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 	// Scroll page to Item on click
 	const handlePostClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
 		// get item and header element
-		const item = (event.target as HTMLElement).closest('.Card');
+		const item = (event.target as HTMLElement).closest('.Card'); // Todo: use ref
 		const header = document.querySelector('header') as HTMLElement;
 
 		if (!item || !header) return;
@@ -161,6 +161,8 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 		});
 	};
 
+	// TODO: check if functions arround without no reference to component
+
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>
@@ -181,7 +183,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 		</Grid>
 	);
 
-	// TODO: check with Mirco ref in UserContentCard would like to use useRef
+	// TODO: check with Mirco ref in UserContentCard would like to use useRef -> forwardRef
 	return (
 		<UserContentCard
 			headline={headerSlotContent}
@@ -234,7 +236,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 								iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
 								onClick={handlePostClick}
 							/>
-						) // TODO: have a look at this onClick (check with mirco)
+						) // TODO: have a look at this onClick (check with mirco) --> TypeProblem solve in Component Lib
 					}
 					{setting.showLikeButton && currentUser && (
 						<InteractionButton
@@ -252,7 +254,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 						<CopyToClipboardButton
 							defaultButtonText="Copy Link"
 							activeButtonText="Link copied"
-							shareText={`${process.env.NEXT_PUBLIC_VERCEL_URL}/mumble/public/${post.id}`}
+							shareText={`${process.env.NEXT_PUBLIC_VERCEL_URL}/mumble/${post.id}`}
 						/>
 					)}
 

@@ -89,7 +89,10 @@ export const Header: FC<THeader> = ({ user }) => {
 			</header>
 			{showSettingsModal && (
 				<Modal title="Einstellungen" isVisible={showSettingsModal} onClose={() => setShowSettingsModal(false)}>
-					<UserSettings setSuccess={() => setShowSettingsModal(false)} />
+					<UserSettings
+						setSuccess={() => setShowSettingsModal(false)}
+						onCancel={() => setShowSettingsModal(false)}
+					/>
 				</Modal>
 			)}
 		</>

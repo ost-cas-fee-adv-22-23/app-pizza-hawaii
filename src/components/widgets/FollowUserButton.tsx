@@ -8,7 +8,7 @@ type TFollowUserButton = {
 	userId: string;
 };
 
-import { useFolloweeContext } from '../context/useFollowee';
+import { useFolloweeContext } from '../../context/useFollowee';
 
 export const FollowUserButton = ({ userId }: TFollowUserButton) => {
 	const [isFollowed, setIsFollowed] = useState<boolean>();

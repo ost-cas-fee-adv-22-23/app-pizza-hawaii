@@ -5,12 +5,11 @@ import { getToken } from 'next-auth/jwt';
 import { useSession } from 'next-auth/react';
 import React, { ChangeEvent, FC, useState } from 'react';
 
-import { FollowUserButton } from '../../components/FollowUserButton';
 import { MainLayout } from '../../components/layoutComponents/MainLayout';
 import { PostCollection } from '../../components/post/PostCollection';
 import { ProfileHeader } from '../../components/ProfileHeader';
-import { UserCardList } from '../../components/user/UserCardList';
 import { FollowerList } from '../../components/widgets/FollowerList';
+import { FollowUserButton } from '../../components/widgets/FollowUserButton';
 import { UserRecommender } from '../../components/widgets/UserRecommender';
 import { useFolloweeContext } from '../../context/useFollowee';
 import { services } from '../../services';
@@ -24,6 +23,7 @@ type TFetchDataResult = {
 	posts: TPost[];
 	count: number;
 };
+
 type TUserPage = {
 	user: TUser;
 	posts: TFetchDataResult;
@@ -49,13 +49,13 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 
 	const isCurrentUser = currentUser?.id === user.id;
 
-	const switchoptions = [
+	const switchOptions = [
 		{ label: 'Meine Mumbles', value: TAB_NAME.POSTS },
 		{ label: 'Meine Likes', value: TAB_NAME.LIKES },
 	];
 
 	if (followees?.length || currentTab === TAB_NAME.FOLLOWER) {
-		switchoptions.push({ label: `Meine Follower (${followees?.length})`, value: TAB_NAME.FOLLOWER });
+		switchOptions.push({ label: `Meine Follower (${followees?.length})`, value: TAB_NAME.FOLLOWER });
 	}
 
 	const isFreshUser = new Date(user.createdAt).getTime() > new Date().getTime() - 45 * 60 * 1000;
@@ -124,7 +124,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 						<Grid variant="col" gap="M" marginBelow="M">
 							<Switch
 								label="Wechsle deine angezeigten Mumbles"
-								options={switchoptions}
+								options={switchOptions}
 								value={TAB_NAME.POSTS}
 								name="posttype"
 								onChange={(event: ChangeEvent): void => {
@@ -139,7 +139,6 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 								posts={posts.posts}
 								canLoadMore={posts.count > 0}
 								canAdd={false}
-								autoUpdate={true}
 								filter={{
 									creator: user.id,
 								}}
@@ -170,7 +169,6 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 						posts={posts.posts}
 						canLoadMore={posts.count > 0}
 						canAdd={false}
-						autoUpdate={true}
 						filter={{
 							creator: user.id,
 						}}
@@ -187,28 +185,30 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 	const userId = params?.userId as string;
 
 	const session = await getToken({ req });
+	const accessToken = session?.accessToken as string;
 
 	try {
 		const user = await services.users.getUser({
 			id: userId,
-			accessToken: session?.accessToken as string,
+			accessToken,
 		});
 
 		const posts = await services.posts.getPosts({
 			creator: userId,
 			limit: 5,
-			accessToken: session?.accessToken as string,
+			accessToken,
 		});
 
 		const likes = await services.posts.getPostsByQuery({
 			likedBy: [userId],
 			limit: 20,
-			accessToken: session?.accessToken as string,
+			accessToken,
 		});
 
 		return {
 			props: {
 				user,
+				session,
 				posts: {
 					posts: posts.posts,
 					count: posts.count,
@@ -224,9 +224,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
 		if (error instanceof Error) {
 			message = error.message;
 		} else {
-			message = String(error);
+			message = 'An error occurred while loading the data.';
 		}
 
-		return { props: { error: message } };
+		throw new Error(message);
 	}
 };
