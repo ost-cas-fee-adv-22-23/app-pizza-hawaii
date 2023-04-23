@@ -137,7 +137,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 	};
 
 	// Scroll page to Item on click
-	const handlePostClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+	const handlePostClick = () => {
 		router.push(`/mumble/${post.id}`, undefined, { shallow: true });
 
 		const item = userCardRef.current;
