@@ -40,7 +40,6 @@ To authenticate by adding your personal access token (classic) to your `~/.npmrc
     NEXT_PUBLIC_QWACKER_API_URL= [insert prod QWACKER_API_URL]
 
     # Authentication
-    NEXTAUTH_URL=http://localhost:3000
     NEXTAUTH_SECRET= [insert NEXTAUTH_SECRET]
 
     ZITADEL_ISSUER= [insert ZITADEL ISSUER URL]
