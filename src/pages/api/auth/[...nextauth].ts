@@ -100,21 +100,14 @@ export const authOptions: NextAuthOptions = {
 		},
 	},
 	cookies: {
-		sessionToken: {
-			name: `__Secure-next-auth.session-token`,
+		state: {
+			name: `__Secure-next-auth.state`,
 			options: {
 				httpOnly: true,
 				sameSite: 'lax',
 				path: '/',
 				secure: true,
-			},
-		},
-		callbackUrl: {
-			name: `__Secure-next-auth.callback-url`,
-			options: {
-				sameSite: 'lax',
-				path: '/',
-				secure: true,
+				maxAge: 900,
 			},
 		},
 	},
