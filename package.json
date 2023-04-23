@@ -14,7 +14,7 @@
 	},
 	"dependencies": {
 		"@fontsource/poppins": "^4.5.10",
-		"@smartive-education/pizza-hawaii": "^1.62.0",
+		"@smartive-education/pizza-hawaii": "^1.63.0",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"next": "^13.2.4",
 		"next-auth": "^4.22.0",
