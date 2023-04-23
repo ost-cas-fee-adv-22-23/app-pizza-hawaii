@@ -13,6 +13,7 @@ import {
 } from '@smartive-education/pizza-hawaii';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
+import router from 'next/router';
 import { useSession } from 'next-auth/react';
 import React, { FC, useEffect, useReducer, useState } from 'react';
 
@@ -136,6 +137,8 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 
 	// Scroll page to Item on click
 	const handlePostClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+		router.push(`/mumble/${post.id}`, undefined, { shallow: true });
+
 		// get item and header element
 		const item = (event.target as HTMLElement).closest('.Card'); // Todo: use ref
 		const header = document.querySelector('header') as HTMLElement;
@@ -219,25 +222,21 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 							onClick={handleAnswerPost}
 						/>
 					)}
-					{
-						setting.showCommentButton && currentUser && (
-							<InteractionButton
-								component={NextLink}
-								href={`/mumble/${post.id}`}
-								isActive={post.replyCount > 0}
-								colorScheme="violet"
-								buttonText={
-									post.replyCount > 0
-										? `${post.replyCount} Comments`
-										: post.replyCount === 0
-										? 'Comment'
-										: '1 Comment'
-								}
-								iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
-								onClick={handlePostClick}
-							/>
-						) // TODO: have a look at this onClick (check with mirco) --> TypeProblem solve in Component Lib
-					}
+					{setting.showCommentButton && currentUser && (
+						<InteractionButton
+							isActive={post.replyCount > 0}
+							colorScheme="violet"
+							buttonText={
+								post.replyCount > 0
+									? `${post.replyCount} Comments`
+									: post.replyCount === 0
+									? 'Comment'
+									: '1 Comment'
+							}
+							iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
+							onClick={handlePostClick}
+						/>
+					)}
 					{setting.showLikeButton && currentUser && (
 						<InteractionButton
 							type="button"
