@@ -12,7 +12,9 @@
 	div#__next {
     	@apply min-h-screen;
     }
-
+    img {
+        @apply w-full;
+    }
     div#__next {
 		@apply flex flex-col;
     }

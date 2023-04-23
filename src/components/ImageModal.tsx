@@ -41,6 +41,7 @@ const ImageModal: FC<TImageModal> = ({ onClose, picture }) => {
 			screenDimensions.width - 100,
 			Math.max(image?.naturalWidth, ProjectSettings.images.post.width)
 		);
+
 		const maxHeight = Math.min(screenDimensions.height - 100, image?.naturalHeight);
 
 		setImageDimensions({ width: maxWidth, height: maxHeight });
@@ -58,7 +59,8 @@ const ImageModal: FC<TImageModal> = ({ onClose, picture }) => {
 					onLoad={handleImageLoad}
 					width={imageDimensions.width}
 					height={imageDimensions.height}
-					sizes="(min-width: 640px) 50vw, 80vw"
+					sizes="(min-width: 640px) 50vw, 33vw"
+					quality={66}
 					alt={picture.alt}
 				/>
 			</div>
