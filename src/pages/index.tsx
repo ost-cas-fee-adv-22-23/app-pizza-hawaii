@@ -52,6 +52,7 @@ export default function PageHome({ postCount: postCount, posts }: InferGetServer
 						posts={posts || []}
 						canLoadMore={canLoadMore}
 						canAdd={true}
+						autoUpdate={true}
 					/>
 				) : (
 					manualRefresh
