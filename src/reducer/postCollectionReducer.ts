@@ -42,6 +42,13 @@ export default function postCollectionReducer(state = initialState, action: TAct
 			};
 		}
 		case ActionType.POSTS_ADD: {
+			if (!action.payload) {
+				return {
+					...state,
+					loading: false,
+				};
+			}
+
 			// add new posts to the existing posts
 			const allPosts = [...state.posts, ...(Array.isArray(action.payload) ? action.payload : [action.payload])];
 

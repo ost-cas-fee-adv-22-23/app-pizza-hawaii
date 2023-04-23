@@ -1,7 +1,6 @@
 import { Button, Grid, Headline } from '@smartive-education/pizza-hawaii';
 import { useSession } from 'next-auth/react';
 import { FC, useEffect, useReducer, useState } from 'react';
-import { decodeTime, encodeTime } from 'ulid';
 
 import { useActiveTabContext } from '../../context/useActiveTab';
 import useIncreasingInterval from '../../hooks/useIncreasingInterval';
@@ -12,6 +11,7 @@ import PCReducer, {
 } from '../../reducer/postCollectionReducer';
 import { services } from '../../services';
 import { TPost } from '../../types';
+import { default as ULID } from '../../utils/UlidHelper';
 import { PostList } from '../post/PostList';
 import { PostCreator, TAddPostProps } from './PostCreator';
 
@@ -37,12 +37,14 @@ enum LoadRequestType {
 	LOAD_ADDED_AND_UPDATED = 'LOAD_ADDED_AND_UPDATED',
 }
 
+type TLoadRequestType = keyof typeof LoadRequestType;
+
 export const PostCollection: FC<TPostCollectionProps> = ({
 	headline,
 	posts: initialPosts = [],
 	canAdd = false,
 	canLoadMore = false,
-	autoUpdate = true,
+	autoUpdate,
 	filter = {},
 }) => {
 	const { data: session } = useSession();
@@ -55,7 +57,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 
 	/**
 	 *
-	 * ============== LOAD MORE MECANISM ==============
+	 * ============== LOAD MORE MECHANISM ==============
 	 *
 	 */
 
@@ -68,7 +70,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 		// fetch posts older than oldest post
 		const { count: olderPostCount, posts: olderPosts } = await services.api.posts.loadmore({
 			...filter,
-			olderThan: getOldestPostUlid(),
+			olderThan: getPostQueryUlids(postState.posts).oldestUlid,
 		});
 
 		// append older posts to list
@@ -97,108 +99,80 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 		type: undefined,
 	});
 
-	useEffect(() => {
-		if (!autoUpdate) return;
+	const onLoadRequestLoad = async (requestObject: TRequestObj) => {
+		// fetch posts older than oldest post
+		const { posts: loadedPosts } = await services.api.posts.loadmore({
+			...filter,
+			...requestObject,
+		});
 
-		// load full list of posts when user switches to browser tab
-		if (!tabIsActive || loadRequest === LoadRequestType.LOAD_NOT_NEEDED) {
-			setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
+		if (!loadedPosts?.length) {
+			return {
+				posts: [],
+				newPosts: [],
+				deletedPosts: [],
+			};
+		}
+
+		// list of posts that have been deleted
+		const deletedPostList = postState.posts.filter((post) => {
+			return !loadedPosts.find((p) => p.id === post.id);
+		});
+
+		// get List of new Posts
+		const newPostList = loadedPosts.filter((post) => {
+			return !postState.posts.find((p) => p.id === post.id);
+		});
+
+		return {
+			posts: loadedPosts,
+			newPosts: newPostList,
+			deletedPosts: deletedPostList,
+		};
+	};
+
+	useEffect(() => {
+		// check not needed because loadRequest is set to LOAD_NOT_NEEDED
+		if (loadRequest === LoadRequestType.LOAD_NOT_NEEDED) {
 			return;
 		}
-		const currentUlid = encodeTime(new Date().getTime(), 10) + '0000000000000000';
-		const latestPostUlid = postState.posts?.length ? postState.posts[0].id : currentUlid;
-		const oldestPostUlid = getOldestPostUlid();
 
-		let requestObject = {
+		// reset loadRequest to LOAD_NOT_NEEDED
+		setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
+
+		// generate request object from loadRequest and filter
+		const requestObject = {
 			...filter,
-			olderThan: currentUlid,
-			newerThan: encodeTime(decodeTime(oldestPostUlid) - 1, 10) + oldestPostUlid.substring(26 - 16),
-			limit: 100,
+			...getRequestObj(postState.posts, loadRequest),
 		};
 
-		switch (loadRequest) {
-			case LoadRequestType.LOAD_ADDED:
-				// olderThan: current Date (to get latest posts)
-				// newerThan: latest post id (to get all new posts)
-				requestObject = {
-					...requestObject,
-					newerThan: latestPostUlid,
-				};
-				break;
+		(async () => {
+			const { posts, newPosts, deletedPosts } = await onLoadRequestLoad(requestObject);
 
-			case LoadRequestType.LOAD_UPDATED:
-				// olderThan: latest post id + 1 (to get all posts including the latest one)
-				// newerThan: oldest post id - 1 (to get all posts including the oldest one)
-				requestObject = {
-					...requestObject,
-					olderThan: encodeTime(decodeTime(latestPostUlid) + 1, 10) + latestPostUlid.substring(26 - 16),
-				};
-				break;
+			// if no new or deleted posts are found, do nothing
+			if (newPosts.length === 0 && deletedPosts.length === 0) {
+				setUpdateRequest({ type: undefined });
+				return;
+			}
 
-			case LoadRequestType.LOAD_ADDED_AND_UPDATED:
-				// olderThan: current Date (to get latest posts)
-				// newerThan: oldest post id - 1 (to get all posts including the oldest one)
-				requestObject = {
-					...requestObject,
-					newerThan: encodeTime(decodeTime(oldestPostUlid) - 1, 10) + oldestPostUlid.substring(26 - 16),
-				};
-				break;
+			// define action type for reducer (default: set posts for LOAD_ADDED_AND_UPDATED and LOAD_UPDATED)
+			let updateActionType = PCActionType.POSTS_SET;
 
-			default:
-				break;
-		}
+			// if only new posts are loaded, add them to the existing posts
+			if (loadRequest === LoadRequestType.LOAD_ADDED) {
+				updateActionType = PCActionType.POSTS_ADD;
+			}
 
-		services.api.posts
-			.loadmore(requestObject)
-			.then((response) => {
-				const { posts: newPosts } = response;
-
-				// if no new posts are found, do nothing
-				if (newPosts.length === 0) {
-					setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
-					return;
-				}
-
-				// define action type for reducer (default: set posts for LOAD_ADDED_AND_UPDATED and LOAD_UPDATED)
-				let updateActionType = PCActionType.POSTS_SET;
-
-				// if only new posts are loaded, add them to the existing posts
-				if (loadRequest === LoadRequestType.LOAD_ADDED) {
-					updateActionType = PCActionType.POSTS_ADD;
-				}
-
-				// list of posts that have been deleted
-				const deletedPostList = postState.posts.filter((post) => {
-					return !newPosts.find((newPost) => newPost.id === post.id);
-				});
-
-				// get List of new Posts
-				const newPostList = newPosts.filter((newPost) => {
-					return !postState.posts.find((post) => post.id === newPost.id);
-				});
-
-				const postHaveChanged = deletedPostList.length > 0 || newPostList.length > 0;
-
-				if (!postHaveChanged) {
-					setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
-					return;
-				}
-
-				setUpdateRequest({
-					payload: newPosts,
-					type: updateActionType,
-				});
-
-				setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
-			})
-			.catch((error) => {
-				setLoadRequest(LoadRequestType.LOAD_NOT_NEEDED);
-				console.error(error);
+			setUpdateRequest({
+				payload: posts,
+				type: updateActionType,
 			});
-		// We only want to trigger this effect when one of the values changes: loadRequest and tabIsActive
+		})();
+
+		// We only want to trigger this effect when one of the values changes: loadRequest and filter
 		// so we disable the exhaustive-deps rule here. Otherwise the effect would be triggered multiple times which is not intended.
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loadRequest, tabIsActive]);
+	}, [loadRequest, filter]);
 
 	const showLatestPosts = () => {
 		if (!updateRequest.type) {
@@ -212,10 +186,9 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 	/**
 	 * LoadRequest if triggered by interval or by user switching to mumble browser tab
 	 */
-
 	useIncreasingInterval(() => {
-		// only load new posts if browser tab is active
-		if (!tabIsActive) return;
+		// only load new posts if browser tab is active and autoUpdate is enabled
+		if (!tabIsActive || !autoUpdate) return;
 
 		// randomizes if load full list (to detect deleted posts) or check just for new posts (2/3 chance)
 		// to prevent that all users load the full list at the same time when the interval is triggered
@@ -227,11 +200,12 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 	});
 
 	useEffect(() => {
+		// only load new posts if browser tab is active and autoUpdate is enabled
+		if (!tabIsActive || !autoUpdate) return;
+
 		// load full list of posts when user switches to browser tab
-		if (tabIsActive) {
-			setLoadRequest(LoadRequestType.LOAD_ADDED_AND_UPDATED);
-		}
-	}, [tabIsActive]);
+		setLoadRequest(LoadRequestType.LOAD_ADDED_AND_UPDATED);
+	}, [tabIsActive, autoUpdate]);
 
 	/**
 	 *
@@ -259,17 +233,6 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 			throw new Error('Failed to delete post');
 		}
 		postDispatch({ type: PCActionType.POSTS_DELETE, payload: id });
-	};
-
-	/**
-	 *
-	 * ============== HELPERS ==============
-	 *
-	 */
-
-	const getOldestPostUlid = () => {
-		const oldestPost = postState.posts[postState.posts.length - 1];
-		return oldestPost ? oldestPost.id : encodeTime(new Date().getTime(), 10) + '0000000000000000';
 	};
 
 	return (
@@ -310,4 +273,85 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 			)}
 		</>
 	);
+};
+
+/**
+ *
+ * ============== HELPERS ==============
+ *
+ */
+
+// generate request object for posts
+type TRequestObj = {
+	limit: number;
+	olderThan: string;
+	newerThan: string;
+};
+const getRequestObj = (posts: TPost[], loadRequest: TLoadRequestType) => {
+	const { currentUlid, oldestUlid, latestUlid } = getPostQueryUlids(posts);
+
+	// default request object (olderThan: current Date, newerThan: oldest post id - 1, limit: 100) to get all posts
+	let requestObject = {
+		limit: 100,
+	} as TRequestObj;
+
+	switch (loadRequest) {
+		case LoadRequestType.LOAD_ADDED:
+			// olderThan: current Date (to get latest posts)
+			// newerThan: latest post id (to get all new posts)
+			requestObject = {
+				...requestObject,
+				olderThan: currentUlid,
+				newerThan: latestUlid,
+			};
+			break;
+
+		case LoadRequestType.LOAD_UPDATED:
+			// olderThan: latest post id + 1 (to get all posts including the latest one)
+			// newerThan: oldest post id - 1 (to get all posts including the oldest one)
+			requestObject = {
+				...requestObject,
+				olderThan: ULID.getNewerThan(latestUlid),
+				newerThan: ULID.getOlderThan(oldestUlid),
+			};
+			break;
+
+		case LoadRequestType.LOAD_ADDED_AND_UPDATED:
+			// olderThan: current Date (to get latest posts)
+			// newerThan: oldest post id - 1 (to get all posts including the oldest one)
+			requestObject = {
+				...requestObject,
+				olderThan: currentUlid,
+				newerThan: ULID.getOlderThan(oldestUlid),
+			};
+			break;
+
+		default:
+			break;
+	}
+
+	return requestObject;
+};
+
+// get oldest post id
+const getPostQueryUlids = (posts: TPost[]) => {
+	const currentUlid = ULID.getCurrent();
+
+	// check if posts are available
+	if (!posts?.length) {
+		return {
+			currentUlid,
+			latestUlid: currentUlid,
+			oldestUlid: currentUlid,
+		};
+	}
+
+	const latestPost = posts[0];
+	const oldestPost = posts[posts.length - 1];
+
+	return {
+		currentUlid,
+		latestUlid: latestPost.id,
+		oldestUlid: oldestPost.id,
+	};
 };
