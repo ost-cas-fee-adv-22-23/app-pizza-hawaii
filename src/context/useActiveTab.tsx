@@ -12,11 +12,13 @@ const ActiveTabContext = createContext({} as TActiveTabContextData);
 export const ActiveTabContextProvider = ({ children }: TActiveTabContextProps) => {
 	const [active, setActive] = useState<boolean>(false);
 
+	const onVisibilityChange = () => {
+		setActive(!document.hidden);
+	};
+
 	// add event listener to check if the tab is active
 	useEffect(() => {
-		const onVisibilityChange = () => {
-			setActive(!document.hidden);
-		};
+		onVisibilityChange();
 
 		document.addEventListener('visibilitychange', onVisibilityChange);
 		return () => {
