@@ -15,15 +15,28 @@ export const config = {
 		'/',
 	],
 };
-
-export async function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest): Promise<NextResponse> {
 	const { pathname, origin } = req.nextUrl;
 
-	const session = await getToken({ req });
+	try {
+		const session = await getToken({ req });
+		if (!session) {
+			if (pathname.includes('/mumble/') && !pathname.includes('/mumble/public/')) {
+				const id = pathname.split('/mumble/')[1];
+				return NextResponse.rewrite(`${origin}/mumble/public/${id}`);
+			}
 
-	// rewrite url from /mumble/:id to /mumble/public/:id if user is not logged in
-	if (pathname.startsWith('/mumble/') && !session) {
-		const id = pathname.split('/mumble/')[1];
-		return NextResponse.rewrite(`${origin}/mumble/public/${id}`);
+			const listAllowed = ['api/', '_next/', 'auth/', 'favicon.ico', 'mumble/'];
+
+			// if not in listAllowed, redirect to login
+			if (!listAllowed.some((item) => pathname.includes(item))) {
+				return NextResponse.redirect(`${origin}/auth/login`);
+			}
+		}
+
+		return NextResponse.next();
+	} catch (error) {
+		console.error(`Error in middleware: ${error}`);
+		return NextResponse.error();
 	}
 }
