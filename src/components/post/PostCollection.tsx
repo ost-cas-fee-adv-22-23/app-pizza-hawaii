@@ -197,7 +197,6 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 
 		// load full list of posts when user switches to browser tab
 		setLoadRequest(LoadRequestType.LOAD_ADDED_AND_UPDATED);
-
 	}, [tabIsActive, autoUpdate]);
 
 	/**
