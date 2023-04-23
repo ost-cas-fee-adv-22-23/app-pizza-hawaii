@@ -99,6 +99,25 @@ export const authOptions: NextAuthOptions = {
 			return true;
 		},
 	},
+	cookies: {
+		sessionToken: {
+			name: `__Secure-next-auth.session-token`,
+			options: {
+				httpOnly: true,
+				sameSite: 'lax',
+				path: '/',
+				secure: true,
+			},
+		},
+		callbackUrl: {
+			name: `__Secure-next-auth.callback-url`,
+			options: {
+				sameSite: 'lax',
+				path: '/',
+				secure: true,
+			},
+		},
+	},
 	pages: {
 		signIn: '/auth/login',
 		signOut: '/auth/logout',
