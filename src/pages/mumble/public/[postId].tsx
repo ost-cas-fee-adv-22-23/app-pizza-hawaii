@@ -1,14 +1,12 @@
 import { Grid, Headline, Label, Link } from '@smartive-education/pizza-hawaii';
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import NextLink from 'next/link';
-import router from 'next/router';
-import { useSession } from 'next-auth/react';
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 
 import { MainLayout } from '../../../components/layoutComponents/MainLayout';
 import { PostDetail } from '../../../components/post/PostDetail';
 import { services } from '../../../services';
-import { TPost, TUser } from '../../../types';
+import { TPost } from '../../../types';
 
 type TUserPage = {
 	post: TPost;
