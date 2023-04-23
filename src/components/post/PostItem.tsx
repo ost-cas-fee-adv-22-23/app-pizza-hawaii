@@ -15,7 +15,7 @@ import NextImage from 'next/image';
 import NextLink from 'next/link';
 import router from 'next/router';
 import { useSession } from 'next-auth/react';
-import React, { FC, useEffect, useReducer, useState } from 'react';
+import React, { FC, useEffect, useReducer, useRef, useState } from 'react';
 
 import shortenString from '../../data/helpers/shortenString';
 import ProjectSettings from '../../data/ProjectSettings.json';
@@ -94,6 +94,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 
 	const [showImageModal, setShowImageModal] = useState(false);
 	const [hydrationDone, setHydrationDone] = useState(false);
+	const userCardRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		setHydrationDone(true);
@@ -139,8 +140,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 	const handlePostClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
 		router.push(`/mumble/${post.id}`, undefined, { shallow: true });
 
-		// get item and header element
-		const item = (event.target as HTMLElement).closest('.Card'); // Todo: use ref
+		const item = userCardRef.current;
 		const header = document.querySelector('header') as HTMLElement;
 
 		if (!item || !header) return;
@@ -186,90 +186,95 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 		</Grid>
 	);
 
-	// TODO: check with Mirco ref in UserContentCard would like to use useRef -> forwardRef
 	return (
-		<UserContentCard
-			headline={headerSlotContent}
-			userProfile={{
-				avatar: post?.user.avatarUrl,
-				userName: post?.user.userName,
-				href: post?.user.profileLink,
-			}}
-			avatarVariant={setting.avatarVariant}
-			avatarSize={setting.avatarSize}
-		>
-			<Richtext size={setting.textSize}>{post.text}</Richtext>
+		<div ref={userCardRef}>
+			<UserContentCard
+				headline={headerSlotContent}
+				userProfile={{
+					avatar: post?.user.avatarUrl,
+					userName: post?.user.userName,
+					href: post?.user.profileLink,
+				}}
+				avatarVariant={setting.avatarVariant}
+				avatarSize={setting.avatarSize}
+			>
+				<Richtext size={setting.textSize}>{post.text}</Richtext>
 
-			{post.mediaUrl && (
-				<ImageOverlay preset="enlarge" buttonLabel="Enlarge image in modal" onClick={() => setShowImageModal(true)}>
-					<Image
-						width={picture.width}
-						height={picture.height}
-						src={picture.src}
-						alt={picture.alt}
-						imageComponent={NextImage}
-					/>
-				</ImageOverlay>
-			)}
-			{currentUser && (
-				<Grid variant="row" gap="M" wrapBelowScreen="md">
-					{setting.showAnswerButton && onAnswerPost && (
-						<InteractionButton
-							type="button"
-							colorScheme="violet"
-							buttonText={'Answer'}
-							iconName={'repost'}
-							onClick={handleAnswerPost}
+				{post.mediaUrl && (
+					<ImageOverlay
+						preset="enlarge"
+						buttonLabel="Enlarge image in modal"
+						onClick={() => setShowImageModal(true)}
+					>
+						<Image
+							width={picture.width}
+							height={picture.height}
+							src={picture.src}
+							alt={picture.alt}
+							imageComponent={NextImage}
 						/>
-					)}
-					{setting.showCommentButton && currentUser && (
-						<InteractionButton
-							isActive={post.replyCount > 0}
-							colorScheme="violet"
-							buttonText={
-								post.replyCount > 0
-									? `${post.replyCount} Comments`
-									: post.replyCount === 0
-									? 'Comment'
-									: '1 Comment'
-							}
-							iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
-							onClick={handlePostClick}
-						/>
-					)}
-					{setting.showLikeButton && currentUser && (
-						<InteractionButton
-							type="button"
-							isActive={post.likeCount > 0}
-							colorScheme="pink"
-							buttonText={
-								post.likeCount > 0 ? `${post.likeCount} Likes` : post.likeCount === 0 ? 'Like' : '1 Like'
-							}
-							iconName={post.likedByUser ? 'heart_filled' : 'heart_fillable'}
-							onClick={handleLike}
-						/>
-					)}
-					{setting.showShareButton && (
-						<CopyToClipboardButton
-							defaultButtonText="Copy Link"
-							activeButtonText="Link copied"
-							shareText={`${process.env.NEXT_PUBLIC_VERCEL_URL}/mumble/${post.id}`}
-						/>
-					)}
+					</ImageOverlay>
+				)}
+				{currentUser && (
+					<Grid variant="row" gap="M" wrapBelowScreen="md">
+						{setting.showAnswerButton && onAnswerPost && (
+							<InteractionButton
+								type="button"
+								colorScheme="violet"
+								buttonText={'Answer'}
+								iconName={'repost'}
+								onClick={handleAnswerPost}
+							/>
+						)}
+						{setting.showCommentButton && currentUser && (
+							<InteractionButton
+								isActive={post.replyCount > 0}
+								colorScheme="violet"
+								buttonText={
+									post.replyCount > 0
+										? `${post.replyCount} Comments`
+										: post.replyCount === 0
+										? 'Comment'
+										: '1 Comment'
+								}
+								iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
+								onClick={handlePostClick}
+							/>
+						)}
+						{setting.showLikeButton && currentUser && (
+							<InteractionButton
+								type="button"
+								isActive={post.likeCount > 0}
+								colorScheme="pink"
+								buttonText={
+									post.likeCount > 0 ? `${post.likeCount} Likes` : post.likeCount === 0 ? 'Like' : '1 Like'
+								}
+								iconName={post.likedByUser ? 'heart_filled' : 'heart_fillable'}
+								onClick={handleLike}
+							/>
+						)}
+						{setting.showShareButton && (
+							<CopyToClipboardButton
+								defaultButtonText="Copy Link"
+								activeButtonText="Link copied"
+								shareText={`${process.env.NEXT_PUBLIC_VERCEL_URL}/mumble/${post.id}`}
+							/>
+						)}
 
-					{setting.showDeleteButton && onDeletePost && currentUser && currentUser.id === post.user.id && (
-						<InteractionButton
-							type="button"
-							colorScheme="pink"
-							buttonText="Delete"
-							iconName="cancel"
-							onClick={handleDeletePost}
-						/>
-					)}
-				</Grid>
-			)}
+						{setting.showDeleteButton && onDeletePost && currentUser && currentUser.id === post.user.id && (
+							<InteractionButton
+								type="button"
+								colorScheme="pink"
+								buttonText="Delete"
+								iconName="cancel"
+								onClick={handleDeletePost}
+							/>
+						)}
+					</Grid>
+				)}
 
-			{showImageModal && <ImageModal picture={picture} onClose={() => setShowImageModal(false)} />}
-		</UserContentCard>
+				{showImageModal && <ImageModal picture={picture} onClose={() => setShowImageModal(false)} />}
+			</UserContentCard>
+		</div>
 	);
 };
