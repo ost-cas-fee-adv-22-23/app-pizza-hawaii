@@ -14,12 +14,10 @@ type TPostListProps = {
 	onAnswerPost?: (id: string) => void;
 };
 
-// TODO: is loadingItems still needed? or can we replace skeletonArray with loadingItems?
-
 export const PostList: FC<TPostListProps> = ({
 	posts = [],
 	variant = 'timeline',
-	showLoadingItems = 3,
+	showLoadingItems = 0,
 	noPostsMessage = 'Keine Posts vorhanden.',
 	onRemovePost,
 	onAnswerPost,

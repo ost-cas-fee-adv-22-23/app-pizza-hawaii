@@ -264,7 +264,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 				</div>
 			)}
 
-			<PostList posts={postState.posts} onRemovePost={onRemovePostFn} />
+			<PostList posts={postState.posts} onRemovePost={onRemovePostFn} showLoadingItems={3} />
 
 			{canLoadmore && (
 				<Button colorScheme="slate" onClick={() => onLoadmoreBtn()} disabled={postState.loading}>
