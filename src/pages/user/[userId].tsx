@@ -139,7 +139,6 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 								posts={posts.posts}
 								canLoadMore={posts.count > 0}
 								canAdd={false}
-								autoUpdate={true}
 								filter={{
 									creator: user.id,
 								}}
@@ -170,7 +169,6 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 						posts={posts.posts}
 						canLoadMore={posts.count > 0}
 						canAdd={false}
-						autoUpdate={true}
 						filter={{
 							creator: user.id,
 						}}

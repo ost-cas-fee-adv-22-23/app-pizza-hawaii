@@ -27,7 +27,7 @@ export type TPostCollectionProps = {
 	canAdd?: boolean;
 	canLoadMore: boolean;
 	filter?: TPostCollectionFilter;
-	autoUpdate: boolean;
+	autoUpdate?: boolean;
 };
 
 enum LoadRequestType {
