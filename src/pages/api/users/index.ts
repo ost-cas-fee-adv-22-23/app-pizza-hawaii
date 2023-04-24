@@ -36,25 +36,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		});
 	}
 
-	services.users
-		.getUsersByIds({
+	try {
+		const result = await services.users.getUsersByIds({
 			ids: userIds,
 			accessToken: session?.accessToken as string,
-		})
-		.then((result) => {
-			if (!result) {
-				return res.status(404).json({
-					status: false,
-					error: `The users with the IDs ${userIds.join(', ')} could not be found.`,
-				});
-			}
-			const users = result.map((user) => {
-				return services.users.reducedUserInformation(user);
-			});
-
-			res.status(200).json(users);
-		})
-		.catch((err) => {
-			res.status(500).json(err);
 		});
+
+		if (!result) {
+			return res.status(404).json({
+				status: false,
+				error: `The users with the IDs ${userIds.join(', ')} could not be found.`,
+			});
+		}
+
+		const users = result.map((user) => {
+			return services.users.reducedUserInformation(user);
+		});
+
+		res.status(200).json(users);
+	} catch (err) {
+		res.status(500).json(err);
+	}
 }

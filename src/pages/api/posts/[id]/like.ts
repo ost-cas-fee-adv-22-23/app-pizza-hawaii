@@ -15,16 +15,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		});
 	}
 
-	services.likes
-		.like({
+	try {
+		await services.likes.like({
 			id: id as string,
 			method,
 			accessToken: session?.accessToken as string,
-		})
-		.then(() => {
-			res.status(200).json({ status: true });
-		})
-		.catch((err) => {
-			res.status(500).json({ status: false, error: err });
 		});
+		res.status(200).json({ status: true });
+	} catch (err) {
+		res.status(500).json({ status: false, error: err });
+	}
 }
