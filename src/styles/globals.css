@@ -12,7 +12,6 @@
 	div#__next {
     	@apply min-h-screen;
     }
-
     div#__next {
 		@apply flex flex-col;
     }

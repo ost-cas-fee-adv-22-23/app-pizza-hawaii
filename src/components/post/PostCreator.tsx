@@ -67,6 +67,7 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 	const [text, setText] = React.useState<string>('');
 	const setting = PostCreatorCardVariantMap[variant] || PostCreatorCardVariantMap.newPost;
 
+	// We allow only a text or a file or both. Only file is not valid. harsch MumblePolicy :)
 	useEffect(() => {
 		if (text?.length > 0 || file) {
 			setIsValid(true);
@@ -105,7 +106,6 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 		});
 
 		if (!newPost) {
-			// TODO: Sending error message to the user in modal?
 			return;
 		}
 
