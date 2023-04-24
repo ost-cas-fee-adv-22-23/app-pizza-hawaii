@@ -2,7 +2,7 @@ import { Headline, Label, Link, Richtext } from '@smartive-education/pizza-hawai
 import NextLink from 'next/link';
 import React, { FC } from 'react';
 
-import { LoginLayout } from '../components/layoutComponents/LoginLayout';
+import { LoginLayout } from '../components/layout/LoginLayout';
 
 type TCustom500Page = {
 	errorInfo?: React.ErrorInfo | unknown | null;

@@ -3,7 +3,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 import React, { FC, useState } from 'react';
 
-import { MainLayout } from '../../components/layoutComponents/MainLayout';
+import { MainLayout } from '../../components/layout/MainLayout';
 import { PostList } from '../../components/post/PostList';
 import { services } from '../../services';
 import { TPost } from '../../types';

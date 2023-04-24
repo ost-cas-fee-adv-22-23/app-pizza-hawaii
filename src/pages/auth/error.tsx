@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
+import { LoginLayout } from '../../components/layout/LoginLayout';
 
 export default function LogoutPage() {
 	return (
