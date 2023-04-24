@@ -11,7 +11,7 @@ const RegisterPage = () => {
 		let errors = {};
 
 		// TODO: Implement the real registration
-		console.error('Function not implemented. But we will throw sometimes some errors anyway. ;)', data);
+		console.info('Function not implemented. But we will throw sometimes some errors anyway. ;)', data);
 
 		// Simulate some errors to show the error messages and annoy the users
 		Math.random() > 0.5 && (errors = { ...errors, userName: 'Username already taken' });
