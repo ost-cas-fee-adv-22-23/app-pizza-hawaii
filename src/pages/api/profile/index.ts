@@ -75,7 +75,7 @@ type TRegisterUser = {
 	accessToken: string;
 	body: TZitadelUser;
 };
-const registerUser = async <TZitadelUser>({ accessToken, body }: TRegisterUser) => {
+const registerUser = async ({ accessToken, body }: TRegisterUser) => {
 	const response = await fetch(`${process.env.ZITADEL_ISSUER}/users/human/_import`, {
 		headers: {
 			//'x-zitadel-orgid': `${process.env.ZITADEL_ORG_ID}`,
@@ -170,7 +170,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			break;
 
 		case 'POST':
-			await registerUser<TZitadelUser>({
+			await registerUser({
 				accessToken: token.accessToken,
 				body: req.body,
 			});
