@@ -1,3 +1,6 @@
+[![.github/workflows/deploy.yml](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/deploy.yml)
+
+
 # CAS FEE ADV Application - Pizza Hawaii 🍕
 
 ## Introduction
@@ -12,47 +15,64 @@ The latest version of our Pizza Hawaii App is available [here](https://app-pizza
 
 ## Getting Started
 
-Clone the repo. 
+Make sure you work with Node v.16 or later. 
+## 1. Clone the repo. 
+```
+git clone https://github.com/smartive-education/app-pizza-hawaii.git`
+```
 
-`git clone https://github.com/smartive-education/app-pizza-hawaii.git`
-
-Install the dependencies with `npm install` or `npm ci`
 
 ### Get a personal Github Token
 
-We need a github Token and a `.npmrc` to get access to the mumble npm package at smartive education on github.
+We need a github Token and a `.npmrc` to get access to the mumble npm package at smartive education on github. 
 
-## 1. Create a classic github token and add to `.npmrc`. (create this file manually)
+## 2. Create a <i>classic</i> github token.
 
-[Github Token Instructions](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-personal-access-token-classic) on the Github page
+### 2.1 create  a`.npmrc` file manually in the root directory of app-pizza-hawaii. 
+
+### 2.2 create a <i>classic</i> github token.
+Create a Token with `read and write ` packages token and append the generated token to your local `.npmrc`file 
+
+For instruction see [Github Token Instructions](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-personal-access-token-classic) on the Github page.
 
 To authenticate by adding your personal access token (classic) to your `~/.npmrc` file, edit the `~/.npmrc` file for your project to include the following line, replacing TOKEN with your personal access token.
 
     @smartive-education:registry=https://npm.pkg.github.com
-    //npm.pkg.github.com/:_authToken=
+    //npm.pkg.github.com/:_authToken=[insert TOKEN here]
 
 >Tip: You can then set the token as an environment variable with the name `NPM_TOKEN` or add it to your `.npmrc` file.
 **Please make sure to keep your token secure and not to share it with anyone.**
 
-## 2. Create a `.env` file and copy these keys and insert confidential values
+## 3. Create a local security environment file for variables.   
+
+Create a `.env` file and copy these keys and insert confidential values.
+> make sure there are no whitespaces between keys and values
+
 
     # Qwacker backend
-    NEXT_PUBLIC_QWACKER_API_URL= [insert prod QWACKER_API_URL]
+    NEXT_PUBLIC_QWACKER_API_URL=[insert prod QWACKER_API_URL]
 
     # Authentication
     NEXTAUTH_URL=http://localhost:3000
-    NEXTAUTH_SECRET= [insert NEXTAUTH_SECRET]
+    NEXTAUTH_SECRET=[insert NEXTAUTH_SECRET]
 
-    ZITADEL_ISSUER= [insert ZITADEL ISSUER URL]
-    ZITADEL_CLIENT_ID= [insert ZITADEL CLIENT ID]
+    ZITADEL_ISSUER=[insert ZITADEL ISSUER URL]
+    ZITADEL_CLIENT_ID=[insert ZITADEL CLIENT ID]
 
     # Frontend
     NEXT_PUBLIC_URL=http://localhost:3000
     NEXT_PUBLIC_VERCEL_URL=http://localhost:3000
 
-## 3. Register a User at [Zitadel](https://zitadel.cloud/).
 
-## 4. run the development Server on localhost:
+## 4. Install
+Install the dependencies with `npm install`.
+
+
+## 5. Register a User 
+
+Register a User at [Zitadel](https://zitadel.cloud/).
+
+## 6. run the Development Server on localhost:
 
 ```bash
 npm run dev
@@ -60,9 +80,55 @@ npm run dev
 yarn dev
 ```
 
-Open  with your browser.
+Open  with your browser on http://localhost:3000.
 
 You are good to go!  🎉
+
+# App Features
+
+## Design Features
+
+- Mobile & Desktop optimized
+- Dark Mode (icon in the Footer)
+- Lightbox Preview before posting images.
+- All image format supported.
+- User Collection of all User following you
+- Get a random PosterImages when not available
+
+## Functional Features
+
+- User Recommender
+- Un/ Follow favorite User 
+- Share a Post by copy function without beeing loged in
+- Public Post Detail page
+- Richtext editor
+- Post links with Markdown
+- Hashtag highlighting
+- Answer to a single
+- Scroll to selected Post
+- View all Post sorted by Hashtag
+- Link to a User in a post
+
+## Behind the Scenes Features
+
+- Change User settings (Zitadel account!)
+- NextJS API Routes
+- polling only on active tab
+- cache invalidation
+- custom Error Pages for 400- and 500- http states.
+- polling intervall decreases over time when user apears to be inactive
+- notice for Post Update when a new Post is avaliable
+- PWA is ready to use on server. (Desktop / Mobile)
+- W3C validity
+
+
+## Rendering Strategies
+
+- Login & Register: Static
+- Timeline: ServerSide
+- User: ClientSide
+- PostPreview: GetStaticProps
+
 
 # Development
 
@@ -89,6 +155,7 @@ We use these semantics while committing to maintain a meaningful commit history:
 ### ES Lint for code quality and
 
 ES Linter configuration checks for following topics
+ We know: sometimes a console.log is needed on the server. Therefore it is on a `warning` level as a reminder.
 
 1.  smartive eslint-config
 2.  import rules sorting
@@ -96,10 +163,12 @@ ES Linter configuration checks for following topics
 4.  no consoles
 5.  react-hook rules
 
+´´´
 
     npm run lint 
 
     npm run lint --fix
+´´´
 
 ### Dependency cruiser
 
@@ -121,7 +190,7 @@ and start locally built with
 
 ### API routes
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on . This endpoint can be edited in `pages/api/hello.ts`.
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on . This endpoint can be edited in `pages/api/auth`.
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 

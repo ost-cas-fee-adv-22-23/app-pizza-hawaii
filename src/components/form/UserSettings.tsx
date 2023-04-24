@@ -1,80 +1,76 @@
+import { useSession } from 'next-auth/react';
 import React, { FC, useEffect, useState } from 'react';
 
-import { TZitadelUser } from '../../types/Zitadel';
+import { zitadelService } from '../../services/api/zitadel';
+import { usersService } from '../../services/users';
+import { TUser } from '../../types';
 import { TUserFormData, UserForm } from './UserForm';
 
 type TUserSettings = {
 	setSuccess?: () => void;
+	onCancel?: () => void;
 };
-const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
-const UserSettings: FC<TUserSettings> = ({ setSuccess }) => {
+
+const UserSettings: FC<TUserSettings> = ({ setSuccess, onCancel }) => {
 	const [user, setUser] = useState<TUserFormData>();
 	const [isLoading, setIsLoading] = useState(true);
 
-	const getUser = async () => {
-		const res = await fetch(`${BASE_URL}/api/profile`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-
-		if (!res.ok) {
-			throw new Error('Failed to fetch user info');
-		}
-
-		const data = await res.json();
-
-		if (data) {
-			setUser({
-				userName: data.userName,
-				email: data.email.email,
-				firstName: data.profile.firstName,
-				lastName: data.profile.lastName,
-			});
-		}
-	};
-
-	const updateUser = async (data: TUserFormData) => {
-		try {
-			const res = await fetch(`${BASE_URL}/api/profile`, {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					userName: data.userName,
-					email: {
-						email: data.email,
-					},
-					profile: {
-						firstName: data.firstName,
-						lastName: data.lastName,
-						displayName: `${data.firstName} ${data.lastName}`,
-					},
-				} as TZitadelUser),
-			});
-
-			if (!res.ok) {
-				throw new Error(`Failed to update user: ${res.statusText}`);
-			}
-		} catch (error) {
-			throw new Error(error as string);
-		}
-	};
+	const { data: session } = useSession();
+	const currentUser = session?.user as TUser;
 
 	useEffect(() => {
 		setIsLoading(true);
-		getUser().then(() => {
+
+		(async () => {
+			// Get user profile
+			const userProfile = await zitadelService.getUserProfile();
+
+			// Set user form data
+			setUser({
+				userName: userProfile.userName,
+				email: userProfile.email.email,
+				firstName: userProfile.profile.firstName,
+				lastName: userProfile.profile.lastName,
+			});
+
 			setIsLoading(false);
-		});
+		})();
 	}, []);
 
-	const onSubmit = (data: TUserFormData) => {
+	const onSubmit = async (formData: TUserFormData) => {
 		// Update user
-		(async () => {
-			await updateUser(data);
-		})();
+		const res = await zitadelService.updateUserProfile({
+			userName: formData.userName, // get always error from zitadel
+			email: {
+				email: formData.email,
+			},
+			profile: {
+				firstName: formData.firstName,
+				lastName: formData.lastName,
+				displayName: `${formData.firstName} ${formData.lastName}`,
+			},
+		});
+
+		const data = await res.json();
+
+		if (res.status !== 200) {
+			const props = ['userName', 'firstName', 'lastName', 'email'];
+
+			// loop through all props and check if there is an error
+			props.forEach((prop) => {
+				if (data.errors?.[prop]) {
+					if (data.errors[prop].toLowerCase().includes(`.${prop.toLowerCase()}`)) {
+						// set error
+						data.errors[prop] = data.errors[prop].split(':')[1].trim();
+					}
+				}
+			});
+
+			return { ...data, status: false };
+		}
+
+		// invalidate cache for user
+		usersService.invalidateUserCache(currentUser.id);
 
 		// Call setSuccess if it was passed
 		setSuccess && setSuccess();
@@ -83,7 +79,16 @@ const UserSettings: FC<TUserSettings> = ({ setSuccess }) => {
 		return { status: true };
 	};
 
-	return <UserForm user={user as TUserFormData} onSubmit={onSubmit} isLoading={isLoading} />;
+	return (
+		<UserForm
+			user={user as TUserFormData}
+			onSubmit={onSubmit}
+			onCancel={() => {
+				onCancel && onCancel();
+			}}
+			isLoading={isLoading}
+		/>
+	);
 };
 
 export default UserSettings;

@@ -14,18 +14,21 @@ export const FollowerList = () => {
 	const accessToken = session?.accessToken;
 
 	useEffect(() => {
-		if (accessToken) {
-			services.api.users
-				.users({
-					userIds: followees,
-				})
-				.then((users) => {
+		(async () => {
+			if (accessToken) {
+				try {
+					const users = await services.api.users.users({
+						userIds: followees,
+					});
 					setUsers(users);
-				})
-				.catch((error) => {
+				} catch (error) {
 					console.error(error);
-				});
-		}
+				}
+			}
+			return () => {
+				setUsers([]);
+			};
+		})();
 	}, [accessToken, followees]);
 
 	return <UserCardList users={users} />;

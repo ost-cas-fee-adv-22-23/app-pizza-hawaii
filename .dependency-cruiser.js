@@ -13,10 +13,11 @@ module.exports = {
         circular: true
       }
     },
-     /* REMARK: Explicitly exclude files from being checked:
-      - middleware: we need the regular expression match config, it is running at compile time
+     /* REMARK from - Pizza Hawaii 🍕: Explicitly exclude files from being checked for circular dependencies. 
+      - middleware: we need the regular expression match config, it is running at compile time.
       - global error page: is last resort of error handling, so it's ok to have circular dependencies
       - api- routes: we don't want to check the api routes, as they ar running at compile time. 
+      - _document.tsx: is a nextjs file, which is running at compile time.
     */
     {
       name: 'no-orphans',
@@ -37,6 +38,7 @@ module.exports = {
           'src/middleware.ts',
           'src/pages/global-error.tsx',
           'src/pages/api/*',
+          'src/pages/_document.tsx',
         ]
       },
       to: {},
