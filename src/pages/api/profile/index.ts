@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 
-import { TZitadelEmail, TZitadelProfile, TZitadelUser, TZitadelUserName } from '../../../types/Zitadel';
+import { TZitadelEmail, TZitadelProfile } from '../../../types/Zitadel';
 
 type TFetchProfile<T> = {
 	accessToken: string;
@@ -90,14 +90,11 @@ const registerUser = async <TZitadelUser>({ accessToken, body }: TRegisterUser) 
 	if (!response.ok) {
 		return { error: `Something went wrong for register user!` };
 	}
-	console.log(response);
 
 	const data = await response.json();
 	if (!response.ok) {
 		return { error: data.message || `Something went wrong for register user!` };
 	}
-
-	console.log(data);
 
 	return data as Promise<unknown>;
 };

@@ -12,7 +12,7 @@ const RegisterPage = () => {
 		let errors = {};
 
 		(async () => {
-			const res = await zitadelService.registerUserProfile({
+			await zitadelService.registerUserProfile({
 				userName: data.userName,
 				profile: {
 					firstName: data.firstName,

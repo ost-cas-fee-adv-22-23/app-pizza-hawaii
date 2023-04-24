@@ -13,9 +13,7 @@ type TUserFormDataKeys = keyof TUserFormData;
 export type TUserFormErrors = { [key in keyof TUserFormData]?: string };
 
 export type TUserForm = {
-	onSubmit: (
-		data: TUserFormData
-	) => Promise<{ status: boolean; errors?: TUserFormErrors }>;
+	onSubmit: (data: TUserFormData) => Promise<{ status: boolean; errors?: TUserFormErrors }>;
 	onCancel?: () => void;
 	user?: TUserFormData;
 	sectionLabel?: string;

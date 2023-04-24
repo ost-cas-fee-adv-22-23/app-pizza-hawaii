@@ -58,12 +58,9 @@ const UserSettings: FC<TUserSettings> = ({ setSuccess, onCancel }) => {
 
 			// loop through all props and check if there is an error
 			props.forEach((prop) => {
-				console.log(1);
 				if (data.errors?.[prop]) {
-					console.log(2);
 					if (data.errors[prop].toLowerCase().includes(`.${prop.toLowerCase()}`)) {
 						// set error
-						console.log(3);
 						data.errors[prop] = data.errors[prop].split(':')[1].trim();
 					}
 				}

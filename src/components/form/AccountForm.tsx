@@ -1,4 +1,4 @@
-import { Button, Form, FormInput, FormPassword, Grid, Label } from '@smartive-education/pizza-hawaii';
+import { Button, Form, FormInput, FormPassword, Grid } from '@smartive-education/pizza-hawaii';
 import React, { FC, FormEvent, useEffect, useState } from 'react';
 
 export type TAccountFormData = {
