@@ -35,7 +35,7 @@ const DetailPage: FC<TUserPage> = ({
 
 				<PostList
 					posts={posts}
-					onRemovePost={function (id: string): void {
+					onRemovePost={(id: string): void => {
 						setPosts((posts: TPost[]) => posts.filter((post: TPost) => post.id !== id));
 					}}
 				/>
