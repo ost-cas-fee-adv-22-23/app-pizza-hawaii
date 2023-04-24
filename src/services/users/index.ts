@@ -75,13 +75,13 @@ type TGetUsersByIds = TFetchBase & {
  * @returns {Promise<TUser[]>}
  */
 
-async function getUsersByIds({ ids, accessToken }: TGetUsersByIds): Promise<TUser[]> {
+const getUsersByIds = async ({ ids, accessToken }: TGetUsersByIds): Promise<TUser[]> => {
 	const uniqueIds = ids.filter((id, index) => ids.indexOf(id) === index);
 
 	const users = await Promise.all(uniqueIds.map((id) => getUser({ id, accessToken })));
 
 	return users;
-}
+};
 
 /**
  *

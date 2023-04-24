@@ -47,7 +47,7 @@ type TFetchListResult =
 
 const BASE_URL = process.env.NEXT_PUBLIC_QWACKER_API_URL;
 
-export async function fetchList(params: object): Promise<TFetchListResult> {
+export const fetchList = async (params: object): Promise<TFetchListResult> => {
 	const maxLimit = 1000;
 
 	const { endpoint, accessToken, method, ...searchParams } = params as {
@@ -121,9 +121,9 @@ export async function fetchList(params: object): Promise<TFetchListResult> {
 		items: allItems,
 		pagination,
 	};
-}
+};
 
-export async function fetchItem(params: object) {
+export const fetchItem = async (params: object) => {
 	const { endpoint, accessToken, method, ...searchParams } = params as {
 		endpoint: string;
 		accessToken: string;
@@ -154,9 +154,9 @@ export async function fetchItem(params: object) {
 	}
 
 	return await baseFetch(url, fetchParams);
-}
+};
 
-async function baseFetch(url: string, params: object) {
+const baseFetch = async (url: string, params: object) => {
 	const response = await fetch(ensureHttpsProtocol(url), {
 		...params,
 	});
@@ -170,13 +170,13 @@ async function baseFetch(url: string, params: object) {
 	}
 
 	return await response.json();
-}
+};
 
 /**
  * Helper functions
  */
 
-export function generateAPIUrl(endpoint: string, params?: TFetchQuery): string {
+export const generateAPIUrl = (endpoint: string, params?: TFetchQuery): string => {
 	let url = `${BASE_URL}${endpoint}`;
 
 	if (params) {
@@ -184,14 +184,14 @@ export function generateAPIUrl(endpoint: string, params?: TFetchQuery): string {
 	}
 
 	return url;
-}
+};
 
 type TAddUrlParams = {
 	[key: string]: string | number | undefined;
 };
 
 // add url params to a url
-export function addUrlParams(url: string, params: TAddUrlParams): string {
+export const addUrlParams = (url: string, params: TAddUrlParams): string => {
 	// filter all undefined or null params
 	Object.keys(params).forEach((key: string) => {
 		if (params[key] === undefined || params[key] === null) {
@@ -215,13 +215,13 @@ export function addUrlParams(url: string, params: TAddUrlParams): string {
 	urlObj.search = urlObj.search ? `${urlObj.search}&${searchParams}` : `${searchParams}`;
 
 	return urlObj.toString();
-}
+};
 
 // ensure that the url is using https
-export function ensureHttpsProtocol(url: string): string {
+export const ensureHttpsProtocol = (url: string): string => {
 	if (url.startsWith('//')) {
 		return `https:${url}`;
 	}
 
 	return url;
-}
+};
