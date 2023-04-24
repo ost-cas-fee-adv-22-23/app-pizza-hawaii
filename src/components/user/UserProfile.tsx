@@ -116,7 +116,7 @@ export const UserProfile: FC<TUserProfile> = ({ size = 'M', border, href, userNa
 		} else {
 			return (
 				<div className={[...baseStyle, sizeMap[size], 'relative'].join(' ')}>
-					<div className="rounded-full overflow-hidden grid">
+					<div className="rounded-full overflow-hidden grid w-full">
 						<Image
 							imageComponent={NextImage}
 							src={avatar || noAvatar}
