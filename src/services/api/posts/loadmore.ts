@@ -2,12 +2,12 @@ import { TPost } from '../../../types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
 
-type TGetPostResult = {
+type TLoadmoreResult = {
 	count: number;
 	posts: TPost[];
 };
 
-type TGetPost = {
+export type TLoadmore = {
 	olderThan?: string;
 	newerThan?: string;
 	creator?: string;
@@ -18,11 +18,12 @@ type TGetPost = {
  *
  * @param {string} olderThan - Get posts older than this id
  * @param {string} newerThan - Get posts newer than this id
+ * @param {string} creator - Get posts by this creator
  *
- * @returns {Promise<TGetPostResult>}
+ * @returns {Promise<TLoadmoreResult>}
  */
 
-export const loadmore = async ({ olderThan, newerThan, creator }: TGetPost): Promise<TGetPostResult> => {
+export const loadmore = async ({ olderThan, newerThan, creator }: TLoadmore): Promise<TLoadmoreResult> => {
 	// create url params
 	const urlParams = new URLSearchParams();
 
@@ -39,5 +40,5 @@ export const loadmore = async ({ olderThan, newerThan, creator }: TGetPost): Pro
 	}
 
 	const res = await fetch(`${BASE_URL}/api/posts/loadmore?${urlParams}`);
-	return (await res.json()) as TGetPostResult;
+	return (await res.json()) as TLoadmoreResult;
 };

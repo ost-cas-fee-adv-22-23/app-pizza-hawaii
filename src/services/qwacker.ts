@@ -45,10 +45,6 @@ type TFetchListResult =
 			pagination: TFetchListResultPagination;
 	  };
 
-// TODO: remove this when the API is tested
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-let counter = 0;
 const BASE_URL = process.env.NEXT_PUBLIC_QWACKER_API_URL;
 
 export async function fetchList(params: object): Promise<TFetchListResult> {
@@ -88,22 +84,7 @@ export async function fetchList(params: object): Promise<TFetchListResult> {
 	let pagination = {};
 
 	while (url) {
-		// TODO: remove this when the API is tested
-		// eslint-disable-next-line no-console
-		console.log(`[${counter++}] Fetching ${url}...`);
-		const response = await fetch(ensureHttpsProtocol(url), {
-			...fetchParams,
-		});
-
-		if (!response.ok) {
-			throw new Error(`Qwacker API request failed with status ${response.status} (${response.statusText})`);
-		}
-
-		if (response.status === 204) {
-			return true;
-		}
-
-		const json = await response.json();
+		const json = await baseFetch(url, fetchParams);
 
 		allItems.push(...json.data);
 		remainingCount = json.count - json.data.length;
@@ -172,12 +153,12 @@ export async function fetchItem(params: object) {
 		};
 	}
 
-	// TODO: remove this when the API is tested
-	// eslint-disable-next-line no-console
-	console.log(`[${counter++}] Fetching ${url}...`);
+	return await baseFetch(url, fetchParams);
+}
 
+async function baseFetch(url: string, params: object) {
 	const response = await fetch(ensureHttpsProtocol(url), {
-		...fetchParams,
+		...params,
 	});
 
 	if (!response.ok) {
@@ -208,6 +189,7 @@ export function generateAPIUrl(endpoint: string, params?: TFetchQuery): string {
 type TAddUrlParams = {
 	[key: string]: string | number | undefined;
 };
+
 // add url params to a url
 export function addUrlParams(url: string, params: TAddUrlParams): string {
 	// filter all undefined or null params

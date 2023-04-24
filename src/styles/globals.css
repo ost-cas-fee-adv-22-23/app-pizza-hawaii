@@ -7,4 +7,13 @@
     body {
         @apply bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100;
     }
+    html,
+	body,
+	div#__next {
+    	@apply min-h-screen;
+    }
+
+    div#__next {
+		@apply flex flex-col;
+    }
 }

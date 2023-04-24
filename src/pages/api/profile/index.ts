@@ -10,7 +10,12 @@ type TFetchProfile<T> = {
 	body?: T;
 };
 
-const fetchUserData = async <T>({ accessToken, method, endpoint, body }: TFetchProfile<T>): Promise<T> => {
+const fetchUserData = async <T>({
+	accessToken,
+	method,
+	endpoint,
+	body,
+}: TFetchProfile<T>): Promise<T | { error: string }> => {
 	const url = `${process.env.ZITADEL_ISSUER}/auth/v1/users/me${endpoint ? `/${endpoint}` : ''}`;
 
 	const response = await fetch(url, {
@@ -24,8 +29,9 @@ const fetchUserData = async <T>({ accessToken, method, endpoint, body }: TFetchP
 	});
 
 	const data = await response.json();
+
 	if (!response.ok) {
-		throw new Error(data.message || `Something went wrong for ${endpoint}!`);
+		return { error: data.message || `Something went wrong for ${endpoint}!` };
 	}
 
 	return endpoint
@@ -65,6 +71,34 @@ const dataChanged = (currentData: object, newData: object) => {
 	return changed;
 };
 
+type TRegisterUser = {
+	accessToken: string;
+	body: TZitadelUser;
+};
+const registerUser = async ({ accessToken, body }: TRegisterUser) => {
+	const response = await fetch(`${process.env.ZITADEL_ISSUER}/users/human/_import`, {
+		headers: {
+			//'x-zitadel-orgid': `${process.env.ZITADEL_ORG_ID}`,
+			authorization: `Bearer ${accessToken}`,
+			'content-type': 'application/json',
+			accept: 'application/json',
+		},
+		method: 'POST',
+		body: JSON.stringify(body),
+	});
+
+	if (!response.ok) {
+		return { error: `Something went wrong for register user!` };
+	}
+
+	const data = await response.json();
+	if (!response.ok) {
+		return { error: data.message || `Something went wrong for register user!` };
+	}
+
+	return data as Promise<unknown>;
+};
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const token = await getToken({ req });
 
@@ -82,27 +116,64 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			});
 			break;
 		case 'PUT':
+			// disable username for now as it returns error from zitadel
 			// if (req.body.userName) {
-			// 	await setUserData<TZitadelUserName>({
+			// 	const response = await setUserData<TZitadelUserName & { error: string }>({
 			// 		endpoint: 'username',
 			// 		accessToken: token.accessToken,
 			// 		body: req.body.userName,
 			// 	});
+
+			// 	data = {
+			// 		...data,
+			// 		username: response,
+			// 	};
 			// }
 			if (req.body.profile) {
-				await setUserData<TZitadelProfile>({
+				const response = await setUserData<TZitadelProfile & { error: string }>({
 					endpoint: 'profile',
 					accessToken: token.accessToken,
 					body: req.body.profile,
 				});
+
+				data = {
+					...data,
+					profile: response,
+				};
 			}
 			if (req.body.email) {
-				await setUserData<TZitadelEmail>({
+				const response = await setUserData<TZitadelEmail & { error: string }>({
 					endpoint: 'email',
 					accessToken: token.accessToken,
 					body: req.body.email,
 				});
+
+				data = {
+					...data,
+					email: response,
+				};
 			}
+			// check if there was an error
+			if (Object.values(data).some((value) => (value as { error: string })?.error)) {
+				const errorData = Object.entries(data).reduce((acc, [key, value]) => {
+					if ((value as { error: string })?.error) {
+						acc[key] = (value as { error: string }).error;
+					}
+					return acc;
+				}, {} as { [key: string]: string });
+
+				return res.status(500).json({ status: false, errors: errorData });
+			}
+
+			return res.status(200).json({ status: true });
+
+			break;
+
+		case 'POST':
+			await registerUser({
+				accessToken: token.accessToken,
+				body: req.body,
+			});
 			break;
 		default:
 			return res.status(405).end();

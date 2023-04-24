@@ -59,7 +59,7 @@ export const MainLayout: FC<TMainLayout> = ({ title, seo, children }) => {
 
 			<Header user={currentUser} />
 
-			<main className={`px-content mb-24 sm:px-6 ${isNavigating && 'opacity-50 animate-pulse'}`}>
+			<main className={`flex-1 px-content mb-16 sm:px-6 ${isNavigating && 'opacity-50 animate-pulse'}`}>
 				<section className="mx-auto w-full max-w-content">{children}</section>
 			</main>
 			<Footer />

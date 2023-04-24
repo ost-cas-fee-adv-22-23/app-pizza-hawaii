@@ -48,21 +48,17 @@ export default DetailPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ req, query: { tag: searchTag } }) => {
 	const session = await getToken({ req });
-
-	if (!session) {
-		return {
-			props: { userData: null, error: 'not logged in, no session' },
-		};
-	}
+	const accessToken = session?.accessToken as string;
 
 	try {
 		const { count, posts } = await services.posts.getPostsByQuery({
 			tags: [searchTag as string],
-			accessToken: session?.accessToken as string,
+			accessToken,
 		});
 
 		return {
 			props: {
+				session,
 				searchTag,
 				count,
 				posts,
@@ -73,9 +69,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query: { tag
 		if (error instanceof Error) {
 			message = error.message;
 		} else {
-			message = String(error);
+			message = 'An error occurred while loading the data.';
 		}
 
-		return { props: { error: message } };
+		throw new Error(message);
 	}
 };

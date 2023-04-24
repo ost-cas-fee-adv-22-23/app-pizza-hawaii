@@ -75,14 +75,16 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 		}
 	}, [text, file]);
 
-	useEffect(() => {
+	const updateFile = (file?: File) => {
 		if (file) {
 			setShowModal(false);
 			setFilePreview(URL.createObjectURL(file));
 		} else {
 			setFilePreview('');
 		}
-	}, [file]);
+
+		setFile(file);
+	};
 
 	const inputChangeHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setText(e.target.value);
@@ -109,7 +111,7 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 
 		// Reset input field and file
 		setText('');
-		setFile(undefined);
+		updateFile();
 	};
 
 	const headerSlotContent = props.headline ? (
@@ -149,7 +151,7 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 						<RoundButton
 							colorScheme="slate"
 							icon="cancel"
-							onClick={() => setFile(undefined)}
+							onClick={() => updateFile()}
 							buttonLabel="Bild verwerfen"
 							title="Bild verwerfen"
 						/>
@@ -169,7 +171,7 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 
 			{showModal && (
 				<Modal title="Bild Hochladen" isVisible={showModal} onClose={() => setShowModal(false)}>
-					<PostImageUpload onNewFile={setFile} />
+					<PostImageUpload onNewFile={(file) => updateFile(file)} />
 				</Modal>
 			)}
 			<Grid variant="row" gap="S" wrapBelowScreen="md">

@@ -14,7 +14,7 @@
 	},
 	"dependencies": {
 		"@fontsource/poppins": "^4.5.10",
-		"@smartive-education/pizza-hawaii": "^1.62.0",
+		"@smartive-education/pizza-hawaii": "^1.63.0",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"next": "^13.2.4",
 		"next-auth": "^4.22.0",
@@ -31,7 +31,7 @@
 		"@types/react": "^18.0.35",
 		"@types/react-dom": "^18.0.11",
 		"autoprefixer": "^10.4.14",
-		"dependency-cruiser": "^12.11.1",
+		"dependency-cruiser": "^12.11.3",
 		"eslint": "^8.38.0",
 		"eslint-config-next": "^13.3.0",
 		"eslint-plugin-simple-import-sort": "^10.0.0",

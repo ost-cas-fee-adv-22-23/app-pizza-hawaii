@@ -1,6 +1,5 @@
 import { Button, Headline, Label } from '@smartive-education/pizza-hawaii';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import { getToken } from 'next-auth/jwt';
 import React from 'react';
@@ -9,11 +8,7 @@ import { MainLayout } from '../components/layoutComponents/MainLayout';
 import { PostCollection } from '../components/post/PostCollection';
 import { services } from '../services';
 
-export default function PageHome({
-	postCount: postCount,
-	posts,
-	error,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function PageHome({ postCount: postCount, posts }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	/**
 	 * if posts are undefined we are re-routing (replacing!) to the same page to trigger the getServerSideProps
 	 * This happens rarely but we need to handle it, when a user navigates back from a page
@@ -27,6 +22,7 @@ export default function PageHome({
 	const refreshData = () => {
 		router.replace(router.asPath);
 	};
+
 	const manualRefresh = (
 		<>
 			<Label as="p" size="L">
@@ -37,10 +33,6 @@ export default function PageHome({
 			</Button>
 		</>
 	);
-
-	if (error) {
-		return <ErrorPage statusCode={500} errorInfo={error} />;
-	}
 
 	return (
 		<MainLayout
@@ -75,15 +67,15 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	const accessToken = session?.accessToken as string;
 
 	try {
-		const { count: postCount, posts = undefined } = await services.posts.getPosts({
+		const { count: postCount, posts } = await services.posts.getPosts({
 			limit: 15,
 			accessToken,
 		});
-
 		return {
 			props: {
 				postCount,
 				posts,
+				session,
 			},
 		};
 	} catch (error) {
@@ -91,9 +83,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 		if (error instanceof Error) {
 			message = error.message;
 		} else {
-			message = String('could not load Mumbles posts');
+			message = 'An error occurred while loading the data.';
 		}
 
-		return { props: { error: message, posts: [], users: [], postCount: 0 } };
+		throw new Error(message);
 	}
 };

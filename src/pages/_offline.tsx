@@ -9,7 +9,7 @@ export default function OfflinePage() {
 	return (
 		<LoginLayout title="Mumble - Login">
 			<Richtext size="L">
-				🤪 You are offline! Check your internet Connection, Mumble is more Fun
+				🤪 You are offline! Check your connection, Mumble is more Fun
 				<span className="text-violet-600">Online</span>.
 			</Richtext>
 			<br />

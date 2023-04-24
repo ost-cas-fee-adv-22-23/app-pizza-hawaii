@@ -24,9 +24,7 @@ const ImageModal: FC<TImageModal> = ({ onClose, picture }) => {
 
 	// get actual screen dimensions on resize
 	useEffect(() => {
-		const handleResize = () => {
-			setScreenDimensions({ width: window.innerWidth, height: window.innerHeight });
-		};
+		const handleResize = () => setScreenDimensions({ width: window.innerWidth, height: window.innerHeight });
 
 		window.addEventListener('resize', handleResize);
 		handleResize();
