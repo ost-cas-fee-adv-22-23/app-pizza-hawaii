@@ -13,7 +13,7 @@ type TUserFormDataKeys = keyof TUserFormData;
 export type TUserFormErrors = { [key in keyof TUserFormData]?: string };
 
 export type TUserForm = {
-	onSubmit: (data: TUserFormData) => { status: boolean; errors?: TUserFormErrors };
+	onSubmit: (data: TUserFormData) => Promise<{ status: boolean; errors?: TUserFormErrors }>;
 	onCancel?: () => void;
 	user?: TUserFormData;
 	sectionLabel?: string;
@@ -74,7 +74,7 @@ export const UserForm: FC<TUserForm> = ({ onCancel, onSubmit, user = emptyState,
 		return validationMessages;
 	};
 
-	const onSubmitHandler = (e: FormEvent) => {
+	const onSubmitHandler = async (e: FormEvent) => {
 		e.preventDefault();
 
 		setIsSubmitting(true);
@@ -93,7 +93,7 @@ export const UserForm: FC<TUserForm> = ({ onCancel, onSubmit, user = emptyState,
 		}
 
 		// if it's ready to submit, call onSubmit function
-		const res = onSubmit(state);
+		const res = await onSubmit(state);
 
 		// if the request was successful, reset state otherwise set errors
 		if (res.status === true) {
@@ -101,6 +101,7 @@ export const UserForm: FC<TUserForm> = ({ onCancel, onSubmit, user = emptyState,
 		} else {
 			setErrors(res.errors || {});
 		}
+
 		setIsSubmitting(false);
 	};
 

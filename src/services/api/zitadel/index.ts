@@ -1,6 +1,7 @@
-import { get as getUserProfile, update as updateUserProfile } from './userProfile';
+import { get as getUserProfile, register as registerUserProfile, update as updateUserProfile } from './userProfile';
 
 export const zitadelService = {
 	getUserProfile,
 	updateUserProfile,
+	registerUserProfile,
 };

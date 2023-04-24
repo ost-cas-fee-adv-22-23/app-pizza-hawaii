@@ -31,3 +31,13 @@ export const update = async (userProfile: TZitadelUser): Promise<Response> => {
 		body: JSON.stringify(userProfile),
 	});
 };
+
+export const register = async (userProfile: TZitadelUser): Promise<Response> => {
+	return await fetch(`${BASE_URL}/api/profile`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(userProfile),
+	});
+};

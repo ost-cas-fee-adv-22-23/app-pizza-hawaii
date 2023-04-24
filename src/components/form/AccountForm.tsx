@@ -1,4 +1,4 @@
-import { Button, Form, FormInput, FormPassword, Grid, Label } from '@smartive-education/pizza-hawaii';
+import { Button, Form, FormInput, FormPassword, Grid } from '@smartive-education/pizza-hawaii';
 import React, { FC, FormEvent, useEffect, useState } from 'react';
 
 export type TAccountFormData = {
@@ -6,6 +6,8 @@ export type TAccountFormData = {
 	confirmPassword: string;
 	userName: string;
 	email: string;
+	firstName: string;
+	lastName: string;
 };
 
 type TAccountFormDataKeys = keyof TAccountFormData;
@@ -16,7 +18,6 @@ export type TAccountForm = {
 	onSubmit: (data: TAccountFormData) => { status: boolean; errors?: TAccountFormErrors };
 	onCancel?: () => void;
 	user?: TAccountFormData;
-	sectionLabel?: string;
 	isLoading?: boolean;
 };
 
@@ -25,9 +26,11 @@ const emptyState: TAccountFormData = {
 	confirmPassword: '',
 	userName: '',
 	email: '',
+	firstName: '',
+	lastName: '',
 };
 
-export const AccountForm: FC<TAccountForm> = ({ onSubmit, user = emptyState, sectionLabel, isLoading }) => {
+export const AccountForm: FC<TAccountForm> = ({ onSubmit, user = emptyState, isLoading }) => {
 	const [state, setState] = useState(user);
 	const [isUntouched, setIsUntouched] = useState(true);
 	const [isValid, setIsValid] = useState(false);
@@ -130,54 +133,69 @@ export const AccountForm: FC<TAccountForm> = ({ onSubmit, user = emptyState, sec
 
 	return (
 		<Form onSubmit={onSubmitHandler} noValidate>
-			<fieldset>
-				<Label as="legend" size="XL">
-					{sectionLabel || 'Deine Daten'}
-				</Label>
-				<div className={['mt-4', isLoading && 'opacity-50 animate-pulse'].join(' ')}>
-					<Grid variant="col" gap="M" marginBelow="M">
-						<FormInput
-							name="userName"
-							label="Username"
-							type="text"
-							value={state['userName']}
-							onChange={onFieldChange}
-							errorMessage={errors['userName']}
-							required
-							icon="mumble"
-							autoComplete="off"
-						/>
-						<FormInput
-							name="email"
-							label="Email"
-							type="email"
-							value={state['email']}
-							onChange={onFieldChange}
-							errorMessage={errors['email']}
-							required
-							autoComplete="email"
-						/>
-						<FormPassword
-							name="password"
-							label="Passwort"
-							value={state['password']}
-							onChange={onFieldChange}
-							errorMessage={errors['password']}
-							required
-							autoComplete="off"
-						/>
-						<FormPassword
-							name="confirmPassword"
-							label="Passwort wiederholen"
-							value={state['confirmPassword']}
-							onChange={onFieldChange}
-							errorMessage={errors['confirmPassword']}
-							required
-							autoComplete="off"
-						/>
-					</Grid>
-				</div>
-			</fieldset>
+			<div className={['mt-4', isLoading && 'opacity-50 animate-pulse'].join(' ')}>
+				<Grid variant="col" gap="M" marginBelow="M">
+					<FormInput
+						name="firstName"
+						label="First Name"
+						type="text"
+						value={state['firstName']}
+						onChange={onFieldChange}
+						errorMessage={errors['firstName']}
+						required
+						autoComplete="given-name"
+					/>
+					<FormInput
+						name="lastName"
+						label="Last Name"
+						type="text"
+						value={state['lastName']}
+						onChange={onFieldChange}
+						errorMessage={errors['lastName']}
+						required
+						autoComplete="family-name"
+					/>
+					<FormInput
+						name="userName"
+						label="Username"
+						type="text"
+						value={state['userName']}
+						onChange={onFieldChange}
+						errorMessage={errors['userName']}
+						required
+						icon="mumble"
+						autoComplete="off"
+					/>
+					<FormInput
+						name="email"
+						label="E-Mail"
+						type="email"
+						value={state['email']}
+						onChange={onFieldChange}
+						errorMessage={errors['email']}
+						required
+						autoComplete="email"
+					/>
+					<FormPassword
+						name="password"
+						label="Passwort"
+						value={state['password']}
+						onChange={onFieldChange}
+						errorMessage={errors['password']}
+						required
+						autoComplete="off"
+					/>
+					<FormPassword
+						name="confirmPassword"
+						label="Passwort wiederholen"
+						value={state['confirmPassword']}
+						onChange={onFieldChange}
+						errorMessage={errors['confirmPassword']}
+						required
+						autoComplete="off"
+					/>
+				</Grid>
+			</div>
 
 			{/*
 				We use the isUntouched or isValid state to enable/disable the submit button only visually.
