@@ -22,13 +22,9 @@ const RegisterPage = () => {
 					email: data.email,
 				},
 			});
-		// TODO: Implement the real registration
-		console.info('Function not implemented. But we will throw sometimes some errors anyway. ;)', data);
 
-			// TODO: Implement the registration process
-			// Implementation was not successful we get a invalid JSOn from the Zitadel API
-
-			console.error('Function not implemented. But we will throw sometimes some errors anyway. ;)', data);
+			// TODO: Implement the real registration
+			console.info('Function not implemented. But we will throw sometimes some errors anyway. ;)', data);
 
 			// Simulate some errors to show the error messages and annoy the users
 			Math.random() > 0.33 && (errors = { ...errors, userName: 'Username already taken' });
