@@ -51,8 +51,8 @@ const ImageModal: FC<TImageModal> = ({ onClose, picture }) => {
 	// cover image
 	return (
 		<Modal isVisible={true} onClose={onClose}>
-			<div className="content-center">
-				{loading && <div className="animate-pulse h-64 w-full bg-gray-400 rounded-lg" />}
+			{loading && <div className="animate-pulse h-64 w-full bg-gray-400 rounded-lg" />}
+			<div className="[&>img]:w-full">
 				<NextImage
 					ref={myImageRef}
 					src={picture.src as string}
