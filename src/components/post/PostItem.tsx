@@ -198,7 +198,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 				avatarVariant={setting.avatarVariant}
 				avatarSize={setting.avatarSize}
 			>
-				<Richtext size={setting.textSize}>{post.text}</Richtext>
+				{post?.text.trim() !== '' && <Richtext size={setting.textSize}>{post.text}</Richtext>}
 
 				{post.mediaUrl && (
 					<ImageOverlay

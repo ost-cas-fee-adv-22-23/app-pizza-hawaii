@@ -100,7 +100,7 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 		}
 
 		const newPost = await onAddPost({
-			text: text || '',
+			text: text || ' ',
 			image: file,
 			replyTo: replyTo?.id,
 		});
