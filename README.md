@@ -17,21 +17,23 @@ The latest version of our Pizza Hawaii App is available [here](https://app-pizza
 
 Make sure you work with Node v.16 or later. 
 ## 1. Clone the repo. 
-
-`git clone https://github.com/smartive-education/app-pizza-hawaii.git`
+```
+git clone https://github.com/smartive-education/app-pizza-hawaii.git`
+```
 
 
 ### Get a personal Github Token
 
-We need a github Token and a `.npmrc` to get access to the mumble npm package at smartive education on github.
+We need a github Token and a `.npmrc` to get access to the mumble npm package at smartive education on github. 
 
 ## 2. Create a <i>classic</i> github token.
 
-### 2.1 create  a`.npmrc` file. place this file manually in the root directory. 
+### 2.1 create  a`.npmrc` file manually in the root directory of app-pizza-hawaii. 
 
-### 2.2 create a <i>classic</i> github token with `read and write ` packages token and append the generated token to your local `.npmrc`file 
+### 2.2 create a <i>classic</i> github token.
+Create a Token with `read and write ` packages token and append the generated token to your local `.npmrc`file 
 
-See [Github Token Instructions](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-personal-access-token-classic) on the Github page.
+For instruction see [Github Token Instructions](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-personal-access-token-classic) on the Github page.
 
 To authenticate by adding your personal access token (classic) to your `~/.npmrc` file, edit the `~/.npmrc` file for your project to include the following line, replacing TOKEN with your personal access token.
 
@@ -43,11 +45,12 @@ To authenticate by adding your personal access token (classic) to your `~/.npmrc
 
 ## 3. Create a local security environment file for variables.   
 
-Create a `.env` file and copy these keys and insert confidential values
+Create a `.env` file and copy these keys and insert confidential values.
+> make sure there are no whitespaces between keys and values
 
 
     # Qwacker backend
-    NEXT_PUBLIC_QWACKER_API_URL= [insert prod QWACKER_API_URL]
+    NEXT_PUBLIC_QWACKER_API_URL=[insert prod QWACKER_API_URL]
 
     # Authentication
     NEXTAUTH_URL=http://localhost:3000
