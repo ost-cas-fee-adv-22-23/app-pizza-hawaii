@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 
-import { TZitadelEmail, TZitadelProfile } from '../../../types/Zitadel';
+import { TZitadelEmail, TZitadelProfile, TZitadelUser } from '../../../types/Zitadel';
 
 type TFetchProfile<T> = {
 	accessToken: string;
