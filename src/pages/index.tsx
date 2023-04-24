@@ -79,6 +79,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 			},
 		};
 	} catch (error) {
-		throw new Error('An error occurred while loading the data.');
+		let message;
+		if (error instanceof Error) {
+			message = error.message;
+		} else {
+			message = 'An error occurred while loading the data.';
+		}
+		throw new Error(message);
 	}
 };
