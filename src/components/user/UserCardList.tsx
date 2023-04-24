@@ -2,8 +2,8 @@ import { Grid } from '@smartive-education/pizza-hawaii';
 import React, { FC } from 'react';
 
 import { TUser } from '../../types';
-import { UserCardSkeleton } from '../helpers/UserCardSkeleton';
 import { UserCard } from './UserCard';
+import { UserCardSkeleton } from './UserCardSkeleton';
 
 type TUserCardList = {
 	users: TUser[];

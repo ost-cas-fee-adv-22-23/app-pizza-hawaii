@@ -4,10 +4,10 @@ import NextLink from 'next/link';
 import { signOut } from 'next-auth/react';
 import { FC, useState } from 'react';
 
-import MumbleLogo from '../../public/assets/svg/mumbleLogo.svg';
-import { TUser } from '../types';
-import UserSettings from './form/UserSettings';
-import { UserProfile } from './user/UserProfile';
+import MumbleLogo from '../../../public/assets/svg/mumbleLogo.svg';
+import { TUser } from '../../types';
+import UserSettings from '../form/UserSettings';
+import { UserProfile } from '../user/UserProfile';
 
 type THeader = {
 	user?: TUser;

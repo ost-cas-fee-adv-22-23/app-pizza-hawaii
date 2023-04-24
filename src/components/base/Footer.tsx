@@ -2,7 +2,7 @@ import { Grid, Icon, Link, RoundButton } from '@smartive-education/pizza-hawaii'
 import NextLink from 'next/link';
 import { FC } from 'react';
 
-import { useThemeContext } from '../context/useTheme';
+import { useThemeContext } from '../../context/useTheme';
 
 export const Footer: FC = () => {
 	const { toggleTheme } = useThemeContext();

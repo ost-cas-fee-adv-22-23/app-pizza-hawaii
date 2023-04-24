@@ -22,7 +22,7 @@ import ProjectSettings from '../../data/ProjectSettings.json';
 import PDReducer, { ActionType as PDActionType, initialState as initialPDState } from '../../reducer/postDetailReducer';
 import { postsService } from '../../services/api/posts/';
 import { TPost, TUser } from '../../types';
-import ImageModal, { TImageModalPicture } from '../ImageModal';
+import ImageModal, { TImageModalPicture } from '../widgets/ImageModal';
 
 /*
  * Type

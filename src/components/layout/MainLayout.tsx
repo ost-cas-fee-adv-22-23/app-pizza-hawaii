@@ -5,8 +5,8 @@ import { FC, ReactElement, useEffect, useState } from 'react';
 
 import shortenString from '../../data/helpers/shortenString';
 import { TUser } from '../../types';
-import { Footer } from '../Footer';
-import { Header } from '../Header';
+import { Footer } from '../base/Footer';
+import { Header } from '../base/Header';
 
 type TMainLayout = {
 	title: string;
