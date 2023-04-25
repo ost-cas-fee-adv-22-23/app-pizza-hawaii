@@ -33,8 +33,7 @@ const refreshAccessToken = async (token: JWT): Promise<JWT> => {
 };
 
 const getUser = async (userId: string, accessToken: string): Promise<TUser> => {
-	const user = (await services.users.getUser({ id: userId, accessToken })) as TUser;
-	return user;
+	return (await services.users.getUser({ id: userId, accessToken })) as TUser;
 };
 
 export const authOptions: NextAuthOptions = {
