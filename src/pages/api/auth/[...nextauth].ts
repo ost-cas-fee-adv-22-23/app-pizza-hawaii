@@ -70,21 +70,28 @@ export const authOptions: NextAuthOptions = {
 				token.expiresAt = (account.expires_at as number) * 1000;
 				token.error = undefined;
 			}
+
 			if (user) {
 				token.user = user as TUser;
 			}
+
+			console.log(token);
 			// Return previous token if the access token has not expired yet
 			if (Date.now() < (token.expiresAt as number)) {
 				return token;
 			}
+			if (token.refreshToken) {
+				const newToken = await refreshAccessToken(token.refreshToken);
 
-			const newToken = await refreshAccessToken(token);
+				if (newToken.error) {
+					delete token.accessToken;
+					return;
+				}
 
-			if (newToken.error) {
-				throw new Error(newToken.error as string);
+				return newToken;
 			}
 
-			return newToken;
+			delete token.accessToken;
 		},
 		async session({ session, token }) {
 			session.user = token.user as TUser;
