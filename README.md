@@ -46,7 +46,8 @@ To authenticate by adding your personal access token (classic) to your `~/.npmrc
 ## 3. Create a local security environment file for variables.   
 
 Create a `.env` file and copy these keys and insert confidential values.
-> make sure there are no whitespaces between keys and values
+> make sure there are no whitespaces between keys and values.
+> beware: Quacker backend has a <em>trailing /</em>.
 
 
     # Qwacker backend
