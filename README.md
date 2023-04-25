@@ -5,9 +5,14 @@
 
 ## Introduction
 
-This Webapplication, developed by [Felix Adam](https://github.com/flxtagi) and [Jürgen Rudigier](https://github.com/rudigier), is a fictional Twitter clone named "Mumble".
+Welcome to our project - a fictional Twitter clone named "Mumble".
 
-It is created as a part of a Frontend Engineering Advanced (CAS) course at [OST](https://www.ost.ch/de/weiterbildung/weiterbildungsangebot/informatik/software-engineering-testing/cas-frontend-engineering-advanced) Rapperswil, to implement our [component Library](https://smartive-education.github.io/design-system-component-library-pizza-hawaii/) and with data endpoint provided by [qwacker API](https://qwacker-api-http-prod-4cxdci3drq-oa.a.run.app/rest/#/) and the [zitadel](https://zitadel.cloud/) Login provider.
+In this project, we have utilized the [component library](https://smartive-education.github.io/design-system-component-library-pizza-hawaii/) we developed in the first part of the Frontend Engineering Advanced (CAS) course at [OST](https://www.ost.ch/de/weiterbildung/weiterbildungsangebot/informatik/software-engineering-testing/cas-frontend-engineering-advanced) in Rapperswil. This project uses Tailwind, React, Next 13, and Typescript technologies. 
+
+We used a REST data endpoint provided by [qwacker API](https://qwacker-api-http-prod-4cxdci3drq-oa.a.run.app/rest/#/) and the [zitadel](https://zitadel.cloud/) Login provider.
+Our focus was to create a responsive and user-friendly interface that would consume the components from our library.
+
+Developed by Team "Pizza-Hawaii" - [Felix Adam](https://github.com/flxtagi) and [Jürgen Rudigier](https://github.com/rudigier).
 
 ## Live Demopage
 
