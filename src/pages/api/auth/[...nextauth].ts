@@ -75,11 +75,11 @@ export const authOptions: NextAuthOptions = {
 				token.user = user as TUser;
 			}
 
-			console.log(token);
 			// Return previous token if the access token has not expired yet
 			if (Date.now() < (token.expiresAt as number)) {
 				return token;
 			}
+			// if the access token has expired, try to update it
 			if (token.refreshToken) {
 				const newToken = await refreshAccessToken(token.refreshToken);
 
