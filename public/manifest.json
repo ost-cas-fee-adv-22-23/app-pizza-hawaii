@@ -7,6 +7,9 @@
   "name": "Mumble Pizza Hawaii PWA",
   "short_name": "Pizza Hawaii",
   "description": "Mumble Pizza Hawaii PWA project for CAS FEA 2023",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "related_applications": [],
   "icons": [
       {
           "src": "/icon-192x192.png",

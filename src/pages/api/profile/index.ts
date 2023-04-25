@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 
-import { TZitadelEmail, TZitadelProfile, TZitadelUser, TZitadelUserName } from '../../../types/Zitadel';
+import { TZitadelEmail, TZitadelProfile, TZitadelUser } from '../../../types/Zitadel';
 
 type TFetchProfile<T> = {
 	accessToken: string;
@@ -31,7 +31,7 @@ const fetchUserData = async <T>({
 	const data = await response.json();
 
 	if (!response.ok) {
-		return { error: data.message || `Something went wrong for ${endpoint}!` };
+		return { error: data.message ?? `Something went wrong for ${endpoint}!` };
 	}
 
 	return endpoint
@@ -97,7 +97,7 @@ const registerUser = async ({ accessToken, body }: TRegisterUser) => {
 
 	const data = await response.json();
 	if (!response.ok) {
-		return { error: data.message || `Something went wrong for register user!` };
+		return { error: data.message ?? `Something went wrong for register user!` };
 	}
 
 	return data as Promise<unknown>;
@@ -120,18 +120,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			});
 			break;
 		case 'PUT':
-			if (req.body.userName) {
-				const response = await setUserData<TZitadelUserName & { error: string }>({
-					endpoint: 'username',
-					accessToken: token.accessToken,
-					body: req.body,
-				});
+			// if (req.body.userName) {
+			// 	const response = await setUserData<TZitadelUserName & { error: string }>({
+			// 		endpoint: 'username',
+			// 		accessToken: token.accessToken,
+			// 		body: req.body,
+			// 	});
 
-				data = {
-					...data,
-					username: response,
-				};
-			}
+			// 	data = {
+			// 		...data,
+			// 		username: response,
+			// 	};
+			// }
 			if (req.body.profile) {
 				const response = await setUserData<TZitadelProfile & { error: string }>({
 					endpoint: 'profile',

@@ -289,7 +289,7 @@ const addReferencesToPosts = async (posts: TRawPost[], loadReplies = false, acce
 
 		if (loadReplies) {
 			const res = await getPostReplies({ id: post.id, accessToken });
-			return { ...post, user, replies: res.posts || [] };
+			return { ...post, user, replies: res.posts ?? [] };
 		}
 		return { ...post, user };
 	});
@@ -318,7 +318,7 @@ const transformPost = (post: TRawPost) => {
 
 const emptyPost = (id?: string, user = usersService.emptyUser()): TPost => {
 	return {
-		id: id || '',
+		id: id ?? '',
 		creator: '',
 		text: '',
 		type: 'post',
