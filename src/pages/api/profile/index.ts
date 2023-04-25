@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 
-import { TZitadelEmail, TZitadelProfile, TZitadelUser } from '../../../types/Zitadel';
+import { TZitadelEmail, TZitadelProfile, TZitadelUser, TZitadelUserName } from '../../../types/Zitadel';
 
 type TFetchProfile<T> = {
 	accessToken: string;
@@ -120,19 +120,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			});
 			break;
 		case 'PUT':
-			// disable username for now as it returns error from zitadel
-			// if (req.body.userName) {
-			// 	const response = await setUserData<TZitadelUserName & { error: string }>({
-			// 		endpoint: 'username',
-			// 		accessToken: token.accessToken,
-			// 		body: req.body.userName,
-			// 	});
+			if (req.body.userName) {
+				const response = await setUserData<TZitadelUserName & { error: string }>({
+					endpoint: 'username',
+					accessToken: token.accessToken,
+					body: { userName: req.body.userName },
+				});
 
-			// 	data = {
-			// 		...data,
-			// 		username: response,
-			// 	};
-			// }
+				data = {
+					...data,
+					username: response,
+				};
+			}
 			if (req.body.profile) {
 				const response = await setUserData<TZitadelProfile & { error: string }>({
 					endpoint: 'profile',
