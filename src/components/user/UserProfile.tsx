@@ -99,6 +99,7 @@ export const UserProfile: FC<TUserProfile> = ({ size = 'M', border, href, userNa
 				<div className={[...baseStyle, 'overflow-hidden', sizeMap[size]].join(' ')}>
 					<NextLink
 						href={href}
+						// For this NextLink we need to disable the eslint rule for forbid-component-props. We think is is ok to use the className prop here.
 						// eslint-disable-next-line react/forbid-component-props
 						className="grid transition duration-300 ease-in-out hover:scale-110"
 					>

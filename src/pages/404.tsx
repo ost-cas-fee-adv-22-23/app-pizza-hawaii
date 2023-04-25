@@ -2,7 +2,7 @@ import { Headline, Label, Link, Richtext } from '@smartive-education/pizza-hawai
 import NextLink from 'next/link';
 import React from 'react';
 
-import { LoginLayout } from '../components/layoutComponents/LoginLayout';
+import { LoginLayout } from '../components/layout/LoginLayout';
 
 // replacement for pages/404.js in a mumble layout.
 const FourOhFourPage = () => {

@@ -38,12 +38,6 @@ export const UserForm: FC<TUserForm> = ({ onCancel, onSubmit, user = emptyState,
 		setState(user);
 	}, [user]);
 
-	useEffect(() => {
-		// check if form is untouched
-		const isUntouched = Object.entries(state).every(([key, value]) => value === user[key as TUserFormDataKeys]);
-		setIsUntouched(isUntouched);
-	}, [state, user]);
-
 	// check if form is valid
 	useEffect(() => {
 		// check if all fields are empty
@@ -119,6 +113,10 @@ export const UserForm: FC<TUserForm> = ({ onCancel, onSubmit, user = emptyState,
 			...errors,
 			[name]: undefined,
 		});
+
+		// check if form is untouched
+		const isUntouched = Object.entries(state).every(([key, value]) => value === user[key as TUserFormDataKeys]);
+		setIsUntouched(isUntouched);
 	};
 
 	return (
@@ -138,8 +136,6 @@ export const UserForm: FC<TUserForm> = ({ onCancel, onSubmit, user = emptyState,
 							errorMessage={errors['userName']}
 							required
 							icon="mumble"
-							readOnly={!!state['userName']}
-							disabled={!!state['userName']}
 						/>
 						<FormInput
 							name="email"

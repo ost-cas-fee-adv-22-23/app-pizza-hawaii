@@ -6,7 +6,7 @@ import { Issuer } from 'openid-client';
 import { services } from '../../../services';
 import { TUser } from '../../../types';
 
-async function refreshAccessToken(token: JWT): Promise<JWT> {
+const refreshAccessToken = async (token: JWT): Promise<JWT> => {
 	try {
 		const issuer = await Issuer.discover(process.env.ZITADEL_ISSUER || '');
 		const client = new issuer.Client({
@@ -30,12 +30,11 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
 			error: 'RefreshAccessTokenError',
 		};
 	}
-}
+};
 
-async function getUser(userId: string, accessToken: string): Promise<TUser> {
-	const user = (await services.users.getUser({ id: userId, accessToken })) as TUser;
-	return user;
-}
+const getUser = async (userId: string, accessToken: string): Promise<TUser> => {
+	return (await services.users.getUser({ id: userId, accessToken })) as TUser;
+};
 
 export const authOptions: NextAuthOptions = {
 	providers: [

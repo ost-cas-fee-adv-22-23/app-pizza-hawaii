@@ -255,22 +255,23 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 					/>
 				</Grid>
 			)}
+			<div>
+				<PostList posts={postState.posts} onRemovePost={onRemovePostFn} showLoadingItems={3} />
 
-			{autoUpdate && updateRequest.type && (
-				<div className="text-slate-500 mb-8">
-					<Button colorScheme="gradient" size="L" icon="repost" onClick={() => showLatestPosts()}>
-						World is changing, update your feed.
+				{canLoadmore && (
+					<Button colorScheme="slate" onClick={onLoadmoreBtn} disabled={postState.loading}>
+						{postState.loading ? 'loading ...' : 'Load more'}
 					</Button>
-				</div>
-			)}
+				)}
 
-			<PostList posts={postState.posts} onRemovePost={onRemovePostFn} showLoadingItems={3} />
-
-			{canLoadmore && (
-				<Button colorScheme="slate" onClick={() => onLoadmoreBtn()} disabled={postState.loading}>
-					{postState.loading ? 'loading ...' : 'Load more'}
-				</Button>
-			)}
+				{autoUpdate && updateRequest.type && (
+					<div className="text-slate-500 mt-8 sticky bottom-4 z-10">
+						<Button colorScheme="gradient" size="M" icon="repost" onClick={showLatestPosts}>
+							World is changing, update your feed.
+						</Button>
+					</div>
+				)}
+			</div>
 		</>
 	);
 };

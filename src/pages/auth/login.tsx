@@ -7,7 +7,7 @@ import React from 'react';
 
 import VerticalLogo from '../../../public/assets/svg/verticalLogo.svg';
 import { LoginForm, TLoginFormData, TLoginFormErrors } from '../../components/form/LoginForm';
-import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
+import { LoginLayout } from '../../components/layout/LoginLayout';
 
 export default function LoginPage() {
 	const { data: session } = useSession();

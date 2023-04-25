@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Custom500Page from '../pages/500';
+import Custom500Page from '../../pages/500';
 
 type Props = {
 	className?: string;

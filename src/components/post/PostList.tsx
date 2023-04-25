@@ -2,8 +2,8 @@ import { Grid } from '@smartive-education/pizza-hawaii';
 import { FC } from 'react';
 
 import { TPost } from '../../types';
-import { PostSkeleton } from '../helpers/PostSkeleton';
 import { PostItem, TPostItemProps } from './PostItem';
+import { PostSkeleton } from './PostSkeleton';
 
 type TPostListProps = {
 	posts: TPost[];

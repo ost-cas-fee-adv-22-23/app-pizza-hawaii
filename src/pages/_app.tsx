@@ -8,7 +8,7 @@ import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import React from 'react';
 
-import ErrorBoundary from '../components/ErrorBoundary';
+import ErrorBoundary from '../components/base/ErrorBoundary';
 import { ActiveTabContextProvider } from '../context/useActiveTab';
 import { FolloweeContextProvider } from '../context/useFollowee';
 import { ThemeContextProvider } from '../context/useTheme';

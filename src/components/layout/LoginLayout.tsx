@@ -4,7 +4,7 @@ import NextImage from 'next/image';
 import { FC, ReactNode } from 'react';
 
 import VerticalLogo from '../../../public/assets/svg/verticalLogo.svg';
-import { Footer } from '../Footer';
+import { Footer } from '../base/Footer';
 
 type TLoginLayout = {
 	title: string;
@@ -39,7 +39,7 @@ export const LoginLayout: FC<TLoginLayout> = ({ title, seo, children, header }) 
 					) : (
 						<div className="w-8/12 text-pink-300 text-center">
 							<div className="inline-block my-8">
-								<NextImage src={VerticalLogo} alt="welcome to Mumble" />
+								<NextImage src={VerticalLogo} alt="welcome to Mumble" priority={true} />
 							</div>
 							<div className="md:hidden">
 								<Headline level={1} as="h1">
