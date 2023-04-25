@@ -83,15 +83,14 @@ export const authOptions: NextAuthOptions = {
 			if (token.refreshToken) {
 				const newToken = await refreshAccessToken(token.refreshToken);
 
-				if (newToken.error) {
-					delete token.accessToken;
-					return;
+				if (!newToken.error) {
+					return newToken;
 				}
-
-				return newToken;
 			}
 
 			delete token.accessToken;
+
+			return token;
 		},
 		async session({ session, token }) {
 			session.user = token.user as TUser;
