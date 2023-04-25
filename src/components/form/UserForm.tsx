@@ -138,6 +138,8 @@ export const UserForm: FC<TUserForm> = ({ onCancel, onSubmit, user = emptyState,
 							errorMessage={errors['userName']}
 							required
 							icon="mumble"
+							readOnly={!!state['userName']}
+							disabled={!!state['userName']}
 						/>
 						<FormInput
 							name="email"

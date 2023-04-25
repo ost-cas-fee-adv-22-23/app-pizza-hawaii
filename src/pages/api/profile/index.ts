@@ -120,18 +120,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 			});
 			break;
 		case 'PUT':
-			if (req.body.userName) {
-				const response = await setUserData<TZitadelUserName & { error: string }>({
-					endpoint: 'username',
-					accessToken: token.accessToken,
-					body: req.body,
-				});
+			// if (req.body.userName) {
+			// 	const response = await setUserData<TZitadelUserName & { error: string }>({
+			// 		endpoint: 'username',
+			// 		accessToken: token.accessToken,
+			// 		body: req.body,
+			// 	});
 
-				data = {
-					...data,
-					username: response,
-				};
-			}
+			// 	data = {
+			// 		...data,
+			// 		username: response,
+			// 	};
+			// }
 			if (req.body.profile) {
 				const response = await setUserData<TZitadelProfile & { error: string }>({
 					endpoint: 'profile',
