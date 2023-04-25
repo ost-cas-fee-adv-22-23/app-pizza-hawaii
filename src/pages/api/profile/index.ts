@@ -124,7 +124,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 				const response = await setUserData<TZitadelUserName & { error: string }>({
 					endpoint: 'username',
 					accessToken: token.accessToken,
-					body: { userName: req.body.userName },
+					body: req.body,
 				});
 
 				data = {
