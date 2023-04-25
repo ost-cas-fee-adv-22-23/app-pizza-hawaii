@@ -76,7 +76,8 @@ type TRegisterUser = {
 	body: TZitadelUser;
 };
 const registerUser = async ({ accessToken, body }: TRegisterUser) => {
-	const response = await fetch(`${process.env.ZITADEL_ISSUER}/users/human/_import`, {
+	// This will fail, because we don't have management rights (but a user with management rights could probably do this)
+	const response = await fetch(`${process.env.ZITADEL_ISSUER}/management/v1/users/human/_import`, {
 		headers: {
 			//'x-zitadel-orgid': `${process.env.ZITADEL_ORG_ID}`,
 			authorization: `Bearer ${accessToken}`,
@@ -84,7 +85,10 @@ const registerUser = async ({ accessToken, body }: TRegisterUser) => {
 			accept: 'application/json',
 		},
 		method: 'POST',
-		body: JSON.stringify(body),
+		body: JSON.stringify({
+			...body,
+			requestPasswordlessRegistration: true,
+		}),
 	});
 
 	if (!response.ok) {
@@ -174,6 +178,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 				accessToken: token.accessToken,
 				body: req.body,
 			});
+			return res.status(200).json({ status: true });
 			break;
 		default:
 			return res.status(405).end();
