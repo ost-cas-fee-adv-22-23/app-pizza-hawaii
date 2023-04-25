@@ -1,6 +1,5 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
-import ZitadelProvider from 'next-auth/providers/zitadel';
 import { Issuer } from 'openid-client';
 
 import { services } from '../../../services';
@@ -8,10 +7,22 @@ import { TUser } from '../../../types';
 
 const refreshAccessToken = async (token: JWT): Promise<JWT> => {
 	try {
-		const issuer = await Issuer.discover(process.env.ZITADEL_ISSUER || '');
+		const issuer = await Issuer.discover(process.env.ZITADEL_ISSUER ?? '');
 		const client = new issuer.Client({
-			client_id: process.env.ZITADEL_CLIENT_ID || '',
+			id: 'zitadel',
+			name: 'zitadel',
+			type: 'oauth',
+			version: '2',
+			wellKnown: process.env.ZITADEL_ISSUER,
+			authorization: {
+				params: {
+					scope: `openid email profile offline_access urn:zitadel:iam:org:project:id:zitadel:aud`,
+				},
+			},
+			idToken: true,
+			checks: ['pkce', 'state'],
 			token_endpoint_auth_method: 'none',
+			client_id: process.env.ZITADEL_CLIENT_ID as string,
 		});
 
 		const { refresh_token, access_token, expires_at } = await client.refresh(token.refreshToken as string);
@@ -38,18 +49,23 @@ const getUser = async (userId: string, accessToken: string): Promise<TUser> => {
 
 export const authOptions: NextAuthOptions = {
 	providers: [
-		ZitadelProvider({
-			issuer: process.env.ZITADEL_ISSUER as string,
-			clientId: process.env.ZITADEL_CLIENT_ID as string,
-			clientSecret: process.env.ZITADEL_CLIENT_SECRET as string,
+		{
+			id: 'zitadel',
+			name: 'zitadel',
+			type: 'oauth',
+			version: '2',
+			wellKnown: process.env.ZITADEL_ISSUER,
 			authorization: {
 				params: {
 					scope: `openid email profile offline_access urn:zitadel:iam:org:project:id:zitadel:aud`,
 				},
 			},
+			idToken: true,
+			checks: ['pkce', 'state'],
 			client: {
 				token_endpoint_auth_method: 'none',
 			},
+			clientId: process.env.ZITADEL_CLIENT_ID,
 			async profile(profile, tokens) {
 				const user = await getUser(profile?.sub, tokens.access_token as string);
 				return {
@@ -57,7 +73,7 @@ export const authOptions: NextAuthOptions = {
 					email: profile.email,
 				} as TUser;
 			},
-		}),
+		},
 	],
 	session: {
 		maxAge: 12 * 60 * 60, // 12 hours
@@ -79,9 +95,10 @@ export const authOptions: NextAuthOptions = {
 			if (Date.now() < (token.expiresAt as number)) {
 				return token;
 			}
+
 			// if the access token has expired, try to update it
 			if (token.refreshToken) {
-				const newToken = await refreshAccessToken(token.refreshToken);
+				const newToken = await refreshAccessToken(token);
 
 				if (!newToken.error) {
 					return newToken;
