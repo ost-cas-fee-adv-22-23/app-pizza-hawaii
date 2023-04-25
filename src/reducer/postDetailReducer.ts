@@ -86,8 +86,8 @@ export default function postCollectionReducer(state = initialState, action: TAct
 		}
 
 		case ActionType.LIKE_TOGGLE: {
-			const likeCount = state.likeCount || 0;
-			const likedByUser = state.likedByUser || false;
+			const likeCount = state.likeCount ?? 0;
+			const likedByUser = state.likedByUser ?? false;
 			return {
 				...state,
 				loading: false,

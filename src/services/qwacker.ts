@@ -74,8 +74,8 @@ export const fetchList = async (params: object): Promise<TFetchListResult> => {
 	} else if (method === 'POST') {
 		fetchParams = {
 			...fetchParams,
-			headers: searchParams?.headers || fetchParams.headers,
-			body: searchParams?.body || JSON.stringify(searchParams),
+			headers: searchParams?.headers ?? fetchParams.headers,
+			body: searchParams?.body ?? JSON.stringify(searchParams),
 		};
 	}
 
@@ -148,8 +148,8 @@ export const fetchItem = async (params: object) => {
 	} else if (method === 'POST') {
 		fetchParams = {
 			...fetchParams,
-			headers: searchParams?.headers || fetchParams.headers,
-			body: searchParams?.body || JSON.stringify(searchParams),
+			headers: searchParams?.headers ?? fetchParams.headers,
+			body: searchParams?.body ?? JSON.stringify(searchParams),
 		};
 	}
 

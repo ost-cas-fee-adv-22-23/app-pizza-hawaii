@@ -60,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		});
 
 		// limit the number of recommended users, max 42, min 6 or the limit from body.limit
-		const limit = Math.min(Math.max(body.limit || 6, 6), 42);
+		const limit = Math.min(Math.max(body.limit ?? 6, 6), 42);
 
 		// limit the number of recommended users to disguise our user numbers from the public
 		randomizedRecommendedUsers = randomizedRecommendedUsers.splice(0, limit);

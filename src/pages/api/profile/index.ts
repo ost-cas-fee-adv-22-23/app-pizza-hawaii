@@ -31,7 +31,7 @@ const fetchUserData = async <T>({
 	const data = await response.json();
 
 	if (!response.ok) {
-		return { error: data.message || `Something went wrong for ${endpoint}!` };
+		return { error: data.message ?? `Something went wrong for ${endpoint}!` };
 	}
 
 	return endpoint
@@ -97,7 +97,7 @@ const registerUser = async ({ accessToken, body }: TRegisterUser) => {
 
 	const data = await response.json();
 	if (!response.ok) {
-		return { error: data.message || `Something went wrong for register user!` };
+		return { error: data.message ?? `Something went wrong for register user!` };
 	}
 
 	return data as Promise<unknown>;
