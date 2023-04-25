@@ -23,7 +23,7 @@ The latest version of our Pizza Hawaii App is available [here](https://app-pizza
 Make sure you work with Node v.16 or later. 
 ## 1. Clone the repo. 
 ```
-git clone https://github.com/smartive-education/app-pizza-hawaii.git`
+git clone https://github.com/smartive-education/app-pizza-hawaii.git
 ```
 
 
@@ -52,7 +52,7 @@ To authenticate by adding your personal access token (classic) to your `~/.npmrc
 
 Create a `.env` file and copy these keys and insert confidential values.
 > make sure there are no whitespaces between keys and values.
-> beware: Quacker backend has a <em>trailing /</em>.
+> beware: <em>Quacker backend has a trailing /</em>.
 
 
     # Qwacker backend
