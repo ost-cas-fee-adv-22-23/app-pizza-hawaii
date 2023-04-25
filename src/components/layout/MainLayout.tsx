@@ -45,8 +45,7 @@ export const MainLayout: FC<TMainLayout> = ({ title, seo, children }) => {
 			router.events.off('routeChangeComplete', end);
 			router.events.off('routeChangeError', end);
 		};
-	}, []);
-
+	}, [router.events]);
 
 	const seoDescription = seo.description ? shortenString(seo.description, 150, true) : '';
 	const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
