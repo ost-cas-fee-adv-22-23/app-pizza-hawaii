@@ -5,9 +5,14 @@
 
 ## Introduction
 
-This Webapplication, developed by [Felix Adam](https://github.com/flxtagi) and [Jürgen Rudigier](https://github.com/rudigier), is a fictional Twitter clone named "Mumble".
+Welcome to our project - a fictional Twitter clone named "Mumble".
 
-It is created as a part of a Frontend Engineering Advanced (CAS) course at [OST](https://www.ost.ch/de/weiterbildung/weiterbildungsangebot/informatik/software-engineering-testing/cas-frontend-engineering-advanced) Rapperswil, to implement our [component Library](https://smartive-education.github.io/design-system-component-library-pizza-hawaii/) and with data endpoint provided by [qwacker API](https://qwacker-api-http-prod-4cxdci3drq-oa.a.run.app/rest/#/) and the [zitadel](https://zitadel.cloud/) Login provider.
+In this project, we have utilized the [component library](https://smartive-education.github.io/design-system-component-library-pizza-hawaii/) we developed in the first part of the Frontend Engineering Advanced (CAS) course at [OST](https://www.ost.ch/de/weiterbildung/weiterbildungsangebot/informatik/software-engineering-testing/cas-frontend-engineering-advanced) in Rapperswil. This project uses Tailwind, React, Next 13, and Typescript technologies. 
+
+We used a REST data endpoint provided by [qwacker API](https://qwacker-api-http-prod-4cxdci3drq-oa.a.run.app/rest/#/) and the [zitadel](https://zitadel.cloud/) Login provider.
+Our focus was to create a responsive and user-friendly interface that would consume the components from our library.
+
+Developed by Team "Pizza-Hawaii" - [Felix Adam](https://github.com/flxtagi) and [Jürgen Rudigier](https://github.com/rudigier).
 
 ## Live Demopage
 
@@ -18,7 +23,7 @@ The latest version of our Pizza Hawaii App is available [here](https://app-pizza
 Make sure you work with Node v.16 or later. 
 ## 1. Clone the repo. 
 ```
-git clone https://github.com/smartive-education/app-pizza-hawaii.git`
+git clone https://github.com/smartive-education/app-pizza-hawaii.git
 ```
 
 
@@ -46,7 +51,8 @@ To authenticate by adding your personal access token (classic) to your `~/.npmrc
 ## 3. Create a local security environment file for variables.   
 
 Create a `.env` file and copy these keys and insert confidential values.
-> make sure there are no whitespaces between keys and values
+> make sure there are no whitespaces between keys and values.
+> beware: <em>Quacker backend has a trailing /</em>.
 
 
     # Qwacker backend
@@ -89,22 +95,23 @@ You are good to go!  🎉
 ## Design Features
 
 - Mobile & Desktop optimized
-- Dark Mode (icon in the Footer)
-- Lightbox Preview before posting images.
-- All image format supported.
-- User Collection of all User following you
-- Get a random PosterImages when not available
+- Dark Mode (toggle in the footer)
+- Image Preview before posting.
+- Supports all image aspect-ratios
+- List of all User following you
+- Skeletons during loading process
+- Random PosterImages when not set
 
 ## Functional Features
 
 - User Recommender
-- Un/ Follow favorite User 
-- Share a Post by copy function without beeing loged in
+- Follow favorite User 
+- Share a Post by share function
 - Public Post Detail page
 - Richtext editor
-- Post links with Markdown
-- Hashtag highlighting
-- Answer to a single
+- Markdown support for posts (links)
+- Parses #Hashtag to links in posts
+- Answer to a user @username
 - Scroll to selected Post
 - View all Post sorted by Hashtag
 - Link to a User in a post
@@ -113,21 +120,22 @@ You are good to go!  🎉
 
 - Change User settings (Zitadel account!)
 - NextJS API Routes
-- polling only on active tab
-- cache invalidation
-- custom Error Pages for 400- and 500- http states.
-- polling intervall decreases over time when user apears to be inactive
-- notice for Post Update when a new Post is avaliable
+- Polling posts on active tab
+- Auto polling with increasing interval over time
+- Notifier when a new Posts are avaliable / deleted / changed
+- UserCache
+- Custom Error Pages for 400- and 500- http states.
 - PWA is ready to use on server. (Desktop / Mobile)
 - W3C validity
+- Accessibility
 
 
 ## Rendering Strategies
 
-- Login & Register: Static
+- Login & Register: Static no Data
 - Timeline: ServerSide
-- User: ClientSide
-- PostPreview: GetStaticProps
+- Recommendations (User-Page): ClientSide
+- PostDetail: Static (public version) & ServerSide (user version)
 
 
 # Development
