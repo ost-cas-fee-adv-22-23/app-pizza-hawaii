@@ -21,7 +21,10 @@ const customJestConfig = {
 	},
 	testMatch: ['**/?(*.)+(spec|test).[jt]s?(x)'],
 	// An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-	testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/, <rootDir>/src/__tests__/__mocks__/'],
+	testPathIgnorePatterns: [
+		'<rootDir>/.next/',
+		'<rootDir>/node_modules/, <rootDir>/src/__tests__/, <rootDir>/src/__mocks__/',
+	],
 };
 
 const createJestConfig = nextJest({ dir: './' });
