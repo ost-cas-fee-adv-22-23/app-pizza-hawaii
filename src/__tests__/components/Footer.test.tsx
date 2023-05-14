@@ -1,7 +1,7 @@
 // test render footer
 import { cleanup, render, screen } from '@testing-library/react';
 
-import { Footer } from '../../components/Footer';
+import { Footer } from '@/components/base/Footer';
 
 describe('Footer Component', () => {
 	afterEach(cleanup);

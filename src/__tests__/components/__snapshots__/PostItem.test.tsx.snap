@@ -99,7 +99,7 @@ exports[`PostItem renders correctly PostItem variant \`timeline\` renders correc
                   datetime="2023-05-03T04:55:45.155Z"
                   title="03.05.2023 06:55"
                 >
-                   vor 11 Tagen 
+                   vor 12 Tagen 
                 </time>
               </span>
             </div>
