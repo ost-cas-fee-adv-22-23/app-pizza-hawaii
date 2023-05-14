@@ -1,0 +1,29 @@
+#
+# Jest and RTL Test workflow to deploy on Vercel
+#
+
+name: Jest and RTL Test Deployment
+
+on: 
+    push:
+     branches: [ main, feature/*, bugfix/* ]
+    pull_request:
+        branches: [ main, feature/*, bugfix/* ]
+
+jobs:
+    testing-with-jest:
+        name: Run test cases with jest
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v3
+          - uses: actions/setup-node@v3
+            with:
+              node-version: 18.x
+              registry-url: https://npm.pkg.github.com/
+              scope: '@smartive-education'
+          - name: Install dependencies
+            run: npm ci
+            env:
+                NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          - name: Run tests
+            run: npm run test:ci
