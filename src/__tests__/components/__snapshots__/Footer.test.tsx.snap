@@ -1,0 +1,98 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Footer Component should match the snapshot 1`] = `
+<div>
+  <footer
+    class="Footer"
+  >
+    <div
+      class="px-content sm:px-6 py-3"
+    >
+      <div
+        class="flex items-center justify-between gap-8 w-full max-w-content mx-auto"
+      >
+        <div
+          class="flex w-full flex-row gap-x-8 gap-y-4 sm:gap-x-4  md:flex-wrap items-center"
+        >
+          <p
+            class="flex-1"
+          >
+            Made with
+             
+            <span
+              class="text-pink-600"
+            >
+              <span
+                class="inline-flex text-[16px] containing-svg:fill-current containing-svg:w-[1em]"
+              >
+                <svg
+                  viewBox="0 0 16 16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.6 0C10.1 0 8.8 0.8 8 2C7.2 0.8 5.9 0 4.4 0C2 0 0 2 0 4.4C0 8.8 8 15.3 8 15.3C8 15.3 16 8.8 16 4.4C16 2 14 0 11.6 0Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+            </span>
+             
+            by
+             
+            <a
+              class="inline-block font-semibold text-violet-600 underline underline-offset-4 decoration-1 decoration-violet-600 hover:text-violet-700 hover:decoration-violet-200"
+              href="https://github.com/flxtagi"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Felix Adam
+            </a>
+             
+            and
+             
+            <a
+              class="inline-block font-semibold text-violet-600 underline underline-offset-4 decoration-1 decoration-violet-600 hover:text-violet-700 hover:decoration-violet-200"
+              href="https://github.com/rudigier"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Jürgen Rudigier
+            </a>
+            .
+          </p>
+          <div>
+            <button
+              class="flex items-center justify-center w-full transition-all duration-300 outline-none outline-offset-0 inline-flex p-4 rounded-full w-auto text-white bg-slate-600 hover:bg-slate-700 hover:outline-slate-100 hover:outline-3 focus:bg-slate-700 focus:outline-slate-200 focus:outline-4 active:bg-slate-700 active:outline-slate-200 active:outline-4 "
+              title="Toggle theme"
+            >
+              <span
+                class="sr-only"
+              >
+                Toggle theme
+              </span>
+              <span
+                class="inline-flex text-[16px] containing-svg:fill-current containing-svg:w-[1em]"
+              >
+                <svg
+                  fill="none"
+                  viewBox="0 0 16 16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8.00013 14C12.7071 14 15.7441 8.716 15.8711 8.492C16.0421 8.188 16.0431 7.816 15.8721 7.512C15.7461 7.287 12.7311 2 8.00013 2C3.24513 2 0.251127 7.289 0.126127 7.514C-0.0428725 7.817 -0.0418725 8.186 0.128127 8.489C0.254128 8.713 3.26913 14 8.00013 14ZM8.00013 4C10.8391 4 13.0361 6.835 13.8181 8C13.0341 9.166 10.8371 12 8.00013 12C5.15913 12 2.96213 9.162 2.18113 7.999C2.95813 6.835 5.14613 4 8.00013 4Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M8.00013 10C9.1047 10 10.0001 9.10457 10.0001 8C10.0001 6.89543 9.1047 6 8.00013 6C6.89556 6 6.00013 6.89543 6.00013 8C6.00013 9.10457 6.89556 10 8.00013 10Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+`;

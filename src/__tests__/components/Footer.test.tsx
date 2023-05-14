@@ -21,4 +21,9 @@ describe('Footer Component', () => {
 		const { container } = render(<Footer />);
 		expect(container.querySelector('footer'));
 	});
+
+	it('should match the snapshot', () => {
+		const { container } = render(<Footer />);
+		expect(container).toMatchSnapshot();
+	});
 });
