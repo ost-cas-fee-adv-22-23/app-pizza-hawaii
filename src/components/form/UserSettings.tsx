@@ -1,3 +1,4 @@
+import router from 'next/router';
 import { useSession } from 'next-auth/react';
 import React, { FC, useEffect, useState } from 'react';
 
@@ -74,6 +75,9 @@ const UserSettings: FC<TUserSettings> = ({ setSuccess, onCancel }) => {
 
 		// Call setSuccess if it was passed
 		setSuccess && setSuccess();
+
+		// Reload page to update user data
+		router.reload();
 
 		// Return true to indicate that the form was submitted successfully for a few milliseconds
 		return { status: true };

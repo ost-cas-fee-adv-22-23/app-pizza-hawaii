@@ -5,8 +5,8 @@ import React, { FC, useState } from 'react';
 import ProjectSettings from '../data/ProjectSettings.json';
 import { TUser } from '../types';
 import UserSettings from './form/UserSettings';
-import ImageModal, { TImageModalPicture } from './ImageModal';
 import { UserProfile } from './user/UserProfile';
+import ImageModal, { TImageModalPicture } from './widgets/ImageModal';
 /**
  * @description
  * This page shows Profile Header of any user and the curent user Profile Header with some additional features.

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { getToken } from 'next-auth/jwt';
 import React from 'react';
 
-import { MainLayout } from '../components/layoutComponents/MainLayout';
+import { MainLayout } from '../components/layout/MainLayout';
 import { PostCollection } from '../components/post/PostCollection';
 import { services } from '../services';
 

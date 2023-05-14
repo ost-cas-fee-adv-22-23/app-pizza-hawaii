@@ -22,6 +22,10 @@ export const defaultSettings: RichtextSettings = {
 };
 
 export const parse = (plainText: string, settings: RichtextSettings = defaultSettings): string => {
+	if (!plainText || plainText.trim() === '') {
+		return '';
+	}
+
 	let richText = plainText;
 
 	if (settings.markdownLinks) {

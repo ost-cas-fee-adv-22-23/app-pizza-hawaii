@@ -42,12 +42,6 @@ export const AccountForm: FC<TAccountForm> = ({ onSubmit, user = emptyState, isL
 	}, [user]);
 
 	useEffect(() => {
-		// check if form is untouched
-		const isUntouched = Object.entries(state).every(([key, value]) => value === user[key as TAccountFormDataKeys]);
-		setIsUntouched(isUntouched);
-	}, [state, user]);
-
-	useEffect(() => {
 		// check if all fields are empty
 		const isEmpty = Object.values(state).every((value) => value === '');
 
@@ -129,6 +123,10 @@ export const AccountForm: FC<TAccountForm> = ({ onSubmit, user = emptyState, isL
 			...errors,
 			[name]: undefined,
 		});
+
+		// check if form is untouched
+		const isUntouched = Object.entries(state).every(([key, value]) => value === user[key as TAccountFormDataKeys]);
+		setIsUntouched(isUntouched);
 	};
 
 	return (

@@ -5,8 +5,8 @@ import { FC, ReactElement, useEffect, useState } from 'react';
 
 import shortenString from '../../data/helpers/shortenString';
 import { TUser } from '../../types';
-import { Footer } from '../Footer';
-import { Header } from '../Header';
+import { Footer } from '../base/Footer';
+import { Header } from '../base/Header';
 
 type TMainLayout = {
 	title: string;
@@ -28,13 +28,23 @@ export const MainLayout: FC<TMainLayout> = ({ title, seo, children }) => {
 	const currentUser: TUser | undefined = session?.user;
 
 	const [isNavigating, setIsNavigating] = useState(false);
+
 	useEffect(() => {
-		router.events.on('routeChangeStart', () => {
+		// Used for page transition
+		const start = () => {
 			setIsNavigating(true);
-		});
-		router.events.on('routeChangeComplete', () => {
+		};
+		const end = () => {
 			setIsNavigating(false);
-		});
+		};
+		router.events.on('routeChangeStart', start);
+		router.events.on('routeChangeComplete', end);
+		router.events.on('routeChangeError', end);
+		return () => {
+			router.events.off('routeChangeStart', start);
+			router.events.off('routeChangeComplete', end);
+			router.events.off('routeChangeError', end);
+		};
 	}, [router.events]);
 
 	const seoDescription = seo.description ? shortenString(seo.description, 150, true) : '';
@@ -59,7 +69,7 @@ export const MainLayout: FC<TMainLayout> = ({ title, seo, children }) => {
 
 			<Header user={currentUser} />
 
-			<main className={`flex-1 px-content mb-16 sm:px-6 ${isNavigating && 'opacity-50 animate-pulse'}`}>
+			<main className={`flex-1 px-content mb-16 sm:px-6 ${isNavigating && 'opacity-33 animate-pulse'}`}>
 				<section className="mx-auto w-full max-w-content">{children}</section>
 			</main>
 			<Footer />

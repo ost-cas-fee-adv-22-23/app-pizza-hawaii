@@ -2,7 +2,7 @@ import { Button, Richtext } from '@smartive-education/pizza-hawaii';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-import { LoginLayout } from '../components/layoutComponents/LoginLayout';
+import { LoginLayout } from '../components/layout/LoginLayout';
 
 export default function OfflinePage() {
 	const router = useRouter();

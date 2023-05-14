@@ -2,7 +2,7 @@ import { Modal } from '@smartive-education/pizza-hawaii';
 import NextImage from 'next/image';
 import React, { FC, SyntheticEvent, useEffect, useRef, useState } from 'react';
 
-import ProjectSettings from '../data/ProjectSettings.json';
+import ProjectSettings from '../../data/ProjectSettings.json';
 
 export type TImageModalPicture = {
 	src?: string;

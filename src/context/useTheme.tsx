@@ -17,7 +17,8 @@ type TThemeContextData = {
 const ThemeContext = createContext({} as TThemeContextData);
 export const ThemeContextProvider = ({ children }: TThemeContextProps) => {
 	const [theme, setTheme] = useState<string | undefined>(undefined);
-	function toggleTheme() {
+
+	const toggleTheme = () => {
 		const oldTheme = localStorage.getItem('theme');
 		const newTheme = oldTheme === THEME.LIGHT ? THEME.DARK : THEME.LIGHT;
 		const root = window.document.documentElement;
@@ -34,7 +35,7 @@ export const ThemeContextProvider = ({ children }: TThemeContextProps) => {
 		// save the newTheme in local storage
 		localStorage.setItem('theme', newTheme);
 		setTheme(newTheme);
-	}
+	};
 
 	return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
 };

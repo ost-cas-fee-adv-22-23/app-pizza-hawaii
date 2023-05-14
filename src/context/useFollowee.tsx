@@ -33,25 +33,25 @@ export const FolloweeContextProvider = ({ children }: TFolloweeContextProps) => 
 		localStorage.setItem('followees', followees.join(','));
 	}, [followees]);
 
-	function isFollowee(userId: string) {
+	const isFollowee = (userId: string) => {
 		return followees.includes(userId);
-	}
+	};
 
-	function addFollowee(userId: string) {
+	const addFollowee = (userId: string) => {
 		setFollowees((prevFollowees: string[]) => [...prevFollowees, userId]);
-	}
+	};
 
-	function removeFollowee(userId: string) {
+	const removeFollowee = (userId: string) => {
 		setFollowees((prevFollowees: string[]) => prevFollowees.filter((followee: string) => followee !== userId));
-	}
+	};
 
-	function toggleFollowee(userId: string) {
+	const toggleFollowee = (userId: string) => {
 		if (isFollowee(userId)) {
 			removeFollowee(userId);
 		} else {
 			addFollowee(userId);
 		}
-	}
+	};
 
 	return (
 		<FolloweeContext.Provider value={{ followees, isFollowee, addFollowee, removeFollowee, toggleFollowee }}>

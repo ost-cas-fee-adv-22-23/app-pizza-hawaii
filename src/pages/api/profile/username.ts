@@ -31,7 +31,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 	const data = await response.json();
 
 	if (!response.ok) {
-		throw new Error(data.message || 'Something went wrong!');
+		throw new Error(data.message ?? 'Something went wrong!');
 	}
 
 	return res.status(200).json(data);

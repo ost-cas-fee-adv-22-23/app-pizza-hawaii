@@ -14,6 +14,7 @@ import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
 import React, { FC, useEffect, useState } from 'react';
 
+import ProjectSettings from '../../data/ProjectSettings.json';
 import { TPost, TUser } from '../../types';
 import { PostImageUpload } from './PostImageUpload';
 
@@ -100,7 +101,7 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 		}
 
 		const newPost = await onAddPost({
-			text: text || '',
+			text: text || ' ',
 			image: file,
 			replyTo: replyTo?.id,
 		});
@@ -146,7 +147,7 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 		>
 			{!showModal && file && (
 				<div className="relative">
-					<Image src={filePreview} width={600} alt="" />
+					<Image src={filePreview} width={ProjectSettings.images.post.width} alt="" />
 					<div className="absolute top-0 right-0 translate-x-2/4 -translate-y-2/4">
 						<RoundButton
 							colorScheme="slate"

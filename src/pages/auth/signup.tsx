@@ -4,7 +4,7 @@ import router from 'next/router';
 import React from 'react';
 
 import { AccountForm, TAccountFormData } from '../../components/form/AccountForm';
-import { LoginLayout } from '../../components/layoutComponents/LoginLayout';
+import { LoginLayout } from '../../components/layout/LoginLayout';
 import { zitadelService } from '../../services/api/zitadel';
 
 const RegisterPage = () => {
