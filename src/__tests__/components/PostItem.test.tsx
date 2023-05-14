@@ -3,7 +3,7 @@ import '@/__mocks__/routerMock';
 import { cleanup, render, screen } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 
-import { PostItem } from '../components/post/PostItem';
+import { PostItem } from '../../components/post/PostItem';
 import postMock from '@/__mocks__/post.json';
 import { TPost } from '@/types';
 
