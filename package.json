@@ -15,7 +15,6 @@
 	"dependencies": {
 		"@fontsource/poppins": "^4.5.10",
 		"@smartive-education/pizza-hawaii": "^1.63.0",
-		"eslint-plugin-react-hooks": "^4.6.0",
 		"next": "^13.3.1",
 		"next-auth": "^4.22.1",
 		"react": "^18.2.0",
@@ -34,6 +33,7 @@
 		"eslint": "^8.39.0",
 		"eslint-config-next": "^13.3.1",
 		"dependency-cruiser": "^12.11.3",
+		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-simple-import-sort": "^10.0.0",
 		"next-pwa": "^5.6.0",
 		"postcss": "^8.4.23",
