@@ -12,7 +12,7 @@ import {
 } from '@smartive-education/pizza-hawaii';
 import NextLink from 'next/link';
 import { useSession } from 'next-auth/react';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 
 import ProjectSettings from '../../data/ProjectSettings.json';
 import { TPost, TUser } from '../../types';

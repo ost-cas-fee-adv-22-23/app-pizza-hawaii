@@ -1,5 +1,5 @@
 import { Icon, Label } from '@smartive-education/pizza-hawaii';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 type TPostImageUpload = {
