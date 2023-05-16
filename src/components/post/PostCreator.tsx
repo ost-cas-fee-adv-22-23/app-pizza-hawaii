@@ -62,20 +62,12 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 	const currentUser = session?.user as TUser;
 
 	const [showModal, setShowModal] = useState(false);
-	const [isValid, setIsValid] = useState(false);
 	const [file, setFile] = useState<File>();
 	const [filePreview, setFilePreview] = useState<string>('');
 	const [text, setText] = React.useState<string>('');
 	const setting = PostCreatorCardVariantMap[variant] || PostCreatorCardVariantMap.newPost;
 
-	// We allow only a text or a file or both. Only file is not valid. harsch MumblePolicy :)
-	useEffect(() => {
-		if (text?.length > 0 || file) {
-			setIsValid(true);
-		} else {
-			setIsValid(false);
-		}
-	}, [text, file]);
+	const isValid = text?.length > 0 || file;
 
 	const updateFile = (file?: File) => {
 		if (file) {
