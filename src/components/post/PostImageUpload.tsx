@@ -7,17 +7,9 @@ type TPostImageUpload = {
 };
 
 export const PostImageUpload: FC<TPostImageUpload> = ({ onNewFile }) => {
-	const [selectedFile, setSelectedFile] = useState<File>();
-
-	useEffect(() => {
-		if (selectedFile && onNewFile) {
-			onNewFile(selectedFile);
-		}
-	}, [selectedFile, onNewFile]);
-
 	const handleFileDrop = (acceptedFiles: File[]) => {
 		const uploadedFile = acceptedFiles?.[0];
-		setSelectedFile(uploadedFile ?? undefined);
+		onNewFile && onNewFile(uploadedFile);
 	};
 
 	const { getRootProps, getInputProps } = useDropzone({
