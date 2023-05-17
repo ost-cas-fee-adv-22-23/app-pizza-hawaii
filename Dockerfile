@@ -1,15 +1,22 @@
-# build docker
-FROM node:18-alpine as build
+# -- Create a base docker image for the react app --
+FROM node:18-alpine as base
 
-# main application directory
-WORKDIR /app
-
+# Define environment variables
 ARG NPM_TOKEN
-RUN echo "@smartive-education:registry=https://npm.pkg.github.com" > .npmrc \
-	&& echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" > .npmrc
+
+# The /app directory should act as the main application directory
+WORKDIR /app
 
 # Copy the app package and package-lock.json file
 COPY package*.json ./
+
+# Set the npm token for the github package registry
+RUN npm config set //npm.pkg.github.com/:_authToken $NPM_TOKEN
+
+
+
+# -- Create a build image --
+FROM base as build
 
 # Install node packages
 RUN npm ci
@@ -19,42 +26,35 @@ COPY . .
 # Build the app
 RUN npm run build
 
-# Remove dev dependencies from the image
-FROM node:18-alpine as production
+
+
+# -- Create a production image --
+FROM base as production
+
+# Set the NODE_ENV environment variable to production
 ENV NODE_ENV=production
-
-WORKDIR /app
-
-# Copy local directories to the current local directory of our docker image (/app)
-COPY --from=build /app/package*.json ./
-COPY --from=build /app/.npmrc ./
 
 # Install node packages (only production dependencies)
 RUN npm ci
-
-# Delete the .npmrc file
-RUN rm -f .npmrc
 
 # Copy the public folder from the previous stage
 COPY --from=build /app/next.config.js ./
 COPY --from=build /app/public ./public
 COPY --from=build /app/.next ./.next
 
-
 # Expose port 3000
 EXPOSE 3000
 
-# Run the app under a non-root user allow /app and home directory to be writable
+# Create a user to run the app without root privileges
 RUN adduser -D myuser \
 	&& chown -R myuser /app
 
+# Set the created user as the current user
 USER myuser
 
 # Start the app
 # CMD npm run start
-
 CMD ["npm", "run", "start"]
 
 # docker build -t app-pizza-hawaii . --build-arg NPM_TOKEN=$NPM_TOKEN
 # docker run -p 3000:3000 --env-file .env app-pizza-hawaii
-
