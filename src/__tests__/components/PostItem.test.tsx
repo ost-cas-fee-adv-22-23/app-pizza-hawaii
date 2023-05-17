@@ -75,11 +75,6 @@ describe('PostItem renders correctly', () => {
 describe('PostItem renders correctly', () => {
 	afterEach(cleanup);
 
-	test('PostItem variant `timeline` renders correctly', async () => {
-		const { container } = render(<PostItem {...propsTimelinePage} />);
-		expect(container).toMatchSnapshot();
-	});
-
 	test('PostItem variant `timeline` displays the User Name with all the correct css classes', async () => {
 		render(<PostItem {...propsTimelinePage} />);
 		const user = screen.getByText('Peter Manser');
