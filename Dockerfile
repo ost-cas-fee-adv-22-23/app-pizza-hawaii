@@ -48,7 +48,7 @@ EXPOSE 3000
 RUN adduser -D myuser \
 	&& chown -R myuser /app
 
-# USER myuser
+USER myuser
 
 # Start the app
 # CMD npm run start
