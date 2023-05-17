@@ -12,7 +12,7 @@ on:
 
 jobs:
     testing-with-jest:
-        name: Run test cases with jest and RTL 🤞
+        name: Run test cases with jest and RTL
         runs-on: ubuntu-latest
         steps:
           - uses: actions/checkout@v3
