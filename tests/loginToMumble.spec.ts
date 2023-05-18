@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
-test.describe('Login to mumble', () => {
+
+test.describe('Login, create and delete a mumble.', () => {
 	const timelineUrl = process.env.NEXT_PUBLIC_VERCEL_URL as string;
 	const timelineTitle = 'Mumble - Welcome to Mumble';
 
@@ -44,6 +45,9 @@ test.describe('Login to mumble', () => {
 		// now delete that post again
 		const deleteBtn = page.getByRole('button', { name: 'Delete' });
 		await deleteBtn.click();
+
+		// wait 500ms
+		await page.waitForTimeout(500);
 
 		// check if the post is gone from the timeline
 		await expect(page.getByText(exampleText)).not.toBeVisible();
