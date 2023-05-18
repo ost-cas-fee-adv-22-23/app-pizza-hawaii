@@ -45,3 +45,6 @@ next-env.d.ts
 .npmrc
 .env
 .vscode
+/test-results/
+/playwright-report/
+/playwright/.cache/
