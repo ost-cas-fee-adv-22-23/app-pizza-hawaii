@@ -1,14 +1,16 @@
 import { expect, test } from '@playwright/test';
 import { describe } from 'node:test';
 
-const registerMetaTitle = 'Mumble - Registrierung';
+const appUrl = process.env.NEXT_PUBLIC_VERCEL_URL as string;
+const signupUrl = `${appUrl}/auth/signup`;
+const signupPageTitle = 'Mumble - Registrierung';
 
 describe('Register Form works: if two different password strings are provided, there is a userFeedback and Submit Button is disabled', () => {
 	test('Register Form is visible', async ({ page }) => {
 		// load the register page
-		await page.goto('http://localhost:3000/auth/signup');
+		await page.goto(signupUrl);
 		// check if the Meta title is correct
-		await expect(page).toHaveTitle(registerMetaTitle);
+		await expect(page).toHaveTitle(signupPageTitle);
 		// check if userName field is visible
 		await expect(page.getByLabel('Username')).toBeVisible();
 		// provide different passwords in password and repeat password field
@@ -24,7 +26,7 @@ describe('Register Form works: if two different password strings are provided, t
 
 	test('Register Form is working when passwords are the same', async ({ page }) => {
 		// load the register page
-		await page.goto('http://localhost:3000/auth/signup');
+		await page.goto(signupUrl);
 		// fill both password fields with the same password
 		const passwordField = page.locator('input[name="password"]');
 		const passwordRepeatField = page.locator('input[name="passwordRepeat"]');
