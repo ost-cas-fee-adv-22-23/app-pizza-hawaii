@@ -25,6 +25,8 @@ jobs:
       run: npx playwright test
       env:
         NEXT_PUBLIC_VERCEL_URL: ${{ secrets.NEXT_PUBLIC_VERCEL_URL }}
+        ZITADEL_USERNAME: ${{ secrets.ZITADEL_USERNAME }}
+        ZITADEL_PASSWORD: ${{ secrets.ZITADEL_PASSWORD }}
     - uses: actions/upload-artifact@v3
       if: always()
       with:
