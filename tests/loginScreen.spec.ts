@@ -21,7 +21,7 @@ test('login screen: login with mailadress should fail and reports error console'
 test('login with Zitadel shoud redirect to Zitadel url', async ({ page }) => {
 	await page.goto(loginUrl);
 	await page.getByRole('button', { name: 'Login via Zitadel' }).click();
-	await expect(page).toHaveURL(/.*.zitadel.cloud/);
+	await expect(page).toHaveURL(/zitadel.cloud/);
 });
 
 test('login screen: if clicked on the register link, we should redirected to the signup url', async ({ page }) => {

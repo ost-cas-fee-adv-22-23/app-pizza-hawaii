@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test.describe('Login, create and delete a mumble.', () => {
+test.describe('Login to Application, create a MumblePost, test its appearence and delete this post.', () => {
 	const timelineUrl = process.env.NEXT_PUBLIC_VERCEL_URL as string;
 	const timelineTitle = 'Mumble - Welcome to Mumble';
 
