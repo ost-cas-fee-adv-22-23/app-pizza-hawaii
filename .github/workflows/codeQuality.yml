@@ -1,3 +1,6 @@
+#
+# linter and dependancy cruiser tests
+
 name: Code Quality checks
 
 on: 
@@ -17,12 +20,14 @@ jobs:
               node-version: 18.x
               registry-url: https://npm.pkg.github.com/
               scope: '@smartive-education'
-        - name: Install dependencies
-        - run: npm ci
-          env:
-            NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        - name: Run eslint
-        - run: npm run lint
-        - name: Run dependancy cruiser
-        - run: npm run dep-cruise:validate
-```
+        
+              name: Install dependencies
+              run: 
+                npm ci
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+              name: Run linter
+              run:  npm run lint
+              name: 
+                Run dependancy cruiser
+              run: npm run dep-cruise:validate
