@@ -1,5 +1,10 @@
 name: web-vitals
-on: [push]
+on: 
+  push:
+    branches: [ main, feature/* ]
+  pull_request:
+     branches: [ main, feature/*]
+
 jobs:
   lhci:
     name: Lighthouse
@@ -17,7 +22,7 @@ jobs:
           npm ci
           npm run build
         env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: run Lighthouse CI
         run: |
           npm install -g @lhci/cli@0.11.x
