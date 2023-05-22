@@ -1,6 +1,5 @@
 name: Code Quality checks, dependancy cruiser
 
-
 on: 
     push:
      branches: [ main, feature/* ]
