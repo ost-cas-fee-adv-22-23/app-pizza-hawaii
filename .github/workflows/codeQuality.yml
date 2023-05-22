@@ -27,5 +27,5 @@ jobs:
           - name: ES syntax linter
             run:  npm run lint
           - name: Dependancy cruiser
-            run:  npm run dependancy-cruiser
+            run:  npm run dep-cruise:validate
 
