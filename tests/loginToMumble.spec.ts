@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test';
 test.describe('Login to Application, create a MumblePost, test its appearence and delete this post.', () => {
 	const timelineUrl = process.env.NEXT_PUBLIC_VERCEL_URL as string;
 	const timelineTitle = 'Mumble - Welcome to Mumble';
+	const logoutUrl = `${process.env.NEXT_PUBLIC_VERCEL_URL}/auth/login`;
 
 	test('Login to Mumble ', async ({ page }) => {
 		// generate a random text for the post
@@ -36,14 +37,10 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		const postBtn = page.getByText('Absenden');
 		await postBtn.click();
 
-		// check if the post is in the timeline
-		// TODO would be nice to refresh on the button click... but its appearence is too slow
-		// await page.getByRole('button', { name: 'World is changing, update your feed.' }).waitFor();
-
 		await expect(page.getByText(exampleText)).toBeVisible();
 
 		// now delete that post again
-		const deleteBtn = page.getByRole('button', { name: 'Delete' });
+		const deleteBtn = page.getByText('Delete');
 		await deleteBtn.click();
 
 		// wait 500ms
@@ -51,5 +48,10 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 
 		// check if the post is gone from the timeline
 		await expect(page.getByText(exampleText)).not.toBeVisible();
+
+		// logout from mumble
+		const logoutBtn = page.getByRole('button', { name: 'Log out' });
+		await logoutBtn.click();
+		await expect(page).toHaveURL(logoutUrl);
 	});
 });
