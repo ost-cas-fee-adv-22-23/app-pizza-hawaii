@@ -25,9 +25,6 @@ export const FollowerList = () => {
 					console.error(error);
 				}
 			}
-			return () => {
-				setUsers([]);
-			};
 		})();
 	}, [accessToken, followees]);
 
