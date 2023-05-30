@@ -42,7 +42,7 @@ COPY --from=build /app/next.config.js ./
 COPY --from=build /app/public ./public
 COPY --from=build /app/.next ./.next
 
-# Expose port 3000
+# Expose port 3000 
 EXPOSE 3000
 
 # Create a user to run the app without root privileges

@@ -1,0 +1,13 @@
+# TODO: delete that before merge. 
+
+# docker build works with these settings.
+docker build -t europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii --build-arg NPM_TOKEN=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 --platform linux/amd64 .
+
+
+# then push to gcr
+docker push europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii
+
+
+
+url for the app at cloud run:
+https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app/
