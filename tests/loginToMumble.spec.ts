@@ -34,13 +34,17 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		const postTextArea = page.getByPlaceholder('Deine Meinung zählt');
 		await expect(postTextArea).toBeVisible();
 		await postTextArea.fill(exampleText);
-		const postBtn = page.getByText('Absenden');
+		const postBtn = page.getByText('Absenden', { exact: true });
 		await postBtn.click();
+		const postText = page.getByText(exampleText, { exact: true });
+		await expect(postText).toBeVisible();
 
-		await expect(page.getByText(exampleText)).toBeVisible();
+		// get element with class 'PostItem' that contains the text
+		const postItem = page.locator(`.PostItem:has-text("${exampleText}")`);
+		await expect(postItem).toBeVisible();
 
-		// now delete that post again
-		const deleteBtn = page.getByText('Delete');
+		// now delete the exact PostItem again
+		const deleteBtn = postItem.getByText('Delete');
 		await deleteBtn.click();
 
 		// wait 500ms
