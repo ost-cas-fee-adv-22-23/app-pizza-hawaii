@@ -45,3 +45,7 @@ next-env.d.ts
 .npmrc
 .env
 .vscode
+
+
+#light house ci output
+.lighthouseci/
