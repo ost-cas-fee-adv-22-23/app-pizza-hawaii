@@ -18,12 +18,14 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 
 		// fill in the username
 		await page.fill('input[name="loginName"]', process.env.ZITADEL_USERNAME as string);
-		const forwardBtn = page.getByText('next');
+		//const forwardBtn = page.getByText('next');
+		const forwardBtn = page.locator('BUTTON[type="submit"]');
 		await forwardBtn.click();
 
 		// fill in the password
 		await page.fill('input[name="password"]', process.env.ZITADEL_PASSWORD as string);
-		const forwardBtnLogin = page.getByText('next');
+		//const forwardBtnLogin = page.getByText('next', { exact: true });
+		const forwardBtnLogin = page.locator('BUTTON[type="submit"]');
 		await forwardBtnLogin.click();
 
 		// redirect to mumble timeline
@@ -44,14 +46,14 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		await expect(postItem).toBeVisible();
 
 		// now delete the exact PostItem again
-		const deleteBtn = postItem.getByText('Delete');
+		const deleteBtn = postItem.getByText('Delete', { exact: true });
 		await deleteBtn.click();
 
 		// wait 500ms
 		await page.waitForTimeout(500);
 
 		// check if the post is gone from the timeline
-		await expect(page.getByText(exampleText)).not.toBeVisible();
+		await expect(page.getByText(exampleText, { exact: true })).not.toBeVisible();
 
 		// logout from mumble
 		const logoutBtn = page.getByRole('button', { name: 'Log out' });
