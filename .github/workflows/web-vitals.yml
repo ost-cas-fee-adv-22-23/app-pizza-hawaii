@@ -23,7 +23,7 @@ jobs:
           npm run build
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.NPM_TOKEN }}
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
       - name: run Lighthouse CI
         run: |
           npm install -g @lhci/cli@0.11.x
