@@ -24,7 +24,7 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		const loginName = page.locator('input[name="loginName"]');
 		await expect(loginName).toBeVisible();
 		await loginName.click();
-		loginName.fill(process.env.ZITADEL_PASSWORD as string);
+		await loginName.fill(process.env.ZITADEL_PASSWORD as string);
 		await page.keyboard.press('Enter');
 
 		// Check if we are on the zitadel password page
@@ -34,7 +34,7 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		const passwordField = page.locator('input[name="password"]');
 		await expect(passwordField).toBeVisible();
 		await passwordField.click();
-		passwordField.fill(process.env.ZITADEL_PASSWORD as string);
+		await passwordField.fill(process.env.ZITADEL_PASSWORD as string);
 		await page.keyboard.press('Enter');
 
 		// Check if we are redirected to mumble timeline
