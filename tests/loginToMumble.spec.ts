@@ -14,22 +14,15 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		await page.getByRole('button', { name: 'Login via Zitadel' }).click();
 
 		// check if we are on the zitadel login page
-		await page.waitForTimeout(500);
 		await expect(page).toHaveURL(/.*.zitadel.cloud\/ui\/login\/login.*/);
 
 		// fill in the username
 		await page.fill('input[name="loginName"]', process.env.ZITADEL_USERNAME as string);
-		//const forwardBtn = page.getByText('next');
-		const forwardBtn = page.locator('BUTTON[type="submit"]');
-		await page.waitForTimeout(100);
-		await forwardBtn.click();
+		await page.keyboard.press('Enter');
 
 		// fill in the password
 		await page.fill('input[name="password"]', process.env.ZITADEL_PASSWORD as string);
-		//const forwardBtnLogin = page.getByText('next', { exact: true });
-		const forwardBtnLogin = page.locator('BUTTON[type="submit"]');
-		await page.waitForTimeout(100);
-		await forwardBtnLogin.click();
+		await page.keyboard.press('Enter');
 
 		// redirect to mumble timeline
 		await expect(page).toHaveURL(timelineUrl);
@@ -51,9 +44,6 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		// now delete the exact PostItem again
 		const deleteBtn = postItem.getByText('Delete', { exact: true });
 		await deleteBtn.click();
-
-		// wait 500ms
-		await page.waitForTimeout(500);
 
 		// check if the post is gone from the timeline
 		await expect(page.getByText(exampleText, { exact: true })).not.toBeVisible();
