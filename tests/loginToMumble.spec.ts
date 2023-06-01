@@ -17,7 +17,8 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		await expect(page).toHaveURL(/.*.zitadel.cloud\/ui\/login\/login.*/);
 
 		// Step 2: Fill in the username
-		await page.fill('input[name="loginName"]', process.env.ZITADEL_USERNAME as string);
+		const fieldUsername = page.locator('input[name="loginName"]');
+		await fieldUsername.fill(process.env.ZITADEL_USERNAME as string);
 		const submitUsername = page.locator('button[type="submit"]');
 		await submitUsername.click();
 
@@ -25,7 +26,8 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		await expect(page).toHaveURL(/.*.zitadel.cloud\/ui\/login\/loginname.*/);
 
 		// Step 3: Fill in the password
-		await page.fill('input[name="password"]', process.env.ZITADEL_PASSWORD as string);
+		const fieldPassword = page.locator('input[name="password"]');
+		await fieldPassword.fill(process.env.ZITADEL_PASSWORD as string);
 		const submitPassword = page.locator('button[type="submit"]');
 		await submitPassword.click();
 
