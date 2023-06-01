@@ -1,19 +1,19 @@
 locals {
-    name = "pizza-hawaii-test"
+    name = "app-pizza-hawaii"
     gpc_region = "europe-west6"
 }
 
 provider "google" {
-  project = "artful-bonsai-387618"
-  region  = "europe-west6"
+  project = "project-pizza-388116"
+  region  =  local.gpc_region
 }
 
 data "google_project" "project" {
-#   project_id = "artful-bonsai-387618"
+#  project_id = "project-pizza-388116"
 }
 
 terraform {
   backend "gcs" {
-    bucket  = "artful-bonsai-387618-tf-state"
+    bucket  = "pizza-state-tf"
   }
 }
