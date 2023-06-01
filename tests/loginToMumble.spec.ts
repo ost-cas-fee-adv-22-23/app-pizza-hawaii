@@ -18,6 +18,7 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 
 		// Step 2: Fill in the username
 		await page.fill('input[name="loginName"]', process.env.ZITADEL_USERNAME as string);
+		await page.waitForTimeout(100);
 		await page.locator('button[type="submit"]').click();
 
 		// Check if we are on the zitadel password page
@@ -25,6 +26,7 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 
 		// Step 3: Fill in the password
 		await page.fill('input[name="password"]', process.env.ZITADEL_PASSWORD as string);
+		await page.waitForTimeout(100);
 		await page.locator('button[type="submit"]').click();
 
 		// Check if we are redirected to mumble timeline
