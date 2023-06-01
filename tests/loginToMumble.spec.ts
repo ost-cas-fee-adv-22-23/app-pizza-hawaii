@@ -21,20 +21,12 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		await page.click('input[name="loginName"]');
 		await page.keyboard.press('Enter');
 
-		const loginName = page.locator('input[name="loginName"]');
-		await expect(loginName).toBeVisible();
-		await loginName.click();
-		await loginName.fill(process.env.ZITADEL_PASSWORD as string);
-		await page.keyboard.press('Enter');
-
 		// Check if we are on the zitadel password page
 		await expect(page).toHaveURL(/.*.zitadel.cloud\/ui\/login\/loginname.*/);
 
 		// Step 3: Fill in the password
-		const passwordField = page.locator('input[name="password"]');
-		await expect(passwordField).toBeVisible();
-		await passwordField.click();
-		await passwordField.fill(process.env.ZITADEL_PASSWORD as string);
+		await page.fill('input[name="password"]', process.env.ZITADEL_PASSWORD as string);
+		await page.click('input[name="password"]');
 		await page.keyboard.press('Enter');
 
 		// Check if we are redirected to mumble timeline
