@@ -20,6 +20,9 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		await page.fill('input[name="loginName"]', process.env.ZITADEL_USERNAME as string);
 		await page.keyboard.press('Enter');
 
+		// check if we are on the zitadel password page
+		await expect(page).toHaveURL(/.*.zitadel.cloud\/ui\/login\/loginname.*/);
+
 		// fill in the password
 		await page.fill('input[name="password"]', process.env.ZITADEL_PASSWORD as string);
 		await page.keyboard.press('Enter');
