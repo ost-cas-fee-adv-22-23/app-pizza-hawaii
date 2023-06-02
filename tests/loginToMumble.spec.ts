@@ -5,7 +5,7 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 	const timelineTitle = 'Mumble - Welcome to Mumble';
 	const loginUrl = `${process.env.NEXT_PUBLIC_VERCEL_URL}/auth/login`;
 
-	test('Login to Mumble ', async ({ page }) => {
+	test('Login to Mumble', async ({ page }) => {
 		// Generate a random text for the post
 		const exampleText = `Pizza Hawaii Test #pht #${Math.random().toString(36).substring(7)}`;
 
@@ -17,19 +17,15 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		await expect(page).toHaveURL(/.*.zitadel.cloud\/ui\/login\/login.*/);
 
 		// Step 2: Fill in the username
-		const fieldUsername = page.locator('input[name="loginName"]');
-		await fieldUsername.fill(process.env.ZITADEL_USERNAME as string);
-		const submitUsername = page.locator('button[type="submit"]');
-		await submitUsername.click();
+		await page.fill('input[name="loginName"]', process.env.ZITADEL_USERNAME as string);
+		await page.keyboard.press('Enter');
 
 		// Check if we are on the zitadel password page
 		await expect(page).toHaveURL(/.*.zitadel.cloud\/ui\/login\/loginname.*/);
 
 		// Step 3: Fill in the password
-		const fieldPassword = page.locator('input[name="password"]');
-		await fieldPassword.fill(process.env.ZITADEL_PASSWORD as string);
-		const submitPassword = page.locator('button[type="submit"]');
-		await submitPassword.click();
+		await page.fill('input[name="password"]', process.env.ZITADEL_PASSWORD as string);
+		await page.keyboard.press('Enter');
 
 		// Check if we are redirected to mumble timeline
 		await expect(page).toHaveURL(timelineUrl);
@@ -39,10 +35,7 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		const postTextArea = page.getByPlaceholder('Deine Meinung zählt');
 		await expect(postTextArea).toBeVisible();
 		await postTextArea.fill(exampleText);
-		const postBtn = page.getByText('Absenden', { exact: true });
-		await postBtn.click();
-		const postText = page.getByText(exampleText, { exact: true });
-		await expect(postText).toBeVisible();
+		await page.getByRole('button', { name: 'Absenden' }).click();
 
 		// Step 5: Get element with class 'PostItem' that contains the text
 		const postItem = page.locator(`.PostItem:has-text("${exampleText}")`);
