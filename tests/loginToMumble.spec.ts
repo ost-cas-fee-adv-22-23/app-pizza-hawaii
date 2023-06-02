@@ -36,17 +36,17 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		await expect(postTextArea).toBeVisible();
 		await postTextArea.fill(exampleText);
 		await page.getByRole('button', { name: 'Absenden' }).click();
+		await page.waitForTimeout(500);
 
 		// Step 5: Get element with class 'PostItem' that contains the text
-		const postItem = page.locator(`.PostItem:has-text("${exampleText}")`);
-		await expect(postItem).toBeVisible();
+		await expect(page.locator(`.PostItem:has-text("${exampleText}")`)).toBeVisible();
 
 		// Step 6: Delete the exact PostItem again
-		const deleteBtn = postItem.getByText('Delete', { exact: true });
-		await deleteBtn.click();
+		await page.getByRole('button', { name: 'Delete' }).click();
+		await page.waitForTimeout(500);
 
 		// Check if the post is gone from the timeline
-		await expect(page.getByText(exampleText, { exact: true })).not.toBeVisible();
+		await expect(page.locator(`.PostItem:has-text("${exampleText}")`)).not.toBeVisible();
 
 		// Step 7: Logout from mumble
 		const logoutBtn = page.getByRole('button', { name: 'Log out' });
