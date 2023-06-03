@@ -160,7 +160,7 @@ We use these semantics while committing to maintain a meaningful commit history:
 
 ## Scripts
 
-### ES Lint for code quality and
+### ES Lint for code quality
 
 ES Linter configuration checks for following topics
  We know: sometimes a console.log is needed on the server. Therefore it is on a `warning` level as a reminder.
@@ -201,6 +201,45 @@ and start locally built with
 [API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on . This endpoint can be edited in `pages/api/auth`.
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+
+
+# Deployment checks
+
+## CodeQuality
+
+To ensure Qulity of deployed Code when deploying, there is a github action:
+
+run `ESLint` and `Dependency Cruiser` 
+
+
+## Check Web Vitals metrics
+
+
+To ensure our Web metrics are meeting some standards and will not been ruined by implementing some new features, we check for the following metrics and Web Vital scores:
+
+- First Contentful Paint
+- Performance
+- Accessibility
+- Best Practices
+- SEO
+- DOM size
+- installable Manifest (PWA check)
+- service Worker (PWA check)
+
+
+we upload these Metrics to a temporary public Google storage
+TOOD: write the tempstorage
+
+
+
+to run these Tests locally:
+
+```
+npx lhci autorun
+```
+
+
+
 
 ## PWA
 
