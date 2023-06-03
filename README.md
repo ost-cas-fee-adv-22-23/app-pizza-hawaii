@@ -205,11 +205,13 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 # Deployment checks
 
-## CodeQuality
+## Code Quality
 
-To ensure Qulity of deployed Code when deploying, there is a github action:
+To ensure Qulity of deployed Code when deploying, there are github actions running
 
-run `ESLint` and `Dependency Cruiser` 
+`ESLint` and `Dependency Cruiser` 
+
+on every git commit push and on merge-requests. 
 
 
 ## Check Web Vitals metrics
@@ -227,9 +229,7 @@ To ensure our Web metrics are meeting some standards and will not been ruined by
 - service Worker (PWA check)
 
 
-we upload these Metrics to a temporary public Google storage
-TOOD: write the tempstorage
-
+have a look at the github action logs to see the exact location of the final reports. 
 
 
 to run these Tests locally:
