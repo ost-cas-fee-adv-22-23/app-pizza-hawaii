@@ -11,7 +11,7 @@
 		"prettier": "prettier --check .",
 		"prettier:fix": "prettier --write .",
 		"dep-cruise:validate": "npx depcruise src --include-only \"^src\" --config .dependency-cruiser.js",
-    "lighthouse": "npx lhci autorun"
+    	"lighthouse": "npx lhci autorun"
 	},
 	"dependencies": {
 		"@fontsource/poppins": "^4.5.10",
