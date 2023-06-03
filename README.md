@@ -269,7 +269,7 @@ Then we add the following code to terraForm configuration
 
 ```
 resource "google_secret_manager_secret" "default" {
-  secret_id = "ZITADEL_CLIENT_ID"
+  secret_id = "NEXTAUTH_SECRET"
 
   replication {
     user_managed {
@@ -282,27 +282,38 @@ resource "google_secret_manager_secret" "default" {
 ```
 
 
-# create Terraform configuration
+# Create Terraform configuration
+
+in 'main.tf' we describe our Project, define local variables, Data source and Terraform State location (Bucket at cloud). This file will be executed first. 
 
 
-TODO: write here about files
-'main.tf' and 'cloud-run.tf'
+The file 'cloud-run.tf' defines the deploy process for in Google Cloud run.
+Here we define:
+- the role-management of cloud runner process
+- resources to be applied for the virtual server 
+- non-confident env-variables
+- secret handling vor confident variables
+- Ports and Protocols
+- deployment settings
+
+All important Sections are documented within the file. 
 
 
-### test Terraform configuration
+### Test Terraform configuration
 
 `
 terraform plan
 `
 
-### Run the Workflow
+### Run Terraform Workflow
 
 `
 terraform apply -auto-approve
 `
 
+## LiveDemo
 
-if the the deploy is successfull we have a newly built app 
+if the the deploy process is successfull we have a newly built app 
 
 at: https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app/
 

@@ -1,11 +1,12 @@
 # account for runner to deploy to cloud run
 resource "google_service_account" "cloud-runner" {
   account_id   = "cloud-runner"
-  display_name = "Google Cloud Run Pizza Runner"
-  description  = "Account to deploy applications to google cloud run."
+  display_name = "Google Cloud Run Pizza Hawaii Runner"
+  description  = "Account to deploy Pizza App Container to Google Cloud Run."
 }
 
 # role management for cloud-runner
+# cloud runner needs these roles from google cloud platform to deploy our app
 resource "google_project_iam_member" "cloud-runner" {
   for_each = toset([
     "roles/run.serviceAgent",
@@ -19,7 +20,9 @@ resource "google_project_iam_member" "cloud-runner" {
   project = data.google_project.project.id
 }
 
-# reference to googleproject from main.tf
+# reference to google_project from main.tf
+# service accout for cloud runner (Note: click in the admin gui to create a service account first !)
+# number and Id are needed to create the service account for cloud runner
 resource "google_project_iam_member" "cloud-runner-svc" {
   role    = "roles/run.serviceAgent"
   member  = "serviceAccount:service-${data.google_project.project.number}@serverless-robot-prod.iam.gserviceaccount.com"
@@ -43,7 +46,12 @@ resource "google_secret_manager_secret" "default" {
     }
   }
 }
+
 # cloud template for our cloud run service app-pizza-hawaii
+# we need to set the environment variables for our app
+# logs showed that the container is running best with 1.5G memory and 2 cpu
+# non-confidential environment variables are set in the template
+# confidential environment variables are set in the secret manager
 resource "google_cloud_run_service" "app-pizza-hawaii" {
   name                       = local.name
   location                   = local.gpc_region
@@ -53,11 +61,10 @@ resource "google_cloud_run_service" "app-pizza-hawaii" {
     spec {
       containers {
         image = "europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii"
-
         resources {
           limits = {
-            "memory" = "1G"
-            "cpu"    = "2.0"
+            "memory" = "1.5G"
+            "cpu"    = "2"
           }
         }
 
@@ -65,7 +72,7 @@ resource "google_cloud_run_service" "app-pizza-hawaii" {
           name = "NEXTAUTH_URL"
           value = "https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app"
         }
-
+        # this one is needed to access the secret from google secret manager
         env {
           name = "NEXTAUTH_SECRET"
           value_from {
@@ -105,18 +112,21 @@ resource "google_cloud_run_service" "app-pizza-hawaii" {
       service_account_name = google_service_account.cloud-runner.email
     }
   }
-
+    # traffic is routed to the latest revision: all users will see the latest version of our app 
   traffic {
     percent         = 100
     latest_revision = true
   }
 }
 
+# if we want to deploy a new version of our app, we need to create a new revision
+# so current revision is latest revision -> status[0].url
 output "cloud-run-url" {
   value = google_cloud_run_service.app-pizza-hawaii.status[0].url
 }
 
 # all users can invoke the service without beeing authenticated on google to access our app.
+# as Zitadel is our identity provider, we don't need to authenticate users on google.
 data "google_iam_policy" "noauth" {
   binding {
     role = "roles/run.invoker"
