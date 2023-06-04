@@ -1,5 +1,9 @@
 name: web-vitals
+# if there is probably no load on the server
+# schedule cron:  '0 2 * * 0-4': every sun, mon, tue, wed, thu at 2am
 on: 
+  schedule:
+    - cron:  '0 2 * * 0-4'
   push:
     branches: [ main, feature/* ]
   pull_request:
