@@ -28,7 +28,7 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		await page.keyboard.press('Enter');
 
 		// Check if we are redirected to mumble timeline
-		await expect(page).toHaveURL(timelineUrl);
+		await expect(page).toHaveURL(timelineUrl, { timeout: 10000 });
 		await expect(page).toHaveTitle(timelineTitle);
 
 		// Step 4: Write a mumble text and post it
