@@ -5,8 +5,6 @@
 name: Jest and RTL Test Deployment
 
 on: 
-    push:
-     branches: [ main, feature/*, bugfix/* ]
     pull_request:
         branches: [ main, feature/*, bugfix/* ]
 
