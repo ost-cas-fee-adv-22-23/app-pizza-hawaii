@@ -48,6 +48,11 @@ next-env.d.ts
 .npmrc
 .env
 .vscode
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+_env.example_bkup
 
 
 #light house ci output

@@ -182,6 +182,30 @@ ES Linter configuration checks for following topics
 
     npm run dep-cruise:validate
 
+### End to End tests using Playwright
+
+prepare your local '.env-file' with your credentials (for the moment)
+```
+ZITADEL_USERNAME=
+ZITADEL_PASSWORD=
+````
+
+start the testrunner with
+
+    npx playwright test
+
+
+or with ui:
+
+    npx playwright test --ui
+
+
+reports are available
+
+    npx playwright show-report
+
+
+
 ### Pretier
 
     npm run prettier --check
