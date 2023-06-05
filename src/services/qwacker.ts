@@ -199,14 +199,8 @@ export const addUrlParams = (url: string, params: TAddUrlParams): string => {
 		}
 	});
 
-	// convert all GET params to a string
-	const getParamsStr = Object.entries(params).reduce((acc: { [key: string]: string }, [key, value]) => {
-		acc[key] = String(value);
-		return acc;
-	}, {});
-
 	// convert the params to a URLSearchParams object
-	const searchParams = new URLSearchParams(getParamsStr);
+	const searchParams = new URLSearchParams(params as Record<string, string>);
 
 	// generate a new URL object
 	const urlObj = new URL(url);
