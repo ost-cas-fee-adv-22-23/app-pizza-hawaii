@@ -34,7 +34,8 @@ output "cloud-runner-email" {
 }
 
 # cloud run service - our pizza image
-# we need to create a secret for our nextauth secret using google_secret_manager_secret
+# we need to create a secret for our nextauth secret using google_secret_manager_secret 
+# TODO: 'default' should be replaced by the the name of the container!
 resource "google_secret_manager_secret" "default" {
   secret_id = "NEXTAUTH_SECRET"
 
