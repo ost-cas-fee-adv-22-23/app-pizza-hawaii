@@ -53,7 +53,7 @@ jobs:
           context: .
           file: ./Dockerfile
           load: true
-          secrets: "npmrc=${{ secrets.NPM_TOKEN }}"
+          secrets: 'npmrc=${{ secrets.NPMRC }}'
 
       - name: Test Docker image
         run: |
