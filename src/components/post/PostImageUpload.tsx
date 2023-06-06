@@ -1,5 +1,5 @@
 import { Icon, Label } from '@smartive-education/pizza-hawaii';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 type TPostImageUpload = {
@@ -7,17 +7,9 @@ type TPostImageUpload = {
 };
 
 export const PostImageUpload: FC<TPostImageUpload> = ({ onNewFile }) => {
-	const [selectedFile, setSelectedFile] = useState<File>();
-
-	useEffect(() => {
-		if (selectedFile && onNewFile) {
-			onNewFile(selectedFile);
-		}
-	}, [selectedFile, onNewFile]);
-
 	const handleFileDrop = (acceptedFiles: File[]) => {
 		const uploadedFile = acceptedFiles?.[0];
-		setSelectedFile(uploadedFile ?? undefined);
+		onNewFile && onNewFile(uploadedFile);
 	};
 
 	const { getRootProps, getInputProps } = useDropzone({
