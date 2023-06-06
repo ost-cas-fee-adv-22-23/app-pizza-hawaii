@@ -160,7 +160,7 @@ We use these semantics while committing to maintain a meaningful commit history:
 
 ## Scripts
 
-### ES Lint for code quality and
+### ES Lint for code quality
 
 ES Linter configuration checks for following topics
  We know: sometimes a console.log is needed on the server. Therefore it is on a `warning` level as a reminder.
@@ -181,6 +181,30 @@ ES Linter configuration checks for following topics
 ### Dependency cruiser
 
     npm run dep-cruise:validate
+
+### End to End tests using Playwright
+
+prepare your local '.env-file' with your credentials (for the moment)
+```
+ZITADEL_USERNAME=
+ZITADEL_PASSWORD=
+````
+
+start the testrunner with
+
+    npx playwright test
+
+
+or with ui:
+
+    npx playwright test --ui
+
+
+reports are available
+
+    npx playwright show-report
+
+
 
 ### Pretier
 
@@ -316,6 +340,45 @@ terraform apply -auto-approve
 if the the deploy process is successfull we have a newly built app 
 
 at: https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app/
+
+
+
+
+
+# Deployment checks
+
+## Code Quality
+
+To ensure Qulity of deployed Code when deploying, there are github actions running
+
+`ESLint` and `Dependency Cruiser` 
+
+on every git commit push and on merge-requests. 
+
+
+## Check Web Vitals metrics
+
+
+To ensure our Web metrics are meeting some standards and will not been ruined by implementing some new features, we check for the following metrics and Web Vital scores:
+
+- First Contentful Paint
+- Performance
+- Accessibility
+- Best Practices
+- SEO
+- DOM size
+- installable Manifest (PWA check)
+- service Worker (PWA check)
+
+
+have a look at the github action logs to see the exact location of the final reports. 
+
+
+to run these Tests locally:
+
+```
+npx lhci autorun
+```
 
 
 

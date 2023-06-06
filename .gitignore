@@ -42,6 +42,18 @@ next-env.d.ts
 **/public/sw.js.map
 **/public/fallback-*.js
 
+# lighthouse CI
+.lighthouseci/*
+
 .npmrc
 .env
 .vscode
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+_env.example_bkup
+
+
+#light house ci output
+.lighthouseci/

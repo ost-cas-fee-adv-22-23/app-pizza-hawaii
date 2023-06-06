@@ -1,0 +1,36 @@
+name: web-vitals
+# if there is probably no load on the server
+# schedule cron:  '0 2 * * 0-4': every sun, mon, tue, wed, thu at 2am
+on: 
+  schedule:
+    - cron:  '0 2 * * 0-4'
+  push:
+    branches: [ main, feature/* ]
+  pull_request:
+     branches: [ main, feature/*]
+
+jobs:
+  lhci:
+    name: Lighthouse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          registry-url: https://npm.pkg.github.com/
+          scope: '@smartive-education'
+      - name: npm ci, build
+        run: |
+          npm ci
+          npm run build
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      - name: run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli@0.11.x
+          lhci autorun
+          lhci collect
+          lhci upload
