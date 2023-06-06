@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Setup
+    name: Setup and test code quality
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -23,15 +23,6 @@ jobs:
         run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  run-code-tests:
-    name: Test Code Quality
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
 
       - name: Prettier
         run: npm run prettier
