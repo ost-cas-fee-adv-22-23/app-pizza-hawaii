@@ -3,29 +3,28 @@
 
 name: Code Quality checks
 
-on: 
-    push:
-     branches: [ main, feature/* ]
-    pull_request:
-        branches: [ main, feature/*]
+on:
+  push:
+    branches: [main, feature/*]
+  pull_request:
+    branches: [main, feature/*]
 
 jobs:
-    testing-code-quality:
-        name: Run linter and dependancy cruiser
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v3
-          - uses: actions/setup-node@v3
-            with:
-              node-version: 18.x
-              registry-url: https://npm.pkg.github.com/
-              scope: '@smartive-education'
-          - name: Install dependencies
-            run: npm ci
-            env:
-              NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          - name: ES syntax linter
-            run:  npm run lint
-          - name: Dependancy cruiser
-            run:  npm run dep-cruise:validate
-
+  testing-code-quality:
+    name: Run linter and dependancy cruiser
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          registry-url: https://npm.pkg.github.com/
+          scope: '@smartive-education'
+      - name: Install dependencies
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: ES syntax linter
+        run: npm run lint
+      - name: Dependancy cruiser
+        run: npm run dep-cruise:validate
