@@ -19,7 +19,9 @@ const customJestConfig = {
 	transform: {
 		'^.+\\.(js|jsx|ts|tsx|mjs)$': ['babel-jest', babelConfigStyledComponents],
 	},
-	testMatch: ['**/?(*.)+(spec|test).[jt]s?(x)'],
+	// match all test files with .test.(js|jsx|ts|tsx) extension in the __tests__ folder and in any subdirectory 
+	// dont match .spec. files as they are used for integration tests (playwright)
+	testMatch: ['**/?(*.)+(test).[jt]s?(x)'],
 	// An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
 	testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/', '<rootDir>/src/__mocks__/'],
 };

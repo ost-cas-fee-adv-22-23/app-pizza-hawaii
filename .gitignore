@@ -57,3 +57,7 @@ _env.example_bkup
 
 #light house ci output
 .lighthouseci/
+
+_env.juergen
+
+.env.felix_bkup

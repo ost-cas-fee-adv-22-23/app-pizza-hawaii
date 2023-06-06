@@ -10,7 +10,10 @@ dotenv.config();
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-	testDir: './tests',
+	/* All playwright tests are located in src/__tests__/playwright-tests */
+	testDir: './src/__tests__/playwright-tests',
+	/* only consider files with *.spec.ts as playwritght tests*/
+	testMatch: /.*\.spec\.ts/,
 	/* Run tests in files in parallel */
 	fullyParallel: true,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
