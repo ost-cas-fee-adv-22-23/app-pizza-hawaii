@@ -1,4 +1,4 @@
-name: Build and Deploy to GitHub Pages
+name: Build and Deploy to GitHub Container Registry
 
 on:
   pull_request:
@@ -49,6 +49,8 @@ jobs:
           context: .
           file: ./Dockerfile
           load: true
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Test Docker image
         run: |
