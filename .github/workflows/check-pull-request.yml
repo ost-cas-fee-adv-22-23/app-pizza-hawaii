@@ -54,7 +54,7 @@ jobs:
           context: .
           file: ./Dockerfile
           load: true
-          secrets: "npmrc=${{ secrets.NPM_RC }}"
+          secrets: "npmrc=@smartive-education:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}"
 
       - name: Test Docker image
         run: |
