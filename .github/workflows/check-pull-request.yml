@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+env:
+  TEST_TAG: smartive-education/auth-pizza-hawaii:test
+  LATEST_TAG: smartive-education/auth-pizza-hawaii:latest
+
 jobs:
   build:
     name: Setup and test code quality
@@ -49,8 +53,7 @@ jobs:
           context: .
           file: ./Dockerfile
           load: true
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          secrets: "npmrc=${{ secrets.NPM_TOKEN }}"
 
       - name: Test Docker image
         run: |
