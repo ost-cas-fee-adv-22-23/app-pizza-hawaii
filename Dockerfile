@@ -1,8 +1,7 @@
-# -- Create a base docker image for the react app --
-FROM node:18-alpine as base
+# syntax=docker/dockerfile:1.2
 
-# Define environment variables
-ARG NPM_TOKEN
+# -- Create a base docker image for the react app --
+FROM node:18-alpine AS base
 
 # The /app directory should act as the main application directory
 WORKDIR /app
@@ -10,16 +9,13 @@ WORKDIR /app
 # Copy the app package and package-lock.json file
 COPY package*.json ./
 
-# Set the npm token for the github package registry
-RUN npm config set //npm.pkg.github.com/:_authToken $NPM_TOKEN
-
 
 
 # -- Create a build image --
 FROM base as build
 
-# Install node packages
-RUN npm ci
+# Mount the .npmrc file as a secret and install dependencies
+RUN --mount=type=secret,id=npmrc,target=/root/.npmrc npm ci
 
 COPY . .
 
@@ -28,34 +24,28 @@ RUN npm run build
 
 
 
-# -- Create a production image --
-FROM base as production
+# -- Create a blank production image --
+FROM base AS production
 
 # Set the NODE_ENV environment variable to production
 ENV NODE_ENV=production
 
-# Install node packages (only production dependencies)
-RUN npm ci
+# Mount the .npmrc file as a secret and install dependencies
+RUN --mount=type=secret,id=npmrc,target=/root/.npmrc npm ci
 
-# Copy the public folder from the previous stage
+# Copy the public and .next folder from the previous stage and limit the permissions to the node user
 COPY --from=build /app/next.config.js ./
-COPY --from=build /app/public ./public
-COPY --from=build /app/.next ./.next
+COPY --from=build --chown=node:node /app/public ./public
+COPY --from=build --chown=node:node /app/.next ./.next
 
 # Expose port 3000
 EXPOSE 3000
 
-# Create a user to run the app without root privileges
-RUN adduser -D myuser \
-	&& chown -R myuser /app
-
-# Set the created user as the current user
-USER myuser
+# Set the node user as the current user
+USER node
 
 # Start the app
-# CMD npm run start
-CMD ["npm", "run", "start"]
+CMD npm run start
 
-
-# docker build -t app-pizza-hawaii . --build-arg NPM_TOKEN=$NPM_TOKEN
+# docker build -t app-pizza-hawaii --secret id=npmrc,src=.npmrc .
 # docker run -p 3000:3000 --env-file .env app-pizza-hawaii
