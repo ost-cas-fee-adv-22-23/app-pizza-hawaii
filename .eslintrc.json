@@ -5,6 +5,7 @@
 		"prettier"
 	],
 	"plugins": ["simple-import-sort"],
+  "ignorePatterns": ["**/src/__mocks__/", "**/src/__tests__/"],
 	"rules": {
 		"no-console": ["warn", { "allow": ["error", "warn", "info"] }],
 		"react-hooks/rules-of-hooks": "error",

@@ -39,6 +39,7 @@ module.exports = {
           'src/pages/global-error.tsx',
           'src/pages/api/*',
           'src/pages/_document.tsx',
+          'src/__tests__/*',
         ]
       },
       to: {},
