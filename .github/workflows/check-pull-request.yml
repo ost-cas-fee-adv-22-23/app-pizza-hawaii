@@ -48,13 +48,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.NPM_TOKEN }}
 
+      - run: |
+          echo "@smartive-education:registry=https://npm.pkg.github.com" > ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ env.NPM_TOKEN }}" > ~/.npmrc
       - name: Build and push Docker image to GitHub Container Registry
         uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile
           load: true
-          secrets: "npmrc=@smartive-education:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}"
+          secrets: "npmrc=~/.npmrc"
 
       - name: Test Docker image
         run: |
