@@ -55,6 +55,9 @@ jobs:
           file: ./Dockerfile
           load: true
           secrets: "npmrc=${{ secrets.NPM_RC }}"
+          cache-from: type=registry,ref=z-index-next-app-at:latest
+          cache-to: type=inline
+
 
       - name: Test Docker image
         run: |
