@@ -285,7 +285,7 @@ We can add there secret variables and then we can use it without having them in 
 we have to enable the import theses secrets by using this command:
 
 `
-terraform import google_secret_manager_secret.default ZITADEL_CLIENT_ID
+terraform import google_secret_manager_secret. ZITADEL_CLIENT_ID
 `
 
 
@@ -329,11 +329,92 @@ All important Sections are documented within the file.
 terraform plan
 `
 
-### Run Terraform Workflow
+### Run Terraform Workflow locally to build app
 
 `
 terraform apply -auto-approve
 `
+
+## Terraform github Deployment
+
+
+Preparations to make workflow work
+
+These preparations are necessary to add a service Account for the google deployment with the correct permissions to upload and run the docker container on google cloud.
+
+1. define project id  
+```
+export PROJECT_ID="project-pizza-388116"
+```
+2. create gcloud with service account 'casfee23-account' for deployment
+```
+gcloud iam service-accounts create "casfee23-account"   --project "project-pizza-388116"
+```
+3. update at gcloud
+
+```
+gcloud components update
+```
+
+4. enable service account for project
+```
+gcloud services enable iamcredentials.googleapis.com \\n  --project "${PROJECT_ID}"
+```
+
+5. create gcloud pool
+```
+gcloud iam workload-identity-pools create "casfee23-pool" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --display-name="casfee23-pool"
+```
+
+6. describe pool 
+```
+ gcloud iam workload-identity-pools describe "casfee23-pool" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --format="value(name)"
+```
+
+7. export workload pool 
+```
+export WORKLOAD_IDENTITY_POOL_ID="projects/654053669202/locations/global/workloadIdentityPools/casfee23-pool"
+```
+
+8. create providers at gcloud
+```
+gcloud iam workload-identity-pools providers create-oidc "casfee23-provider" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --workload-identity-pool="casfee23-pool" \\n  --display-name="CAS_FEE_23_Provider" \\n  --attribute-mapping="google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.repository=assertion.repository" \\n  --issuer-uri="https://token.actions.githubusercontent.com"
+```
+
+9. define REPO
+```
+export REPO="smartive-education/app-pizza-hawaii"
+```
+
+10. connect repo with project and set role
+```
+gcloud iam service-accounts add-iam-policy-binding "casfee23-account@${PROJECT_ID}.iam.gserviceaccount.com" \\n  --project="${PROJECT_ID}" \\n  --role="roles/iam.workloadIdentityUser" \\n  --member="principalSet://iam.googleapis.com/${WORKLOAD_IDENTITY_POOL_ID}/attribute.repository/${REPO}"
+```
+
+11. configure workload identity pool provider
+```
+gcloud iam workload-identity-pools providers describe "casfee23-provider" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --workload-identity-pool="casfee23-pool" \\n  --format="value(name)"
+ ```
+
+## Github Action Deployment Script
+
+Build Docker with Buildx
+
+    uses: docker/setup-buildx-action@v2
+
+### Authenticate to GitHub Container Registry in 
+
+    uses: docker/login-action@v2
+
+### Authenticate to google Cloud
+
+    uses: 'google-github-actions/auth@v1
+
+
+TODO: terraform execution on google cloud to invoke creation of a server instance with the content of the container . 
+TODO: configure release-versioning that always the newest version is deployed. 
+
+
 
 ## LiveDemo
 
@@ -382,7 +463,6 @@ npx lhci autorun
 
 
 
-
 ## PWA
 
 The application uses the default settings of [next-pwa](https://github.com/shadowwalker/next-pwa) lib, which provides the following main features:
@@ -393,6 +473,15 @@ The application uses the default settings of [next-pwa](https://github.com/shado
 
 note: PWA functionality is not running in developement environment, if you want to test this locally
 you have to build the next js app. and then run with `npm start`.
+
+## Recources
+
+[Auth on Github action](https://github.com/google-github-actions/auth)
+
+[Preview Environment Terraform](https://developer.hashicorp.com/terraform/tutorials/applications/preview-environments-vercel)
+
+[Capture Vercel Preview URL](https://github.com/marketplace/actions/capture-vercel-preview-url)
+
 
 ## License
 
