@@ -240,7 +240,7 @@ Preparations:
 
 
 ## Docker Container
-
+0.
 1. Build a docker image with the following command.
 
 Note: The switch `--platform linux/amd64` is necessary if you work on a Mac silicon M1/M2 processor architecture!
