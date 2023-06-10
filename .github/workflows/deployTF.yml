@@ -2,11 +2,11 @@ name: Deploy Pizza Docker Container with Terraform
 
 on:
   push:
-    branches: ['main', 'feature/*']
+    branches: ['main', 'release/*']
   pull_request:
-    branches: ['feature/*']
+    branches: ['release/*']
   workflow_dispatch:
-
+    
 concurrency:
   group: 'release'
   cancel-in-progress: true
