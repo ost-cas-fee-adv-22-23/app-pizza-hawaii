@@ -1,0 +1,60 @@
+name: Deploy Pizza Docker Container with Terraform
+
+on:
+  push:
+    branches: [ main, feature/*]
+
+concurrency:
+  group: 'release'
+  cancel-in-progress: true
+
+jobs:
+    release:
+      name: Create Release
+      runs-on: ubuntu-latest
+      permissions: write-all
+  
+      outputs:
+        new_release_published: ${{ steps.semantic.outputs.new_release_published }}
+        new_release_version: ${{ steps.semantic.outputs.new_release_version }}
+  
+      steps:
+        - uses: actions/checkout@v3
+  
+        - id: 'auth'
+          name: 'Authenticate to Google Cloud'
+          uses: 'google-github-actions/auth@v1'
+          with:
+            workload_identity_provider: 'projects/654053669202/locations/global/workloadIdentityPools/casfee23-pool/providers/casfee23-provider'
+            service_account: 'casfee23-account@project-pizza-388116.iam.gserviceaccount.com'
+            token_format: 'access_token'
+  
+        - name: Set up Docker Buildx
+          id: buildx
+          uses: docker/setup-buildx-action@v2
+  
+        - name: Login to GitHub Container Registry
+          uses: docker/login-action@v2
+          with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+  
+        - name: Login to Google Artifact Registry
+          uses: docker/login-action@v2
+          with:
+            registry: europe-west6-docker.pkg.dev
+            username: 'oauth2accesstoken'
+            password: '${{ steps.auth.outputs.access_token }}'
+  
+        - name: Semantic Release
+          id: semantic
+          uses: cycjimmy/semantic-release-action@v3
+          with:
+            semantic_version: 19
+            extra_plugins: |
+              @codedependant/semantic-release-docker
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  

@@ -188,7 +188,7 @@ prepare your local '.env-file' with your credentials (for the moment)
 ```
 ZITADEL_USERNAME=
 ZITADEL_PASSWORD=
-````
+```
 
 start the testrunner with
 

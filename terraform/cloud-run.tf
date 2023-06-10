@@ -35,9 +35,10 @@ output "cloud-runner-email" {
 
 # cloud run service - our pizza image
 # we need to create a secret for our nextauth secret using google_secret_manager_secret 
-# TODO: 'default' should be replaced by the the name of the container!
-resource "google_secret_manager_secret" "default" {
-  secret_id = "NEXTAUTH_SECRET"
+# TODO: 'default' should be replaced by the the name of the container
+resource "google_secret_manager_secret" "nextauth_secret" {
+  provider = google
+  secret_id = "nextauth_secret"
 
   replication {
     user_managed {
@@ -78,7 +79,7 @@ resource "google_cloud_run_service" "app-pizza-hawaii" {
           name = "NEXTAUTH_SECRET"
           value_from {
             secret_key_ref {
-              name = google_secret_manager_secret.default.secret_id
+              name = google_secret_manager_secret.nextauth_secret.secret_id
               key = "1"
             }
           }
@@ -136,7 +137,7 @@ data "google_iam_policy" "noauth" {
     ]
   }
 }
-
+# policies setting 
 resource "google_cloud_run_service_iam_policy" "noauth" {
   location = google_cloud_run_service.app-pizza-hawaii.location
   project  = google_cloud_run_service.app-pizza-hawaii.project
