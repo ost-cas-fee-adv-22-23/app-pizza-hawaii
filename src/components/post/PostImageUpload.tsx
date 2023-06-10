@@ -28,7 +28,8 @@ export const PostImageUpload: FC<TPostImageUpload> = ({ onNewFile }) => {
 			console.error('onError:', error);
 		},
 	});
-	console.log('test release docker');
+	// eslint-disable-next-line no-console
+	console.log('test new release docker!');
 	return (
 		<div className="p-2 h-48 cursor-pointer flex justify-center align-middle bg-slate-100 text-slate-600">
 			<div {...getRootProps({ className: 'dropzone' })}>
