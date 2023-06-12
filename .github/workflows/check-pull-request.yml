@@ -8,7 +8,7 @@ on:
 env:
   REGISTRY: 'ghcr.io'
   OWNER: 'smartive-education'
-  REPOSITORY: 'auth-pizza-hawaii'
+  REPOSITORY: 'app-pizza-hawaii'
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ env.NPM_TOKEN }}
 
       - name: Prettier
         run: npm run prettier
@@ -38,39 +38,54 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v2
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          registry: ${{env.REGISTRY}}
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.NPM_TOKEN }}
+          password: ${{ env.NPM_TOKEN }}
+
+      - name: Create npmrc file
+        run: echo ${{ env.NPM_RC }} > .npmrc
 
       - name: Build and push Docker image to GitHub Container Registry
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
           load: true
-          secrets: 'npmrc=${{ secrets.NPM_RC }}'
-          tags: ${{env.REGISTRY}}/${{env.OWNER}}/${{env.REPOSITORY}}:test
+          secret-files: |
+            "npmrc=./.npmrc"
+          tags: ${{ env.OWNER }}/${{ env.REPOSITORY }}:test
 
-      - name: Test Docker image
-        run: |
-          docker run --rm ${{env.REGISTRY}}/${{env.OWNER}}/${{env.REPOSITORY}}:test
+      - name: Remove npmrc file
+        run: rm .npmrc
 
-      - name: Build and push
+      # - name: Docker meta
+      #   id: meta
+      #   uses: docker/metadata-action@v4
+      #   with:
+      #     images: ${{ env.OWNER }}/${{ env.REPOSITORY }}:test
+
+      -
+        name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          secrets: 'npmrc=${{ secrets.NPM_RC }}'
-          tags: ${{env.REGISTRY}}/${{env.OWNER}}/${{env.REPOSITORY}}:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
-  test-e2e:
+  playwright:
+    name: 'Playwright Tests'
     runs-on: ubuntu-latest
+    container:
+       images: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPOSITORY }}:test
+
     steps:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
@@ -78,9 +93,9 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
         env:
-          NEXT_PUBLIC_VERCEL_URL: ${{ secrets.NEXT_PUBLIC_VERCEL_URL }}
-          ZITADEL_USERNAME: ${{ secrets.ZITADEL_USERNAME }}
-          ZITADEL_PASSWORD: ${{ secrets.ZITADEL_PASSWORD }}
+          NEXT_PUBLIC_VERCEL_URL: ${{ env.NEXT_PUBLIC_VERCEL_URL }}
+          ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
+          ZITADEL_PASSWORD: ${{ env.ZITADEL_PASSWORD }}
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
