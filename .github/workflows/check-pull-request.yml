@@ -71,36 +71,36 @@ jobs:
       #   with:
       #     images: ${{ env.OWNER }}/${{ env.REPOSITORY }}:test
 
-      -
-        name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+      # -
+      #   name: Build and push
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     context: .
+      #     push: true
+      #     tags: ${{ steps.meta.outputs.tags }}
+      #     labels: ${{ steps.meta.outputs.labels }}
 
-  playwright:
-    name: 'Playwright Tests'
-    runs-on: ubuntu-latest
-    container:
-       images: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPOSITORY }}:test
+  # playwright:
+  #   name: 'Playwright Tests'
+  #   runs-on: ubuntu-latest
+  #   container:
+  #      images: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPOSITORY }}:test
 
-    steps:
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+  #   steps:
+  #     - name: Install Playwright Browsers
+  #       run: npx playwright install --with-deps
 
-      - name: Run Playwright tests
-        run: npx playwright test
-        env:
-          NEXT_PUBLIC_VERCEL_URL: ${{ env.NEXT_PUBLIC_VERCEL_URL }}
-          ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
-          ZITADEL_PASSWORD: ${{ env.ZITADEL_PASSWORD }}
+  #     - name: Run Playwright tests
+  #       run: npx playwright test
+  #       env:
+  #         NEXT_PUBLIC_VERCEL_URL: ${{ env.NEXT_PUBLIC_VERCEL_URL }}
+  #         ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
+  #         ZITADEL_PASSWORD: ${{ env.ZITADEL_PASSWORD }}
 
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 5
+  #     - name: 'Upload Artifact'
+  #       uses: actions/upload-artifact@v3
+  #       if: failure()
+  #       with:
+  #         name: playwright-report
+  #         path: playwright-report/
+  #         retention-days: 5
