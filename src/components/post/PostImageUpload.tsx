@@ -29,7 +29,7 @@ export const PostImageUpload: FC<TPostImageUpload> = ({ onNewFile }) => {
 		},
 	});
 	// eslint-disable-next-line no-console
-	console.log('fixed release frisskacke scheisse fuddig gaggi!');
+	console.log('next release will have a file upload');
 	return (
 		<div className="p-2 h-48 cursor-pointer flex justify-center align-middle bg-slate-100 text-slate-600">
 			<div {...getRootProps({ className: 'dropzone' })}>
