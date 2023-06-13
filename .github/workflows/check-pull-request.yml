@@ -49,13 +49,13 @@ jobs:
       - name: Set environment variables
         run: |
           if [ "${{ env.ENVIRONMENT }}" = "production" ]; then
-            echo "::set-env name=REGISTRY::${{ env.PRODUCTION_REGISTRY }}"
-            echo "::set-env name=OWNER::${{ env.PRODUCTION_OWNER }}"
-            echo "::set-env name=REPOSITORY::${{ env.PRODUCTION_REPOSITORY }}"
+            echo "REGISTRY=${{ env.PRODUCTION_REGISTRY }}" >> $GITHUB_ENV
+            echo "OWNER=${{ env.PRODUCTION_OWNER }}" >> $GITHUB_ENV
+            echo "REPOSITORY=${{ env.PRODUCTION_REPOSITORY }}" >> $GITHUB_ENV
           else
-            echo "::set-env name=REGISTRY::${{ env.STAGE_REGISTRY }}"
-            echo "::set-env name=OWNER::${{ env.STAGE_OWNER }}"
-            echo "::set-env name=REPOSITORY::${{ env.STAGE_REPOSITORY }}"
+            echo "REGISTRY=${{ env.STAGE_REGISTRY }}" >> $GITHUB_ENV
+            echo "OWNER=${{ env.STAGE_OWNER }}" >> $GITHUB_ENV
+            echo "REPOSITORY=${{ env.STAGE_REPOSITORY }}" >> $GITHUB_ENV
           fi
 
       - uses: actions/checkout@v3
