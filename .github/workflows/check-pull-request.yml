@@ -1,4 +1,4 @@
-name: Build and Deploy to GitHub Container Registry
+name: Build and Deploy to Container Registry
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  ENVIRONMENT: 'stage' # stage | production
+  ENVIRONMENT: 'production' # stage | production
   REGISTRY: ${{ env.ENVIRONMENT == 'production' && 'europe-west6-docker.pkg.dev' || 'ghcr.io' }}
   OWNER: ${{ env.ENVIRONMENT == 'production' && 'mumble1/mumble-docker' || 'smartive-education' }}
   REPOSITORY: 'app-pizza-hawaii'
@@ -45,7 +45,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - id: 'auth'
-        name: 'Authenticate to Google Cloud'
+        name: 'Authenticate to ${{ env.REGISTRY }}'
         if: env.ENVIRONMENT == 'production'
         uses: 'google-github-actions/auth@v1'
         with:
@@ -53,7 +53,7 @@ jobs:
           service_account: 'casfee23-account@project-pizza-388116.iam.gserviceaccount.com'
           token_format: 'access_token'
 
-      - name: Login to GitHub Container Registry
+      - name: Login to ${{ env.REGISTRY }}
         if: env.ENVIRONMENT == 'stage'
         uses: docker/login-action@v2
         with:
@@ -61,7 +61,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ env.NPM_TOKEN }}
 
-      - name: Login to GitHub Container Registry
+      - name: Login to ${{ env.REGISTRY }}
         if: env.ENVIRONMENT == 'production'
         uses: docker/login-action@v2
         with:
@@ -69,7 +69,7 @@ jobs:
           username: 'oauth2accesstoken'
           password: '${{ steps.auth.outputs.access_token }}'
 
-      - name: Build and push Docker image to GitHub Container Registry
+      - name: Build and push Docker image to ${{ env.REGISTRY }}
         uses: docker/build-push-action@v4
         with:
           context: .
