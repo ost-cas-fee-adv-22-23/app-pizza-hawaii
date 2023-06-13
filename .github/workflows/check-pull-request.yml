@@ -6,11 +6,14 @@ on:
       - main
 
 env:
-  ENVIRONMENT: 'production' # stage | production
-  REGISTRY: ${{ env.ENVIRONMENT == 'production' && 'europe-west6-docker.pkg.dev' || 'ghcr.io' }}
-  OWNER: ${{ env.ENVIRONMENT == 'production' && 'mumble1/mumble-docker' || 'smartive-education' }}
-  REPOSITORY: 'app-pizza-hawaii'
+  ENVIRONMENT: 'stage' # stage | production
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  STAGE_REGISTRY: ghcr.io
+  STAGE_OWNER: smartive-education
+  STAGE_REPOSITORY: app-pizza-hawaii
+  PRODUCTION_REGISTRY: europe-west6-docker.pkg.dev
+  PRODUCTION_OWNER: mumble1/mumble-docker
+  PRODUCTION_REPOSITORY: app-pizza-hawaii
 
 jobs:
   build:
@@ -42,6 +45,19 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+
+      - name: Set environment variables
+        run: |
+          if [ "${{ env.ENVIRONMENT }}" = "production" ]; then
+            echo "::set-env name=REGISTRY::${{ env.PRODUCTION_REGISTRY }}"
+            echo "::set-env name=OWNER::${{ env.PRODUCTION_OWNER }}"
+            echo "::set-env name=REPOSITORY::${{ env.PRODUCTION_REPOSITORY }}"
+          else
+            echo "::set-env name=REGISTRY::${{ env.STAGE_REGISTRY }}"
+            echo "::set-env name=OWNER::${{ env.STAGE_OWNER }}"
+            echo "::set-env name=REPOSITORY::${{ env.STAGE_REPOSITORY }}"
+          fi
+
       - uses: actions/checkout@v3
 
       - id: 'auth'
