@@ -1,4 +1,4 @@
-name: Build and Deploy to GitHub Container Registry
+name: Build and Deploy to GitHub Container Registry test F.
 
 on:
   pull_request:
