@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 env:
   ENVIRONMENT: 'stage' # stage | production
@@ -106,6 +107,8 @@ jobs:
           NEXT_PUBLIC_VERCEL_URL: ${{ env.NEXT_PUBLIC_VERCEL_URL }}
           ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
           ZITADEL_PASSWORD: ${{ env.ZITADEL_PASSWORD }}
+        ports:
+          - 3000:3000
     steps:
       - uses: actions/checkout@v3
 
@@ -115,7 +118,7 @@ jobs:
           node-version: '18.x'
 
       - name: Install dependencies
-        run: npm install @playwright/test
+        run: npm init playwright
 
       - name: Run Playwright tests
         run: npx playwright test
