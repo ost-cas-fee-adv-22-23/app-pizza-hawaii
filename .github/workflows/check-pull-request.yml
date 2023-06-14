@@ -101,7 +101,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       asd:
-        image: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPOSITORY }}:test
+        image: ${{ env.STAGE_REGISTRY }}/${{ env.STAGE_OWNER }}/${{ env.STAGE_REPOSITORY }}:test
         env:
           NEXT_PUBLIC_VERCEL_URL: ${{ env.NEXT_PUBLIC_VERCEL_URL }}
           ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
