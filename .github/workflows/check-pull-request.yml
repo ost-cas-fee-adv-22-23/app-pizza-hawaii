@@ -24,7 +24,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          cache: 'npm-18'
+          node-version: 18.x
           registry-url: https://npm.pkg.github.com/
           scope: '@smartive-education'
 
@@ -60,16 +61,7 @@ jobs:
 
       - uses: actions/checkout@v3
 
-      - id: 'auth'
-        name: 'Authenticate to ${{ env.REGISTRY }}'
-        if: env.ENVIRONMENT == 'production'
-        uses: 'google-github-actions/auth@v1'
-        with:
-          workload_identity_provider: 'projects/654053669202/locations/global/workloadIdentityPools/casfee23-pool/providers/casfee23-provider'
-          service_account: 'casfee23-account@project-pizza-388116.iam.gserviceaccount.com'
-          token_format: 'access_token'
-
-      - name: Login to ${{ env.REGISTRY }}
+      - name: Login to ${{ env.STAGE_REGISTRY }}
         if: env.ENVIRONMENT == 'stage'
         uses: docker/login-action@v2
         with:
@@ -77,7 +69,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ env.NPM_TOKEN }}
 
-      - name: Login to ${{ env.REGISTRY }}
+      - id: 'auth'
+        name: 'Authenticate to ${{ env.PRODUCTION_REGISTRY }}'
+        if: env.ENVIRONMENT == 'production'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: 'projects/654053669202/locations/global/workloadIdentityPools/casfee23-pool/providers/casfee23-provider'
+          service_account: 'casfee23-account@project-pizza-388116.iam.gserviceaccount.com'
+          token_format: 'access_token'
+
+      - name: Login to ${{ env.PRODUCTION_REGISTRY }}
         if: env.ENVIRONMENT == 'production'
         uses: docker/login-action@v2
         with:
@@ -93,26 +94,47 @@ jobs:
           push: true
           secrets: |
             "npm_token=${{ env.NPM_TOKEN }}"
-          tags: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPOSITORY }}:latest #,${{ github.sha }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPOSITORY }}:latest
+            ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPOSITORY }}:${{ github.sha }}
 
 
 
-  # playwright:
-  #   name: 'Playwright Tests'
-  #   runs-on: ubuntu-latest
-  #   container:
-  #      images: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPOSITORY }}:test
 
-  #   steps:
-  #     - name: Install Playwright Browsers
-  #       run: npx playwright install --with-deps
+  playwright1:
+    name: 'Playwright Tests'
+    runs-on: ubuntu-latest
+    services:
+      latest:
+        image: ${{ env.STAGE_REGISTRY }}/${{ env.STAGE_OWNER }}/${{ env.STAGE_REPOSITORY }}:latest
+        env:
+          NEXT_PUBLIC_VERCEL_URL: ${{ secrets.NEXT_PUBLIC_VERCEL_URL }}
+          NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          ZITADEL_ISSUER: ${{ secrets.ZITADEL_ISSUER }}
+          ZITADEL_CLIENT_ID: ${{ secrets.ZITADEL_CLIENT_ID }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        ports:
+          - 3000:3000
+    steps:
 
-  #     - name: Run Playwright tests
-  #       run: npx playwright test
-  #       env:
-  #         NEXT_PUBLIC_VERCEL_URL: ${{ env.NEXT_PUBLIC_VERCEL_URL }}
-  #         ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
-  #         ZITADEL_PASSWORD: ${{ env.ZITADEL_PASSWORD }}
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'npm-18'
+          node-version: '18.x'
+
+      - name: Install dependencies
+        run: npm install @playwright/test
+
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          NEXT_PUBLIC_VERCEL_URL: ${{ env.NEXT_PUBLIC_VERCEL_URL }}
+          ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
+          ZITADEL_PASSWORD: ${{ env.ZITADEL_PASSWORD }}
 
   #     - name: 'Upload Artifact'
   #       uses: actions/upload-artifact@v3
