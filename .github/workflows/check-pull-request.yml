@@ -112,13 +112,39 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: remove unnecessary files because actions/checkout@v3 does not sparse files
+        run: |
+          rm -rf package.json
+          rm -rf package-lock.json
+          rm -rf src
+          rm -rf public
+          rm -rf .next
+
+
       - uses: actions/setup-node@v3
         with:
           cache: 'npm'
-          node-version: '18.x'
+          node-version: 18.x
+          registry-url: https://npm.pkg.github.com/
+          scope: '@smartive-education'
+
+      # - name: Install dependencies
+      #   run: npm ci
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ env.NPM_TOKEN }}
 
       - name: Install dependencies
-        run: npm init playwright
+        run: |
+          npm init --yes
+          npm install --save-dev @playwright/test
+          npm install --save-dev dotenv
+          # npm init --yes playwright@latest -- --quiet --browser=chromium --browser=firefox --browser=webkit --gha
+        env:
+          NODE_AUTH_TOKEN: ${{ env.NPM_TOKEN }}
+
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps --force
 
       - name: Run Playwright tests
         run: npx playwright test
