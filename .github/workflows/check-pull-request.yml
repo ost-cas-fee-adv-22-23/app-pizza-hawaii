@@ -40,13 +40,11 @@ jobs:
       - name: Lint
         run: npm run lint
 
-  run-docker:
+  create-test-docker-image:
     permissions: write-all
-
 
     runs-on: ubuntu-latest
     steps:
-
       - name: Set environment variables
         run: |
           if [ "${{ env.ENVIRONMENT }}" = "production" ]; then
@@ -95,30 +93,20 @@ jobs:
           secrets: |
             "npm_token=${{ env.NPM_TOKEN }}"
           tags: |
-            ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPOSITORY }}:latest
+            ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPOSITORY }}:test
             ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPOSITORY }}:${{ github.sha }}
 
-
-
-
-  playwright1:
+  playwright-test:
     name: 'Playwright Tests'
     runs-on: ubuntu-latest
     services:
-      latest:
-        image: ${{ env.STAGE_REGISTRY }}/${{ env.STAGE_OWNER }}/${{ env.STAGE_REPOSITORY }}:latest
+      asd:
+        image: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPOSITORY }}:test
         env:
-          NEXT_PUBLIC_VERCEL_URL: ${{ secrets.NEXT_PUBLIC_VERCEL_URL }}
-          NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
-          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          ZITADEL_ISSUER: ${{ secrets.ZITADEL_ISSUER }}
-          ZITADEL_CLIENT_ID: ${{ secrets.ZITADEL_CLIENT_ID }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        ports:
-          - 3000:3000
+          NEXT_PUBLIC_VERCEL_URL: ${{ env.NEXT_PUBLIC_VERCEL_URL }}
+          ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
+          ZITADEL_PASSWORD: ${{ env.ZITADEL_PASSWORD }}
     steps:
-
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
