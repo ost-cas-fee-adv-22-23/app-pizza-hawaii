@@ -97,7 +97,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPOSITORY }}:test
             ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPOSITORY }}:${{ github.sha }}
 
-  playwright-test:
+  e2e-test:
     name: 'Playwright Tests'
     runs-on: ubuntu-latest
     services:
