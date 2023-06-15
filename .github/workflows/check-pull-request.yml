@@ -101,8 +101,8 @@ jobs:
     name: 'Playwright Tests'
     runs-on: ubuntu-latest
     services:
-      asd:
         image: ghcr.io/smartive-education/app-pizza-hawaii:test
+      app:
         env:
           NEXT_PUBLIC_VERCEL_URL: ${{ env.NEXT_PUBLIC_VERCEL_URL }}
           ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
@@ -114,37 +114,21 @@ jobs:
 
       - name: remove unnecessary files because actions/checkout@v3 does not sparse files
         run: |
-          rm -rf package.json
-          rm -rf package-lock.json
-          rm -rf src
-          rm -rf public
-          rm -rf .next
-
+          find . -type f ! -path "./tests/*" ! -name "playwright.config.ts" -delete
+          find . -mindepth 1 -type d ! -path "./tests" ! -path "." -exec rm -rf {} +
 
       - uses: actions/setup-node@v3
         with:
           cache: 'npm'
           node-version: 18.x
-          registry-url: https://npm.pkg.github.com/
-          scope: '@smartive-education'
-
-      # - name: Install dependencies
-      #   run: npm ci
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ env.NPM_TOKEN }}
 
       - name: Install dependencies
         run: |
           npm init --yes
           npm install --save-dev @playwright/test
           npm install --save-dev dotenv
+          npx playwright install --with-deps chromium
           # npm init --yes playwright@latest -- --quiet --browser=chromium --browser=firefox --browser=webkit --gha
-        env:
-          NODE_AUTH_TOKEN: ${{ env.NPM_TOKEN }}
-
-
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps --force
 
       - name: Run Playwright tests
         run: npx playwright test
