@@ -131,9 +131,9 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
         env:
-          NEXT_PUBLIC_VERCEL_URL: ${{ env.NEXT_PUBLIC_VERCEL_URL }}
-          ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
-          ZITADEL_PASSWORD: ${{ env.ZITADEL_PASSWORD }}
+          NEXT_PUBLIC_VERCEL_URL: ${{ secrets.NEXT_PUBLIC_VERCEL_URL }}
+          ZITADEL_USERNAME: ${{ secrets.ZITADEL_USERNAME }}
+          ZITADEL_PASSWORD: ${{ secrets.ZITADEL_PASSWORD }}
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
