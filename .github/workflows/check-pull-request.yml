@@ -101,8 +101,8 @@ jobs:
     name: 'Playwright Tests'
     runs-on: ubuntu-latest
     services:
-        image: ghcr.io/smartive-education/app-pizza-hawaii:test
       app:
+        image: 'ghcr.io/smartive-education/app-pizza-hawaii:test'
         env:
           NEXT_PUBLIC_VERCEL_URL: ${{ env.NEXT_PUBLIC_VERCEL_URL }}
           ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
