@@ -128,7 +128,6 @@ jobs:
           npm install --save-dev @playwright/test
           npm install --save-dev dotenv
           npx playwright install --with-deps chromium
-          # npm init --yes playwright@latest -- --quiet --browser=chromium --browser=firefox --browser=webkit --gha
 
       - name: Run Playwright tests
         run: npx playwright test
