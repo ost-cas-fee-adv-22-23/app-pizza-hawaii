@@ -134,3 +134,11 @@ jobs:
           NEXT_PUBLIC_VERCEL_URL: ${{ env.NEXT_PUBLIC_VERCEL_URL }}
           ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
           ZITADEL_PASSWORD: ${{ env.ZITADEL_PASSWORD }}
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 5
