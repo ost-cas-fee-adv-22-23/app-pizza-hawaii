@@ -126,7 +126,7 @@ jobs:
           npm init --yes
           npm install --save-dev @playwright/test
           npm install --save-dev dotenv
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps
 
       - name: Run Playwright tests
         run: npx playwright test
