@@ -1,4 +1,4 @@
-const LHCI_SERVER_BASE_URL = 'https://app-pizza-hawaii.vercel.app';
+const LHCI_SERVER_BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
 
 module.exports = {
 	ci: {
