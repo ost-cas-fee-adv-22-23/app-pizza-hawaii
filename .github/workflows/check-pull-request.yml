@@ -142,3 +142,38 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 5
+
+
+  lhci:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+    services:
+      app:
+        image: 'ghcr.io/smartive-education/app-pizza-hawaii:test'
+        env:
+          NEXT_PUBLIC_VERCEL_URL: ${{ env.NEXT_PUBLIC_VERCEL_URL }}
+          ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
+          ZITADEL_PASSWORD: ${{ env.ZITADEL_PASSWORD }}
+        ports:
+          - 3000:3000
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - name: Configure Lighthouse CI
+        run: |
+          npm install -g @lhci/cli
+          lhci autorun --upload.target=temporary-public-storage
+        env:
+          NEXT_PUBLIC_VERCEL_URL: ${{ secrets.NEXT_PUBLIC_VERCEL_URL }}
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: lhci-report
+          path: lhci-report/
+          retention-days: 5

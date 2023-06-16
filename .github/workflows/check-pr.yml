@@ -97,9 +97,15 @@ jobs:
 
       - name: run Lighthouse CI
         run: |
-          npm install -g @lhci/cli@0.11.x
-          lhci autorun
-          lhci collect
-          lhci upload
+          npm install -g @lhci/cli
+          lhci autorun --collect.url=${{ secrets.NEXT_PUBLIC_VERCEL_URL }}
         env:
           NEXT_PUBLIC_VERCEL_URL: ${{ secrets.NEXT_PUBLIC_VERCEL_URL }}
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: lhci-report
+          path: lighthouseci-report/
+          retention-days: 5

@@ -10,7 +10,7 @@ on:
     branches: [main, feature/*]
 
 jobs:
-  lhci:
+  lhci1:
     name: Lighthouse
     runs-on: ubuntu-latest
     steps:
