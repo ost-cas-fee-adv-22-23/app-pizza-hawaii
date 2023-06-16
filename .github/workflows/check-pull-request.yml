@@ -143,7 +143,6 @@ jobs:
           path: playwright-report/
           retention-days: 5
 
-
   lhci:
     name: Lighthouse CI
     runs-on: ubuntu-latest

@@ -94,7 +94,6 @@ jobs:
 
       # run lhci
 
-
       - name: run Lighthouse CI
         run: |
           npm install -g @lhci/cli
