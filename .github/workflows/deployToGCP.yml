@@ -66,10 +66,12 @@ jobs:
               "npm_token=${{ secrets.NPM_TOKEN }}"
             tags: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.REPOSITORY }}:latest 
             
-        - name: install on cloudRun with terraform
+        - name: Install the App on Artifact Registry a cloudRun Container with terraform
           uses: hashicorp/setup-terraform@v2
         - run: terraform init
           working-directory: terraform
+        - run: terraform validate
+          working-directory: terraform  
         - run: terraform apply -auto-approve
           working-directory: terraform  #,${{ github.sha }}
   
