@@ -1,6 +1,6 @@
 {
 	"name": "app-pizza-hawaii",
-	"version": "0.1.1-development",
+	"version": "0.1.2",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
