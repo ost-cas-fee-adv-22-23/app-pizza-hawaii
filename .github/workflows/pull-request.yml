@@ -9,14 +9,14 @@ on:
 jobs:
   pr-lint-and-prettier:
     name: Lint and Prettier
-    uses: ./.github/workflows/tasks/lint-and-prettier.yml
+    uses: ./.github/workflows/task-lint-and-prettier.yml
     secrets: inherit
 
   pr-docker-build-and-publish:
     # if: success()
     name: Build and Publish Docker image
     # needs: pr-lint-and-prettier
-    uses: ./.github/workflows/tasks/docker-push.yml
+    uses: ./.github/workflows/task-docker-push.yml
     with:
       registry: github
       tags: |
@@ -28,7 +28,7 @@ jobs:
     if: success()
     name: E2E Tests on Docker
     needs: pr-docker-build-and-publish
-    uses: ./.github/workflows/tasks/playwright-e2e.yml
+    uses: ./.github/workflows/task-playwright-e2e.yml
     with:
       image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
