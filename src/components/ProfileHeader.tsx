@@ -28,9 +28,7 @@ type TProfileHeader = {
 export const ProfileHeader: FC<TProfileHeader> = ({ user, canEdit = false }) => {
 	const [showSettingsModal, setShowSettingsModal] = useState(false);
 	const [showImageModal, setShowImageModal] = useState(false);
-	// TODO: remove console.log
-	// eslint-disable-next-line no-console
-	console.log('test user at ProfileHeader', user);
+
 	const picture: TImageModalPicture = {
 		src: user.posterImage,
 		width: ProjectSettings.images.header.width,

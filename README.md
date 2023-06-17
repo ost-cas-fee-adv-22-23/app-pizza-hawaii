@@ -292,16 +292,11 @@ terraform import google_secret_manager_secret.default ZITADEL_CLIENT_ID
 Then we add the following code to terraForm configuration
 
 ```
-resource "google_secret_manager_secret" "default" {
-  secret_id = "NEXTAUTH_SECRET"
+data "google_secret_manager_secret_version" "nextauth_secret" {
+  provider = google
 
-  replication {
-    user_managed {
-      replicas {
-        location = local.gpc_region
-      }
-    }
-  }
+  secret  = "nextauth_secret"
+  version = "1"
 }
 ```
 
@@ -320,7 +315,7 @@ Here we define:
 - Ports and Protocols
 - deployment settings
 
-All important Sections are documented within the file. 
+All important Sections are documented within the Terraform files `main.tf` and `cloud-run.tf` in the `/terraform` folder. 
 
 
 ### Test Terraform configuration
@@ -329,17 +324,24 @@ All important Sections are documented within the file.
 terraform plan
 `
 
-### Run Terraform Workflow
+### Validate Terraform configuration
+
+`
+terraform validate
+`
+
+### Run Terraform Workflow 
+if the workflow suceeded until here then we can apply the the changes with the switch `-auto-approve`.
 
 `
 terraform apply -auto-approve
 `
 
-## LiveDemo
+## LiveDemo at Google Cloud 
 
-if the the deploy process is successfull we have a newly built app 
+if the the deploy process is successfull we have a newly built App Pizza Hawaii Mumble serving with CloudRun Service at: 
 
-at: https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app/
+https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app
 
 
 
