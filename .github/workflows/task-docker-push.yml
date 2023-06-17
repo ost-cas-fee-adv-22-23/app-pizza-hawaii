@@ -37,7 +37,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ env.NPM_TOKEN }}
 
-
       - name: Build and push Docker image to GitHub Container Registry
         uses: docker/build-push-action@v4
         with:
@@ -68,7 +67,6 @@ jobs:
           registry: 'europe-west6-docker.pkg.dev'
           username: 'oauth2accesstoken'
           password: '${{ steps.auth.outputs.access_token }}'
-
 
       - name: Build and push Docker image to Google Container Registry
         uses: docker/build-push-action@v4
