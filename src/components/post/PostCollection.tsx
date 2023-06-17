@@ -48,6 +48,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 	filter = {},
 }) => {
 	const { data: session } = useSession();
+
 	const { isActive: tabIsActive } = useActiveTabContext();
 
 	const [postState, postDispatch] = useReducer(PCReducer, {
@@ -105,7 +106,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 			...filter,
 			...requestObject,
 		});
-
+		console.log('loadedPosts', loadedPosts);
 		if (!loadedPosts?.length) {
 			return {
 				posts: [],
