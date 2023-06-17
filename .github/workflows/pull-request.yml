@@ -14,7 +14,7 @@ jobs:
 
   pr-docker-build-and-publish:
     # if: success()
-    name: Build and Publish Docker image
+    name: Build and Publish Docker (Test / GitHub Container Registry)
     # needs: pr-lint-and-prettier
     uses: ./.github/workflows/task-docker-push.yml
     with:
@@ -31,4 +31,16 @@ jobs:
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
       image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+    secrets: inherit
+
+  pr-live-deploy:
+    if: success()
+    name: Build and Publish Docker (Live / Google Cloud)
+    needs: pr-playwright-e2e
+    uses: ./.github/workflows/task-docker-push.yml
+    with:
+      registry: google
+      tags: |
+        europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:latest
+        europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
