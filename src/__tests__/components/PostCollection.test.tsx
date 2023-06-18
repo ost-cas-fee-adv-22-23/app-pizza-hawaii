@@ -8,17 +8,9 @@ import { PostList } from '@/components/post/PostList';
 
 jest.mock('next-auth/react');
 describe('PostCollection Component input rendering', () => {
-
-    const loadedPosts: TPost[] = mockLoadedPosts
+    
+    const loadedPosts = mockLoadedPosts as TPost[];
         
-    // const postCollectionProps: any = {
-    //     posts: mockLoadedPosts as TPost[],
-    //     canAdd: false,
-    //     canLoadMore: true,
-    //     autoUpdate: true,
-    //     filter: {creator: "201444056083988737"},
-    // };
-
     afterAll(cleanup);
     // test if PostCollection component renders correctly
     it('should render the PostCollection component with text', () => {
@@ -97,31 +89,58 @@ describe('PostCollection Component input rendering', () => {
             autoUpdate={true}
             />);
         expect(screen.getByText('Keine Posts vorhanden.'));
-        });
+    });
+
+    //test if PostCollection component renders correctly if a filter is applied
+    it('should render the PostCollection component with a filter of userId', async () => {
+       render(<PostCollection
+                posts={loadedPosts}
+                canLoadMore={true}
+                canAdd={true}
+                autoUpdate={true}
+                filter={{creator: '201444056083988737'}}
+            />);
+        
+        const tomLinks = screen.getAllByRole('link', { name: 'tomschall' });
+        expect(tomLinks).toHaveLength(3);
+    });
+
+    // finaly test snapshot
+    it('should should match snapshot', () => {
+        const { container } = render(<PostCollection
+            posts={loadedPosts}
+            canLoadMore={true}
+            canAdd={true}
+            autoUpdate={true}
+            />);
+        expect(container).toMatchSnapshot();
+    });
+
 });
 
 describe('PostList Component input rendering', () => {
-    const loadedPosts: TPost[] = mockLoadedPosts
+    const loadedPosts = mockLoadedPosts as TPost[];
 
     afterAll(cleanup);
-
+    // it should render the PostList component and display a post-hashtag as text
     it('should render PostList component with text', () => {
         render(<PostList 
             posts={loadedPosts}
             variant='timeline'
             onAnswerPost={jest.fn()}
-            noPostsMessage='No Posts'
+            noPostsMessage='Keine Posts vorhanden.'
             />);
         expect(screen.getAllByText('#popcorn'));
     });
 
-    it('should should match snapshot', () => {
-        const { container } = render(<PostList 
-            posts={loadedPosts}
+    //it should render also an empty postList
+    it('should render an empty PostList component with a feedback text if no Posts are loaded', () => {
+        render(<PostList 
+            posts={[]}
             variant='timeline'
             onAnswerPost={jest.fn()}
-            noPostsMessage='No Posts'
+            noPostsMessage='Keine Posts vorhanden.'
             />);
-        expect(container).toMatchSnapshot();
+        expect(screen.getByText('Keine Posts vorhanden.'));
     });
 });

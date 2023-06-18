@@ -31,13 +31,13 @@ describe('UserRecommender component', () => {
 	});
 
 	test('renders 4 UserCard components with skeletons when given limit is 4', async () => {
-		// updating props for test
-		const props = {
+		// updating props for test: propsLimit4
+		const propsLimit4 = {
 			currentUserId: '1234567890',
 			excludeUserIds: ['10000004', '10000005', '10000006'],
 			limit: 4,
 		};
-		const { container } = render(<UserRecommender {...props} />);
+		const { container } = render(<UserRecommender {...propsLimit4} />);
 		expect(container.getElementsByClassName('animate-pulse')).toHaveLength(4);
 	});
 
