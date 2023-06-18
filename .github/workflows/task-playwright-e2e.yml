@@ -23,6 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: 'Logg NEXT_PUBLIC_VERCEL_URL'
+        run: echo Running Playwright tests on ${{ env.NEXT_PUBLIC_VERCEL_URL }}
+
       - name: remove unnecessary files because actions/checkout@v3 does not sparse files
         run: |
           find . -type f ! -path "./tests/*" ! -name "playwright.config.ts" -delete
