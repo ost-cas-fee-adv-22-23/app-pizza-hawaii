@@ -89,6 +89,7 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 
 		// return if no text or file is set or no onAddPost function is passed
 		if ((!text && !file) || !onAddPost) {
+			setText('11'); // TODO: remove just for testing
 			return;
 		}
 
@@ -99,6 +100,7 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 		});
 
 		if (!newPost) {
+			setText('22'); // TODO: remove just for testing
 			return;
 		}
 
