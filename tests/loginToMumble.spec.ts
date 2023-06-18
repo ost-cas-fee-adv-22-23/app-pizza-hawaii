@@ -14,7 +14,7 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		await page.getByRole('button', { name: 'Login via Zitadel' }).click();
 
 		// Check if we are on the zitadel login page
-		await page.screenshot({ path: 'login-redirect.png', fullPage: true });
+
 		await expect(page).toHaveURL(/.*.zitadel.cloud\/ui\/login\/login.*/);
 
 		// Step 2: Fill in the username
@@ -37,19 +37,21 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		await expect(postTextArea).toBeVisible();
 		await postTextArea.fill(exampleText);
 		await page.waitForTimeout(100);
-		await page.getByRole('button', { name: 'Absenden' }).click();
-		await page.waitForTimeout(5000);
+		const postButton = page.getByRole('button', { name: 'Absenden' });
+		await expect(postButton).toBeEnabled();
+		await postButton.click();
 
-		await page.screenshot({ path: 'after-post.png', fullPage: true });
+		// Step 5.1: Get all elements with class 'PostItem' to have length > 0
+		const postItems = await page.$$('.PostItem');
+		await expect(postItems.length).toBeGreaterThan(0);
 
-		// Step 5: Get element with class 'PostItem' that contains the text
+		// Step 5.2: Get element with class 'PostItem' that contains the text
 		const postItem = page.locator(`.PostItem:has-text("${exampleText}")`);
 		await expect(postItem).toBeVisible();
 
 		// Step 6: Delete the exact PostItem again
 		await postItem.getByText('Delete', { exact: true }).click();
 		await page.waitForTimeout(500);
-		await page.screenshot({ path: 'after-delete.png', fullPage: true });
 
 		// Check if the post is gone from the timeline
 		await expect(postItem).not.toBeVisible();
@@ -57,8 +59,6 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		// Step 7: Logout from mumble
 		const logoutBtn = page.getByRole('button', { name: 'Log out' });
 		await logoutBtn.click();
-
-		await page.screenshot({ path: 'after-logout.png', fullPage: true });
 
 		// Check if we are redirected to the login url
 		// await expect(page).toHaveURL(loginUrl);

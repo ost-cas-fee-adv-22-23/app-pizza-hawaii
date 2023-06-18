@@ -14,7 +14,7 @@
 		"test-end2end": "npx playwright test",
 		"test-end2end:debug": "npx playwright test --debug",
 		"test-end2end:ui": "npx playwright test --ui",
-		"lighthouse": "npx lhci autorun"
+		"lighthouse": "npx lhci autorun --collect.url=http://localhost:3000/auth/login"
 	},
 	"dependencies": {
 		"@fontsource/poppins": "^5.0.3",

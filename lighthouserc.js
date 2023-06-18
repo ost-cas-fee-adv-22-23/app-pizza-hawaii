@@ -1,9 +1,6 @@
-const LHCI_SERVER_BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
-
 module.exports = {
 	ci: {
 		collect: {
-			url: [`${LHCI_SERVER_BASE_URL}/auth/login`, `${LHCI_SERVER_BASE_URL}/auth/signup`],
 			numberOfRuns: 2,
 			settings: { preset: 'desktop' },
 		},
