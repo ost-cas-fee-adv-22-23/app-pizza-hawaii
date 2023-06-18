@@ -33,6 +33,7 @@ jobs:
       image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
+  # just for pipeline testing purposes (will be moved to main workflow)
   pr-live-deploy:
     if: success()
     name: Build and Publish Docker (Live / Google Cloud)
