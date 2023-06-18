@@ -35,6 +35,7 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		const postTextArea = page.getByPlaceholder('Deine Meinung zählt');
 		await expect(postTextArea).toBeVisible();
 		await postTextArea.fill(exampleText);
+		await page.waitForTimeout(100);
 		await page.getByRole('button', { name: 'Absenden' }).click();
 		await page.waitForTimeout(2000);
 
