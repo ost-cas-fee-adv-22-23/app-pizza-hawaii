@@ -36,7 +36,7 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		await expect(postTextArea).toBeVisible();
 		await postTextArea.fill(exampleText);
 		await page.getByRole('button', { name: 'Absenden' }).click();
-		await page.waitForTimeout(500);
+		await page.waitForTimeout(2000);
 
 		// Step 5: Get element with class 'PostItem' that contains the text
 		const postItem = page.locator(`.PostItem:has-text("${exampleText}")`);
