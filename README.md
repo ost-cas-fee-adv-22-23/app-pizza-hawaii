@@ -46,7 +46,7 @@ To authenticate by adding your personal access token (classic) to your `~/.npmrc
     @smartive-education:registry=https://npm.pkg.github.com
     //npm.pkg.github.com/:_authToken=[insert TOKEN here]
 
-> Tip: You can then set the token as an environment variable with the name `NPM_TOKEN` or add it to your `.npmrc` file.
+> Tip: Add the token also as an environment secret with the name `NPM_TOKEN`.
 > **Please make sure to keep your token secure and not to share it with anyone.**
 
 ## 3. Create a local security environment file for variables.

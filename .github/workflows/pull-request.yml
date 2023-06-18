@@ -41,5 +41,5 @@ jobs:
     uses: ./.github/workflows/task-web-vitals.yml
     with:
       image: ''
-      test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
+      test_url: http://localhost:3000/auth/signup
     secrets: inherit
