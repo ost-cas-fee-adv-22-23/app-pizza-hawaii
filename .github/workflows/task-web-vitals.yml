@@ -57,3 +57,5 @@ jobs:
         run: |
           npm install -g @lhci/cli
           lhci autorun --collect.url=${{ inputs.test_url }} --collect.numberOfRuns=3 --upload.target=temporary-public-storage --upload.token=${{ secrets.NPM_TOKEN }}
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}

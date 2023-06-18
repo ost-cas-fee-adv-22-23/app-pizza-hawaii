@@ -16,20 +16,13 @@ const getPasswordFields = async (page: Page) => {
 	await expect(passwordField).toBeVisible();
 	await expect(confirmPasswordField).toBeVisible();
 
-	console.log('passwordField', await passwordField);
-	console.log('confirmPasswordField', await confirmPasswordField);
-
 	// get aria-describedby linked text
 	const confirmPasswordFieldAriaDescribedBy = await confirmPasswordField.getAttribute('aria-describedby');
-
-	console.log('confirmPasswordFieldAriaDescribedBy', confirmPasswordFieldAriaDescribedBy);
 
 	// get the user feedback element
 	const confirmPasswordFieldUserFeedback = confirmPasswordFieldAriaDescribedBy
 		? page.locator(`#${confirmPasswordFieldAriaDescribedBy}`)
 		: null;
-
-	console.log('confirmPasswordFieldUserFeedback', confirmPasswordFieldUserFeedback);
 
 	return {
 		passwordField,
