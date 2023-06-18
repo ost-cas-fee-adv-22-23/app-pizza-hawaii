@@ -1,0 +1,24 @@
+name: Web Vitals
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        description: 'The image to test'
+        required: true
+        default: 'ghcr.io/smartive-education/app-pizza-hawaii:test'
+        type: string
+
+jobs:
+  web-vitals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli
+          lhci autorun --collect.url=${{ secrets.NEXT_PUBLIC_VERCEL_URL }}/auth/login --collect.url=${{ secrets.NEXT_PUBLIC_VERCEL_URL }}/auth/signup --collect.numberOfRuns=3 --upload.target=temporary-public-storage --upload.token=${{ secrets.NPM_TOKEN }}
