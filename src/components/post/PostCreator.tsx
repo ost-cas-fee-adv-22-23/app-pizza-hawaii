@@ -89,7 +89,6 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 
 		// return if no text or file is set or no onAddPost function is passed
 		if ((!text && !file) || !onAddPost) {
-			setText('11'); // TODO: remove just for testing
 			return;
 		}
 
@@ -100,7 +99,6 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 		});
 
 		if (!newPost) {
-			setText('22'); // TODO: remove just for testing
 			return;
 		}
 
@@ -173,7 +171,14 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 				<Button colorScheme="slate" icon="upload" onClick={() => setShowModal(true)}>
 					Bild auswählen
 				</Button>
-				<Button colorScheme="violet" icon="send" onClick={onSubmitPostHandler} disabled={!isValid}>
+				<Button
+					colorScheme="violet"
+					icon="send"
+					onClick={onSubmitPostHandler}
+					disabled={!isValid}
+					data-testid="PostCreatorSubmitButton"
+					type="button"
+				>
 					Absenden
 				</Button>
 			</Grid>

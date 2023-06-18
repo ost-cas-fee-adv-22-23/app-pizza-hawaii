@@ -36,7 +36,8 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		const postTextArea = page.getByPlaceholder('Deine Meinung zählt');
 		await expect(postTextArea).toBeVisible();
 		await postTextArea.fill(exampleText);
-		const postButton = page.getByRole('button', { name: 'Absenden' });
+
+		const postButton = page.locator(`[data-testid="PostCreatorSubmitButton"]`);
 		await expect(postButton).toBeEnabled();
 		await postButton.click();
 		await expect(postTextArea).toHaveValue('');
