@@ -61,20 +61,43 @@ describe('PostCollection Component input rendering', () => {
          />);
         expect(screen.queryByRole('button', { name: 'Load more'}) ).toBeNull();
     });
+    
+    // test if PostCollection component renders correctly if the user is logged in and allowed to add posts
+    it('should render the PostCreator component if `canAdd` is true with a send button', () => {
+        render(<PostCollection
+            headline="Whats new in Mumble...."
+            posts={loadedPosts}
+            canLoadMore={true}
+            canAdd={true}
+            autoUpdate={true}
+            />);
+        expect(screen.getByText('Deine Meinung zählt'));
+        expect(screen.getByRole('button', { name: 'Absenden' }) );
+    });
 
-    // TODO: make that work or not... 
-    // it should render postList only with posts from createor if filter is set
-    // it('should render postList only with posts from createor if filter is set', () => {
-    //     const test = render(<PostCollection
-    //         posts={loadedPosts}
-    //         canLoadMore={true}
-    //         canAdd={false}
-    //         autoUpdate={true}
-    //         filter={{creator: "201444056083988737"}}
-    //      />);
-    //     console.log('test: ', test.debug());
-    //     // expect(screen.);
-    // })
+    // test if PostCollection component renders correctly if the user is not logged in and not allowed to add posts
+    it('should `not` render the PostCreator component if `canAdd` is false (user is not logged in)', () => {
+        render(<PostCollection
+            headline="Whats new in Mumble...."
+            posts={loadedPosts}
+            canLoadMore={true}
+            canAdd={false}
+            autoUpdate={true}
+            />);
+        expect(screen.queryByRole('button', { name: 'Absenden' }) ).toBeNull();
+    });
+
+    // test if PostCollection component renders correctly if the feed returns no posts
+    it('should not render a message to the user if there are no Posts available', () => {
+        render(<PostCollection
+            headline="Whats new in Mumble...."
+            posts={[]}
+            canLoadMore={false}
+            canAdd={false}
+            autoUpdate={true}
+            />);
+        expect(screen.getByText('Keine Posts vorhanden.'));
+        });
 });
 
 describe('PostList Component input rendering', () => {
@@ -89,8 +112,6 @@ describe('PostList Component input rendering', () => {
             onAnswerPost={jest.fn()}
             noPostsMessage='No Posts'
             />);
-
-        screen.debug();
         expect(screen.getAllByText('#popcorn'));
     });
 
