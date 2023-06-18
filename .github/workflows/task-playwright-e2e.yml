@@ -9,22 +9,23 @@ on:
         default: 'ghcr.io/smartive-education/app-pizza-hawaii:test'
         type: string
 
+      test_url:
+        description: 'The URL to test'
+        required: true
+        default: 'http://localhost:3000'
+        type: string
+
 jobs:
   playwright-e2e:
     name: Playwright Tests
     runs-on: ubuntu-latest
     services:
       app:
-        image: 'ghcr.io/smartive-education/app-pizza-hawaii:test'
-        env:
-          NEXT_PUBLIC_VERCEL_URL: ${{ env.NEXT_PUBLIC_VERCEL_URL }}
+        image: ${{ inputs.image }}
         ports:
           - 3000:3000
     steps:
       - uses: actions/checkout@v3
-
-      - name: 'Logg NEXT_PUBLIC_VERCEL_URL'
-        run: echo Running Playwright tests on ${{ env.NEXT_PUBLIC_VERCEL_URL }}
 
       - name: remove unnecessary files because actions/checkout@v3 does not sparse files
         run: |
@@ -45,7 +46,7 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
         env:
-          NEXT_PUBLIC_VERCEL_URL: ${{ env.NEXT_PUBLIC_VERCEL_URL }}
+          NEXT_PUBLIC_VERCEL_URL: ${{ inputs.test_url }}
           ZITADEL_USERNAME: ${{ secrets.ZITADEL_USERNAME }}
           ZITADEL_PASSWORD: ${{ secrets.ZITADEL_PASSWORD }}
 

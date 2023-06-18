@@ -4,13 +4,40 @@ on:
   workflow_call:
     inputs:
       image:
-        description: 'The image to test'
+        description: 'The image to test with (optional)'
+        default: ''
+        type: string
+
+      test_url:
+        description: 'The URL to test'
         required: true
-        default: 'ghcr.io/smartive-education/app-pizza-hawaii:test'
+        default: 'http://localhost:3000'
         type: string
 
 jobs:
-  web-vitals:
+  web-vitals-on-image:
+    if: ${{ inputs.image != '' }}
+    name: Web Vitals
+    runs-on: ubuntu-latest
+    services:
+      app:
+        image: ${{ inputs.image }}
+        ports:
+          - 3000:3000
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: run Lighthouse CI
+        run: |
+          npm install -g @lhci/cli
+          lhci autorun --collect.url=${{ inputs.test_url }} --collect.numberOfRuns=3 --upload.target=temporary-public-storage --upload.token=${{ secrets.NPM_TOKEN }}
+
+  web-vitals-on-url:
+    if: ${{ inputs.image == '' }}
+    name: Web Vitals on URL
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,4 +48,4 @@ jobs:
       - name: run Lighthouse CI
         run: |
           npm install -g @lhci/cli
-          lhci autorun --collect.url=${{ secrets.NEXT_PUBLIC_VERCEL_URL }}/auth/login --collect.url=${{ secrets.NEXT_PUBLIC_VERCEL_URL }}/auth/signup --collect.numberOfRuns=3 --upload.target=temporary-public-storage --upload.token=${{ secrets.NPM_TOKEN }}
+          lhci autorun --collect.url=${{ inputs.test_url }} --collect.numberOfRuns=3 --upload.target=temporary-public-storage --upload.token=${{ secrets.NPM_TOKEN }}

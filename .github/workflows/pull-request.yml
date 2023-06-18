@@ -31,13 +31,14 @@ jobs:
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
       image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      test_url: http://localhost:3000
     secrets: inherit
 
   pr-web-vitals:
     if: success()
     name: Web Vitals on Docker
-    needs: pr-docker-build-and-publish
     uses: ./.github/workflows/task-web-vitals.yml
     with:
-      image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      image: ''
+      test_path: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
     secrets: inherit
