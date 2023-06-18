@@ -37,6 +37,7 @@ jobs:
   pr-web-vitals:
     if: success()
     name: Web Vitals on Docker
+    needs: pr-docker-build-and-publish
     uses: ./.github/workflows/task-web-vitals.yml
     with:
       image: ''
