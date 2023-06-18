@@ -33,15 +33,3 @@ jobs:
       image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
-  # just for pipeline testing purposes (will be moved to main workflow)
-  pr-live-deploy:
-    if: success()
-    name: Build and Publish Docker (Live / Google Cloud)
-    needs: pr-playwright-e2e
-    uses: ./.github/workflows/task-docker-push.yml
-    with:
-      registry: google
-      tags: |
-        europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:latest
-        europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
-    secrets: inherit
