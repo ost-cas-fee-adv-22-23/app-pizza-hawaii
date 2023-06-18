@@ -14,6 +14,7 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		await page.getByRole('button', { name: 'Login via Zitadel' }).click();
 
 		// Check if we are on the zitadel login page
+		await page.screenshot({ path: 'login-redirect.png', fullPage: true });
 		await expect(page).toHaveURL(/.*.zitadel.cloud\/ui\/login\/login.*/);
 
 		// Step 2: Fill in the username
@@ -37,9 +38,9 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		await postTextArea.fill(exampleText);
 		await page.waitForTimeout(100);
 		await page.getByRole('button', { name: 'Absenden' }).click();
-		await page.waitForTimeout(2000);
+		await page.waitForTimeout(5000);
 
-		await page.screenshot({ path: 'screenshot.png', fullPage: true });
+		await page.screenshot({ path: 'after-post.png', fullPage: true });
 
 		// Step 5: Get element with class 'PostItem' that contains the text
 		const postItem = page.locator(`.PostItem:has-text("${exampleText}")`);
@@ -48,6 +49,7 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		// Step 6: Delete the exact PostItem again
 		await postItem.getByText('Delete', { exact: true }).click();
 		await page.waitForTimeout(500);
+		await page.screenshot({ path: 'after-delete.png', fullPage: true });
 
 		// Check if the post is gone from the timeline
 		await expect(postItem).not.toBeVisible();
@@ -55,6 +57,8 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		// Step 7: Logout from mumble
 		const logoutBtn = page.getByRole('button', { name: 'Log out' });
 		await logoutBtn.click();
+
+		await page.screenshot({ path: 'after-logout.png', fullPage: true });
 
 		// Check if we are redirected to the login url
 		// await expect(page).toHaveURL(loginUrl);
