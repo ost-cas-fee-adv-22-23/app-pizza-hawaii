@@ -40,6 +40,7 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		const postButton = page.getByRole('button', { name: 'Absenden' });
 		await expect(postButton).toBeEnabled();
 		await postButton.click({ force: true });
+		await postButton.click({ force: true });
 		await expect(postTextArea).toHaveValue('');
 
 		// Step 5.1: Get all elements with class 'PostItem' to have length > 0
