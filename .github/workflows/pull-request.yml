@@ -30,7 +30,8 @@ jobs:
     # needs: pr-docker-build-and-publish
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
-      image: ghcr.io/smartive-education/app-pizza-hawaii:test #${{ github.sha }}
+      image: ghcr.io/smartive-education/app-pizza-hawaii:test
+      # image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
       test_url: http://localhost:3000
     secrets: inherit
 
@@ -40,6 +41,7 @@ jobs:
     # needs: pr-docker-build-and-publish
     uses: ./.github/workflows/task-web-vitals.yml
     with:
-      image: ghcr.io/smartive-education/app-pizza-hawaii:test #${{ github.sha }}
+      image: ghcr.io/smartive-education/app-pizza-hawaii:test
+      # image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
       test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
     secrets: inherit
