@@ -6,8 +6,6 @@ test('Create and delete Post', async ({ page }) => {
 
 	// Step 0: Open page
 	await page.goto('/');
-	// logg current url
-	console.log(111111111111, page.url());
 
 	await page.waitForSelector('#post-creator');
 
@@ -22,6 +20,7 @@ test('Create and delete Post', async ({ page }) => {
 	await postButton.click();
 
 	// Step 2: Get element with class 'PostItem' that contains the text
+	await page.waitForSelector(`.PostItem:has-text("${exampleText}")`);
 	const postItem = page.locator(`.PostItem:has-text("${exampleText}")`);
 	await expect(postItem).toBeVisible();
 
