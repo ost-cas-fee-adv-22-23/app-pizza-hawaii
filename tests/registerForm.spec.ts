@@ -8,16 +8,22 @@ const thePassword = 'secretPa$$word';
 const wrongPassword = 'secretPa$$word-2different';
 
 test('Register Form is visible', async ({ page }) => {
-	// load the register page
+	// Step 0: Open page
 	await page.goto(signupUrl);
-	// check if the Meta title is correct
+
+	// Check if the Meta title is correct
 	await expect(page).toHaveTitle(signupPageTitle);
-	// check if userName field is visible
-	await expect(page.getByLabel('Username')).toBeVisible();
+
+	// Check if all fields are visible
+	Promise.all(
+		['First Name', 'Last Name', 'Username', 'E-Mail', 'Passwort', 'Passwort wiederholen'].map(async (field) => {
+			await expect(page.getByText(field, { exact: true })).toBeVisible();
+		})
+	);
 });
 
 test('Register Form is working when passwords are different and passwordMismatchFeedback appears', async ({ page }) => {
-	// load the register page
+	// Step 0: Open page
 	await page.goto(signupUrl);
 
 	// fill both password fields with different passwords

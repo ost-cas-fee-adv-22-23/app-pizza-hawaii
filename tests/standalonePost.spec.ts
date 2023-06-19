@@ -7,29 +7,30 @@ const testPostText = 'Wo sind denn all die #hashtags hin?';
 const testPostUser = 'user624';
 
 test.beforeEach(async ({ page }) => {
-	// logout
+	// Logout to be sure to be logged out
 	await page.context().clearCookies();
 	await page.goto(`${appUrl}/auth/logout`);
 });
 
-test('render a single post view when not logged in', async ({ page }) => {
+test('Display a single post when not logged in', async ({ page }) => {
+	// Step 0: Open page
 	await page.goto(testPostUrl);
 
-	await page.waitForURL(testPostUrl);
-
-	// check if the post is visible
+	// Step 1: Check if post is visible
 	const post = page.getByText(testPostText);
 	await expect(post).toBeVisible();
 
-	// check if the post is from user
+	// Step 2: Check if the post is from user
 	await expect(page).toHaveTitle(`Mumble von ${testPostUser}`);
 });
 
-test('test if login link of header works on stanalone post page', async ({ page }) => {
+test('Test if login link of header works on standalone post page', async ({ page }) => {
+	// Step 0: Open page
 	await page.goto(testPostUrl);
 
-	await page.waitForURL(testPostUrl);
-
+	// Step 1: Check if login link is visible
 	await page.getByRole('link', { name: 'Login' }).click();
+
+	// Step 2: Check if login page is visible
 	await expect(page).toHaveURL(`${appUrl}/auth/login`);
 });

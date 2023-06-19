@@ -18,11 +18,11 @@ test('Create and delete Post', async ({ page }) => {
 	const postButton = await page.getByRole('button', { name: 'Absenden' });
 	await expect(postButton).toBeVisible();
 	await postButton.click();
+	await page.waitForResponse('**/posts/**');
 	await page.reload();
 
 	// Step 2: Get element with class 'PostItem' that contains the text
-	await page.waitForSelector(`.PostItem:has-text("${exampleText}")`);
-	const postItem = page.locator(`.PostItem:has-text("${exampleText}")`);
+	const postItem = await page.locator(`.PostItem:has-text("${exampleText}")`);
 	await expect(postItem).toBeVisible();
 
 	// Step 3: Delete the exact PostItem again

@@ -10,6 +10,7 @@ test('Logout from mumble', async ({ page }) => {
 	// Step 1: Click on the logout button
 	page.getByRole('button', { name: 'Log out' }).click();
 
+	// Step 2: Check if the login page is visible
 	await page.waitForURL(loginUrl);
 	await expect(page).toHaveURL(loginUrl);
 });

@@ -3,6 +3,8 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+const testBrowsers = ['Firefox', 'Chrome', 'Safari', 'Mobile Chrome', 'Mobile Safari'];
+
 export default defineConfig({
 	globalSetup: './tests/global.setup.ts',
 	outputDir: './tmp/test-results',
@@ -12,6 +14,7 @@ export default defineConfig({
 	retries: process.env.CI ? 2 : 0,
 	workers: process.env.CI ? 1 : undefined,
 	reporter: 'html',
+	timeout: 30 * 1000,
 	use: {
 		baseURL: process.env.NEXT_PUBLIC_VERCEL_URL,
 		trace: 'on-first-retry',
@@ -25,43 +28,16 @@ export default defineConfig({
 			name: 'login',
 			testMatch: '**/*.setup.ts',
 		},
-		{
-			name: 'logged in chromium',
-			use: { ...devices['Desktop Chrome'] },
+		...testBrowsers.map((browser) => ({
+			name: `logged in ${browser}`,
+			use: { ...devices[browser] },
 			testMatch: '**/*.loggedin.spec.ts',
 			dependencies: ['login'],
-		},
-		{
-			name: 'logged out chromium',
-			use: { ...devices['Firefox'] },
+		})),
+		...testBrowsers.map((browser) => ({
+			name: `logged out ${browser}`,
+			use: { ...devices[browser] },
 			testIgnore: ['**/*.loggedin.spec.ts'],
-		},
-		// {
-		// 	name: 'chromium',
-		// 	use: {
-		// 		...devices['Chrome'],
-		// 	},
-		// 	dependencies: ['setup'],
-		// },
-		// {
-		// 	name: 'firefox',
-		// 	use: { ...devices['Firefox'] },
-		// 	dependencies: ['setup'],
-		// },
-		// {
-		// 	name: 'webkit',
-		// 	use: { ...devices['Safari'] },
-		// 	dependencies: ['setup'],
-		// },
-		// {
-		// 	name: 'Mobile Chrome',
-		// 	use: { ...devices['Pixel 5'] },
-		// 	dependencies: ['setup'],
-		// },
-		// {
-		// 	name: 'Mobile Safari',
-		// 	use: { ...devices['iPhone 12'] },
-		// 	dependencies: ['setup'],
-		// },
+		})),
 	],
 });
