@@ -248,6 +248,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 			{canAdd && (
 				<Grid variant="col" gap="M" marginBelow="M">
 					<PostCreator
+						textAreaId="post-creator"
 						variant="newPost"
 						headline="Hey, was geht ab?"
 						placeHolderText="Deine Meinung zählt"
