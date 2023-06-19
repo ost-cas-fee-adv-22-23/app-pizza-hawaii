@@ -6,6 +6,8 @@ test('Create and delete Post', async ({ page }) => {
 
 	// Step 0: Open page
 	await page.goto('/');
+	// logg current url
+	console.log(111111111111, page.url());
 
 	await page.waitForSelector('#post-creator');
 
