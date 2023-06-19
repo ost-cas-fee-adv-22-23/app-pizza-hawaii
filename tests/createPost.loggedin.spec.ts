@@ -19,7 +19,8 @@ test('Create and delete Post', async ({ page }) => {
 	await expect(postButton).toBeVisible();
 	await postButton.click();
 	await page.waitForResponse('**/posts/**');
-	await page.reload();
+	await page.goto('/auth/signup');
+	await page.goto('/');
 
 	// Step 2: Get element with class 'PostItem' that contains the text
 	const postItem = await page.locator(`.PostItem:has-text("${exampleText}")`);
