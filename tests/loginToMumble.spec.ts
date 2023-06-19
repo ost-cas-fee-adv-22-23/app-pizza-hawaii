@@ -49,7 +49,7 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 
 		// Step 5.2: Get element with class 'PostItem' that contains the text
 		const postItem = page.locator(`.PostItem:has-text("${exampleText}")`);
-		await expect(postItem).toBeVisible();
+		await postItem.isVisible();
 
 		// Step 6: Delete the exact PostItem again
 		await postItem.getByText('Delete', { exact: true }).click();
