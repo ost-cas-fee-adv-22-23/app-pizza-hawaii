@@ -54,6 +54,8 @@ jobs:
           labels: ${{ inputs.labels }}
           secrets: |
             "npm_token=${{ secrets.NPM_TOKEN }}"
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   google-cr:
     name: Build and push Docker image to Google Container Registry
@@ -94,3 +96,5 @@ jobs:
           labels: ${{ inputs.labels }}
           secrets: |
             "npm_token=${{ secrets.NPM_TOKEN }}"
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
