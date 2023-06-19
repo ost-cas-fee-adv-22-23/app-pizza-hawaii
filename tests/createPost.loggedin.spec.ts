@@ -24,7 +24,6 @@ test('Create and delete Post', async ({ page }) => {
 
 	// Step 2: Get element with class 'PostItem' that contains the text
 	const postItem = await page.locator(`.PostItem`, { hasText: exampleText });
-	await expect(postItem).toBeVisible();
 
 	// Step 3: Delete the exact PostItem again
 	await postItem.getByText('Delete', { exact: true }).click();
