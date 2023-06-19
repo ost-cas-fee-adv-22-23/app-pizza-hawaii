@@ -15,8 +15,8 @@ test('Create and delete Post', async ({ page }) => {
 	await expect(postTextArea).toBeVisible();
 	await postTextArea.fill(exampleText);
 
-	const postButton = page.getByRole('button', { name: 'Absenden' });
-	await postButton.isEnabled();
+	const postButton = await page.getByRole('button', { name: 'Absenden' });
+	await expect(postButton).toBeVisible();
 	await postButton.click();
 	await page.reload();
 
