@@ -18,6 +18,7 @@ test('Create and delete Post', async ({ page }) => {
 	const postButton = page.getByRole('button', { name: 'Absenden' });
 	await postButton.isEnabled();
 	await postButton.click();
+	await page.reload();
 
 	// Step 2: Get element with class 'PostItem' that contains the text
 	await page.waitForSelector(`.PostItem:has-text("${exampleText}")`);
