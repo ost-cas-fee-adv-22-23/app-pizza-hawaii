@@ -13,23 +13,21 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		await page.goto(timelineUrl);
 		await page.getByRole('button', { name: 'Login via Zitadel' }).click();
 
-		// Check if we are on the zitadel login page
-
-		await expect(page).toHaveURL(/.*.zitadel.cloud\/ui\/login\/login.*/);
+		await page.waitForURL(/.*.zitadel.cloud\/ui\/login\/login.*/);
 
 		// Step 2: Fill in the username
 		await page.fill('input[name="loginName"]', process.env.ZITADEL_USERNAME as string);
 		await page.keyboard.press('Enter');
 
 		// Check if we are on the zitadel password page
-		await expect(page).toHaveURL(/.*.zitadel.cloud\/ui\/login\/loginname.*/);
+		await page.waitForURL(/.*.zitadel.cloud\/ui\/login\/loginname.*/);
 
 		// Step 3: Fill in the password
 		await page.fill('input[name="password"]', process.env.ZITADEL_PASSWORD as string);
 		await page.keyboard.press('Enter');
 
 		// Check if we are redirected to mumble timeline
-		await expect(page).toHaveURL(timelineUrl, { timeout: 10000 });
+		await page.waitForURL(timelineUrl);
 		await expect(page).toHaveTitle(timelineTitle);
 
 		// Step 4: Write a mumble text and post it
@@ -61,7 +59,7 @@ test.describe('Login to Application, create a MumblePost, test its appearence an
 		const logoutBtn = page.getByRole('button', { name: 'Log out' });
 		await logoutBtn.click();
 
-		// Check if we are redirected to the login url
+		await page.waitForURL(loginUrl);
 		await expect(page).toHaveURL(loginUrl);
 	});
 });
