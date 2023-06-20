@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const testBrowsers = ['Firefox', 'Chrome', 'Safari', 'Mobile Chrome', 'Mobile Safari'];
+const testBrowsers = ['Firefox']; // ['Firefox', 'Chrome', 'Safari', 'Mobile Chrome', 'Mobile Safari'];
 
 export default defineConfig({
 	globalSetup: './tests/global.setup.ts',

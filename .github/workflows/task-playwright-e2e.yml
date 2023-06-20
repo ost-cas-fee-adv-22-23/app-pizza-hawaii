@@ -55,6 +55,7 @@ jobs:
         run: npx playwright test
         env:
           NEXT_PUBLIC_VERCEL_URL: ${{ inputs.test_url }}
+          NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
           ZITADEL_USERNAME: ${{ secrets.ZITADEL_USERNAME }}
           ZITADEL_PASSWORD: ${{ secrets.ZITADEL_PASSWORD }}
 
