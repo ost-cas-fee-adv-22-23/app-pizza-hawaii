@@ -51,7 +51,7 @@ jobs:
           tags: ${{ inputs.tags }}
           labels: ${{ inputs.labels }}
           build-args: NEXT_PUBLIC_VERCEL_URL=${{ inputs.base_url }},NEXT_PUBLIC_QWACKER_API_URL=${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
-          secrets: "npm_token=${{ secrets.NPM_TOKEN }}"
+          secrets: 'npm_token=${{ secrets.NPM_TOKEN }}'
 
   google-cr:
     name: Build and push Docker image to Google Container Registry
@@ -84,4 +84,4 @@ jobs:
           tags: ${{ inputs.tags }}
           labels: ${{ inputs.labels }}
           build-args: NEXT_PUBLIC_VERCEL_URL=${{ inputs.base_url }},NEXT_PUBLIC_QWACKER_API_URL=${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
-          secrets: "npm_token=${{ secrets.NPM_TOKEN }}"
+          secrets: 'npm_token=${{ secrets.NPM_TOKEN }}'
