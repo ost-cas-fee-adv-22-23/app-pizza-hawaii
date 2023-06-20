@@ -14,20 +14,23 @@ test('Create and delete Post', async ({ page }) => {
 
 	await expect(postTextArea).toBeVisible();
 	await postTextArea.fill(exampleText);
-
-	const postButton = await page.getByRole('button', { name: 'Absenden' });
-	await expect(postButton).toBeVisible();
-	await postButton.click();
-	await page.waitForResponse('**/posts/**');
-	await page.goto('/auth/signup');
-	await page.goto('/');
+	const responsePromiseAdd = page.waitForResponse(
+		(response) => response.url() === `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts` && response.status() === 201
+	);
+	await page.getByRole('button', { name: 'Absenden' }).click();
+	await responsePromiseAdd;
 
 	// Step 2: Get element with class 'PostItem' that contains the text
 	const postItem = await page.locator(`.PostItem`, { hasText: exampleText });
+	await expect(postItem).toBeVisible();
 
 	// Step 3: Delete the exact PostItem again
-	await postItem.getByText('Delete', { exact: true }).click();
-	await page.waitForTimeout(500);
+	const responsePromiseDelete = page.waitForRequest(
+		(request) =>
+			request.url().includes(`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/posts`) && request.method() === 'DELETE'
+	);
+	await postItem.getByText('Delete').click();
+	await responsePromiseDelete;
 
 	// Check if the post is gone from the timeline
 	await expect(postItem).not.toBeVisible();
