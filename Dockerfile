@@ -42,7 +42,7 @@ COPY --from=build --chown=node:node /app/.next ./.next
 # Mount the .npmrc file as a secret and install dependencies
 RUN --mount=type=secret,id=npm_token \
   echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)" >> .npmrc \
-  && npm ci && npm cache clean --force
+  && npm ci && npm cache clean --force \
   && rm -f .npmrc
 
 # Expose port 3000
