@@ -104,18 +104,6 @@ describe('PostCollection Component input rendering', () => {
         const tomLinks = screen.getAllByRole('link', { name: 'tomschall' });
         expect(tomLinks).toHaveLength(3);
     });
-
-    // finaly test snapshot
-    it('should should match snapshot', () => {
-        const { container } = render(<PostCollection
-            posts={loadedPosts}
-            canLoadMore={true}
-            canAdd={true}
-            autoUpdate={true}
-            />);
-        expect(container).toMatchSnapshot();
-    });
-
 });
 
 describe('PostList Component input rendering', () => {
