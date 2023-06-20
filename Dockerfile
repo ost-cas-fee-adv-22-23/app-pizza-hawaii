@@ -15,7 +15,8 @@ FROM base AS build
 # Mount the .npmrc file as a secret and install dependencies
 RUN --mount=type=secret,id=npm_token \
   echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)" >> .npmrc \
-  && npm ci && npm cache clean --force
+  && npm ci
+  && rm -f .npmrc
 
 COPY . .
 
@@ -25,20 +26,24 @@ RUN npm run build
 
 
 # -- Create a image to run the app --
-FROM base AS production
+FROM node:18-alpine AS production
+
+# The /app directory should act as the main application directory
+WORKDIR /app
 
 # Set the NODE_ENV environment variable to production
 ENV NODE_ENV=production
+
+# Copy the public and .next folder from the previous stage and limit the permissions to the node user
+COPY --from=build /app/package*.json /app/next.config.js ./
+COPY --from=build --chown=node:node /app/public ./public
+COPY --from=build --chown=node:node /app/.next ./.next
 
 # Mount the .npmrc file as a secret and install dependencies
 RUN --mount=type=secret,id=npm_token \
   echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)" >> .npmrc \
   && npm ci && npm cache clean --force
-
-# Copy the public and .next folder from the previous stage and limit the permissions to the node user
-COPY --from=build /app/next.config.js ./
-COPY --from=build --chown=node:node /app/public ./public
-COPY --from=build --chown=node:node /app/.next ./.next
+  && rm -f .npmrc
 
 # Expose port 3000
 EXPOSE 3000
