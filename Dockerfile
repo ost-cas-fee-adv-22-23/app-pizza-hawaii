@@ -41,7 +41,8 @@ RUN --mount=type=secret,id=npm_token \
   && rm -f .npmrc
 
 # Copy the public and .next folder from the previous stage and limit the permissions to the node user
-COPY --from=build --chown=node:node /app/{public,.next} .
+COPY --from=build --chown=node:node /app/public ./public
+COPY --from=build --chown=node:node /app/.next ./.next
 
 # Expose port 3000
 EXPOSE 3000
