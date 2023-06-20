@@ -34,7 +34,7 @@ ENV NODE_ENV=production
 # Copy the app package, package-lock.json and next.config.js file to the app directory
 COPY --from=build --chown=node:node /app/package*.json /app/next.config.js ./
 
-# Mount the .npmrc file as a secret and install dependencies
+# Mount the .npmrc file as a secret and install dependencies (yes, we do not copy node_modules because we don't want all the dev dependencies in the production image) and clean up
 RUN --mount=type=secret,id=npm_token \
   echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)" >> .npmrc \
   && npm ci && npm cache clean --force \
