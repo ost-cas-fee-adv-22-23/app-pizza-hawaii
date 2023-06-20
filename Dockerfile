@@ -9,13 +9,13 @@ WORKDIR /app
 # Copy the app package and package-lock.json file
 COPY package*.json ./
 
-
-
 # -- Create a build image --
-FROM base as build
+FROM base AS build
 
 # Mount the .npmrc file as a secret and install dependencies
-RUN --mount=type=secret,id=npmrc,target=/root/.npmrc npm ci
+RUN --mount=type=secret,id=npm_token \
+  echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)" >> .npmrc \
+  && npm ci && npm cache clean --force
 
 COPY . .
 
@@ -24,14 +24,16 @@ RUN npm run build
 
 
 
-# -- Create a blank production image --
+# -- Create a image to run the app --
 FROM base AS production
 
 # Set the NODE_ENV environment variable to production
 ENV NODE_ENV=production
 
 # Mount the .npmrc file as a secret and install dependencies
-RUN --mount=type=secret,id=npmrc,target=/root/.npmrc npm ci
+RUN --mount=type=secret,id=npm_token \
+  echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)" >> .npmrc \
+  && npm ci && npm cache clean --force
 
 # Copy the public and .next folder from the previous stage and limit the permissions to the node user
 COPY --from=build /app/next.config.js ./

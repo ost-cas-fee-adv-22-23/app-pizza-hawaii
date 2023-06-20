@@ -49,6 +49,7 @@ next-env.d.ts
 .env
 .vscode
 /test-results/
+/tmp/
 /playwright-report/
 /playwright/.cache/
 
