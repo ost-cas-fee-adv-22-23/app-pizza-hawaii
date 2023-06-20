@@ -14,17 +14,23 @@ test('Create and delete Post', async ({ page }) => {
 
 	await expect(postTextArea).toBeVisible();
 	await postTextArea.fill(exampleText);
-	await page.getByTestId('submit-post').click();
+	await page.getByTestId('submit-post').click({
+		timeout: 10 * 1000,
+	});
 
 	// Step 2: Get element with class 'PostItem' that contains the text
 	const postItem = await page.locator(`.PostItem`, { hasText: exampleText });
 	await expect(postItem).toBeVisible({
-		timeout: 60 * 1000,
+		timeout: 10 * 1000,
 	});
 
 	// Step 3: Delete the exact PostItem again
-	await page.getByTestId('delete-button').click();
+	await page.getByTestId('delete-button').click({
+		timeout: 10 * 1000,
+	});
 
 	// Check if the post is gone from the timeline
-	await expect(postItem).not.toBeVisible();
+	await expect(postItem).not.toBeVisible({
+		timeout: 10 * 1000,
+	});
 });
