@@ -1,16 +1,13 @@
 # syntax=docker/dockerfile:1.2
 
-# -- Create a base docker image for the react app --
-FROM node:18-alpine AS base
+# -- Create a build image for the react app --
+FROM node:18-alpine
 
 # The /app directory should act as the main application directory
 WORKDIR /app
 
 # Copy the app package and package-lock.json file
 COPY package*.json ./
-
-# -- Create a build image --
-FROM base AS build
 
 # Mount the .npmrc file as a secret and install dependencies
 RUN --mount=type=secret,id=npm_token \
