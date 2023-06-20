@@ -171,7 +171,7 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 				<Button colorScheme="slate" icon="upload" onClick={() => setShowModal(true)}>
 					Bild auswählen
 				</Button>
-				<Button colorScheme="violet" icon="send" onClick={onSubmitPostHandler} disabled={!isValid} type="button">
+				<Button colorScheme="violet" icon="send" onClick={onSubmitPostHandler} disabled={!isValid} type="button" data-testid="submit-post">
 					Absenden
 				</Button>
 			</Grid>
