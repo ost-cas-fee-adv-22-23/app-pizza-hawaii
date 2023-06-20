@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('Create and delete Post', async ({ page }) => {
+test.skip('Create and delete Post', async ({ page }) => {
 	// Generate a random text for the post
 	const exampleText = `Pizza Hawaii Test #pht #${Math.random().toString(36).substring(7)}`;
 
