@@ -14,9 +14,8 @@ test('Create and delete Post', async ({ page }) => {
 
 	await expect(postTextArea).toBeVisible();
 	await postTextArea.fill(exampleText);
-	console.log(111111111, `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts`);
 	const responsePromiseAdd = page.waitForResponse(
-		(response) => response.url() === `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts` && response.status() === 201
+		(response) => response.url() === `https://qwacker-api-http-prod-4cxdci3drq-oa.a.run.app/posts` && response.status() === 201
 	);
 	await page.getByRole('button', { name: 'Absenden' }).click();
 	await responsePromiseAdd;
