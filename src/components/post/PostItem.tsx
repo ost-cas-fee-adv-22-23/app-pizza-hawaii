@@ -268,6 +268,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 								buttonText="Delete"
 								iconName="cancel"
 								onClick={handleDeletePost}
+								data-testid="delete-button"
 							/>
 						)}
 					</Grid>

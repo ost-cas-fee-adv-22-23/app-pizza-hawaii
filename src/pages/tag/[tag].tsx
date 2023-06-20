@@ -18,7 +18,6 @@ const DetailPage: FC<TUserPage> = ({
 	posts: initialPosts,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const [posts, setPosts] = useState(initialPosts);
-
 	return (
 		<MainLayout
 			title={`Posts zum Thema "${searchTag}"`}

@@ -1,0 +1,68 @@
+name: Playwright Tests E2E
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        description: 'The image to test'
+        required: true
+        default: 'ghcr.io/smartive-education/app-pizza-hawaii:test'
+        type: string
+
+      test_url:
+        description: 'The URL to test'
+        required: true
+        default: 'http://localhost:3000'
+        type: string
+
+jobs:
+  playwright-e2e:
+    name: Playwright Tests
+    runs-on: ubuntu-latest
+    services:
+      app:
+        image: ${{ inputs.image }}
+        ports:
+          - 3000:3000
+        env:
+          NEXT_PUBLIC_VERCEL_URL: ${{ inputs.test_url }}
+          NEXTAUTH_URL: ${{ inputs.test_url }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
+          ZITADEL_ISSUER: ${{ secrets.ZITADEL_ISSUER }}
+          ZITADEL_CLIENT_ID: ${{ secrets.ZITADEL_CLIENT_ID }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: remove unnecessary files because actions/checkout@v3 does not sparse files
+        run: |
+          find . -type f ! -path "./tests/*" ! -name "playwright.config.ts" -delete
+          find . -mindepth 1 -type d ! -path "./tests" ! -path "." -exec rm -rf {} +
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: |
+          npm init --yes
+          npm install --save-dev @playwright/test
+          npm install --save-dev dotenv
+          npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          NEXT_PUBLIC_VERCEL_URL: ${{ inputs.test_url }}
+          NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
+          ZITADEL_USERNAME: ${{ secrets.ZITADEL_USERNAME }}
+          ZITADEL_PASSWORD: ${{ secrets.ZITADEL_PASSWORD }}
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 5
