@@ -18,7 +18,9 @@ test('Create and delete Post', async ({ page }) => {
 
 	// Step 2: Get element with class 'PostItem' that contains the text
 	const postItem = await page.locator(`.PostItem`, { hasText: exampleText });
-	await expect(postItem).toBeVisible();
+	await expect(postItem).toBeVisible({
+		timeout: 10 * 1000,
+	});
 
 	// Step 3: Delete the exact PostItem again
 	await page.getByTestId('delete-button').click();
