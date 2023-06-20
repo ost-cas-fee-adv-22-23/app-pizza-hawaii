@@ -9,6 +9,14 @@ WORKDIR /app
 # Copy the app package and package-lock.json file
 COPY package*.json ./
 
+# Set the environment variables
+ARG NEXT_PUBLIC_VERCEL_URL \
+	NEXT_PUBLIC_QWACKER_API_URL
+
+ENV NEXT_PUBLIC_QWACKER_API_URL=${NEXT_PUBLIC_QWACKER_API_URL} \
+	NEXT_PUBLIC_VERCEL_URL=${NEXT_PUBLIC_VERCEL_URL} \
+	NODE_ENV=development
+
 # Mount the .npmrc file as a secret and install dependencies
 RUN --mount=type=secret,id=npm_token \
   echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)" >> .npmrc \
