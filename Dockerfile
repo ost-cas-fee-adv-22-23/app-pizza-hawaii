@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.2
 
 # -- Create a build image for the react app --
-FROM node:18-alpine
+FROM node:18-alpine AS build
 
 # The /app directory should act as the main application directory
 WORKDIR /app
@@ -31,16 +31,17 @@ WORKDIR /app
 # Set the NODE_ENV environment variable to production
 ENV NODE_ENV=production
 
-# Copy the public and .next folder from the previous stage and limit the permissions to the node user
-COPY --from=build /app/package*.json /app/next.config.js ./
-COPY --from=build --chown=node:node /app/public ./public
-COPY --from=build --chown=node:node /app/.next ./.next
+# Copy the app package, package-lock.json and next.config.js file to the app directory
+COPY --from=build --chown=node:node /app/package*.json /app/next.config.js ./
 
 # Mount the .npmrc file as a secret and install dependencies
 RUN --mount=type=secret,id=npm_token \
   echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)" >> .npmrc \
   && npm ci && npm cache clean --force \
   && rm -f .npmrc
+
+# Copy the public and .next folder from the previous stage and limit the permissions to the node user
+COPY --from=build --chown=node:node /app/{public,.next} .
 
 # Expose port 3000
 EXPOSE 3000
