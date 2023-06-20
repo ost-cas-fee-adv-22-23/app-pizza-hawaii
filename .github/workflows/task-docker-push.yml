@@ -88,4 +88,3 @@ jobs:
           labels: ${{ inputs.labels }}
           secrets: |
             "npm_token=${{ secrets.NPM_TOKEN }}"
-
