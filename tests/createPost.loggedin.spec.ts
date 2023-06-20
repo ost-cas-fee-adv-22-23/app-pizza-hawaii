@@ -14,6 +14,7 @@ test('Create and delete Post', async ({ page }) => {
 
 	await expect(postTextArea).toBeVisible();
 	await postTextArea.fill(exampleText);
+	console.log(111111111, `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts`);
 	const responsePromiseAdd = page.waitForResponse(
 		(response) => response.url() === `${process.env.NEXT_PUBLIC_QWACKER_API_URL}posts` && response.status() === 201
 	);
@@ -27,7 +28,7 @@ test('Create and delete Post', async ({ page }) => {
 	// Step 3: Delete the exact PostItem again
 	const responsePromiseDelete = page.waitForRequest(
 		(request) =>
-			request.url().includes(`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/posts`) && request.method() === 'DELETE'
+			request.url().includes(`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/posts/`) && request.method() === 'DELETE'
 	);
 	await postItem.getByText('Delete').click();
 	await responsePromiseDelete;
