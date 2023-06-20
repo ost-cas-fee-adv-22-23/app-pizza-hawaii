@@ -30,7 +30,6 @@ jobs:
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
       image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
-      test_url: http://localhost:3000
     secrets: inherit
 
   pr-web-vitals:

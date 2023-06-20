@@ -18,6 +18,11 @@ on:
         type: string
         description: Docker labels to push
 
+      base_url:
+        description: 'The URL of the deployment'
+        default: 'http://localhost:3000'
+        type: string
+
 permissions:
   contents: read
   packages: write
@@ -47,6 +52,9 @@ jobs:
           labels: ${{ inputs.labels }}
           secrets: |
             "npm_token=${{ secrets.NPM_TOKEN }}"
+          build-args: |
+            NEXT_PUBLIC_VERCEL_URL: ${{ inputs.test_url }}
+            NEXT_PUBLIC_QWACKER_API_URL=${{secrets.NEXT_PUBLIC_QWACKER_API_URL}}
 
   google-cr:
     name: Build and push Docker image to Google Container Registry
@@ -80,3 +88,4 @@ jobs:
           labels: ${{ inputs.labels }}
           secrets: |
             "npm_token=${{ secrets.NPM_TOKEN }}"
+
