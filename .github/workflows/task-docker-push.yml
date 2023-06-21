@@ -58,7 +58,8 @@ jobs:
             NEXT_PUBLIC_VERCEL_URL=${{ inputs.base_url }}
             NEXT_PUBLIC_QWACKER_API_URL=${{ env.NEXT_PUBLIC_QWACKER_API_URL }}
           secrets: |
-            'npm_token=${{ env.NPM_TOKEN }}'
+            "npm_token=${{ env.NPM_TOKEN }}"
+
 
   google-cr:
     name: Build and push Docker image to Google Container Registry
@@ -94,4 +95,5 @@ jobs:
             NEXT_PUBLIC_VERCEL_URL=${{ inputs.base_url }}
             NEXT_PUBLIC_QWACKER_API_URL=${{ env.NEXT_PUBLIC_QWACKER_API_URL }}
           secrets: |
-            'npm_token=${{ env.NPM_TOKEN }}'
+            "npm_token=${{ env.NPM_TOKEN }}"
+
