@@ -1,0 +1,97 @@
+name: Create Docker image and push to registry
+
+on:
+  workflow_call:
+    inputs:
+      registry:
+        type: string
+        description: Package registry to push to
+        default: 'github'
+        required: true
+
+      tags:
+        type: string
+        description: Docker tags to push
+        required: true
+        default: 'ghcr.io/smartive-education/app-pizza-hawaii:test'
+      labels:
+        type: string
+        description: Docker labels to push
+
+      base_url:
+        description: 'The URL of the deployment'
+        default: 'http://localhost:3000'
+        type: string
+
+env:
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  github-cr:
+    name: Build and push Docker image to GitHub Container Registry
+    runs-on: ubuntu-latest
+    if: ${{ inputs.registry == 'github' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: 'ghcr.io'
+          username: ${{ github.actor }}
+          password: ${{ env.NPM_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ inputs.tags }}
+          labels: ${{ inputs.labels }}
+          build-args: |
+            NEXT_PUBLIC_VERCEL_URL=${{ inputs.base_url }}
+            NEXT_PUBLIC_QWACKER_API_URL=${{ env.NEXT_PUBLIC_QWACKER_API_URL }}
+          secrets: |
+            "npm_token=${{ env.NPM_TOKEN }}"
+
+  google-cr:
+    name: Build and push Docker image to Google Container Registry
+    runs-on: ubuntu-latest
+    if: ${{ inputs.registry == 'google' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: 'projects/654053669202/locations/global/workloadIdentityPools/casfee23-pool/providers/casfee23-provider'
+          service_account: 'casfee23-account@project-pizza-388116.iam.gserviceaccount.com'
+          token_format: 'access_token'
+
+      - name: Login to Google Cloud
+        uses: docker/login-action@v2
+        with:
+          registry: 'europe-west6-docker.pkg.dev'
+          username: 'oauth2accesstoken'
+          password: '${{ steps.auth.outputs.access_token }}'
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ inputs.tags }}
+          labels: ${{ inputs.labels }}
+          build-args: |
+            NEXT_PUBLIC_VERCEL_URL=${{ inputs.base_url }}
+            NEXT_PUBLIC_QWACKER_API_URL=${{ env.NEXT_PUBLIC_QWACKER_API_URL }}
+          secrets: |
+            "npm_token=${{ env.NPM_TOKEN }}"
