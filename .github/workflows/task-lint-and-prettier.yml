@@ -1,4 +1,4 @@
-name: Lint and Prettier
+name: Lint, Prettier and Dependancy cruiser
 
 on:
   workflow_call:
@@ -28,3 +28,6 @@ jobs:
 
       - name: Prettier
         run: npm run prettier
+
+      - name: Dependancy cruiser
+        run: npm run dep-cruise:validate
