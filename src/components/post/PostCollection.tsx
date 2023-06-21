@@ -106,7 +106,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 			...filter,
 			...requestObject,
 		});
-		console.log('loadedPosts', loadedPosts);
+
 		if (!loadedPosts?.length) {
 			return {
 				posts: [],
