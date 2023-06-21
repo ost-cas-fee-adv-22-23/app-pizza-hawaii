@@ -41,3 +41,22 @@ jobs:
       image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
       test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
     secrets: inherit
+
+  # TODO: remove this once it works
+  pr-deploy-google-cloud:
+    if: success()
+    name: Deploy to Google Cloud Run Registry
+    needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
+    uses: ./.github/workflows/task-deploy.yml
+    with:
+      hoster: google-cloud
+    secrets: inherit
+
+  pr-deploy-vercel:
+    if: success()
+    name: Deploy to Vercel Hosting
+    needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
+    uses: ./.github/workflows/task-deploy.yml
+    with:
+      hoster: vercel
+    secrets: inherit
