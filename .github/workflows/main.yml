@@ -11,12 +11,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  pr-lint-and-prettier:
+  m-lint-and-prettier:
     name: Lint and Prettier
     uses: ./.github/workflows/task-lint-and-prettier.yml
     secrets: inherit
 
-  pr-docker-build-and-publish:
+  m-docker-build-and-publish:
     if: success()
     name: Build and Publish Docker (Test / GitHub Container Registry)
     needs: pr-lint-and-prettier
@@ -27,7 +27,7 @@ jobs:
         europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
-  pr-playwright-e2e:
+  m-playwright-e2e:
     if: success()
     name: E2E Tests on Docker
     needs: pr-docker-build-and-publish
@@ -36,7 +36,7 @@ jobs:
       image: europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
-  pr-web-vitals:
+  m-web-vitals:
     if: success()
     name: Web Vitals on Docker
     needs: pr-docker-build-and-publish
@@ -46,7 +46,7 @@ jobs:
       test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
     secrets: inherit
 
-  pr-deploy-google-cloud:
+  m-deploy-google-cloud:
     if: success()
     name: Deploy to Google Cloud Run
     needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
@@ -55,7 +55,7 @@ jobs:
       hoster: google-cloud
     secrets: inherit
 
-  pr-deploy-vercel:
+  m-deploy-vercel:
     if: success()
     name: Deploy to Vercel
     needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
@@ -64,7 +64,7 @@ jobs:
       hoster: vercel
     secrets: inherit
 
-  # pr-notify:
+  # m-notify:
   #   if: success()
   #   name: Notify Slack
   #   needs: pr-deploy
