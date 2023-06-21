@@ -1,0 +1,57 @@
+name: Deploy Docker Container with Terraform to GCP
+
+on:
+  workflow_call:
+    inputs:
+      hoster:
+        type: string
+        description: 'The environment to deploy to'
+        required: true
+        default: 'vercel'
+
+concurrency:
+  group: 'release'
+  cancel-in-progress: true
+
+jobs:
+  Deploy-Vercel:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.hoster == 'vercel' }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@smartive-education'
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: npm-logs
+          path: ~/.npm/_logs
+          retention-days: 5
+
+  Deploy-Google-Cloud:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.hoster == 'google-cloud' }}
+    defaults:
+        run:
+          working-directory: ./terraform
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install the App on Artifact Registry a cloudRun Container with terraform
+        uses: hashicorp/setup-terraform@v2
+      - run: terraform init
+      - run: terraform validate
+      - run: terraform apply -auto-approve
