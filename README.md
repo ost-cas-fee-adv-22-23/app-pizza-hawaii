@@ -222,6 +222,107 @@ and start locally built with
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
+<br/>
+
+# Image Deployment
+
+building image and deploy it to Google Cloud Installation
+
+Preparations:
+
+1. install docker and docker-cli on your system
+2. enroll to google-cloud
+3.
+
+## Docker Container
+
+0.
+1. Build a docker image with the following command.
+
+Note: The switch `--platform linux/amd64` is necessary if you work on a Mac silicon M1/M2 processor architecture!
+We will deploy on a amd linux architecture, this ensures compability.
+
+`docker build -t europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii --build-arg NPM_TOKEN=<NPM_TOKEN> --platform linux/amd64 .`
+
+2. Upload your docker-container manually to Google Cloud
+
+`docker push europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii`
+
+3. deploy manually in the Cloud Run console
+
+## TerraForm
+
+### preparation
+
+install terraForm on your system and on command line
+
+A docker-build should be there.
+
+Create a Bucket for Terraform State
+
+1. navigate in Google Console to `Cloud Storage`
+2. create a 'Bucket' for the tf-state. `default.tfstate`
+
+init the project with
+
+`terraform init`
+
+### secret manager
+
+for confidential environment variables considered we use the `Google Cloud Secret Manager`.
+We can add there secret variables and then we can use it without having them in the deploy script.
+
+we have to enable the import theses secrets by using this command:
+
+`terraform import google_secret_manager_secret.default ZITADEL_CLIENT_ID`
+
+Then we add the following code to terraForm configuration
+
+```
+data "google_secret_manager_secret_version" "nextauth_secret" {
+  provider = google
+
+  secret  = "nextauth_secret"
+  version = "1"
+}
+```
+
+# Create Terraform configuration
+
+in 'main.tf' we describe our Project, define local variables, Data source and Terraform State location (Bucket at cloud). This file will be executed first.
+
+The file 'cloud-run.tf' defines the deploy process for in Google Cloud run.
+Here we define:
+
+-   the role-management of cloud runner process
+-   resources to be applied for the virtual server
+-   non-confident env-variables
+-   secret handling vor confident variables
+-   Ports and Protocols
+-   deployment settings
+
+All important Sections are documented within the Terraform files `main.tf` and `cloud-run.tf` in the `/terraform` folder.
+
+### Test Terraform configuration
+
+`terraform plan`
+
+### Validate Terraform configuration
+
+`terraform validate`
+
+### Run Terraform Workflow
+
+if the workflow suceeded until here then we can apply the the changes with the switch `-auto-approve`.
+
+`terraform apply -auto-approve`
+
+## LiveDemo at Google Cloud
+
+if the the deploy process is successfull we have a newly built App Pizza Hawaii Mumble serving with CloudRun Service at:
+
+https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app
+
 # Deployment checks
 
 ## Code Quality
