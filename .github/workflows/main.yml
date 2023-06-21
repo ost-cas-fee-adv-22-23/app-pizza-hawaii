@@ -64,14 +64,14 @@ jobs:
       hoster: vercel
     secrets: inherit
 
-  m-notify:
-    if: success()
-    runs-on: ubuntu-latest
-    name: Notify Slack
-    needs: [m-docker-build-and-publish, m-playwright-e2e, m-web-vitals]
-    steps:
-      - name: Notify Slack
-        uses: ./.github/workflows/task-notify-slack.yml
-        with:
-          status: ${{ job.status }}
-          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+  # m-notify:
+  #   if: success()
+  #   runs-on: ubuntu-latest
+  #   name: Notify Slack
+  #   needs: [m-docker-build-and-publish, m-playwright-e2e, m-web-vitals]
+  #   steps:
+  #     - name: Notify Slack
+  #       uses: ./.github/workflows/task-notify-slack.yml
+  #       with:
+  #         status: ${{ job.status }}
+  #         slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
