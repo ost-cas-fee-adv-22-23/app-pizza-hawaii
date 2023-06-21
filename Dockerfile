@@ -14,8 +14,7 @@ ARG NEXT_PUBLIC_VERCEL_URL \
 	NEXT_PUBLIC_QWACKER_API_URL
 
 ENV NEXT_PUBLIC_QWACKER_API_URL=${NEXT_PUBLIC_QWACKER_API_URL} \
-	NEXT_PUBLIC_VERCEL_URL=${NEXT_PUBLIC_VERCEL_URL} \
-	NODE_ENV=development
+	NEXT_PUBLIC_VERCEL_URL=${NEXT_PUBLIC_VERCEL_URL}
 
 # Mount the .npmrc file as a secret and install dependencies
 RUN --mount=type=secret,id=npm_token \
@@ -64,3 +63,4 @@ CMD npm run start
 # docker build -t app-pizza-hawaii --secret id=npmrc,src=.npmrc .
 # docker run -p 3000:3000 --env-file .env app-pizza-hawaii
 # docker run -p 3000:3000 --env-file .env ghcr.io/smartive-education/app-pizza-hawaii:49eae9a91118c2a4251449d87b8dd2f4553ad34f
+docker build -t app-pizza-hawaii --secret id=npmrc,src=.npmrc . && docker run -p 3000:3000 --env-file .env app-pizza-hawaii
