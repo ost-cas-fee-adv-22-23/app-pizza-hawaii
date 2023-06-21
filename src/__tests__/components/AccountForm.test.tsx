@@ -57,7 +57,7 @@ describe('AccountForm with a provided user', () => {
 
 	// the non-null-assertion operator ! is used to make the test working which indicates
 	// that the value is actually not null
-	test('state of form is updated when user types in input field', () => {
+	test('state of form is updated when user types in input field.', () => {
 		const { container } = render(<AccountForm {...propsUser} />);
 		const firstNameInput = container.querySelector('input[name="firstName"]');
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
