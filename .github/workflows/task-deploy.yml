@@ -1,30 +1,22 @@
-#
-# Workflow to deploy on Vercel
-# https://vercel.com/guides/how-can-i-use-github-actions-with-vercel
-#
-
-name: Vercel Production Deployment
-
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-  NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-  NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-  NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
-  ZITADEL_ISSUER: ${{ secrets.ZITADEL_ISSUER }}
-  ZITADEL_CLIENT_ID: ${{ secrets.ZITADEL_CLIENT_ID }}
-  NEXT_PUBLIC_VERCEL_URL: ${{ secrets.NEXT_PUBLIC_VERCEL_URL }}
+name: Deploy Docker Container with Terraform to GCP
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      hoster:
+        type: string
+        description: 'The environment to deploy to'
+        required: true
+        default: 'vercel'
+
+concurrency:
+  group: 'release'
+  cancel-in-progress: true
 
 jobs:
-  Deploy-Production:
+  Deploy-Vercel:
     runs-on: ubuntu-latest
+    if: ${{ inputs.hoster == 'vercel' }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -48,3 +40,18 @@ jobs:
           name: npm-logs
           path: ~/.npm/_logs
           retention-days: 5
+
+  Deploy-Google-Cloud:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.hoster == 'google-cloud' }}
+    defaults:
+      run:
+        working-directory: ./terraform
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install the App on Artifact Registry a cloudRun Container with terraform
+        uses: hashicorp/setup-terraform@v2
+      - run: terraform init
+      - run: terraform validate
+      - run: terraform apply -auto-approve

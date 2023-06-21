@@ -20,7 +20,6 @@ jobs:
     with:
       registry: github
       tags: |
-        ghcr.io/smartive-education/app-pizza-hawaii:test
         ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
