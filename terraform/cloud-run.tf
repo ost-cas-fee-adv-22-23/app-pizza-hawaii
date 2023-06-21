@@ -34,7 +34,7 @@ output "cloud-runner-email" {
 }
 
 # cloud run service - our pizza image
-# we need to create a secret for our nextauth secret using google_secret_manager_secret 
+# we need to create a secret for our nextauth secret using google_secret_manager_secret
 
 data "google_secret_manager_secret_version" "nextauth_secret" {
   provider = google
@@ -56,7 +56,7 @@ resource "google_cloud_run_service" "app-pizza-hawaii" {
   template {
     spec {
       containers {
-        image = "europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii"
+        image = ${ local.IMAGE }
         resources {
           limits = {
             "memory" = "2G"
@@ -64,34 +64,12 @@ resource "google_cloud_run_service" "app-pizza-hawaii" {
           }
         }
 
-        env {
-          name = "NEXTAUTH_URL"
-          value = "https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app"
-        }
-        # this one is needed to access the secret from google secret manager
-        env {
-          name = "NEXTAUTH_SECRET"
-          value = data.google_secret_manager_secret_version.nextauth_secret.secret_data
-        }
-
-        env {
-          name = "ZITADEL_ISSUER"
-          value = "https://cas-fee-advanced-ocvdad.zitadel.cloud"
-        }
-
-        env {
-          name = "ZITADEL_CLIENT_ID"
-          value = "181236603920908545@cas_fee_adv_qwacker_prod"
-        }
-
-        env {
-          name = "NEXT_PUBLIC_QWACKER_API_URL"
-          value = "https://qwacker-api-http-prod-4cxdci3drq-oa.a.run.app/"
-        }
-
-        env {
-          name = "NEXT_PUBLIC_VERCEL_URL"
-          value = "https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app"
+        dynamic "env" {
+          for_each = local.environment_vars
+          content {
+            name  = env.key
+            value = env.value
+          }
         }
 
         ports {
@@ -103,7 +81,7 @@ resource "google_cloud_run_service" "app-pizza-hawaii" {
       service_account_name = google_service_account.cloud-runner.email
     }
   }
-    # traffic is routed to the latest revision: all users will see the latest version of our app 
+    # traffic is routed to the latest revision: all users will see the latest version of our app
   traffic {
     percent         = 100
     latest_revision = true
@@ -127,7 +105,7 @@ data "google_iam_policy" "noauth" {
   }
 }
 
-# policies setting 
+# policies setting
 resource "google_cloud_run_service_iam_policy" "noauth" {
   location = google_cloud_run_service.app-pizza-hawaii.location
   project  = google_cloud_run_service.app-pizza-hawaii.project

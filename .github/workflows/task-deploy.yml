@@ -7,7 +7,23 @@ on:
         type: string
         description: 'The environment to deploy to'
         required: true
-        default: 'vercel'
+        default: 'vercel' # 'vercel' or 'google-cloud'
+
+      environment:
+        type: string
+        description: 'The environment to deploy to'
+        default: 'production' # 'production' or 'preview'
+
+      url:
+        type: string
+        description: 'The url of the environment'
+        default: 'http://localhost:3000'
+
+      image:
+        type: string
+        description: 'The image to deploy'
+        required: true
+        default: 'europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:latest'
 
 concurrency:
   group: 'release'
@@ -19,20 +35,36 @@ jobs:
     if: ${{ inputs.hoster == 'vercel' }}
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/setup-node@v3
         with:
           node-version: 18.x
           cache: 'npm'
           registry-url: https://npm.pkg.github.com/
           scope: '@smartive-education'
+
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
+
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Build Project Artifacts
+        run: vercel pull --yes --environment=${{ inputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project Artifacts (production)
+        if: ${{ inputs.environment == 'production' }}
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Deploy Project Artifacts to Vercel
+
+      - name: Build Project Artifacts (preview)
+        if: ${{ inputs.environment == 'preview' }}
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel (production)
+        if: ${{ inputs.environment == 'production' }}
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel (preview)
+        if: ${{ inputs.environment == 'preview' }}
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         if: failure()
@@ -50,8 +82,22 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: 'projects/${{ secrets.GOOGLE_IF_PROJECT_NUMMER }}/locations/global/workloadIdentityPools/${{ secrets.GOOGLE_IF_ID }}-pool/providers/${{ secrets.GOOGLE_IF_ID }}-provider'
+          service_account: '${{ secrets.GOOGLE_IF_ID }}-account@${{ secrets.GOOGLE_IF_PROJECT_ID }}.iam.gserviceaccount.com'
+          token_format: 'access_token'
+
       - name: Install the App on Artifact Registry a cloudRun Container with terraform
         uses: hashicorp/setup-terraform@v2
-      - run: terraform init
-      - run: terraform validate
-      - run: terraform apply -auto-approve
+
+      - name: Configure Google Cloud credentials
+        run: terraform init
+
+      - name: Validate Terraform configuration
+        run: terraform validate
+
+      - name: Deploy Terraform configuration
+        run: terraform apply -auto-approve -var IMAGE=${{ inputs.image }} -var NEXT_PUBLIC_VERCEL_URL=${{ inputs.url }} -var NEXTAUTH_URL=${{ inputs.url }} -var NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} -var ZITADEL_ISSUER=${{ secrets.ZITADEL_ISSUER }} -var ZITADEL_CLIENT_ID=${{ secrets.ZITADEL_CLIENT_ID }} -var NEXT_PUBLIC_QWACKER_API_URL=${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
