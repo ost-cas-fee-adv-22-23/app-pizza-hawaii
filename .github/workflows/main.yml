@@ -48,7 +48,7 @@ jobs:
 
   pr-deploy-google-cloud:
     if: success()
-    name: Deploy to Google Cloud Run
+    name: Deploy to Google Cloud Run Registry
     needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
     uses: ./.github/workflows/task-deploy.yml
     with:
@@ -57,7 +57,7 @@ jobs:
 
   pr-deploy-vercel:
     if: success()
-    name: Deploy to Vercel
+    name: Deploy to Vercel Hosting
     needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
     uses: ./.github/workflows/task-deploy.yml
     with:
