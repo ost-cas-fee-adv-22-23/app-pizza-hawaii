@@ -22,7 +22,6 @@ on:
       image:
         type: string
         description: 'The image to deploy'
-        required: true
         default: 'europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:latest'
 
 concurrency:
