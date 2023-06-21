@@ -13,6 +13,11 @@ on:
         description: 'The URL to test'
         default: 'http://localhost:3000'
         type: string
+env:
+  NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+  NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
+  ZITADEL_ISSUER: ${{ secrets.ZITADEL_ISSUER }}
+  ZITADEL_CLIENT_ID: ${{ secrets.ZITADEL_CLIENT_ID }}
 
 jobs:
   playwright-e2e:
@@ -26,10 +31,10 @@ jobs:
         env:
           NEXT_PUBLIC_VERCEL_URL: ${{ inputs.test_url }}
           NEXTAUTH_URL: ${{ inputs.test_url }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
-          ZITADEL_ISSUER: ${{ secrets.ZITADEL_ISSUER }}
-          ZITADEL_CLIENT_ID: ${{ secrets.ZITADEL_CLIENT_ID }}
+          NEXTAUTH_SECRET: ${{ env.NEXTAUTH_SECRET }}
+          NEXT_PUBLIC_QWACKER_API_URL: ${{ env.NEXT_PUBLIC_QWACKER_API_URL }}
+          ZITADEL_ISSUER: ${{ env.ZITADEL_ISSUER }}
+          ZITADEL_CLIENT_ID: ${{ env.ZITADEL_CLIENT_ID }}
 
     steps:
       - uses: actions/checkout@v3
@@ -54,9 +59,9 @@ jobs:
         run: npx playwright test
         env:
           NEXT_PUBLIC_VERCEL_URL: ${{ inputs.test_url }}
-          NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
-          ZITADEL_USERNAME: ${{ secrets.ZITADEL_USERNAME }}
-          ZITADEL_PASSWORD: ${{ secrets.ZITADEL_PASSWORD }}
+          NEXT_PUBLIC_QWACKER_API_URL: ${{ env.NEXT_PUBLIC_QWACKER_API_URL }}
+          ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
+          ZITADEL_PASSWORD: ${{ env.ZITADEL_PASSWORD }}
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3

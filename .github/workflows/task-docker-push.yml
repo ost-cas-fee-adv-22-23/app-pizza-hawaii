@@ -23,6 +23,10 @@ on:
         default: 'http://localhost:3000'
         type: string
 
+env:
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
+
 permissions:
   contents: read
   packages: write
@@ -41,7 +45,7 @@ jobs:
         with:
           registry: 'ghcr.io'
           username: ${{ github.actor }}
-          password: ${{ secrets.NPM_TOKEN }}
+          password: ${{ env.NPM_TOKEN }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -52,9 +56,9 @@ jobs:
           labels: ${{ inputs.labels }}
           build-args: |
             NEXT_PUBLIC_VERCEL_URL=${{ inputs.base_url }}
-            NEXT_PUBLIC_QWACKER_API_URL=${{ vars.NEXT_PUBLIC_QWACKER_API_URL }}
+            NEXT_PUBLIC_QWACKER_API_URL=${{ env.NEXT_PUBLIC_QWACKER_API_URL }}
           secrets: |
-            'npm_token=${{ secrets.NPM_TOKEN }}'
+            'npm_token=${{ env.NPM_TOKEN }}'
 
   google-cr:
     name: Build and push Docker image to Google Container Registry
@@ -90,4 +94,4 @@ jobs:
             NEXT_PUBLIC_VERCEL_URL=${{ inputs.base_url }}
             NEXT_PUBLIC_QWACKER_API_URL=${{ vars.NEXT_PUBLIC_QWACKER_API_URL }}
           secrets: |
-            'npm_token=${{ secrets.NPM_TOKEN }}'
+            'npm_token=${{ env.NPM_TOKEN }}'
