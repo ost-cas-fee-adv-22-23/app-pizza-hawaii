@@ -1,6 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { Locator, expect, test } from '@playwright/test';
 
-test.skip('Create and delete Post', async ({ page }) => {
+test('Create and delete Post', async ({ page }) => {
 	// Generate a random text for the post
 	const exampleText = `Pizza Hawaii Test #pht #${Math.random().toString(36).substring(7)}`;
 
@@ -14,15 +14,21 @@ test.skip('Create and delete Post', async ({ page }) => {
 
 	await expect(postTextArea).toBeVisible();
 	await postTextArea.fill(exampleText);
-	await page.getByTestId('submit-post').click();
+	await expect(async () => {
+		await page.getByTestId('submit-post').click();
+		await expect(postTextArea).toHaveText('');
+	}).toPass();
 
 	// Step 2: Get element with class 'PostItem' that contains the text
-	const postItem = await page.locator(`.PostItem`, { hasText: exampleText });
-	await expect(postItem).toBeVisible();
+	let postItem: Locator;
+	await expect(async () => {
+		postItem = await page.locator(`.PostItem`, { hasText: exampleText });
+		await expect(postItem).toBeVisible();
+	}).toPass();
 
 	// Step 3: Delete the exact PostItem again
-	await page.getByTestId('delete-button').click();
-
-	// Check if the post is gone from the timeline
-	await expect(postItem).not.toBeVisible();
+	await expect(async () => {
+		await postItem?.locator(`[data-testid="delete-button"]`).click();
+		await expect(postItem).not.toBeVisible();
+	}).toPass();
 });
