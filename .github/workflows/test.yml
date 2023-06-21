@@ -24,4 +24,4 @@ jobs:
             env:
                 NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           - name: Run tests
-            run: npm run test:ci -- -u
+            run: npm run test-unit
