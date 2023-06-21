@@ -19,7 +19,7 @@ jobs:
   m-docker-build-and-publish:
     if: success()
     name: Build and Publish Docker (Test / GitHub Container Registry)
-    needs: pr-lint-and-prettier
+    needs: m-lint-and-prettier
     uses: ./.github/workflows/task-docker-push.yml
     with:
       registry: google
@@ -30,7 +30,7 @@ jobs:
   m-playwright-e2e:
     if: success()
     name: E2E Tests on Docker
-    needs: pr-docker-build-and-publish
+    needs: m-docker-build-and-publish
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
       image: europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
@@ -39,7 +39,7 @@ jobs:
   m-web-vitals:
     if: success()
     name: Web Vitals on Docker
-    needs: pr-docker-build-and-publish
+    needs: m-docker-build-and-publish
     uses: ./.github/workflows/task-web-vitals.yml
     with:
       image: europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
@@ -49,7 +49,7 @@ jobs:
   m-deploy-google-cloud:
     if: success()
     name: Deploy to Google Cloud Run Registry
-    needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
+    needs: [m-docker-build-and-publish, m-playwright-e2e, m-web-vitals]
     uses: ./.github/workflows/task-deploy.yml
     with:
       hoster: google-cloud
@@ -58,15 +58,20 @@ jobs:
   m-deploy-vercel:
     if: success()
     name: Deploy to Vercel Hosting
-    needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
+    needs: [m-docker-build-and-publish, m-playwright-e2e, m-web-vitals]
     uses: ./.github/workflows/task-deploy.yml
     with:
       hoster: vercel
     secrets: inherit
 
-  # m-notify:
-  #   if: success()
-  #   name: Notify Slack
-  #   needs: pr-deploy
-  #   uses: ./.github/workflows/task-notify.yml
-  #   secrets: inherit
+  m-notify:
+    if: success()
+    runs-on: ubuntu-latest
+    name: Notify Slack
+    needs: [m-docker-build-and-publish, m-playwright-e2e, m-web-vitals]
+    steps:
+      - name: Notify Slack
+        uses: ./.github/workflows/task-notify-slack.yml
+        with:
+          status: ${{ job.status }}
+          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
