@@ -50,7 +50,7 @@ jobs:
           push: true
           tags: ${{ inputs.tags }}
           labels: ${{ inputs.labels }}
-          build-args: NEXT_PUBLIC_VERCEL_URL=${{ inputs.base_url }},NEXT_PUBLIC_QWACKER_API_URL=${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
+          build-args: NEXT_PUBLIC_VERCEL_URL=${{ inputs.base_url }},NEXT_PUBLIC_QWACKER_API_URL=${{ vars.NEXT_PUBLIC_QWACKER_API_URL }}
           secrets: 'npm_token=${{ secrets.NPM_TOKEN }}'
 
   google-cr:
@@ -83,5 +83,5 @@ jobs:
           push: true
           tags: ${{ inputs.tags }}
           labels: ${{ inputs.labels }}
-          build-args: NEXT_PUBLIC_VERCEL_URL=${{ inputs.base_url }},NEXT_PUBLIC_QWACKER_API_URL=${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
+          build-args: NEXT_PUBLIC_VERCEL_URL=${{ inputs.base_url }},NEXT_PUBLIC_QWACKER_API_URL=${{ vars.NEXT_PUBLIC_QWACKER_API_URL }}
           secrets: 'npm_token=${{ secrets.NPM_TOKEN }}'
