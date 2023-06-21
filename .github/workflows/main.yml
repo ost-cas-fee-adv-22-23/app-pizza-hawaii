@@ -64,7 +64,6 @@ jobs:
       hoster: vercel
     secrets: inherit
 
-
   # pr-notify:
   #   if: success()
   #   name: Notify Slack

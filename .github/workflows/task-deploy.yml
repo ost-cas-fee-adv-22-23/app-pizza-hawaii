@@ -45,8 +45,8 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ inputs.hoster == 'google-cloud' }}
     defaults:
-        run:
-          working-directory: ./terraform
+      run:
+        working-directory: ./terraform
     steps:
       - uses: actions/checkout@v3
 
