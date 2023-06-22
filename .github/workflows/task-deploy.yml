@@ -28,6 +28,10 @@ concurrency:
   group: 'release'
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   Deploy-Vercel:
     runs-on: ubuntu-latest
