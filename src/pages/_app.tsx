@@ -12,7 +12,6 @@ import ErrorBoundary from '../components/base/ErrorBoundary';
 import { ActiveTabContextProvider } from '../context/useActiveTab';
 import { FolloweeContextProvider } from '../context/useFollowee';
 import { ThemeContextProvider } from '../context/useTheme';
-
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps<{ session: Session }>) {
 	return (
 		<>

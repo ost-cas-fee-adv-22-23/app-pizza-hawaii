@@ -80,7 +80,7 @@ export const fetchList = async (params: object): Promise<TFetchListResult> => {
 	}
 
 	let remainingCount = 0;
-	const allItems = [];
+	const allItems = [] as TRawPost[];
 	let pagination = {};
 
 	while (url) {

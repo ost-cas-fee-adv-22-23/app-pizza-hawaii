@@ -25,6 +25,8 @@ type TMainLayout = {
 export const MainLayout: FC<TMainLayout> = ({ title, seo, children }) => {
 	const router = useRouter();
 	const { data: session } = useSession();
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
 	const currentUser: TUser | undefined = session?.user;
 
 	const [isNavigating, setIsNavigating] = useState(false);

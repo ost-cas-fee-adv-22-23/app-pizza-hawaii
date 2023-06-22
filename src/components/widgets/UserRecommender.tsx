@@ -22,6 +22,8 @@ export const UserRecommender: FC<TUserRecommender> = ({ currentUserId, excludeUs
 	const [recommendedUsers, setRecommendedUsers] = useState<TUser[]>([]);
 
 	const { data: session } = useSession();
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
 	const accessToken = session?.accessToken;
 
 	useEffect(() => {

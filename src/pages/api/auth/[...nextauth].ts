@@ -1,11 +1,12 @@
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import NextAuth from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import { Issuer } from 'openid-client';
 
 import { services } from '../../../services';
 import { TUser } from '../../../types';
 
-const refreshAccessToken = async (token: JWT): Promise<JWT> => {
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
+const refreshAccessToken = async (token: JWT) => {
 	try {
 		const issuer = await Issuer.discover(process.env.ZITADEL_ISSUER ?? '');
 		const client = new issuer.Client({
@@ -26,13 +27,14 @@ const refreshAccessToken = async (token: JWT): Promise<JWT> => {
 		});
 
 		const { refresh_token, access_token, expires_at } = await client.refresh(token.refreshToken as string);
-
-		return {
-			...token,
-			accessToken: access_token,
-			expiresAt: (expires_at ?? 0) * 1000,
-			refreshToken: refresh_token, // Fall back to old refresh token
-		};
+		if (access_token !== undefined && expires_at !== undefined && refresh_token !== undefined) {
+			return {
+				...token,
+				accessToken: access_token,
+				expiresAt: (expires_at ?? 0) * 1000,
+				refreshToken: refresh_token, // Fall back to old refresh token
+			};
+		}
 	} catch (error) {
 		console.error('Error during refreshAccessToken', error);
 
@@ -47,7 +49,7 @@ const getUser = async (userId: string, accessToken: string): Promise<TUser> => {
 	return (await services.users.getUser({ id: userId, accessToken })) as TUser;
 };
 
-export const authOptions: NextAuthOptions = {
+export const authOptions = {
 	providers: [
 		{
 			id: 'zitadel',
@@ -99,7 +101,8 @@ export const authOptions: NextAuthOptions = {
 			// if the access token has expired, try to update it
 			if (token.refreshToken) {
 				const newToken = await refreshAccessToken(token);
-
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore: Object is possibly 'null'.
 				if (!newToken.error) {
 					return newToken;
 				}
@@ -124,4 +127,6 @@ export const authOptions: NextAuthOptions = {
 	secret: process.env.NEXTAUTH_SECRET,
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 export default NextAuth(authOptions);

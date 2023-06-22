@@ -11,6 +11,9 @@ const customJestConfig = {
 	moduleNameMapper: {
 		'@/(.*)$': '<rootDir>/src/$1',
 		'@smartive-education/pizza-hawaii': '<rootDir>/node_modules/@smartive-education/pizza-hawaii/dist/index.js',
+		jose: '<rootDir>/node_modules/jose/dist/browser/index.js',
+		'@panva': '<rootDir>/node_modules/@panva/hkdf/dist/web/index.js',
+		uuid: '<rootDir>/node_modules/uuid/dist/esm-browser/index.js',
 		'\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
 			'<rootDir>/src/__mocks__/fileMock.js',
 	},
@@ -30,7 +33,10 @@ const createJestConfig = nextJest({ dir: './' });
 
 const config = async () => ({
 	...(await createJestConfig(customJestConfig)()),
-	transformIgnorePatterns: ['node_modules/(?!(@smartive-education/pizza-hawaii)/)', '^.+\\.module\\.(css|sass|scss)$'],
+	transformIgnorePatterns: [
+		'node_modules/(?!(@smartive-education/pizza-hawaii|jose|@panva|uuid)/)',
+		'^.+\\.module\\.(css|sass|scss)$',
+	],
 });
 
 export default config;
