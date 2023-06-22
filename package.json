@@ -12,6 +12,8 @@
 		"prettier:fix": "prettier --write .",
 		"dep-cruise:validate": "npx depcruise src --include-only \"^src\" --config .dependency-cruiser.js",
 		"test-unit": "jest",
+		"test-unit:ci": "jest --ci",
+		"test-unit:debug": "jest --no-cache --debug",
 		"test-end2end": "npx playwright test",
 		"test-end2end:debug": "npx playwright test --debug",
 		"test-end2end:ui": "npx playwright test --ui",

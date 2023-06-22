@@ -1,0 +1,264 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AccountForm with a provided user if matches snapshot of Form 1`] = `
+<div>
+  <form
+    class="flex w-full flex-col mb-8 gap-x-8 gap-y-4 sm:gap-x-4 text-slate-700 dark:text-slate-300"
+    novalidate=""
+  >
+    <div
+      class="mt-4 false"
+    >
+      <div
+        class="flex w-full flex-col gap-x-8 gap-y-4 sm:gap-x-4 mb-8  "
+      >
+        <div
+          class="flex flex-col"
+        >
+          <label
+            class="text-slate-800 dark:text-slate-200 font-semibold text-base mb-xxs "
+            for=":rc:"
+          >
+            First Name
+          </label>
+          <div
+            class="relative"
+          >
+            <input
+              autocomplete="given-name"
+              class="w-full text-black text-base rounded-lg p-4 bg-slate-50 hover:bg-slate-100 focus:bg-white border border-slate-300 outline outline-slate-300 outline-0 hover:border-slate-300 hover:outline-slate-300 hover:outline-1 focus:border-purple-600 focus:outline-purple-600 focus:outline-1 disabled:text-slate-400 disabled:bg-slate-50 disabled:border-slate-300 disabled:outline-slate-300 disabled:outline-0 "
+              id=":rc:"
+              name="firstName"
+              required=""
+              type="text"
+              value="Felix"
+            />
+          </div>
+        </div>
+        <div
+          class="flex flex-col"
+        >
+          <label
+            class="text-slate-800 dark:text-slate-200 font-semibold text-base mb-xxs "
+            for=":rd:"
+          >
+            Last Name
+          </label>
+          <div
+            class="relative"
+          >
+            <input
+              autocomplete="family-name"
+              class="w-full text-black text-base rounded-lg p-4 bg-slate-50 hover:bg-slate-100 focus:bg-white border border-slate-300 outline outline-slate-300 outline-0 hover:border-slate-300 hover:outline-slate-300 hover:outline-1 focus:border-purple-600 focus:outline-purple-600 focus:outline-1 disabled:text-slate-400 disabled:bg-slate-50 disabled:border-slate-300 disabled:outline-slate-300 disabled:outline-0 "
+              id=":rd:"
+              name="lastName"
+              required=""
+              type="text"
+              value="Adam"
+            />
+          </div>
+        </div>
+        <div
+          class="flex flex-col"
+        >
+          <label
+            class="text-slate-800 dark:text-slate-200 font-semibold text-base mb-xxs "
+            for=":re:"
+          >
+            Username
+          </label>
+          <div
+            class="relative"
+          >
+            <input
+              autocomplete="off"
+              class="w-full text-black text-base rounded-lg p-4 bg-slate-50 hover:bg-slate-100 focus:bg-white border border-slate-300 outline outline-slate-300 outline-0 hover:border-slate-300 hover:outline-slate-300 hover:outline-1 focus:border-purple-600 focus:outline-purple-600 focus:outline-1 disabled:text-slate-400 disabled:bg-slate-50 disabled:border-slate-300 disabled:outline-slate-300 disabled:outline-0 pr-10"
+              id=":re:"
+              name="userName"
+              required=""
+              type="text"
+              value="Filiks"
+            />
+            <span
+              class="absolute right-4 top-1/2 -translate-y-1/2 flex text-slate-600"
+            >
+              <span
+                class="inline-flex text-[16px] containing-svg:fill-current containing-svg:w-[1em]"
+              >
+                <svg
+                  viewBox="0 0 16 16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9.793 10H6.207a.5.5 0 0 0-.353.854l1.792 1.792a.5.5 0 0 0 .708 0l1.792-1.793A.5.5 0 0 0 9.793 10Z"
+                  />
+                  <path
+                    d="M14.807 5.371A2.962 2.962 0 0 0 16 3a3 3 0 0 0-3-3 2.96 2.96 0 0 0-2.029.806 5.866 5.866 0 0 0-5.942 0A2.96 2.96 0 0 0 3 0a3 3 0 0 0-3 3c0 .974.472 1.827 1.193 2.371C.015 7.867-.64 11.017.935 13.298 2.173 15.09 4.55 16 8 16s5.827-.91 7.065-2.702c1.575-2.28.92-5.43-.258-7.927Zm-1.387 6.79C12.577 13.381 10.754 14 8 14s-4.577-.62-5.42-1.839c-1.05-1.522-.417-3.836.055-5.079C3.085 5.89 4.808 2 8 2s4.914 3.89 5.365 5.082c.472 1.243 1.106 3.557.055 5.08Z"
+                  />
+                  <path
+                    d="M6.67 6.617c-.114-.442-.38-1.05-1.164-1.05-1.081 0-1.987 1.596-1.997 2.306-.01.71.473 1.483 1.07 1.483.598 0 1.123-.535 1.658-1.297.535-.762.546-.999.432-1.442ZM10.494 5.567c-.784 0-1.05.608-1.163 1.05-.114.443-.103.68.432 1.442.535.762 1.06 1.297 1.658 1.297.597 0 1.08-.772 1.07-1.483-.01-.71-.916-2.306-1.997-2.306Z"
+                  />
+                </svg>
+              </span>
+            </span>
+          </div>
+        </div>
+        <div
+          class="flex flex-col"
+        >
+          <label
+            class="text-slate-800 dark:text-slate-200 font-semibold text-base mb-xxs "
+            for=":rf:"
+          >
+            E-Mail
+          </label>
+          <div
+            class="relative"
+          >
+            <input
+              autocomplete="email"
+              class="w-full text-black text-base rounded-lg p-4 bg-slate-50 hover:bg-slate-100 focus:bg-white border border-slate-300 outline outline-slate-300 outline-0 hover:border-slate-300 hover:outline-slate-300 hover:outline-1 focus:border-purple-600 focus:outline-purple-600 focus:outline-1 disabled:text-slate-400 disabled:bg-slate-50 disabled:border-slate-300 disabled:outline-slate-300 disabled:outline-0 "
+              id=":rf:"
+              name="email"
+              required=""
+              type="email"
+              value="filiks.adamski@mumble.ch"
+            />
+          </div>
+        </div>
+        <div
+          class="flex flex-col"
+        >
+          <label
+            class="text-slate-800 dark:text-slate-200 font-semibold text-base mb-xxs "
+            for=":rg:"
+          >
+            Passwort
+          </label>
+          <div
+            class="relative"
+          >
+            <input
+              autocomplete="off"
+              class="w-full text-black text-base rounded-lg p-4 bg-slate-50 hover:bg-slate-100 focus:bg-white border border-slate-300 outline outline-slate-300 outline-0 hover:border-slate-300 hover:outline-slate-300 hover:outline-1 focus:border-purple-600 focus:outline-purple-600 focus:outline-1 disabled:text-slate-400 disabled:bg-slate-50 disabled:border-slate-300 disabled:outline-slate-300 disabled:outline-0 pr-10"
+              id=":rg:"
+              name="password"
+              required=""
+              type="password"
+              value="strongPA$$W0RD"
+            />
+            <button
+              class="absolute right-4 top-1/2 -translate-y-1/2 inline-flex text-slate-600 p-4 -mx-4"
+              title="Click to show password"
+              type="button"
+            >
+              <span
+                class="inline-flex text-[16px] containing-svg:fill-current containing-svg:w-[1em]"
+              >
+                <svg
+                  fill="none"
+                  viewBox="0 0 16 16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8.00013 14C12.7071 14 15.7441 8.716 15.8711 8.492C16.0421 8.188 16.0431 7.816 15.8721 7.512C15.7461 7.287 12.7311 2 8.00013 2C3.24513 2 0.251127 7.289 0.126127 7.514C-0.0428725 7.817 -0.0418725 8.186 0.128127 8.489C0.254128 8.713 3.26913 14 8.00013 14ZM8.00013 4C10.8391 4 13.0361 6.835 13.8181 8C13.0341 9.166 10.8371 12 8.00013 12C5.15913 12 2.96213 9.162 2.18113 7.999C2.95813 6.835 5.14613 4 8.00013 4Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M8.00013 10C9.1047 10 10.0001 9.10457 10.0001 8C10.0001 6.89543 9.1047 6 8.00013 6C6.89556 6 6.00013 6.89543 6.00013 8C6.00013 9.10457 6.89556 10 8.00013 10Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+              <span
+                class="sr-only"
+              >
+                Click to show password
+              </span>
+            </button>
+          </div>
+        </div>
+        <div
+          class="flex flex-col"
+        >
+          <label
+            class="text-slate-800 dark:text-slate-200 font-semibold text-base mb-xxs "
+            for=":rh:"
+          >
+            Passwort wiederholen
+          </label>
+          <div
+            class="relative"
+          >
+            <input
+              autocomplete="off"
+              class="w-full text-black text-base rounded-lg p-4 bg-slate-50 hover:bg-slate-100 focus:bg-white border border-slate-300 outline outline-slate-300 outline-0 hover:border-slate-300 hover:outline-slate-300 hover:outline-1 focus:border-purple-600 focus:outline-purple-600 focus:outline-1 disabled:text-slate-400 disabled:bg-slate-50 disabled:border-slate-300 disabled:outline-slate-300 disabled:outline-0 pr-10"
+              id=":rh:"
+              name="confirmPassword"
+              required=""
+              type="password"
+              value="strongPA$$W0RD"
+            />
+            <button
+              class="absolute right-4 top-1/2 -translate-y-1/2 inline-flex text-slate-600 p-4 -mx-4"
+              title="Click to show password"
+              type="button"
+            >
+              <span
+                class="inline-flex text-[16px] containing-svg:fill-current containing-svg:w-[1em]"
+              >
+                <svg
+                  fill="none"
+                  viewBox="0 0 16 16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8.00013 14C12.7071 14 15.7441 8.716 15.8711 8.492C16.0421 8.188 16.0431 7.816 15.8721 7.512C15.7461 7.287 12.7311 2 8.00013 2C3.24513 2 0.251127 7.289 0.126127 7.514C-0.0428725 7.817 -0.0418725 8.186 0.128127 8.489C0.254128 8.713 3.26913 14 8.00013 14ZM8.00013 4C10.8391 4 13.0361 6.835 13.8181 8C13.0341 9.166 10.8371 12 8.00013 12C5.15913 12 2.96213 9.162 2.18113 7.999C2.95813 6.835 5.14613 4 8.00013 4Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M8.00013 10C9.1047 10 10.0001 9.10457 10.0001 8C10.0001 6.89543 9.1047 6 8.00013 6C6.89556 6 6.00013 6.89543 6.00013 8C6.00013 9.10457 6.89556 10 8.00013 10Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+              <span
+                class="sr-only"
+              >
+                Click to show password
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex-1 opacity-50"
+    >
+      <button
+        class="flex items-center justify-center w-full transition-all duration-300 outline-none outline-offset-0 py-4 px-6 rounded-lg gap-y-1 gap-x-3 text-base font-semibold text-white bg-gradient-to-r from-violet-600 via-pink-500 to-violet-700 bg-pos-0 bg-size-200 hover:bg-pos-100 hover:bg-size-300 hover:outline-violet-100 hover:outline-3 focus:bg-pos-100 focus:bg-size-300 focus:outline-violet-200 focus:outline-4 active:bg-pos-100 active:bg-size-300 active:outline-violet-200 active:outline-4 "
+        type="submit"
+      >
+        <span
+          class="inline-block font-semibold overflow-hidden text-ellipsis mb-[-0.2em] pb-[0.2em] text-base"
+        >
+          Speichern
+        </span>
+        <span
+          class="inline-flex text-[16px] containing-svg:fill-current containing-svg:w-[1em]"
+        >
+          <svg
+            viewBox="0 0 17 16"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M16.2071 0.292881C15.9341 0.0208806 15.5271 -0.0721194 15.1641 0.0588806L1.16406 5.05888C0.787056 5.19288 0.526056 5.53988 0.502056 5.93888C0.478056 6.33888 0.694056 6.71388 1.05306 6.89388L5.63906 9.18588L11.5001 4.99988L7.31306 10.8619L9.60506 15.4479C9.77606 15.7869 10.1231 15.9999 10.5001 15.9999C10.5211 15.9999 10.5411 15.9989 10.5611 15.9979C10.9611 15.9739 11.3081 15.7139 11.4431 15.3359L16.4431 1.33588C16.5721 0.972881 16.4801 0.565881 16.2071 0.292881Z"
+              fill="currentColor"
+            />
+          </svg>
+        </span>
+      </button>
+    </div>
+  </form>
+</div>
+`;
