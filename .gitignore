@@ -54,6 +54,7 @@ next-env.d.ts
 /playwright/.cache/
 
 
-
 #light house ci output
 .lighthouseci/
+
+#unit tests
