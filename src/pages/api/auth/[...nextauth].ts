@@ -27,14 +27,13 @@ const refreshAccessToken = async (token: JWT) => {
 		});
 
 		const { refresh_token, access_token, expires_at } = await client.refresh(token.refreshToken as string);
-		if (access_token !== undefined && expires_at !== undefined && refresh_token !== undefined) {
-			return {
-				...token,
-				accessToken: access_token,
-				expiresAt: (expires_at ?? 0) * 1000,
-				refreshToken: refresh_token, // Fall back to old refresh token
-			};
-		}
+
+		return {
+			...token,
+			accessToken: access_token,
+			expiresAt: (expires_at ?? 0) * 1000,
+			refreshToken: refresh_token, // Fall back to old refresh token
+		};
 	} catch (error) {
 		console.error('Error during refreshAccessToken', error);
 
