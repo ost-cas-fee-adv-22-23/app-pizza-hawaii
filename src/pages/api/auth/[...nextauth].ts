@@ -5,8 +5,7 @@ import { Issuer } from 'openid-client';
 import { services } from '../../../services';
 import { TUser } from '../../../types';
 
-//eslint-disable-next-line @typescript-eslint/no-explicit-any
-const refreshAccessToken = async (token: JWT) => {
+const refreshAccessToken = async (token: JWT): Promise<JWT> => {
 	try {
 		const issuer = await Issuer.discover(process.env.ZITADEL_ISSUER ?? '');
 		const client = new issuer.Client({
@@ -125,7 +124,6 @@ export const authOptions = {
 	},
 	secret: process.env.NEXTAUTH_SECRET,
 };
-
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 export default NextAuth(authOptions);
