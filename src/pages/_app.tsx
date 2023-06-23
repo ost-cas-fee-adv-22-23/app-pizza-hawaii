@@ -4,7 +4,7 @@ import '@fontsource/poppins/600.css';
 import '@fontsource/poppins/700.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { Session } from 'next-auth';
+import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import React from 'react';
 
