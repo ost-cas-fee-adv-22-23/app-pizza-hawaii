@@ -8,7 +8,7 @@
 		"forceConsistentCasingInFileNames": true,
 		"noEmit": true,
 		"esModuleInterop": true,
-		"module": "ESNext",
+		"module": "esnext",
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
@@ -18,15 +18,15 @@
 		"baseUrl": ".",
 		"paths": {
 			"@/components/*": ["components/*"],
-			"@/pages/*": ["pages/*"],
-			"@/styles/*": ["styles/*"],
-			"@/hooks/*": ["hooks/*"],
-			"@/utils/*": ["utils/*"],
-			"@/types/*": ["types/*"],
+			"@/context*": ["context/*"],
 			"@/data*": ["data/*"],
+			"@/hooks/*": ["hooks/*"],
+			"@/pages/*": ["pages/*"],
 			"@/reducer*": ["reducer/*"],
 			"@/services*": ["services/*"],
-			"@/context*": ["context/*"]
+			"@/styles/*": ["styles/*"],
+			"@/types/*": ["types/*"],
+			"@/utils/*": ["utils/*"]
 		}
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
