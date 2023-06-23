@@ -113,6 +113,7 @@ export const authOptions = {
 		async session({ session, token }) {
 			session.user = token.user as TUser;
 			session.accessToken = token.accessToken;
+			token.expires = token.expiresAt;
 			return session;
 		},
 	},
