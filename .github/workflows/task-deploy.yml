@@ -35,6 +35,11 @@ env:
   ZITADEL_CLIENT_ID: ${{ secrets.ZITADEL_CLIENT_ID }}
   NEXT_PUBLIC_VERCEL_URL: ${{ secrets.NEXT_PUBLIC_VERCEL_URL }}
 
+  GOOGLE_IF_PROJECT_NUMMER: ${{ secrets.GOOGLE_IF_PROJECT_NUMMER }}
+  GOOGLE_IF_PROJECT_ID: ${{ secrets.GOOGLE_IF_PROJECT_ID }}
+  GOOGLE_IF_ID: ${{ secrets.GOOGLE_IF_ID }}
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
 concurrency:
   group: 'release'
   cancel-in-progress: true
@@ -61,23 +66,23 @@ jobs:
         run: npm install --global vercel@latest
 
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=${{ inputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=${{ inputs.environment }} --token=${{ env.VERCEL_TOKEN }}
 
       - name: Build Project Artifacts (production)
         if: ${{ inputs.environment == 'production' }}
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --prod --token=${{ env.VERCEL_TOKEN }}
 
       - name: Build Project Artifacts (preview)
         if: ${{ inputs.environment == 'preview' }}
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --token=${{ env.VERCEL_TOKEN }}
 
       - name: Deploy Project Artifacts to Vercel (production)
         if: ${{ inputs.environment == 'production' }}
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prebuilt --prod --token=${{ env.VERCEL_TOKEN }}
 
       - name: Deploy Project Artifacts to Vercel (preview)
         if: ${{ inputs.environment == 'preview' }}
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prebuilt --token=${{ env.VERCEL_TOKEN }}
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
@@ -101,8 +106,8 @@ jobs:
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
-          workload_identity_provider: 'projects/${{ secrets.GOOGLE_IF_PROJECT_NUMMER }}/locations/global/workloadIdentityPools/${{ secrets.GOOGLE_IF_ID }}-pool/providers/${{ secrets.GOOGLE_IF_ID }}-provider'
-          service_account: '${{ secrets.GOOGLE_IF_ID }}-account@${{ secrets.GOOGLE_IF_PROJECT_ID }}.iam.gserviceaccount.com'
+          workload_identity_provider: 'projects/${{ env.GOOGLE_IF_PROJECT_NUMMER }}/locations/global/workloadIdentityPools/${{ env.GOOGLE_IF_ID }}-pool/providers/${{ env.GOOGLE_IF_ID }}-provider'
+          service_account: '${{ env.GOOGLE_IF_ID }}-account@${{ env.GOOGLE_IF_PROJECT_ID }}.iam.gserviceaccount.com'
           token_format: 'access_token'
 
       - name: Install the App on Artifact Registry a cloudRun Container with terraform
