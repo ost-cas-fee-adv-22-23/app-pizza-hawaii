@@ -56,11 +56,10 @@ resource "google_cloud_run_service" "app-pizza-hawaii" {
   template {
     spec {
       containers {
-        image = ${ local.IMAGE }
+        image = local.IMAGE
         resources {
           limits = {
-            "memory" = "2G"
-            "cpu"    = "2"
+            "memory" = "256Mi"
           }
         }
 
