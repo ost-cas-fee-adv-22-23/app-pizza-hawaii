@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Button, Grid, Headline } from '@smartive-education/pizza-hawaii';
 import { useSession } from 'next-auth/react';
 import { FC, useEffect, useReducer, useState } from 'react';
@@ -217,8 +216,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 	const onAddPostFn = async (postData: TAddPostProps): Promise<TPost | null> => {
 		const newPost = await services.posts.createPost({
 			...postData,
-			// @ts-ignore
-			accessToken: session?.accessToken,
+			accessToken: session?.accessToken as string,
 		});
 
 		if (!newPost) return null;

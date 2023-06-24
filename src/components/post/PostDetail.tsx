@@ -30,8 +30,6 @@ export const PostDetail: FC<TPostDetailProps> = ({ post, canWrite }) => {
 	const onAddReply = async (postData: TAddPostProps) => {
 		const newReply = await services.posts.createPost({
 			...postData,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
 			accessToken: session?.accessToken as string,
 		});
 

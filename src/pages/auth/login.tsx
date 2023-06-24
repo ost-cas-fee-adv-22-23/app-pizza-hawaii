@@ -13,7 +13,7 @@ export default function LoginPage() {
 	const { data: session } = useSession();
 	const router = useRouter();
 
-	const user = session?.user as { name: string; profileLink: string };
+	const user = session?.user;
 
 	// get callback Url from query params
 	const callbackUrl = (router.query.callbackUrl as string) || '/';
@@ -41,7 +41,7 @@ export default function LoginPage() {
 			{!!session && (
 				<Grid variant="col" gap="L" centered={false}>
 					<Headline level={1} as="h2">
-						Hallo {user?.name}
+						Hallo {user?.firstName}
 					</Headline>
 					<span className="text-pink-600">Du bist bereits angemeldet.</span>
 					<Link href={user?.profileLink as string} component={NextLink}>

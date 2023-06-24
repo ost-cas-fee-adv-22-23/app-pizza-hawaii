@@ -2,24 +2,39 @@ import '@testing-library/jest-dom';
 import { cleanup, fireEvent, render } from '@testing-library/react';
 
 import { AccountForm, TAccountFormData } from '../../components/form/AccountForm';
-import formDataEmptyUser from '@/__mocks__/formDataEmptyUser.json';
-import formDataUser from '@/__mocks__/formDataUser.json';
-import formWrongDataUser from '@/__mocks__/formWrongDataUser.json';
 
 const propsUser = {
-	user: formDataUser as TAccountFormData,
+	user: {
+		password: 'strongPA$$W0RD',
+		confirmPassword: 'strongPA$$W0RD',
+		userName: 'Filiks',
+		email: 'filiks.adamski@mumble.ch',
+		firstName: 'Felix',
+		lastName: 'Adam',
+	} as TAccountFormData,
 	onSubmit: jest.fn(),
 	isLoading: false,
 };
 
 const propsEmptyUser = {
-	user: formDataEmptyUser as TAccountFormData,
+	user: {
+		password: '',
+		confirmPassword: '',
+		userName: '',
+		email: '',
+		firstName: '',
+		lastName: '',
+	} as TAccountFormData,
 	onSubmit: jest.fn(),
 	isLoading: false,
 };
 
 const propsWrongUser = {
-	user: formWrongDataUser as TAccountFormData,
+	user: {
+		...propsUser.user,
+		email: 'wrong.email@here',
+		confirmPassword: 'strongPA$$--',
+	} as TAccountFormData,
 	onSubmit: jest.fn(),
 	isLoading: false,
 };

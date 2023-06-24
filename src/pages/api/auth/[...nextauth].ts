@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import { Issuer } from 'openid-client';
 
@@ -47,7 +47,7 @@ const getUser = async (userId: string, accessToken: string): Promise<TUser> => {
 	return (await services.users.getUser({ id: userId, accessToken })) as TUser;
 };
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
 	providers: [
 		{
 			id: 'zitadel',
@@ -99,8 +99,7 @@ export const authOptions = {
 			// if the access token has expired, try to update it
 			if (token.refreshToken) {
 				const newToken = await refreshAccessToken(token);
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore: Object is possibly 'null'.
+
 				if (!newToken.error) {
 					return newToken;
 				}
@@ -113,7 +112,6 @@ export const authOptions = {
 		async session({ session, token }) {
 			session.user = token.user as TUser;
 			session.accessToken = token.accessToken;
-			token.expires = token.expiresAt;
 			return session;
 		},
 	},
@@ -125,6 +123,5 @@ export const authOptions = {
 	},
 	secret: process.env.NEXTAUTH_SECRET,
 };
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+
 export default NextAuth(authOptions);

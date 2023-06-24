@@ -1,10 +1,9 @@
-import '@/__mocks__/routerMock';
 import { cleanup, render, screen } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 
 import { PostItem } from '../../components/post/PostItem';
-import postMock from '@/__mocks__/post.json';
-import { TPost } from '@/types';
+import postMock from '../../__mocks__/post.json';
+import { TPost } from '../../types/Post';
 
 jest.mock('next-auth/react');
 
