@@ -48,7 +48,6 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ inputs.registry == 'google' }}
     steps:
-
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
