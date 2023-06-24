@@ -1,0 +1,71 @@
+name: Create Docker image and push to registry
+
+on:
+  workflow_call:
+    inputs:
+      registry:
+        type: string
+        description: Target Registry to push to
+        default: 'github'
+        required: true
+
+      src:
+        type: string
+        description: Docker image tag to use as source
+        required: true
+        default: 'ghcr.io/smartive-education/app-pizza-hawaii:test'
+
+      dst:
+        type: string
+        description: Docker image tag to use as destination
+        required: true
+        default: 'ghcr.io/smartive-education/app-pizza-hawaii:test'
+
+permissions: write-all
+
+env:
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+jobs:
+  github-retag:
+    name: Retag Docker image with GitHub
+    runs-on: ubuntu-latest
+    if: ${{ inputs.registry == 'github' }}
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: 'ghcr.io'
+          username: ${{ github.actor }}
+          password: ${{ env.NPM_TOKEN }}
+
+      - name: Retag Docker image
+        shell: bash
+        run: |
+          docker tag '${{ inputs.src }}' '${{ inputs.dst }}'
+  google-retag:
+    name: Retag Docker image with Google Cloud
+    runs-on: ubuntu-latest
+    if: ${{ inputs.registry == 'google' }}
+    steps:
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: 'projects/654053669202/locations/global/workloadIdentityPools/casfee23-pool/providers/casfee23-provider'
+          service_account: 'casfee23-account@project-pizza-388116.iam.gserviceaccount.com'
+          token_format: 'access_token'
+
+      - name: Login to Google Cloud
+        uses: docker/login-action@v2
+        with:
+          registry: 'europe-west6-docker.pkg.dev'
+          username: 'oauth2accesstoken'
+          password: '${{ steps.auth.outputs.access_token }}'
+
+      - name: Retag Docker image
+        shell: bash
+        run: |
+          docker tag '${{ inputs.src }}' '${{ inputs.dst }}'
+          docker push '${{ inputs.dst }}'

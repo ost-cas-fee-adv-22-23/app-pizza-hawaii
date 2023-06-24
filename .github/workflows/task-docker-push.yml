@@ -14,6 +14,7 @@ on:
         description: Docker tags to push
         required: true
         default: 'ghcr.io/smartive-education/app-pizza-hawaii:test'
+
       labels:
         type: string
         description: Docker labels to push
