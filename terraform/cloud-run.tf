@@ -56,7 +56,7 @@ resource "google_cloud_run_service" "app-pizza-hawaii" {
   template {
     spec {
       containers {
-        image = local.IMAGE
+         image = "europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii"
         resources {
           limits = {
             "memory" = "2G"
