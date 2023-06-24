@@ -22,7 +22,6 @@ provider "google" {
 
 # Data source: google_project
 data "google_project" "project" {
-#  project_id = "project-pizza-388116"
 }
 
 # Bucket Backend for terraform state:

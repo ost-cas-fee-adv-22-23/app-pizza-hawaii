@@ -50,14 +50,14 @@ jobs:
     uses: ./.github/workflows/task-deploy.yml
     with:
       hoster: google-cloud
-      image: europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
-  pr-deploy-vercel:
-    # if: success()
-    name: Deploy to Vercel Hosting
-    needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
-    uses: ./.github/workflows/task-deploy.yml
-    with:
-      hoster: vercel
-    secrets: inherit
+  # pr-deploy-vercel:
+  #   # if: success()
+  #   name: Deploy to Vercel Hosting
+  #   needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
+  #   uses: ./.github/workflows/task-deploy.yml
+  #   with:
+  #     hoster: vercel
+  #   secrets: inherit
