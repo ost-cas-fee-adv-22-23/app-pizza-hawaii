@@ -110,8 +110,6 @@ jobs:
           service_account: '${{ env.GOOGLE_IF_ID }}-account@${{ env.GOOGLE_IF_PROJECT_ID }}.iam.gserviceaccount.com'
           token_format: 'access_token'
 
-//iam.googleapis.com/projects/<project-number>/locations/global/workloadIdentityPools/<pool-id>/providers/<provider-id>
-
       - name: Install the App on Artifact Registry a cloudRun Container with terraform
         uses: hashicorp/setup-terraform@v2
 
