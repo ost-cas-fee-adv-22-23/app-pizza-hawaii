@@ -35,10 +35,10 @@ env:
   ZITADEL_CLIENT_ID: ${{ secrets.ZITADEL_CLIENT_ID }}
   NEXT_PUBLIC_VERCEL_URL: ${{ secrets.NEXT_PUBLIC_VERCEL_URL }}
 
-  GOOGLE_IF_PROJECT_NUMMER: ${{ secrets.GOOGLE_IF_PROJECT_NUMMER }}
-  GOOGLE_IF_PROJECT_ID: ${{ secrets.GOOGLE_IF_PROJECT_ID }}
-  GOOGLE_IF_ID: ${{ secrets.GOOGLE_IF_ID }}
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  GOOGLE_IF_PROJECT_NUMBER: ${{ env.GOOGLE_IF_PROJECT_NUMBER }}
+  GOOGLE_IF_PROJECT_ID: ${{ env.GOOGLE_IF_PROJECT_ID }}
+  GOOGLE_IF_ID: ${{ env.GOOGLE_IF_ID }}
+  VERCEL_TOKEN: ${{ env.VERCEL_TOKEN }}
 
 concurrency:
   group: 'release'
@@ -106,7 +106,7 @@ jobs:
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
-          workload_identity_provider: 'projects/${{ env.GOOGLE_IF_PROJECT_NUMMER }}/locations/global/workloadIdentityPools/${{ env.GOOGLE_IF_ID }}-pool/providers/${{ env.GOOGLE_IF_ID }}-provider'
+          workload_identity_provider: 'projects/${{ env.GOOGLE_IF_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ env.GOOGLE_IF_ID }}-pool/providers/${{ env.GOOGLE_IF_ID }}-provider'
           service_account: '${{ env.GOOGLE_IF_ID }}-account@${{ env.GOOGLE_IF_PROJECT_ID }}.iam.gserviceaccount.com'
           token_format: 'access_token'
 
