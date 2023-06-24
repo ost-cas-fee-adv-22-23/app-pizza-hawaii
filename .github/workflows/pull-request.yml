@@ -18,9 +18,10 @@ jobs:
     needs: pr-lint-and-prettier
     uses: ./.github/workflows/task-docker-push.yml
     with:
-      registry: github
+      registry: google
       tags: |
-        ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+        europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:latest
+        europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
   pr-playwright-e2e:
@@ -29,7 +30,7 @@ jobs:
     needs: pr-docker-build-and-publish
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
-      image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
   pr-web-vitals:
@@ -38,7 +39,7 @@ jobs:
     needs: pr-docker-build-and-publish
     uses: ./.github/workflows/task-web-vitals.yml
     with:
-      image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
       test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
     secrets: inherit
 
@@ -50,7 +51,7 @@ jobs:
     uses: ./.github/workflows/task-deploy.yml
     with:
       hoster: google-cloud
-      image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
+      image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:latest
     secrets: inherit
 
   # pr-deploy-vercel:

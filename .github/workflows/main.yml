@@ -42,7 +42,9 @@ jobs:
     needs: m-docker-build-and-publish
     uses: ./.github/workflows/task-web-vitals.yml
     with:
-      image: europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      image: |
+        europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:latest
+        europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
       test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
     secrets: inherit
 
@@ -53,7 +55,7 @@ jobs:
     uses: ./.github/workflows/task-deploy.yml
     with:
       hoster: google-cloud
-      image: europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:latest
     secrets: inherit
 
   m-deploy-vercel:
