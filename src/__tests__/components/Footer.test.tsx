@@ -25,12 +25,12 @@ describe('Footer Component', () => {
 		expect(document.body.classList.contains('light'));
 	});
 
-	it('should have a HTML element footer and the className of `Footer` ', () => {
+	it('should have a HTML element Footer and the className of `Footer` ', () => {
 		const { container } = render(<Footer />);
 		expect(container.querySelector('footer'));
 	});
 
-	it('should match the snapshot', () => {
+	it('should match the Snapshot', () => {
 		const { container } = render(<Footer />);
 		expect(container).toMatchSnapshot();
 	});
