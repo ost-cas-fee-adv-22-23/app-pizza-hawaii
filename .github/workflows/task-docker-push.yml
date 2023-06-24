@@ -27,9 +27,7 @@ env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
 
-permissions:
-  contents: read
-  packages: write
+permissions: write-all
 
 jobs:
   github-cr:
