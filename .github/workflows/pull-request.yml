@@ -50,7 +50,7 @@ jobs:
     uses: ./.github/workflows/task-deploy.yml
     with:
       hoster: google-cloud
-      image: europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
   # pr-deploy-vercel:
