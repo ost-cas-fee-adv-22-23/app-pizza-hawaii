@@ -41,7 +41,6 @@ concurrency:
 
 permissions: write-all
 
-
 jobs:
   Deploy-Vercel:
     runs-on: ubuntu-latest
