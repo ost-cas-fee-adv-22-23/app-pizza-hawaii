@@ -18,7 +18,7 @@ jobs:
     needs: pr-lint-and-prettier
     uses: ./.github/workflows/task-docker-push.yml
     with:
-      registry: google
+      registry: github
       tags: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
