@@ -73,7 +73,7 @@ jobs:
         uses: 'google-github-actions/auth@v1'
         with:
           workload_identity_provider: 'projects/${{ secrets.GOOGLE_IF_PROJECT_NUMMER }}/locations/global/workloadIdentityPools/${{ secrets.GOOGLE_IF_ID }}-pool/providers/${{ secrets.GOOGLE_IF_ID }}-provider'
-           service_account: '${{ secrets.GOOGLE_IF_ID }}-account@${{ secrets.GOOGLE_IF_PROJECT_ID }}.iam.gserviceaccount.com'
+          service_account: '${{ secrets.GOOGLE_IF_ID }}-account@${{ secrets.GOOGLE_IF_PROJECT_ID }}.iam.gserviceaccount.com'
           token_format: 'access_token'
 
       - name: Login to Google Cloud
