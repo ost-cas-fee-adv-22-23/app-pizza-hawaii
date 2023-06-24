@@ -53,11 +53,11 @@ jobs:
       image: europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
-  pr-deploy-vercel:
-    # if: success()
-    name: Deploy to Vercel Hosting
-    needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
-    uses: ./.github/workflows/task-deploy.yml
-    with:
-      hoster: vercel
-    secrets: inherit
+  # pr-deploy-vercel:
+  #   # if: success()
+  #   name: Deploy to Vercel Hosting
+  #   needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
+  #   uses: ./.github/workflows/task-deploy.yml
+  #   with:
+  #     hoster: vercel
+  #   secrets: inherit
