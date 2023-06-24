@@ -59,8 +59,7 @@ resource "google_cloud_run_service" "app-pizza-hawaii" {
          image = "europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii"
         resources {
           limits = {
-            "memory" = "2G"
-            "cpu"    = "2"
+            "memory" = "256Mi"
           }
         }
 
