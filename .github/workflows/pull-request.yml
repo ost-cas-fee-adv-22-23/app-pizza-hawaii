@@ -42,13 +42,14 @@ jobs:
       test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
     secrets: inherit
 
+  # TODO: remove this once it works
   pr-retag-docker:
     if: success()
     name: Retag Docker (Test / GitHub Container Registry)
     needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
     uses: ./.github/workflows/task-docker-retag.yml
     with:
-      registry: google
+      registry: both
       src: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
       # dst: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:test
       dst: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:latest
