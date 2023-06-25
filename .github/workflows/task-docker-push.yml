@@ -6,7 +6,7 @@ on:
       registry:
         type: string
         description: Package registry to push to
-        default: 'github'
+        default: 'github' # 'github' or 'google'
         required: true
 
       tags:
@@ -14,6 +14,7 @@ on:
         description: Docker tags to push
         required: true
         default: 'ghcr.io/smartive-education/app-pizza-hawaii:test'
+
       labels:
         type: string
         description: Docker labels to push
@@ -27,9 +28,7 @@ env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
 
-permissions:
-  contents: read
-  packages: write
+permissions: write-all
 
 jobs:
   github-cr:
