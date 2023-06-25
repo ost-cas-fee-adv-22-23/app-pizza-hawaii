@@ -21,6 +21,7 @@ jobs:
       registry: github
       tags: |
         ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+        ghcr.io/smartive-education/app-pizza-hawaii:latest
     secrets: inherit
 
   pr-playwright-e2e:
@@ -50,9 +51,9 @@ jobs:
     uses: ./.github/workflows/task-docker-retag.yml
     with:
       registry: both
-      src: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      src: ghcr.io/smartive-education/app-pizza-hawaii
       # dst: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:test
-      dst: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:latest
+      dst: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii
     secrets: inherit
 
   # TODO: remove this once it works
