@@ -59,7 +59,8 @@ jobs:
   pr-deploy-google-cloud:
     # if: success()
     name: Deploy to Google Cloud Run Registry
-    needs: pr-retag-docker
+    # needs: pr-retag-docker
+    needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
     uses: ./.github/workflows/task-deploy.yml
     with:
       hoster: google-cloud
