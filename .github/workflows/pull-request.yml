@@ -51,7 +51,7 @@ jobs:
     uses: ./.github/workflows/task-docker-retag.yml
     with:
       registry: both
-      src: ghcr.io/smartive-education/app-pizza-hawaii
+      src: ghcr.io/smartive-education/app-pizza-hawaii:latest
       # dst: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:test
       dst: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii
     secrets: inherit
