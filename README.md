@@ -228,11 +228,45 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 building image and deploy it to Google Cloud Installation
 
-Preparations:
+## Preparations:
 
-1. install docker and docker-cli on your system
-2. enroll to google-cloud
-3.
+### 1. install docker and docker-cli on your system
+
+### 2. enroll to google-cloud with a service account and Workload Identity Provider
+
+create gcloud with service account 'casfee23-account' for deployment
+```
+gcloud iam service-accounts create "casfee23-account"  \\n  --project "project-pizza-388116"
+```
+update at gcloud
+gcloud components update
+
+#enable service account for project
+gcloud services enable iamcredentials.googleapis.com \\n  --project "${PROJECT_ID}"
+
+# create gcloud pool
+gcloud iam workload-identity-pools create "casfee23-pool" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --display-name="casfee23-pool"
+
+# describe pool 
+ gcloud iam workload-identity-pools describe "casfee23-pool" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --format="value(name)"
+
+# export workload pool 
+export WORKLOAD_IDENTITY_POOL_ID="projects/654053669202/locations/global/workloadIdentityPools/casfee23-pool"
+ 
+# create providers at gcloud
+gcloud iam workload-identity-pools providers create-oidc "casfee23-provider" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --workload-identity-pool="casfee23-pool" \\n  --display-name="CAS_FEE_23_Provider" \\n  --attribute-mapping="google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.repository=assertion.repository" \\n  --issuer-uri="https://token.actions.githubusercontent.com"
+
+#define repo
+export REPO="smartive-education/app-pizza-hawaii"
+
+# connect repo with project and set role
+gcloud iam service-accounts add-iam-policy-binding "casfee23-account@${PROJECT_ID}.iam.gserviceaccount.com" \\n  --project="${PROJECT_ID}" \\n  --role="roles/iam.workloadIdentityUser" \\n  --member="principalSet://iam.googleapis.com/${WORKLOAD_IDENTITY_POOL_ID}/attribute.repository/${REPO}"
+
+# configure workload identity pool provider
+
+gcloud iam workload-identity-pools providers describe "casfee23-provider" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --workload-identity-pool="casfee23-pool" \\n  --format="value(name)"
+ 
+
 
 ## Docker Container
 
