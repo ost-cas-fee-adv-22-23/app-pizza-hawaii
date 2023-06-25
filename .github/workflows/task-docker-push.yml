@@ -6,7 +6,7 @@ on:
       registry:
         type: string
         description: Package registry to push to
-        default: 'github'
+        default: 'github' # 'github' or 'google'
         required: true
 
       tags:

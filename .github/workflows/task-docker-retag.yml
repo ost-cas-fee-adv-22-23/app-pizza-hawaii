@@ -66,8 +66,5 @@ jobs:
       - name: Retag Docker image
         shell: bash
         run: |
-          docker image tag '${{ inputs.src }}' '${{ inputs.dst }}'
-      - name: Retag Docker image2
-        shell: bash
-        run: |
-          docker image push '${{ inputs.dst }}'
+          docker image tag ${{ inputs.src }} ${{ inputs.dst }}
+          docker image push ${{ inputs.dst }}

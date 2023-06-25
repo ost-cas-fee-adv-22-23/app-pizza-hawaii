@@ -18,10 +18,9 @@ jobs:
     needs: pr-lint-and-prettier
     uses: ./.github/workflows/task-docker-push.yml
     with:
-      registry: google
+      registry: github
       tags: |
         ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
-        europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:latest
     secrets: inherit
 
   pr-playwright-e2e:
