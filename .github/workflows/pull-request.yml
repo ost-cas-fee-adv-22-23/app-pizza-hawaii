@@ -47,7 +47,7 @@ jobs:
   pr-retag-docker:
     if: success()
     name: Retag Docker (Test / GitHub Container Registry)
-    # needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
+    needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
     uses: ./.github/workflows/task-docker-retag.yml
     with:
       registry: both
