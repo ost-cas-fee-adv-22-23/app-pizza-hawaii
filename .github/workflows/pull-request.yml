@@ -21,7 +21,6 @@ jobs:
       registry: github
       tags: |
         ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
-        ghcr.io/smartive-education/app-pizza-hawaii:latest
     secrets: inherit
 
   pr-playwright-e2e:
@@ -42,38 +41,3 @@ jobs:
       image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
       test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
     secrets: inherit
-
-  # TODO: remove this once it works
-  pr-retag-docker:
-    if: success()
-    name: Retag Docker (Test / GitHub Container Registry)
-    needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
-    uses: ./.github/workflows/task-docker-retag.yml
-    with:
-      registry: both
-      src: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
-      # dst: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:test
-      dst: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:latest
-    secrets: inherit
-
-  # TODO: remove this once it works
-  pr-deploy-google-cloud:
-    # if: success()
-    name: Deploy to Google Cloud Run Registry
-    # needs: pr-retag-docker
-    needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
-    uses: ./.github/workflows/task-deploy.yml
-    with:
-      hoster: google-cloud
-      # image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:test
-      image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:latest
-    secrets: inherit
-
-  # pr-deploy-vercel:
-  #   # if: success()
-  #   name: Deploy to Vercel Hosting
-  #   needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
-  #   uses: ./.github/workflows/task-deploy.yml
-  #   with:
-  #     hoster: vercel
-  #   secrets: inherit
