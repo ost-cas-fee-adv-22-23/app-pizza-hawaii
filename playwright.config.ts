@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const testBrowsers = process.env.browsers?.split('|') || ['Firefox']; // ['Firefox', 'Chrome', 'Safari', 'Mobile Chrome', 'Mobile Safari'];
+const testBrowsers = process.env.browsers?.split(',') || ['Firefox']; // ['Firefox', 'Chrome', 'Safari', 'Mobile Chrome', 'Mobile Safari'];
 
 export default defineConfig({
 	globalSetup: './tests/global.setup.ts',
@@ -18,26 +18,20 @@ export default defineConfig({
 	use: {
 		baseURL: process.env.NEXT_PUBLIC_VERCEL_URL,
 		trace: 'on-first-retry',
-		storageState: './tmp/state.json',
 		screenshot: 'only-on-failure',
 	},
 
 	/* Configure projects for major browsers */
 	projects: [
-		{
-			name: 'login',
-			testMatch: '**/*.setup.ts',
-		},
-		...testBrowsers.map((browser) => ({
-			name: `logged in ${browser}`,
-			use: { ...devices[browser] },
-			testMatch: '**/*.loggedin.spec.ts',
-			dependencies: ['login'],
-		})),
 		...testBrowsers.map((browser) => ({
 			name: `logged out ${browser}`,
 			use: { ...devices[browser] },
 			testIgnore: ['**/*.loggedin.spec.ts'],
+		})),
+		...testBrowsers.map((browser) => ({
+			name: `logged in ${browser}`,
+			use: { ...devices[browser], storageState: './tmp/auth.json' },
+			testMatch: '**/*.loggedin.spec.ts',
 		})),
 	],
 });
