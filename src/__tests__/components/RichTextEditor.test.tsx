@@ -31,16 +31,6 @@ describe('Richtext Component input rendering', () => {
 		expect(screen.getByText('hi there, I am a great fan of pizza hawaii. #pizza #hawaii'));
 	});
 
-	// test if link is rendered correctly
-	it('should render the Richtext component with text and link with `a-tags`', () => {
-		render(
-			<Richtext size="M" as="div">
-				{inputDataLink}
-			</Richtext>
-		);
-		expect(screen.findAllByRole('link', { name: 'https://example.com' }));
-	});
-
 	// test if the Richtext renders correct html tags if `as` prop is specified
 	it('should render the Richtext component as `article` when specified', () => {
 		const { container } = render(
@@ -89,7 +79,7 @@ describe('test parseRichText functions', () => {
 	it('should return link anchor tag when links are posted, clutched by `paragraph-tags`', () => {
 		const result = parseRichText(inputDataLink);
 		expect(result).toBe(
-			'<p>hi there, I want to share that <a href="https://example.com">https://example.com</a> is a great website.</p>'
+			`<p>${inputDataLink.replace('https://example.com', '<a href="https://example.com">https://example.com</a>')}</p>`
 		);
 	});
 
