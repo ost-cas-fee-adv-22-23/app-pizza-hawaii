@@ -48,12 +48,12 @@ jobs:
       test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
     secrets: inherit
 
-  # # delete this job later on
-  # pr-deploy-vercel:
-  #   if: success()
-  #   name: Deploy to Vercel Hosting
-  #   needs: [pr-docker-build-and-publish, pr-playwright-e2e]
-  #   uses: ./.github/workflows/task-deploy.yml
-  #   with:
-  #     hoster: vercel
-  #   secrets: inherit
+  # delete this job later on
+  pr-deploy-vercel:
+    if: success()
+    name: Deploy to Vercel Hosting
+    needs: [pr-docker-build-and-publish, pr-playwright-e2e]
+    uses: ./.github/workflows/task-deploy.yml
+    with:
+      hoster: vercel
+    secrets: inherit
