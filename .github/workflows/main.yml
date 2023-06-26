@@ -1,4 +1,4 @@
-name: Pull Request Workflow
+name: Maint Workflow
 
 on:
   push:
@@ -22,9 +22,10 @@ jobs:
     needs: m-lint-and-prettier
     uses: ./.github/workflows/task-docker-push.yml
     with:
-      registry: google
+      registry: github
       tags: |
-        europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
+        ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+        ghcr.io/smartive-education/app-pizza-hawaii:latest
     secrets: inherit
 
   m-playwright-e2e:
@@ -33,7 +34,7 @@ jobs:
     needs: m-docker-build-and-publish
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
-      image: europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
   m-web-vitals:
@@ -42,37 +43,36 @@ jobs:
     needs: m-docker-build-and-publish
     uses: ./.github/workflows/task-web-vitals.yml
     with:
-      image: europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
       test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
     secrets: inherit
 
-  m-deploy-google-cloud:
+  m-retag-docker:
     if: success()
-    name: Deploy to Google Cloud Run Registry
+    name: Retag Docker (Test / GitHub Container Registry)
     needs: [m-docker-build-and-publish, m-playwright-e2e, m-web-vitals]
+    uses: ./.github/workflows/task-docker-retag.yml
+    with:
+      registry: google
+      src: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      dst: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:latest
+    secrets: inherit
+
+  m-deploy-google-cloud:
+    # if: success()
+    name: Deploy to Google Cloud Run Registry
+    needs: m-retag-docker
     uses: ./.github/workflows/task-deploy.yml
     with:
       hoster: google-cloud
-      image: europe-west6-docker.pkg.dev/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:latest
     secrets: inherit
 
-  m-deploy-vercel:
-    if: success()
-    name: Deploy to Vercel Hosting
-    needs: [m-docker-build-and-publish, m-playwright-e2e, m-web-vitals]
-    uses: ./.github/workflows/task-deploy.yml
-    with:
-      hoster: vercel
-    secrets: inherit
-
-  # m-notify:
-  #   if: success()
-  #   runs-on: ubuntu-latest
-  #   name: Notify Slack
+  # m-deploy-vercel:
+  #   # if: success()
+  #   name: Deploy to Vercel Hosting
   #   needs: [m-docker-build-and-publish, m-playwright-e2e, m-web-vitals]
-  #   steps:
-  #     - name: Notify Slack
-  #       uses: ./.github/workflows/task-notify-slack.yml
-  #       with:
-  #         status: ${{ job.status }}
-  #         slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+  #   uses: ./.github/workflows/task-deploy.yml
+  #   with:
+  #     hoster: vercel
+  #   secrets: inherit
