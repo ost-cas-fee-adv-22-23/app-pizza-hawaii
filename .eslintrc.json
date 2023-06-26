@@ -34,7 +34,7 @@
 			}
 		},
 		{
-			"files": ["tests/**/*.ts", "**/?(*.)+(spec).ts"],
+			"files": ["./tests/**/*.ts", "**/?(*.)+(spec).ts"],
 			"extends": ["plugin:playwright/recommended"]
 		}
 	]

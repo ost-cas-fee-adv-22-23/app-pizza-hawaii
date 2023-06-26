@@ -89,7 +89,9 @@ describe('test parseRichText functions', () => {
 	it('should return link creation when hash tags are used, clutched by `paragraph tags`', () => {
 		const result = parseRichText(inputDataHashTag);
 		expect(result).toBe(
-			'<p>hi there, I am a great fan of pizza hawaii. <a href="/tag/pizza">#pizza</a> <a href="/tag/hawaii">#hawaii</a></p>'
+			`<p>${inputDataHashTag
+				.replace('#pizza', '<a href="/tag/pizza">#pizza</a>')
+				.replace('#hawaii', '<a href="/tag/hawaii">#hawaii</a>')}</p>`
 		);
 	});
 
@@ -97,7 +99,10 @@ describe('test parseRichText functions', () => {
 	it('should return links to the corresponding user for all user mentions, clutched by `paragraph tags`', () => {
 		const result = parseRichText(inputDataUserMention);
 		expect(result).toBe(
-			'<p>hi there, I want to share that <a href="/user/214652397815857409">@Testuser</a> is a crappy website.</p>'
+			`<p>${inputDataUserMention.replace(
+				'@[Testuser|214652397815857409]',
+				'<a href="/user/214652397815857409">@Testuser</a>'
+			)}</p>`
 		);
 	});
 
@@ -105,15 +110,16 @@ describe('test parseRichText functions', () => {
 	it('should return created links for all markdown links clutched by `paragraph tags`', () => {
 		const result = parseRichText(inputDataMarkdown);
 		expect(result).toBe(
-			'<p>hi there, I want to share that <a href="https://lookatthat.ch">lookatthat</a> is a simple website.</p>'
+			`<p>${inputDataMarkdown.replace(
+				'[lookatthat](https://lookatthat.ch)',
+				'<a href="https://lookatthat.ch">lookatthat</a>'
+			)}</p>`
 		);
 	});
 
 	// test line breaks creation renders correctly
 	it('should return replace line breaks with a `<br>`, clutched by `paragraph tags`', () => {
 		const result = parseRichText(inputDatawithBreaks);
-		expect(result).toBe(
-			'<p>hi there, I want to share that long text with a line- <br>, break and a pizza slize 🍕.</p>'
-		);
+		expect(result).toBe(`<p>${inputDatawithBreaks.replace('\n', '<br>')}</p>`);
 	});
 });
