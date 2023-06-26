@@ -43,28 +43,6 @@ jobs:
           npm install -g @lhci/cli
           lhci autorun --collect.url=${{ inputs.test_url }} --collect.numberOfRuns=3 --upload.target=temporary-public-storage --upload.token=${{ secrets.NPM_TOKEN }}
 
-      - id: read-manifest
-        run: |
-          echo ::set-output name=manifest::$(cat .lighthouseci/manifest.json)
-      - uses: actions/github-script@v4
-        if: github.event.context == 'deploy/netlify' && github.event.state == 'success'
-        env:
-          MANIFEST: ${{ steps.read-manifest.outputs.manifest }}
-        with:
-          script: |
-            const manifest = JSON.parse(process.env.MANIFEST);
-            console.log('\n\n\u001b[32mSummary Results:\u001b[0m');
-
-            var rows = manifest.map((row) => {
-              return {
-                "url": row.url.substring(row.url.indexOf("netlify.app") + 11),
-                "performance": row.summary.performance,
-                "accessibility": row.summary.accessibility,
-                "seo": row.summary.seo
-              }
-            });
-
-            console.table(rows);
   web-vitals-on-url:
     if: ${{ inputs.image == '' }}
     name: Web Vitals on URL
@@ -82,26 +60,3 @@ jobs:
           lhci autorun --collect.url=${{ inputs.test_url }} --collect.numberOfRuns=3 --upload.target=temporary-public-storage --upload.token=${{ secrets.NPM_TOKEN }}
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-
-      - id: read-manifest
-        run: |
-          echo ::set-output name=manifest::$(cat .lighthouseci/manifest.json)
-      - uses: actions/github-script@v4
-        if: github.event.context == 'deploy/netlify' && github.event.state == 'success'
-        env:
-          MANIFEST: ${{ steps.read-manifest.outputs.manifest }}
-        with:
-          script: |
-            const manifest = JSON.parse(process.env.MANIFEST);
-            console.log('\n\n\u001b[32mSummary Results:\u001b[0m');
-
-            var rows = manifest.map((row) => {
-              return {
-                "url": row.url.substring(row.url.indexOf("netlify.app") + 11),
-                "performance": row.summary.performance,
-                "accessibility": row.summary.accessibility,
-                "seo": row.summary.seo
-              }
-            });
-
-            console.table(rows);
