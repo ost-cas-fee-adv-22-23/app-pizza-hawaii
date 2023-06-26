@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
 import { cleanup, render } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
+
 import { UserRecommender } from '../../components/widgets/UserRecommender';
 
 jest.mock('next-auth/react');

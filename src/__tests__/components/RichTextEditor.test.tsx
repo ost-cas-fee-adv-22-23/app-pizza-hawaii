@@ -1,6 +1,7 @@
-import { cleanup, render, screen } from '@testing-library/react';
-import { parse as parseRichText } from '../../utils/RichText';
 import { Richtext } from '@smartive-education/pizza-hawaii';
+import { cleanup, render, screen } from '@testing-library/react';
+
+import { parse as parseRichText } from '../../utils/RichText';
 
 export const defaultSettings = {
 	basics: true,

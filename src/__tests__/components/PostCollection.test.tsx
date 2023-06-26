@@ -1,11 +1,13 @@
 import { cleanup, render, screen } from '@testing-library/react';
-import { PostCollection } from '../../components/post/PostCollection';
 import { useSession } from 'next-auth/react';
+
 import mockLoadedPosts from '../../__mocks__/loadedPosts.json';
-import { TPost } from '../../types/Post';
+import { PostCollection } from '../../components/post/PostCollection';
 import { PostList } from '../../components/post/PostList';
+import { TPost } from '../../types/Post';
 
 jest.mock('next-auth/react');
+
 describe('PostCollection Component input rendering', () => {
 	const loadedPosts = mockLoadedPosts as TPost[];
 
