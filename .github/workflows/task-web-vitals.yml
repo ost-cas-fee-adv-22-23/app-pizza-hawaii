@@ -49,7 +49,7 @@ jobs:
       - uses: actions/github-script@v4
         if: github.event.context == 'deploy/netlify' && github.event.state == 'success'
         env:
-            MANIFEST: ${{ steps.read-manifest.outputs.manifest }}
+          MANIFEST: ${{ steps.read-manifest.outputs.manifest }}
         with:
           script: |
             const manifest = JSON.parse(process.env.MANIFEST);
@@ -83,14 +83,13 @@ jobs:
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
-
       - id: read-manifest
         run: |
           echo ::set-output name=manifest::$(cat .lighthouseci/manifest.json)
       - uses: actions/github-script@v4
         if: github.event.context == 'deploy/netlify' && github.event.state == 'success'
         env:
-            MANIFEST: ${{ steps.read-manifest.outputs.manifest }}
+          MANIFEST: ${{ steps.read-manifest.outputs.manifest }}
         with:
           script: |
             const manifest = JSON.parse(process.env.MANIFEST);
