@@ -15,11 +15,11 @@ async function globalSetup(config: FullConfig) {
 
 		// Step 1: Open the login page via the Mumble login button
 		await page.goto(baseURL);
-		await page.waitForSelector('button:has-text("Login via Zitadel")');
 
-		await page.context().storageState({ path: defaultStateFile as string });
+		console.log(baseURL);
 
 		const loginButton = await page.getByRole('button', { name: 'Login via Zitadel' });
+		await page.context().storageState({ path: defaultStateFile as string });
 		await loginButton.click();
 
 		await expect(page).toHaveURL(/.*.zitadel.cloud\/ui\/login\/login.*/);
