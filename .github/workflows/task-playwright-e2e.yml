@@ -64,6 +64,12 @@ jobs:
           NEXT_PUBLIC_QWACKER_API_URL: ${{ env.NEXT_PUBLIC_QWACKER_API_URL }}
           ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
           ZITADEL_PASSWORD: ${{ env.ZITADEL_PASSWORD }}
+          browsers: |
+            - Firefox
+            - Chrome
+            - Safari
+            - Mobile Chrome
+            - Mobile Safari
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
