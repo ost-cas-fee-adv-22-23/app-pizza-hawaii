@@ -1,6 +1,5 @@
 import { chromium, expect, FullConfig } from '@playwright/test';
-const stateFile = './tmp/state.json';
-const authFile = './tmp/auth.json';
+import { defaultStateFile, authStateFile } from '../playwright.config';
 
 async function globalSetup(config: FullConfig) {
 	const { baseURL } = config.projects[0].use as {
@@ -18,7 +17,7 @@ async function globalSetup(config: FullConfig) {
 		await page.goto(baseURL);
 		await page.waitForSelector('button:has-text("Login via Zitadel")');
 
-		await page.context().storageState({ path: stateFile as string });
+		await page.context().storageState({ path: defaultStateFile as string });
 
 		const loginButton = await page.getByRole('button', { name: 'Login via Zitadel' });
 		await loginButton.click();
@@ -40,7 +39,7 @@ async function globalSetup(config: FullConfig) {
 		await page.waitForURL(baseURL);
 
 		// Step 4: Save the storage state of logged in user to use it in the tests
-		await page.context().storageState({ path: authFile as string });
+		await page.context().storageState({ path: authStateFile as string });
 
 		await browser.close();
 	} catch (error) {

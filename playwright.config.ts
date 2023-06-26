@@ -3,6 +3,9 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+export const defaultStateFile = './tmp/state.json';
+export const authStateFile = './tmp/auth.json';
+
 const testBrowsers = process.env.browsers?.split(',') || ['Firefox']; // ['Firefox', 'Chrome', 'Safari', 'Mobile Chrome', 'Mobile Safari'];
 
 export default defineConfig({
@@ -17,8 +20,9 @@ export default defineConfig({
 	timeout: 30 * 1000,
 	use: {
 		baseURL: process.env.NEXT_PUBLIC_VERCEL_URL,
-		trace: 'on-first-retry',
 		screenshot: 'only-on-failure',
+		storageState: defaultStateFile,
+		trace: 'on-first-retry',
 	},
 
 	/* Configure projects for major browsers */
@@ -30,7 +34,7 @@ export default defineConfig({
 		})),
 		...testBrowsers.map((browser) => ({
 			name: `logged in ${browser}`,
-			use: { ...devices[browser], storageState: './tmp/auth.json' },
+			use: { ...devices[browser], storageState: authStateFile },
 			testMatch: '**/*.loggedin.spec.ts',
 		})),
 	],

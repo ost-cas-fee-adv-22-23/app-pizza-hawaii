@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   m-lint-and-prettier:
-    name: Lint and Prettier
+    name: Code Quality Image
     uses: ./.github/workflows/task-lint-and-prettier.yml
     secrets: inherit
 
@@ -24,7 +24,7 @@ jobs:
 
   m-docker-build-and-publish:
     if: success()
-    name: Build and Publish Docker (Test / GitHub Container Registry)
+    name: Build and Publish Docker Image
     needs: m-unit-tests
     uses: ./.github/workflows/task-docker-push.yml
     with:
@@ -36,7 +36,7 @@ jobs:
 
   m-playwright-e2e:
     if: success()
-    name: E2E Tests on Docker
+    name: E2E Tests on Docker Image
     needs: m-docker-build-and-publish
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
@@ -46,7 +46,7 @@ jobs:
 
   m-web-vitals:
     if: success()
-    name: Web Vitals on Docker
+    name: Web Vitals on Docker Image
     needs: m-docker-build-and-publish
     uses: ./.github/workflows/task-web-vitals.yml
     with:
