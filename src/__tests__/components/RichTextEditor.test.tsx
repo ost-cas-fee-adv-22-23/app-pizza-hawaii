@@ -32,23 +32,25 @@ describe('Richtext Component input rendering', () => {
 	});
 
 	// test if the Richtext renders correct html tags if `as` prop is specified
-	it('should render the Richtext component as `article` when specified', () => {
+	it('should render the Richtext component as `<article>` when specified', () => {
 		const { container } = render(
 			<Richtext size="M" as="article">
 				{inputDataLink}
 			</Richtext>
 		);
-		expect(container.querySelector('article'));
+		const articletag = container.querySelector('article');
+		expect(articletag?.tagName).toBe('ARTICLE');
 	});
 
 	// same test as above but with `section` instead of `article`
-	it('should render the Richtext component as `section` when specified', () => {
+	it('should render the Richtext component as `<section>` when specified', () => {
 		const { container } = render(
 			<Richtext size="M" as="section">
 				{inputDataLink}
 			</Richtext>
 		);
-		expect(container.querySelector('section'));
+		const sectiontag = container.querySelector('section');
+		expect(sectiontag?.tagName).toBe('SECTION');
 	});
 
 	// test if the Richtext component renders correct font specific font classes with `size` prop is specified
