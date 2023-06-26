@@ -17,8 +17,7 @@ jobs:
     secrets: inherit
 
   m-unit-tests:
-    if: success()
-    name: Lint and Prettier
+    name: Unit Tests
     needs: m-lint-and-prettier
     uses: ./.github/workflows/task-unittests.yml
     secrets: inherit

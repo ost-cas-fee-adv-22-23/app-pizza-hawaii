@@ -13,13 +13,12 @@ jobs:
     secrets: inherit
 
   pr-unit-tests:
-    name: Lint and Prettier
+    name: Unit Tests
     needs: pr-lint-and-prettier
     uses: ./.github/workflows/task-unittests.yml
     secrets: inherit
 
   pr-docker-build-and-publish:
-    if: success()
     name: Build and Publish Docker (Test / GitHub Container Registry)
     needs: pr-unit-tests
     uses: ./.github/workflows/task-docker-push.yml
