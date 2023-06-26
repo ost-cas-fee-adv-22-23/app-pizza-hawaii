@@ -12,10 +12,16 @@ jobs:
     uses: ./.github/workflows/task-lint-and-prettier.yml
     secrets: inherit
 
+  pr-unit-tests:
+    name: Lint and Prettier
+    needs: pr-lint-and-prettier
+    uses: ./.github/workflows/task-unittests.yml
+    secrets: inherit
+
   pr-docker-build-and-publish:
     if: success()
     name: Build and Publish Docker (Test / GitHub Container Registry)
-    needs: pr-lint-and-prettier
+    needs: pr-unit-tests
     uses: ./.github/workflows/task-docker-push.yml
     with:
       registry: github
@@ -41,23 +47,3 @@ jobs:
       image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
       test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
     secrets: inherit
-
-  # TODO: remove this once it works
-  pr-deploy-google-cloud:
-    # if: success()
-    name: Deploy to Google Cloud Run Registry
-    needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
-    uses: ./.github/workflows/task-deploy.yml
-    with:
-      hoster: google-cloud
-      image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
-    secrets: inherit
-
-  # pr-deploy-vercel:
-  #   # if: success()
-  #   name: Deploy to Vercel Hosting
-  #   needs: [pr-docker-build-and-publish, pr-playwright-e2e, pr-web-vitals]
-  #   uses: ./.github/workflows/task-deploy.yml
-  #   with:
-  #     hoster: vercel
-  #   secrets: inherit

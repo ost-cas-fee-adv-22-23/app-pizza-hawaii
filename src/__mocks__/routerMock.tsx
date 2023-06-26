@@ -1,5 +1,3 @@
-import * as ReactTesting from '@testing-library/react';
-
 jest.mock('next/router', () => ({
 	push: jest.fn(),
 	back: jest.fn(),

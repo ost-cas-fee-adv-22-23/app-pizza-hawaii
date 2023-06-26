@@ -1,49 +1,41 @@
 {
-  "root": true,
-  "settings": {},
-  "env": {
-    "browser": true, // Enables browser globals like window and document
-    "amd": true, // Enables require() and define() as global variables as per the amd spec.
-    "node": true, // Enables Node.js global variables and Node.js scoping.
-    "jest": true,
-    "es2021": true
-  },
 	"extends": [
 		"@smartive/eslint-config/react",
 		"next/core-web-vitals",
-    "plugin:testing-library/react",
 		"prettier"
 	],
-	"plugins": ["simple-import-sort","testing-library"],
-  "ignorePatterns": ["**/src/__mocks__/", "**/src/__tests__/"],
+	"plugins": ["simple-import-sort", "testing-library", "playwright"],
 	"rules": {
 		"no-console": ["warn", { "allow": ["error", "warn", "info"] }],
 		"react-hooks/rules-of-hooks": "error",
 		"no-duplicate-imports": "error",
 		"simple-import-sort/imports": [
-      "warn",
-      {
-        "groups": [
-          ["^\\u0000", "^@?\\w"],
-          ["^@/appState(/.*|$)"],
-          ["^@/pages(/.*|$)", "^@/components(/.*|$)", "^@/assets(/.*|$)"],
-          ["^@/hooks(/.*|$)", "^@/helpers(/.*|$)", "^@/nodeHelpers(/.*|$)"],
-          ["^@/definitions(/.*|$)", "^@/models(/.*|$)"],
-          ["^@/config(/.*|$)"]
-        ]
-      }
-    ]
+		"warn",
+			{
+				"groups": [
+				["^\\u0000", "^@?\\w"],
+				["^@/appState(/.*|$)"],
+				["^@/pages(/.*|$)", "^@/components(/.*|$)", "^@/assets(/.*|$)"],
+				["^@/hooks(/.*|$)", "^@/helpers(/.*|$)", "^@/nodeHelpers(/.*|$)"],
+				["^@/definitions(/.*|$)", "^@/models(/.*|$)"],
+				["^@/config(/.*|$)"]
+				]
+			}
+		]
 	},
-  "overrides": [
-      {
-        "files": ["pages/**/*.tsx", "components/**/*.tsx"],
-        "rules": {
-          "react/forbid-component-props": ["error", { "forbid": [] }]
-        }
-      },
-      {
-        "files": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
-        "extends": ["plugin:testing-library/react"]
-      }
-    ]
+
+	"overrides": [
+		{
+			"files": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
+			"extends": ["plugin:testing-library/react"],
+			"rules": {
+				"testing-library/no-container": "warn",
+				"testing-library/no-node-access": "warn"
+			}
+		},
+		{
+			"files": ["tests/**/*.ts", "**/?(*.)+(spec).ts"],
+			"extends": ["plugin:playwright/recommended"]
+		}
+	]
 }
