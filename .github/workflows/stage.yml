@@ -1,31 +1,31 @@
-name: Maint Workflow
+name: Stage Workflow
 
 on:
   push:
     branches:
-      - main
+      - develop
   workflow_dispatch:
 
 concurrency:
-  group: 'main'
+  group: 'stage'
   cancel-in-progress: true
 
 jobs:
-  main-lint-and-prettier:
+  stage-lint-and-prettier:
     name: Code Quality Image
     uses: ./.github/workflows/task-lint-and-prettier.yml
     secrets: inherit
 
-  main-unit-tests:
+  stage-unit-tests:
     name: Unit Tests
-    needs: main-lint-and-prettier
+    needs: stage-lint-and-prettier
     uses: ./.github/workflows/task-unittests.yml
     secrets: inherit
 
-  main-docker-build-and-publish:
+  stage-docker-build-and-publish:
     if: success()
     name: Build and Publish Docker Image
-    needs: main-unit-tests
+    needs: stage-unit-tests
     uses: ./.github/workflows/task-docker-push.yml
     with:
       registry: github
@@ -34,42 +34,30 @@ jobs:
         ghcr.io/smartive-education/app-pizza-hawaii:latest
     secrets: inherit
 
-  main-playwright-e2e:
+  stage-playwright-e2e:
     if: success()
     name: E2E Tests on Docker Image
-    needs: main-docker-build-and-publish
+    needs: stage-docker-build-and-publish
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
       image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
-  main-web-vitals:
+  stage-web-vitals:
     if: success()
     name: Web Vitals on Docker Image
-    needs: main-docker-build-and-publish
+    needs: stage-docker-build-and-publish
     uses: ./.github/workflows/task-web-vitals.yml
     with:
       image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
       test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
     secrets: inherit
 
-  main-retag-docker:
+  stage-deploy-vercel:
     if: success()
-    name: Retag Docker (Test / GitHub Container Registry)
-    needs: [main-docker-build-and-publish, main-playwright-e2e, main-web-vitals]
-    uses: ./.github/workflows/task-docker-retag.yml
-    with:
-      registry: google
-      src: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
-      dst: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:latest
-    secrets: inherit
-
-  main-deploy-google-cloud:
-    if: success()
-    name: Deploy to Google Cloud Run Registry
-    needs: main-retag-docker
+    name: Deploy to Vercel Hosting
+    needs: [stage-docker-build-and-publish, stage-playwright-e2e]
     uses: ./.github/workflows/task-deploy.yml
     with:
-      hoster: google-cloud
-      image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:latest
+      hoster: vercel
     secrets: inherit
