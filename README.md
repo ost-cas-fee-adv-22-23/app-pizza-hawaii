@@ -228,18 +228,80 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 building image and deploy it to Google Cloud Installation
 
-Preparations:
+## Preparations
 
-1. install docker and docker-cli on your system
-2. enroll to google-cloud
-3.
+### 1. install docker and docker-cli on your system
+
+## Workload Identity Provider for Google Cloud
+
+### 1. enroll to google-cloud with a service account and Workload Identity Provider
+
+create gcloud with service account 'casfee23-account' for deployment
+
+```
+gcloud iam service-accounts create "casfee23-account"  \\n  --project "project-pizza-388116"
+```
+
+### 2. update at gcloud
+
+```
+gcloud components update
+```
+
+### 3. Enable service account for project
+
+```
+gcloud services enable iamcredentials.googleapis.com \\n  --project "${PROJECT_ID}"
+```
+
+### 4. Create gcloud pool
+
+```
+gcloud iam workload-identity-pools create "casfee23-pool" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --display-name="casfee23-pool"
+```
+
+### 5. describe pool
+
+```
+gcloud iam workload-identity-pools describe "casfee23-pool" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --format="value(name)"
+```
+
+### 6. Export workload pool
+
+```
+export WORKLOAD_IDENTITY_POOL_ID="projects/654053669202/locations/global/workloadIdentityPools/casfee23-pool"
+```
+
+### 7.create providers at GCloud
+
+```
+gcloud iam workload-identity-pools providers create-oidc "casfee23-provider" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --workload-identity-pool="casfee23-pool" \\n  --display-name="CAS_FEE_23_Provider" \\n  --attribute-mapping="google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.repository=assertion.repository" \\n  --issuer-uri="https://token.actions.githubusercontent.com"
+```
+
+### 7. define & Export Repo
+
+```
+export REPO="smartive-education/app-pizza-hawaii"
+```
+
+### 8. Connect Repo with project and set role
+
+```
+gcloud iam service-accounts add-iam-policy-binding "casfee23-account@${PROJECT_ID}.iam.gserviceaccount.com" \\n  --project="${PROJECT_ID}" \\n  --role="roles/iam.workloadIdentityUser" \\n  --member="principalSet://iam.googleapis.com/${WORKLOAD_IDENTITY_POOL_ID}/attribute.repository/${REPO}"
+```
+
+### 9. Configure workload identity pool provider
+
+```
+gcloud iam workload-identity-pools providers describe "casfee23-provider" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --workload-identity-pool="casfee23-pool" \\n  --format="value(name)"
+```
 
 ## Docker Container
 
-0.
 1. Build a docker image with the following command.
 
-Note: The switch `--platform linux/amd64` is necessary if you work on a Mac silicon M1/M2 processor architecture!
+Note: if you want to build it locally first, the switch `--platform linux/amd64` is necessary if you work on a Mac silicon M1/M2 processor architecture.
+
 We will deploy on a amd linux architecture, this ensures compability.
 
 `docker build -t europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii --build-arg NPM_TOKEN=<NPM_TOKEN> --platform linux/amd64 .`

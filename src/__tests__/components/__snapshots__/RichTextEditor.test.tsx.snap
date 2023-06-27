@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Richtext Component input rendering should match the snapshot 1`] = `
+<div>
+  <div
+    class="block font-medium leading-normal text-l [&>p]:mb-2 [&>p:last-child]:mb-0 [&>p>a]:text-violet-600 [&>p>a:hover]:text-violet-400 [&>p]:break-words"
+  >
+    <p>
+      hi there, I want to share that https://example.com is a great website.
+    </p>
+  </div>
+</div>
+`;

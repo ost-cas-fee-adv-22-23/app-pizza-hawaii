@@ -13,6 +13,11 @@ on:
         description: 'The URL to test'
         default: 'http://localhost:3000'
         type: string
+
+      browsers:
+        description: 'The browsers to test'
+        default: 'Firefox,Chrome,Safari,Mobile Chrome,Mobile Safari'
+        type: string
 env:
   NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
   NEXT_PUBLIC_QWACKER_API_URL: ${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }}
@@ -64,6 +69,7 @@ jobs:
           NEXT_PUBLIC_QWACKER_API_URL: ${{ env.NEXT_PUBLIC_QWACKER_API_URL }}
           ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
           ZITADEL_PASSWORD: ${{ env.ZITADEL_PASSWORD }}
+          browsers: ${{ inputs.browsers }}
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3

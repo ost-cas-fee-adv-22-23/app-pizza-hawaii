@@ -4,23 +4,38 @@
 		"next/core-web-vitals",
 		"prettier"
 	],
-	"plugins": ["simple-import-sort"],
+	"plugins": ["simple-import-sort", "testing-library", "playwright"],
 	"rules": {
 		"no-console": ["warn", { "allow": ["error", "warn", "info"] }],
 		"react-hooks/rules-of-hooks": "error",
 		"no-duplicate-imports": "error",
 		"simple-import-sort/imports": [
-      "warn",
-      {
-        "groups": [
-          ["^\\u0000", "^@?\\w"],
-          ["^@/appState(/.*|$)"],
-          ["^@/pages(/.*|$)", "^@/components(/.*|$)", "^@/assets(/.*|$)"],
-          ["^@/hooks(/.*|$)", "^@/helpers(/.*|$)", "^@/nodeHelpers(/.*|$)"],
-          ["^@/definitions(/.*|$)", "^@/models(/.*|$)"],
-          ["^@/config(/.*|$)"]
-        ]
-      }
-    ]
-	}
+		"warn",
+			{
+				"groups": [
+				["^\\u0000", "^@?\\w"],
+				["^@/appState(/.*|$)"],
+				["^@/pages(/.*|$)", "^@/components(/.*|$)", "^@/assets(/.*|$)"],
+				["^@/hooks(/.*|$)", "^@/helpers(/.*|$)", "^@/nodeHelpers(/.*|$)"],
+				["^@/definitions(/.*|$)", "^@/models(/.*|$)"],
+				["^@/config(/.*|$)"]
+				]
+			}
+		]
+	},
+
+	"overrides": [
+		{
+			"files": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
+			"extends": ["plugin:testing-library/react"],
+			"rules": {
+				"testing-library/no-container": "warn",
+				"testing-library/no-node-access": "warn"
+			}
+		},
+		{
+			"files": ["./tests/**/*.ts", "**/?(*.)+(spec).ts"],
+			"extends": ["plugin:playwright/recommended"]
+		}
+	]
 }

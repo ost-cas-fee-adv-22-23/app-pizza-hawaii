@@ -34,6 +34,7 @@ env:
   ZITADEL_ISSUER: ${{ secrets.ZITADEL_ISSUER }}
   ZITADEL_CLIENT_ID: ${{ secrets.ZITADEL_CLIENT_ID }}
   NEXT_PUBLIC_VERCEL_URL: ${{ secrets.NEXT_PUBLIC_VERCEL_URL }}
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
 concurrency:
   group: 'release'

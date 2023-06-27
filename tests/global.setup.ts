@@ -1,9 +1,9 @@
 import { chromium, expect, FullConfig } from '@playwright/test';
+import { defaultStateFile, authStateFile } from '../playwright.config';
 
 async function globalSetup(config: FullConfig) {
-	const { baseURL, storageState } = config.projects[0].use as {
+	const { baseURL } = config.projects[0].use as {
 		baseURL: string;
-		storageState: string;
 	};
 
 	const browser = await chromium.launch();
@@ -15,9 +15,11 @@ async function globalSetup(config: FullConfig) {
 
 		// Step 1: Open the login page via the Mumble login button
 		await page.goto(baseURL);
-		await page.waitForSelector('button:has-text("Login via Zitadel")');
+
+		console.log(baseURL);
 
 		const loginButton = await page.getByRole('button', { name: 'Login via Zitadel' });
+		await page.context().storageState({ path: defaultStateFile as string });
 		await loginButton.click();
 
 		await expect(page).toHaveURL(/.*.zitadel.cloud\/ui\/login\/login.*/);
@@ -37,7 +39,7 @@ async function globalSetup(config: FullConfig) {
 		await page.waitForURL(baseURL);
 
 		// Step 4: Save the storage state of logged in user to use it in the tests
-		await page.context().storageState({ path: storageState as string });
+		await page.context().storageState({ path: authStateFile as string });
 
 		await browser.close();
 	} catch (error) {
