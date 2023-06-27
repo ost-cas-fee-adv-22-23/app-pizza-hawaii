@@ -74,11 +74,11 @@ jobs:
       image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:latest
     secrets: inherit
 
-  # m-deploy-vercel:
-  #   # if: success()
-  #   name: Deploy to Vercel Hosting
-  #   needs: [m-docker-build-and-publish, m-playwright-e2e, m-web-vitals]
-  #   uses: ./.github/workflows/task-deploy.yml
-  #   with:
-  #     hoster: vercel
-  #   secrets: inherit
+  m-deploy-vercel:
+    if: success()
+    name: Deploy to Vercel Hosting
+    needs: [m-docker-build-and-publish, m-playwright-e2e]
+    uses: ./.github/workflows/task-deploy.yml
+    with:
+      hoster: vercel
+    secrets: inherit
