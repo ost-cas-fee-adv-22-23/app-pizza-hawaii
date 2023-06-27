@@ -11,7 +11,7 @@ export const FollowerList = () => {
 	const [users, setUsers] = useState<TUser[]>([]);
 
 	const { data: session } = useSession();
-	const accessToken = session?.accessToken;
+	const accessToken = session?.accessToken as string;
 
 	useEffect(() => {
 		(async () => {

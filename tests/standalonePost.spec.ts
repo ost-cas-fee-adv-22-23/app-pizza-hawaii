@@ -6,12 +6,6 @@ const testPostUrl = `${appUrl}/mumble/01GYX2NAVWCNCQNX7RV5SZARJK`;
 const testPostText = 'Wo sind denn all die #hashtags hin?';
 const testPostUser = 'user624';
 
-test.beforeEach(async ({ page }) => {
-	// Logout to be sure to be logged out
-	await page.context().clearCookies();
-	await page.goto(`${appUrl}/auth/logout`);
-});
-
 test('Display a single post when not logged in', async ({ page }) => {
 	// Step 0: Open page
 	await page.goto(testPostUrl);

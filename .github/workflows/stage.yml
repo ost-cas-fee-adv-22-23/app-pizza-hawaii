@@ -1,49 +1,63 @@
-name: Pull Request Workflow
+name: Stage Workflow
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
+      - develop
   workflow_dispatch:
 
+concurrency:
+  group: 'stage'
+  cancel-in-progress: true
+
 jobs:
-  pr-lint-and-prettier:
+  stage-lint-and-prettier:
     name: Code Quality Image
     uses: ./.github/workflows/task-lint-and-prettier.yml
     secrets: inherit
 
-  pr-unit-tests:
+  stage-unit-tests:
     name: Unit Tests
-    needs: pr-lint-and-prettier
+    needs: stage-lint-and-prettier
     uses: ./.github/workflows/task-unittests.yml
     secrets: inherit
 
-  pr-docker-build-and-publish:
+  stage-docker-build-and-publish:
+    if: success()
     name: Build and Publish Docker Image
-    needs: pr-unit-tests
+    needs: stage-unit-tests
     uses: ./.github/workflows/task-docker-push.yml
     with:
       registry: github
       tags: |
         ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+        ghcr.io/smartive-education/app-pizza-hawaii:latest
     secrets: inherit
 
-  pr-playwright-e2e:
+  stage-playwright-e2e:
     if: success()
     name: E2E Tests on Docker Image
-    needs: pr-docker-build-and-publish
+    needs: stage-docker-build-and-publish
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
       image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
-      browsers: Chromium,Firefox
     secrets: inherit
 
-  pr-web-vitals:
+  stage-web-vitals:
     if: success()
     name: Web Vitals on Docker Image
-    needs: pr-docker-build-and-publish
+    needs: stage-docker-build-and-publish
     uses: ./.github/workflows/task-web-vitals.yml
     with:
       image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
       test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
+    secrets: inherit
+
+  stage-deploy-vercel:
+    if: success()
+    name: Deploy to Vercel Hosting
+    needs: [stage-docker-build-and-publish, stage-playwright-e2e]
+    uses: ./.github/workflows/task-deploy.yml
+    with:
+      hoster: vercel
     secrets: inherit

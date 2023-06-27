@@ -1,4 +1,4 @@
-name: Lint, Prettier and Dependancy cruiser
+name: Jest and RTL Test
 
 on:
   workflow_call:
@@ -7,8 +7,8 @@ env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
-  lint-and-prettier:
-    name: Lint, Prettier and Dependancy cruiser
+  testing-with-jest:
+    name: Run test cases with Jest and React Test Library🤞
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,12 +23,5 @@ jobs:
         run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ env.NPM_TOKEN }}
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Prettier
-        run: npm run prettier
-
-      - name: Dependancy cruiser
-        run: npm run dep-cruise:validate
+      - name: Run tests
+        run: npm run test-unit
