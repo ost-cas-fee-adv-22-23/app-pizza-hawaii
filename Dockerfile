@@ -15,12 +15,12 @@ ARG NEXT_PUBLIC_VERCEL_URL \
 
 ENV NEXT_PUBLIC_QWACKER_API_URL=${NEXT_PUBLIC_QWACKER_API_URL} \
 	NEXT_PUBLIC_VERCEL_URL=${NEXT_PUBLIC_VERCEL_URL}
+	NEXT_TELEMETRY_DISABLED=1
 
 # Mount the .npmrc file as a secret and install dependencies
 RUN --mount=type=secret,id=npm_token \
   echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)" >> .npmrc \
   && npm ci \
-  && npm cache clean --force \
   && rm -f .npmrc
 
 COPY . .
@@ -43,19 +43,24 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Copy the app package, package-lock.json and next.config.js file to the app directory
 COPY --from=build --chown=node:node /app/package*.json /app/next.config.js ./
 
+# Mount the .npmrc file as a secret and install dependencies (yes, we do not copy node_modules because we don't want all the dev dependencies in the production image) and clean up
+RUN --mount=type=secret,id=npm_token \
+  echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)" >> .npmrc \
+  && npm ci && npm cache clean --force \
+  && rm -f .npmrc
+
 # Copy the public and .next folder from the previous stage and limit the permissions to the node user
 COPY --from=build --chown=node:node /app/public ./public
 COPY --from=build --chown=node:node /app/.next ./.next
-COPY --from=build --chown=node:node /app/node_modules ./node_modules
-
-# Set the node user as the current user
-USER node
 
 # Expose port 3000
 EXPOSE 3000
 
+# Set the node user as the current user
+USER node
+
 # Start the app
-CMD ["npm", "start", "--", "-p", "3000"]
+CMD npm run start
 
 # docker build -t app-pizza-hawaii --secret id=npmrc,src=.npmrc .
 # docker run -p 3000:3000 --env-file .env app-pizza-hawaii
