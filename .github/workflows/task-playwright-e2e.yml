@@ -51,16 +51,11 @@ jobs:
           find . -type f ! -path "./tests/*" ! -name "playwright.config.ts" -delete
           find . -mindepth 1 -type d ! -path "./tests" ! -path "." -exec rm -rf {} +
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-
       - name: Install dependencies
         run: |
           npm init --yes
           npm install --save-dev @playwright/test
           npm install --save-dev dotenv
-          npx playwright install --with-deps
 
       - name: Run Playwright tests
         run: npx playwright test
