@@ -16,8 +16,7 @@ type TLoginLayout = {
 };
 
 export const LoginLayout: FC<TLoginLayout> = ({ title, seo, children, header }) => {
-	const seoDescription =
-		seo?.description || 'Die Plattform für die Mumble Community. Registriere dich jetzt und werde Teil der Community.';
+	const seoDescription = seo?.description || 'Mumble ist eine Plattform für den Austausch von Wissen und Erfahrungen.';
 
 	const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
