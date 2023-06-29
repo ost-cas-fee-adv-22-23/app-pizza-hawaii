@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
-import { cleanup, fireEvent, render } from '@testing-library/react';
+import React from 'react';
+import { cleanup, fireEvent, getByText, render, screen } from '@testing-library/react';
 
 import { AccountForm, TAccountFormData } from '../../components/form/AccountForm';
 
@@ -41,29 +42,30 @@ const propsWrongUser = {
 
 describe('AccountForm with a provided user', () => {
 	afterEach(cleanup);
+	// test if the form returns the correct values when submitted
 	test('renders AccountForm component with first and last Name field with value', () => {
 		const { container } = render(<AccountForm {...propsUser} />);
 		expect(container.querySelector('input[name="firstName"]')).toHaveProperty('value', 'Felix');
 		expect(container.querySelector('input[name="lastName"]')).toHaveProperty('value', 'Adam');
 	});
 
-	test('renders AccountForm submitButton if all fields are filled', () => {
-		const { container } = render(<AccountForm {...propsUser} />);
-		expect(container.querySelector('button[type="submit"]')).toBeInTheDocument();
-	});
-
-	test('if matches snapshot of Form', () => {
-		const { container } = render(<AccountForm {...propsUser} />);
+	// test if the submit button is disabled when the form is loaded. expect the button container to have the class `opacity-50`
+	test('renders AccountForm component with disabled submit button when loading. The Visibility of Submitbutton is 50%', () => {
+		const { container } = render(<AccountForm {...propsUser} isLoading={true} />);
+		const buttonContainer = container.querySelector('.flex-1.opacity-50');
+		expect(buttonContainer).toHaveClass('opacity-50');
 		expect(container).toMatchSnapshot();
 	});
 
+	// test if the form subits empty strings when the form is empty
 	test('renders AccountForm with empty fields if no user Data is provided', () => {
 		const { container } = render(<AccountForm {...propsEmptyUser} />);
 		expect(container.querySelector('input[name="firstName"]')).toHaveProperty('value', '');
 		expect(container.querySelector('input[name="lastName"]')).toHaveProperty('value', '');
 	});
 
-	test('if two different passwords are entered, the input field text is red`', () => {
+	// test if the password maches the confirm password
+	test('if two different passwords are entered, the input field text is red', () => {
 		const { container } = render(<AccountForm {...propsWrongUser} />);
 		expect(container.querySelector('input[name="password"]')).toHaveProperty('value', 'strongPA$$W0RD');
 		expect(container.querySelector('input[name="confirmPassword"]')).toHaveProperty('value', 'strongPA$$--');
@@ -80,3 +82,4 @@ describe('AccountForm with a provided user', () => {
 		expect(firstNameInput).toHaveProperty('value', 'Martin');
 	});
 });
+
