@@ -25,11 +25,13 @@ describe('UserRecommender component', () => {
 		expect(container.querySelector('h2')).toHaveClass('leading-tight text-3xl font-bold');
 	});
 
+	// Expecting 6 Skeletons to be rendered when the component is loading
 	test('renders 6 UserCard components with skeletons', async () => {
 		const { container } = render(<UserRecommender {...props} />);
 		expect(container.getElementsByClassName('animate-pulse')).toHaveLength(6);
 	});
 
+	// if the limit is 4, only 4 skeletons should be rendered
 	test('renders 4 UserCard components with skeletons when given limit is 4', async () => {
 		// updating props for test: propsLimit4
 		const propsLimit4 = {

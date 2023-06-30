@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import React from 'react';
 import { cleanup, fireEvent, getByText, render, screen } from '@testing-library/react';
+import React from 'react';
 
 import { AccountForm, TAccountFormData } from '../../components/form/AccountForm';
 
@@ -82,4 +82,3 @@ describe('AccountForm with a provided user', () => {
 		expect(firstNameInput).toHaveProperty('value', 'Martin');
 	});
 });
-
