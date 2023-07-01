@@ -79,6 +79,7 @@ export const Header: FC<THeader> = ({ user }) => {
 											callbackUrl: '/auth/login',
 										})
 									}
+									data-testid="logout-button"
 								>
 									Log out
 								</NaviButton>

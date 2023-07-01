@@ -187,7 +187,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 	);
 
 	return (
-		<div ref={userCardRef} className="PostItem">
+		<div ref={userCardRef} data-testid="PostItem">
 			<UserContentCard
 				headline={headerSlotContent}
 				userProfile={{
@@ -239,6 +239,8 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 								}
 								iconName={post.replyCount > 0 ? 'comment_filled' : 'comment_fillable'}
 								onClick={handlePostClick}
+								data-testid="comment-button"
+								data-comments={post.replyCount}
 							/>
 						)}
 						{setting.showLikeButton && currentUser && (
@@ -251,6 +253,9 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 								}
 								iconName={post.likedByUser ? 'heart_filled' : 'heart_fillable'}
 								onClick={handleLike}
+								data-testid="like-button"
+								data-likes={post.likeCount}
+								data-liked={post.likedByUser}
 							/>
 						)}
 						{setting.showShareButton && (
@@ -258,6 +263,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 								defaultButtonText="Copy Link"
 								activeButtonText="Link copied"
 								shareText={`${process.env.NEXT_PUBLIC_VERCEL_URL}/mumble/${post.id}`}
+								data-testid="share-button"
 							/>
 						)}
 
