@@ -232,7 +232,7 @@ building image and deploy it to Google Cloud Installation
 
 ### 1. install docker and docker-cli on your system
 
-## Workload Identity Provider for Google Cloud
+## Workload Identity Provider (WIF / WIP) for Google Cloud
 
 ### 1. enroll to google-cloud with a service account and Workload Identity Provider
 
@@ -387,13 +387,40 @@ https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app
 
 # Deployment checks
 
-## Code Quality
+## Stage 1: Code Quality
 
 To ensure Qulity of deployed Code when deploying, there are github actions running
 
-`ESLint` and `Dependency Cruiser`
+1. `ESLint`
+2. `Dependency Cruiser`
+3. `Prettier`
 
 on every git commit push and on merge-requests.
+
+
+## Stage 2: Unit Tests
+
+The Unit-Test using the Test Framwork Jest / React Test Library are located in `src/__tests__/components`
+
+We focus on following Requirements or Features to consider a Unit Test meaningful:
+
+- Datamanipulation in the Frontend
+- Core Function 
+- Validation of Data
+- Loading behaviour
+- Failbacks
+- Special Solutions
+
+Run Unit Tests locally:
+
+`npm run test-unit`
+
+or a specific Test
+
+`npm run test-unit AccountFormTest.test.tsx`
+
+
+
 
 ## Check Web Vitals metrics
 
