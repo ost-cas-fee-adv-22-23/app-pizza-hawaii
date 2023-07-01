@@ -107,7 +107,7 @@ const UserPage: FC<TUserPage> = ({ user, posts, likes }: InferGetServerSideProps
 					)}
 				</Grid>
 
-				<div className="text-slate-500 mb-8">
+				<div className="text-slate-600 mb-8">
 					<Richtext size="M">{user.bio}</Richtext>
 				</div>
 
