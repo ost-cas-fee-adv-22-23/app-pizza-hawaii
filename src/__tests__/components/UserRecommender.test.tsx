@@ -3,6 +3,7 @@ import { cleanup, render } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 
 import { UserRecommender } from '../../components/widgets/UserRecommender';
+import { services } from '../../services';
 
 jest.mock('next-auth/react');
 const props = {
@@ -10,6 +11,10 @@ const props = {
 	excludeUserIds: ['10000004', '10000005', '10000006'],
 	limit: 6,
 };
+
+jest.mock('next-auth/react', () => ({
+	useSession: jest.fn(),
+}));
 
 describe('UserRecommender component', () => {
 	afterEach(cleanup);

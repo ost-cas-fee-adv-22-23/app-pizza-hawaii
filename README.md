@@ -397,19 +397,62 @@ To ensure Qulity of deployed Code when deploying, there are github actions runni
 
 on every git commit push and on merge-requests.
 
-
 ## Stage 2: Unit Tests
 
 The Unit-Test using the Test Framwork Jest / React Test Library are located in `src/__tests__/components`
 
 We focus on following Requirements or Features to consider a Unit Test meaningful:
 
-- Datamanipulation in the Frontend
-- Core Function 
-- Validation of Data
-- Loading behaviour
-- Failbacks
-- Special Solutions
+-   Datamanipulation in the Frontend
+-   Core Function
+-   Validation of Data
+-   Loading behaviour
+-   Failbacks
+-   Special Solutions
+
+We test the following Components to ensure the functionality to work:
+
+`AccountForm`:
+
+-   Returning correct Formfield values
+-   Submit Button is disabled if fields are not provided
+-   Password must match to be equal
+-   update Form is working
+
+`PostCollection`:
+
+-   returns the correct rendering if specified by Attributes provided in various combinations
+-   renders the PostList when posts are provided
+-   returns the correct fallback message if no posts are provided
+
+`PostCollectionReducer`:
+
+-   test the Reducer return state with an action (`LOADING`, `POSTS_SET`, `POSTS_ADD`, `POSTS_DELETE`) provided with mockdata
+-   test initial state undefined
+
+`PostItem`:
+
+-   test different variant rendering provided to PostItem
+-   test css classes added correctly on a variant
+-   test attribute of Avatar-Image to be correctly
+
+`Footer`:
+
+-   test correct rendering of Component
+-   test dark / light mode swich clicking is working
+
+`RichTextEditor`:
+
+-   test rendering of the RichText Component is correct
+-   testing the correct HTML Tag is used if specified by Attribute
+-   test if the correct Text Size is used
+-   test if Link creation works for hashtags, mentioned users, markdown-links, urls within the text input
+-   test linebreaks and markup is correctly applied for a provided text input
+
+`UserRecommender`:
+
+-   test if Skeleton Previews are rendering with various call limits
+-   test if Title is rendering correctly
 
 Run Unit Tests locally:
 
@@ -418,9 +461,6 @@ Run Unit Tests locally:
 or a specific Test
 
 `npm run test-unit AccountFormTest.test.tsx`
-
-
-
 
 ## Check Web Vitals metrics
 
