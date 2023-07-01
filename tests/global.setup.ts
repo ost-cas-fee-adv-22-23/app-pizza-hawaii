@@ -16,29 +16,29 @@ async function globalSetup(config: FullConfig) {
 		// Step 1: Open the login page via the Mumble login button
 		await page.goto(baseURL);
 
-		console.log(baseURL);
+		const loginButton = page.getByRole('button', { name: 'Login via Zitadel' });
 
-		const loginButton = await page.getByRole('button', { name: 'Login via Zitadel' });
+		// Step 2: Save the storage state of the default user to use it in the tests
 		await page.context().storageState({ path: defaultStateFile as string });
 		await loginButton.click();
 
 		await expect(page).toHaveURL(/.*.zitadel.cloud\/ui\/login\/login.*/);
 
-		// Step 2: Fill in the username
+		// Step 3: Fill in the username
 		await page.fill('input[name="loginName"]', process.env.ZITADEL_USERNAME as string);
 		await page.keyboard.press('Enter');
 
 		// Check if we are on the zitadel password page
 		await page.waitForURL(/.*.zitadel.cloud\/ui\/login\/loginname.*/);
 
-		// Step 3: Fill in the password
+		// Step 4: Fill in the password
 		await page.fill('input[name="password"]', process.env.ZITADEL_PASSWORD as string);
 		await page.keyboard.press('Enter');
 
 		// Check if we are redirected to mumble timeline
 		await page.waitForURL(baseURL);
 
-		// Step 4: Save the storage state of logged in user to use it in the tests
+		// Step 5: Save the storage state of logged in user to use it in the tests
 		await page.context().storageState({ path: authStateFile as string });
 
 		await browser.close();
