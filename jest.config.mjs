@@ -1,26 +1,12 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 import nextJest from 'next/jest.js';
 
-const babelConfigStyledComponents = {
-	presets: [['next/babel', { 'preset-react': { runtime: 'automatic' } }]],
-};
-
 const customJestConfig = {
 	verbose: true,
 	testEnvironment: 'jest-environment-jsdom',
 	moduleNameMapper: {
 		'@/(.*)$': '<rootDir>/src/$1',
 		'@smartive-education/pizza-hawaii': '<rootDir>/node_modules/@smartive-education/pizza-hawaii/dist/index.js',
-		jose: '<rootDir>/node_modules/jose/dist/browser/index.js',
-		'@panva': '<rootDir>/node_modules/@panva/hkdf/dist/web/index.js',
-		uuid: '<rootDir>/node_modules/uuid/dist/esm-browser/index.js',
-		'\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
-			'<rootDir>/src/__mocks__/fileMock.js',
-	},
-	/* Use babel-jest to transpile tests with the next/babel preset
-    https://jestjs.io/docs/configuration#transform-objectstring-pathtotransformer--pathtotransformer-object */
-	transform: {
-		'^.+\\.(js|jsx|ts|tsx|mjs)$': ['babel-jest', babelConfigStyledComponents],
 	},
 	// match all test files with .test.(js|jsx|ts|tsx) extension in the __tests__ folder and in any subdirectory
 	// dont match .spec. files as they are used for integration tests (playwright)
