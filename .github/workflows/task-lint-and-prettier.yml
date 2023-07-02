@@ -30,5 +30,8 @@ jobs:
       - name: Prettier
         run: npm run prettier
 
+      - name: Test Typescript
+        run: npm run test:typescript
+
       - name: Dependancy cruiser
         run: npm run dep-cruise:validate

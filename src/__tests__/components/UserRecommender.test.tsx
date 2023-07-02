@@ -3,7 +3,6 @@ import { cleanup, render } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 
 import { UserRecommender } from '../../components/widgets/UserRecommender';
-import { services } from '../../services';
 
 jest.mock('next-auth/react');
 const props = {

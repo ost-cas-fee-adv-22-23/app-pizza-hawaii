@@ -15,14 +15,14 @@ export type TPostItemProps = {
 };
 
 const propsDetailPage: TPostItemProps = {
-	post: postMock as unknown as TPost,
+	post: postMock as TPost,
 	variant: 'detailpage',
 	onDeletePost: jest.fn(),
 	onAnswerPost: jest.fn(),
 };
 
 const propsTimelinePage: TPostItemProps = {
-	post: postMock as unknown as TPost,
+	post: postMock as TPost,
 	variant: 'timeline',
 	onDeletePost: jest.fn(),
 	onAnswerPost: jest.fn(),
@@ -99,7 +99,7 @@ describe('PostItem renders correctly', () => {
 		};
 		useSession.mockReturnValue({ data: { user: currentUser } });
 
-		render(<PostItem variant="detailpage" post={postMock} />);
+		render(<PostItem variant="detailpage" post={postMock as TPost} />);
 		const copyButton = screen.getAllByText('Copy Link');
 		expect(copyButton).toHaveLength(1);
 		expect(copyButton[0]).toBeInstanceOf(HTMLSpanElement);
@@ -107,7 +107,7 @@ describe('PostItem renders correctly', () => {
 
 	// test if the like button is rendered correctly
 	test('PostItem renders the like button correctly', async () => {
-		render(<PostItem post={postMock} />);
+		render(<PostItem variant="detailpage" post={postMock as TPost} />);
 		const likeButton = screen.getAllByText('Like');
 		expect(likeButton).toHaveLength(1);
 		expect(likeButton[0]).toBeInstanceOf(HTMLSpanElement);
