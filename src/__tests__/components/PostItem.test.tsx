@@ -5,6 +5,25 @@ import postMock from '../../__mocks__/post.json';
 import { PostItem } from '../../components/post/PostItem';
 import { TPost } from '../../types/Post';
 
+/**
+ * Unit tests for the PostItem component.
+ *
+ * Basicly we want to know if this often re-used Component is working with the basic funtionailities.
+ * We test the following on PostItem
+ * 1. Render PostItem component with text
+ * 2. Render PostItem component with a link when a hastag is used in the text
+ * 3. Render PostItem component with a link when a user is mentioned in the text
+ * 4. Render PostItem component with a link when a url is used in the text
+ * 5. Render PostItem component with a like button
+ * 6. Render PostItem component with a userName with all the correct css classes
+ * 7. Render PostItem component with a avatar image with and height 64px
+ * 8. Render PostItem component with a copy button for the current user
+ * 9. Render PostItem component with a disabled copy button for other users
+ * 10. Render PostItem component with a copy button for the current user
+ * 11. Render PostItem component with a like button for the current user
+ *
+ **/
+
 jest.mock('next-auth/react');
 
 export type TPostItemProps = {
@@ -27,11 +46,6 @@ const propsTimelinePage: TPostItemProps = {
 	onDeletePost: jest.fn(),
 	onAnswerPost: jest.fn(),
 };
-
-/**
- * Test PostItem renders correctly for variant `DetailPage` so that the text of Post is rendered correctly
- * when users uses links, hashtags or mentions other users in the text
- */
 
 describe('PostItem renders correctly', () => {
 	afterEach(cleanup);

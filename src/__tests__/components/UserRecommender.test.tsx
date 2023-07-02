@@ -4,6 +4,22 @@ import { useSession } from 'next-auth/react';
 
 import { UserRecommender } from '../../components/widgets/UserRecommender';
 
+/**
+ * Unit tests for the UserRecommender component
+ *
+ * These tests are written to make sure that the UserRecommender component is rendered correctly.
+ * Unfortunately we cannot render the UserCardList with the UserCard component, because the UserCard component uses the useSession hook.
+ * and another hook in the FollowButton component. But we can test the UserRecommender component with the UserCardList component.
+ *
+ * We test the following on UserRecommender
+ * 1. Render UserRecommender component with the correct title
+ * 2. Render UserRecommender component with the correct title classes
+ * 3. Render UserRecommender component with the correct number of UserCard Skeletons
+ * 4. Render UserRecommender component with the correct number of UserCard Skeletons when limit is 4
+ * 5. Match snapshot
+ *
+ **/
+
 jest.mock('next-auth/react');
 const props = {
 	currentUserId: '1234567890',

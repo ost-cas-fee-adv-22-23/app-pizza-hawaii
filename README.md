@@ -1,5 +1,9 @@
 [![.github/workflows/deploy.yml](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/deploy.yml)
 
+![Quality (Prettier, ESLint, Dependency Graph)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/task-lint-and-prettier.yml/badge.svg)
+![Unit Tests (Unit Test)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/task-unittests.yml/badge.svg)
+![End to End Test (E2E-Tests)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/task-playwright-e2e.yml/badge.svg)
+
 # CAS FEE ADV Application - Pizza Hawaii 🍕
 
 ## Introduction
@@ -412,49 +416,15 @@ We focus on following Requirements or Features to consider a Unit Test meaningfu
 
 We test the following Components to ensure the functionality to work:
 
-`AccountForm`:
+-   `AccountForm`
+-   `PostCollection`
+-   `PostCollectionReducer`
+-   `PostItem`
+-   `Footer`
+-   `RichTextEditor`
+-   `UserRecommender`
 
--   Returning correct Formfield values
--   Submit Button is disabled if fields are not provided
--   Password must match to be equal
--   update Form is working
-
-`PostCollection`:
-
--   returns the correct rendering if specified by Attributes provided in various combinations
--   renders the PostList when posts are provided
--   returns the correct fallback message if no posts are provided
-
-`PostCollectionReducer`:
-
--   test the Reducer return state with an action (`LOADING`, `POSTS_SET`, `POSTS_ADD`, `POSTS_DELETE`) provided with mockdata
--   test initial state undefined
-
-`PostItem`:
-
--   test different variant rendering provided to PostItem
--   test css classes added correctly on a variant
--   test attribute of Avatar-Image to be correctly
-
-`Footer`:
-
--   test correct rendering of Component
--   test dark / light mode swich clicking is working
-
-`RichTextEditor`:
-
--   test rendering of the RichText Component is correct
--   testing the correct HTML Tag is used if specified by Attribute
--   test if the correct Text Size is used
--   test if Link creation works for hashtags, mentioned users, markdown-links, urls within the text input
--   test linebreaks and markup is correctly applied for a provided text input
-
-`UserRecommender`:
-
--   test if Skeleton Previews are rendering with various call limits
--   test if Title is rendering correctly
-
-Run Unit Tests locally:
+to run Unit Tests locally:
 
 `npm run test-unit`
 

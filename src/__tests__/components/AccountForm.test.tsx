@@ -3,7 +3,26 @@ import { cleanup, fireEvent, render } from '@testing-library/react';
 import React from 'react';
 
 import { AccountForm, TAccountFormData } from '../../components/form/AccountForm';
-
+/**
+ * Unit tests for the AccountForm component.
+ *
+ * Basicly we want to ensure the functionality of the form.
+ * We test the following on AccountForm component:
+ * 1. Render the AccountForm component with a provided user
+ * 2. Render the AccountForm component with a empty user
+ * 3. Render the AccountForm component with a wrong user
+ * 4. Render the AccountForm component with a loading state
+ * 5. Render the AccountForm component with a disabled submit button
+ * 6. Render the AccountForm component with a enabled submit button
+ * 7. Render the AccountForm component with a disabled submit button if the passwords do not match
+ * 8. Render the AccountForm component with a enabled submit button if the passwords match
+ * 9. Render the AccountForm component with a disabled submit button if the email is not valid
+ * 10. Render the AccountForm component with a enabled submit button if the email is valid
+ * 11. Render the AccountForm component with a disabled submit button if the username is not valid
+ * 12. Render the AccountForm component with a enabled submit button if the username is valid
+ * 13. Render the AccountForm component with a disabled submit button if the firstname is not valid
+ *
+ **/
 const propsUser = {
 	user: {
 		password: 'strongPA$$W0RD',
