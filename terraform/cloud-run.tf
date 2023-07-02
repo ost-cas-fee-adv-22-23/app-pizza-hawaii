@@ -38,7 +38,6 @@ output "cloud-runner-email" {
 
 data "google_secret_manager_secret_version" "nextauth_secret" {
   provider = google
-
   secret  = "nextauth_secret"
   version = "1"
 }
@@ -59,7 +58,7 @@ resource "google_cloud_run_service" "app-pizza-hawaii" {
         image = local.IMAGE
         resources {
           limits = {
-            "memory" = "2Gi"
+            "memory" = "2.5Gi"
           }
         }
 
