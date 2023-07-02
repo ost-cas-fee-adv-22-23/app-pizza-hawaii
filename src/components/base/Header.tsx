@@ -33,10 +33,22 @@ export const Header: FC<THeader> = ({ user }) => {
 						</div>
 						<nav className="">
 							<Navi>
-								<NaviButton component={NextLink} href="/auth/login" title="Login" icon="logout">
+								<NaviButton
+									component={NextLink}
+									href="/auth/login"
+									title="Login"
+									icon="logout"
+									data-testid="login-button-header"
+								>
 									Login
 								</NaviButton>
-								<NaviButton component={NextLink} href="/auth/signup" title="Sign Up" icon="mumble">
+								<NaviButton
+									component={NextLink}
+									href="/auth/signup"
+									title="Sign Up"
+									icon="mumble"
+									data-testid="signup-button-header"
+								>
 									Sign Up
 								</NaviButton>
 							</Navi>
@@ -67,9 +79,14 @@ export const Header: FC<THeader> = ({ user }) => {
 										size="S"
 										buttonLabel="My Mumble Profile"
 										canEdit={false}
+										data-testid="profile-button-header"
 									/>
 								</NaviButton>
-								<NaviButton icon="settings" onClick={handleSettingsClick}>
+								<NaviButton
+									icon="settings"
+									onClick={handleSettingsClick}
+									data-testid="settings-button-header"
+								>
 									Settings
 								</NaviButton>
 								<NaviButton
@@ -79,6 +96,7 @@ export const Header: FC<THeader> = ({ user }) => {
 											callbackUrl: '/auth/login',
 										})
 									}
+									data-testid="logout-button-header"
 								>
 									Log out
 								</NaviButton>

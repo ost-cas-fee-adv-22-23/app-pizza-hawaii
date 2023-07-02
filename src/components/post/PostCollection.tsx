@@ -238,7 +238,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 	return (
 		<>
 			{headline && (
-				<div className="text-slate-500 mb-8">
+				<div className="text-slate-600 mb-8">
 					<Headline level={3} as="p">
 						{headline}
 					</Headline>
@@ -266,7 +266,7 @@ export const PostCollection: FC<TPostCollectionProps> = ({
 				)}
 
 				{autoUpdate && updateRequest.type && (
-					<div className="text-slate-500 mt-8 sticky bottom-4 z-10">
+					<div className="text-slate-600 mt-8 sticky bottom-4 z-10">
 						<Button colorScheme="gradient" size="M" icon="repost" onClick={showLatestPosts}>
 							World is changing, update your feed.
 						</Button>

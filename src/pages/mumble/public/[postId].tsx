@@ -28,7 +28,7 @@ const DetailPage: FC<TUserPage> = ({ post }: InferGetStaticPropsType<typeof getS
 						Welcome to Mumble
 					</Headline>
 				</div>
-				<div className="text-slate-500 mb-8">
+				<div className="text-slate-600 mb-8">
 					<Grid variant="col" gap="M">
 						<Label as="p" size="XL">
 							Als angemeldeter Nutzer kannst du Beiträge lesen, eigene Beiträge erstellen, auf andere Beiträge
@@ -45,7 +45,7 @@ const DetailPage: FC<TUserPage> = ({ post }: InferGetStaticPropsType<typeof getS
 				<PostDetail post={post} canWrite={false} />
 
 				{(post?.replyCount || 0) + (post?.likeCount || 0) > 0 && (
-					<div className="text-slate-500 mt-8">
+					<div className="text-slate-600 mt-8">
 						<Label as="p" size="L">
 							{(post?.replyCount || 0) + (post?.likeCount || 0) < 5
 								? 'Dieser Mumble hat bereits einige Reaktionen. '

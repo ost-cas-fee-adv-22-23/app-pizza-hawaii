@@ -127,61 +127,63 @@ export const PostCreator: FC<TPostCreator> = (props) => {
 	);
 
 	return (
-		<UserContentCard
-			headline={headerSlotContent}
-			userProfile={{
-				avatar: currentUser?.avatarUrl,
-				userName: currentUser?.userName,
-				href: currentUser?.profileLink,
-			}}
-			avatarVariant={setting.avatarVariant}
-			avatarSize={setting.avatarSize}
-		>
-			{!showModal && file && (
-				<div className="relative">
-					<Image src={filePreview} width={ProjectSettings.images.post.width} alt="" />
-					<div className="absolute top-0 right-0 translate-x-2/4 -translate-y-2/4">
-						<RoundButton
-							colorScheme="slate"
-							icon="cancel"
-							onClick={() => updateFile()}
-							buttonLabel="Bild verwerfen"
-							title="Bild verwerfen"
-						/>
+		<div data-testid="post-creator">
+			<UserContentCard
+				headline={headerSlotContent}
+				userProfile={{
+					avatar: currentUser?.avatarUrl,
+					userName: currentUser?.userName,
+					href: currentUser?.profileLink,
+				}}
+				avatarVariant={setting.avatarVariant}
+				avatarSize={setting.avatarSize}
+			>
+				{!showModal && file && (
+					<div className="relative">
+						<Image src={filePreview} width={ProjectSettings.images.post.width} alt="" />
+						<div className="absolute top-0 right-0 translate-x-2/4 -translate-y-2/4">
+							<RoundButton
+								colorScheme="slate"
+								icon="cancel"
+								onClick={() => updateFile()}
+								buttonLabel="Bild verwerfen"
+								title="Bild verwerfen"
+							/>
+						</div>
 					</div>
-				</div>
-			)}
+				)}
 
-			<FormTextarea
-				id={textAreaId}
-				label={placeHolderText}
-				placeholder={placeHolderText}
-				hideLabel={true}
-				size="L"
-				value={text}
-				onChange={inputChangeHandler}
-			/>
+				<FormTextarea
+					id={textAreaId}
+					label={placeHolderText}
+					placeholder={placeHolderText}
+					hideLabel={true}
+					size="L"
+					value={text}
+					onChange={inputChangeHandler}
+				/>
 
-			{showModal && (
-				<Modal title="Bild Hochladen" isVisible={showModal} onClose={() => setShowModal(false)}>
-					<PostImageUpload onNewFile={(file) => updateFile(file)} />
-				</Modal>
-			)}
-			<Grid variant="row" gap="S" wrapBelowScreen="md">
-				<Button colorScheme="slate" icon="upload" onClick={() => setShowModal(true)}>
-					Bild auswählen
-				</Button>
-				<Button
-					colorScheme="violet"
-					icon="send"
-					onClick={onSubmitPostHandler}
-					disabled={!isValid}
-					type="button"
-					data-testid="submit-post"
-				>
-					Absenden
-				</Button>
-			</Grid>
-		</UserContentCard>
+				{showModal && (
+					<Modal title="Bild Hochladen" isVisible={showModal} onClose={() => setShowModal(false)}>
+						<PostImageUpload onNewFile={(file) => updateFile(file)} />
+					</Modal>
+				)}
+				<Grid variant="row" gap="S" wrapBelowScreen="md">
+					<Button colorScheme="slate" icon="upload" onClick={() => setShowModal(true)}>
+						Bild auswählen
+					</Button>
+					<Button
+						colorScheme="violet"
+						icon="send"
+						onClick={onSubmitPostHandler}
+						disabled={!isValid}
+						type="button"
+						data-testid="submit-post"
+					>
+						Absenden
+					</Button>
+				</Grid>
+			</UserContentCard>
+		</div>
 	);
 };

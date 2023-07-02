@@ -69,6 +69,7 @@ export default function LoginPage() {
 						}
 						colorScheme="gradient"
 						icon="mumble"
+						data-testid="login-button"
 					>
 						Login via Zitadel
 					</Button>
