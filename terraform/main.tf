@@ -6,7 +6,7 @@ locals {
   IMAGE  = var.IMAGE
   environment_vars = {
 	NEXT_PUBLIC_VERCEL_URL	 	= var.NEXT_PUBLIC_VERCEL_URL,
-	NEXTAUTH_URL				= var.NEXTAUTH_URL,
+    NEXTAUTH_URL                = var.NEXTAUTH_URL,
     NEXTAUTH_SECRET             = var.NEXTAUTH_SECRET,
     ZITADEL_ISSUER              = var.ZITADEL_ISSUER,
     ZITADEL_CLIENT_ID           = var.ZITADEL_CLIENT_ID,
