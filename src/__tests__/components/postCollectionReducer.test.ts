@@ -3,8 +3,6 @@ import secondPostMock from '../../__mocks__/secondPost.json';
 import postCollectionReducer, { ActionType, initialState } from '../../reducer/postCollectionReducer';
 import { TPost } from '../../types';
 
-jest.mock('next-auth/react');
-
 describe('postCollectionReducer', () => {
 	// test the LOADING action
 	it('should handle LOADING action', () => {

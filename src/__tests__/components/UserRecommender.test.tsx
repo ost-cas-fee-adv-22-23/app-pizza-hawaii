@@ -20,7 +20,6 @@ import { UserRecommender } from '../../components/widgets/UserRecommender';
  *
  **/
 
-jest.mock('next-auth/react');
 const props = {
 	currentUserId: '1234567890',
 	excludeUserIds: ['10000004', '10000005', '10000006'],
