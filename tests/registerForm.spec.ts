@@ -1,57 +1,98 @@
-import { expect, test } from '@playwright/test';
+import { expect, Locator, Page, test } from '@playwright/test';
 
-const appUrl = process.env.NEXT_PUBLIC_VERCEL_URL as string;
-const signupUrl = `${appUrl}/auth/signup`;
-const signupPageTitle = 'Mumble - Registrierung';
-const passwordMismatchFeedback = 'Die Passwörter stimmen nicht überein.';
+/**
+ * RegisterForm Test Suite
+ *
+ * We test on the following pages:
+ * 1. Register Page
+ *
+ * This test suite tests the following:
+ * 1. All necessary fields are visible
+ * 2. All fields show error message if empty
+ * 3. Password validation shows error message if passwords are different
+ * 4. Password validation hides error message if passwords are the same
+ */
+
+const signupUrl = `/auth/signup`;
 const thePassword = 'secretPa$$word';
 const wrongPassword = 'secretPa$$word-2different';
 
-test('Register Form is visible', async ({ page }) => {
-	// Step 0: Open page
-	await page.goto(signupUrl);
+// HELPER FUNCTIONS
+const getDescribeField = async (field: Locator, page: Page) => {
+	// Get the aria-describedby attribute (id of the error message)
+	const getAriaDescribedBy = await field?.getAttribute('aria-describedby');
 
-	// Check if the Meta title is correct
-	await expect(page).toHaveTitle(signupPageTitle);
+	// Check if the aria-describedby attribute is set
+	await expect(getAriaDescribedBy).not.toBeNull();
 
-	// Check if all fields are visible
-	Promise.all(
-		['First Name', 'Last Name', 'Username', 'E-Mail', 'Passwort', 'Passwort wiederholen'].map(async (field) => {
-			await expect(page.getByText(field, { exact: true })).toBeVisible();
-		})
-	);
-});
+	// Get the error message
+	return page.locator(`[id="${getAriaDescribedBy}"]`);
+};
 
-test('Register Form is working when passwords are different and passwordMismatchFeedback appears', async ({ page }) => {
-	// Step 0: Open page
-	await page.goto(signupUrl);
+test.describe('Register Form', () => {
+	let page: Page;
+	const fieldNames = ['firstName', 'lastName', 'userName', 'email', 'password', 'confirmPassword'];
 
-	// fill both password fields with different passwords
-	await page.fill('input[name="password"]', thePassword);
-	await page.fill('input[name="confirmPassword"]', wrongPassword);
+	test.beforeAll(async ({ browser }) => {
+		page = await browser.newPage();
+		await page.goto(signupUrl);
+	});
 
-	// wait 100ms
-	await page.waitForTimeout(100);
+	test('FormFields and SubmitButton are visible', async () => {
+		// 1. Check if all fields are visible
+		for (const fieldName of fieldNames) {
+			const field = page.locator(`input[name="${fieldName}"]`);
+			await expect(field).toBeVisible();
+		}
 
-	const passwordMismatchFeedbackEl = await page.getByText(passwordMismatchFeedback);
+		// 2. Check if the submit button is visible
+		const submitButton = page.locator('button[type="submit"]');
+		await expect(submitButton).toBeVisible();
+	});
 
-	// check if the user feedback element is visible
-	await expect(passwordMismatchFeedbackEl).toBeVisible();
-});
+	test('All fields show error message if empty', async () => {
+		// 1. Click the submit button
+		await page.locator('button[type="submit"]').click();
 
-test('Register Form is working when passwords are the same', async ({ page }) => {
-	// load the register page
-	await page.goto(signupUrl);
+		// 2. Check if the aria-describedby attribute is set
+		for (const fieldName of fieldNames) {
+			const field = page.locator(`input[name="${fieldName}"]`);
+			await expect(field).toBeVisible();
 
-	// fill both password fields with the same password
-	await page.fill('input[name="password"]', thePassword);
-	await page.fill('input[name="confirmPassword"]', thePassword);
+			const fieldDescription = await getDescribeField(field, page);
 
-	// wait 100ms
-	await page.waitForTimeout(100);
+			// 3. Check if the error message is visible
+			await expect(fieldDescription).toBeVisible();
+			await expect(await fieldDescription?.innerText()).not.toBeNull();
+		}
+	});
 
-	const passwordMismatchFeedbackEl = await page.getByText(passwordMismatchFeedback);
+	test('Password validation - different passwords', async () => {
+		// 1. Test different passwords
+		await page.fill('input[name="password"]', thePassword);
+		await page.fill('input[name="confirmPassword"]', wrongPassword);
 
-	// check if the user feedback element is not visible
-	await expect(passwordMismatchFeedbackEl).not.toBeVisible();
+		await expect(async () => {
+			const confirmPasswordField = await page?.locator(`input[name="confirmPassword"]`);
+			const confirmPasswordDescription = await getDescribeField(confirmPasswordField, page);
+
+			// 2. Check if the error message is visible
+			await expect(confirmPasswordDescription).toBeVisible();
+			await expect(await confirmPasswordDescription?.innerText()).not.toBeNull();
+		}).toPass();
+	});
+
+	test('Password validation - same passwords', async () => {
+		// 1. Test valid passwords
+		await page.fill('input[name="password"]', thePassword);
+		await page.fill('input[name="confirmPassword"]', thePassword);
+
+		await expect(async () => {
+			const confirmPasswordField = await page?.locator(`input[name="confirmPassword"]`);
+
+			// 2. Check if the aria-describedby attribute is set
+			const getAriaDescribedBy = await confirmPasswordField?.getAttribute('aria-describedby');
+			await expect(getAriaDescribedBy).toBeNull();
+		}).toPass();
+	});
 });

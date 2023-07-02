@@ -16,7 +16,7 @@ async function globalSetup(config: FullConfig) {
 		// Step 1: Open the login page via the Mumble login button
 		await page.goto(baseURL);
 
-		const loginButton = page.getByRole('button', { name: 'Login via Zitadel' });
+		const loginButton = page.locator(`[data-testid="login-button"]`);
 
 		// Step 2: Save the storage state of the default user to use it in the tests
 		await page.context().storageState({ path: defaultStateFile as string });

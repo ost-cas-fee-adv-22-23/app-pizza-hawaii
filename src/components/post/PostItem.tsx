@@ -187,7 +187,7 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 	);
 
 	return (
-		<div ref={userCardRef} data-testid="PostItem">
+		<div ref={userCardRef} data-testid="post-item">
 			<UserContentCard
 				headline={headerSlotContent}
 				userProfile={{
