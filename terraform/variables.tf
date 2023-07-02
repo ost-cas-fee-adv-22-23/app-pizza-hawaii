@@ -1,11 +1,16 @@
 variable "IMAGE" {
   type        = string
-  description = "Image of the deployed application"
+  description = "Image URL"
 }
 
 variable "NEXT_PUBLIC_VERCEL_URL" {
   type        = string
   description = "URL of the deployed application"
+}
+
+variable "NEXTAUTH_URL" {
+  type        = string
+  description = "URL of NextAuth"
 }
 
 variable "NEXTAUTH_SECRET" {
@@ -25,5 +30,5 @@ variable "ZITADEL_CLIENT_ID" {
 
 variable "NEXT_PUBLIC_QWACKER_API_URL" {
   type        = string
-  description = "URL of the deployed application"
+  description = "URL of the API"
 }
