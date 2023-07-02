@@ -12,7 +12,7 @@ import { TPost } from '../../types/Post';
  *
  * We test the following on PostItem
  * 1. Text gets rendered correctly
- * 2. Links get rendered correctly (hashtags, users, urls)
+ * 2. Links get rendered correctly (hashtags, urls creation)
  * 3. User name gets rendered correctly
  * 4. Avatar image gets rendered correctly
  * 5. Copy to clipboard button gets rendered correctly
@@ -48,21 +48,17 @@ describe('PostItem renders correctly', () => {
 	});
 
 	test('PostItem variant `DetailPage` renders a link when a hastag is used in the text', async () => {
-		const { container } = render(<PostItem {...propsDetailPage} />);
-		expect(container.querySelector('#hashtag'));
-		expect(container.querySelector('a'));
+		render(<PostItem {...propsDetailPage} />);
+
+		const hashtagLink = screen.getByRole('link', { name: '#hashtag' });
+		expect(hashtagLink.getAttribute('href')).toBe('/tag/hashtag');
 	});
 
 	test('PostItem variant `DetailPage` renders a link when a user is mentioned in the text', async () => {
-		const { container } = render(<PostItem {...propsDetailPage} />);
-		expect(container.querySelector('#user'));
-		expect(container.querySelector('a'));
-	});
+		render(<PostItem {...propsDetailPage} />);
 
-	test('PostItem variant `DetailPage` renders a link when a url is used in the text', async () => {
-		const { container } = render(<PostItem {...propsDetailPage} />);
-		expect(container.querySelector('#url'));
-		expect(container.querySelector('a'));
+		const userLink = screen.getByRole('link', { name: 'peter' });
+		expect(userLink.getAttribute('href')).toBe('/user/195305735549092097');
 	});
 });
 

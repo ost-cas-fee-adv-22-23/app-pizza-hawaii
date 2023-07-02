@@ -29,8 +29,9 @@
 			"files": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
 			"extends": ["plugin:testing-library/react"],
 			"rules": {
-				"testing-library/no-container": "warn",
-				"testing-library/no-node-access": "warn"
+				"testing-library/no-container": "off", // yes. We use container queries
+				"testing-library/no-node-access": "off", // yes. We use node-access
+				"testing-library/no-wait-for-multiple-assertions": "warn"
 			}
 		},
 		{

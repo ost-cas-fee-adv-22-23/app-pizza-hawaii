@@ -1,8 +1,9 @@
-[![.github/workflows/deploy.yml](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/deploy.yml)
+[![Deploy Task Docker Container to GCP](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/task-deploy.yml/badge.svg?branch=main)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/task-deploy.yml)
 
 ![Quality (Prettier, ESLint, Dependency Graph)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/task-lint-and-prettier.yml/badge.svg)
 ![Unit Tests (Unit Test)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/task-unittests.yml/badge.svg)
 ![End to End Test (E2E-Tests)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/task-playwright-e2e.yml/badge.svg)
+![WebVitals (Performance Tests)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/task-web-vitals.yml/badge.svg)
 
 # CAS FEE ADV Application - Pizza Hawaii 🍕
 
@@ -355,7 +356,7 @@ data "google_secret_manager_secret_version" "nextauth_secret" {
 
 # Create Terraform configuration
 
-in 'main.tf' we describe our Project, define local variables, Data source and Terraform State location (Bucket at cloud). This file will be executed first.
+In 'main.tf' we describe our Project, define local variables, Data source and Terraform State location (Bucket at cloud). This file will be executed first.
 
 The file 'cloud-run.tf' defines the deploy process for in Google Cloud run.
 Here we define:
@@ -432,7 +433,11 @@ or a specific Test
 
 `npm run test-unit AccountFormTest.test.tsx`
 
-## Check Web Vitals metrics
+## 3. Build Docker Container
+
+Docker Container will be built with Production Environment variables
+
+## 4. Check Web Vitals metrics
 
 To ensure our Web metrics are meeting some standards and will not been ruined by implementing some new features, we check for the following metrics and Web Vital scores:
 
