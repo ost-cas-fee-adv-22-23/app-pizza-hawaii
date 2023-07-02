@@ -1,9 +1,6 @@
-[![Deploy Task Docker Container to GCP](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/task-deploy.yml/badge.svg?branch=main)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/task-deploy.yml)
+![Main Workflow)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/main.yml/badge.svg)
+![Staging Workflow](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/stage.yml/badge.svg)
 
-![Quality (Prettier, ESLint, Dependency Graph)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/task-lint-and-prettier.yml/badge.svg)
-![Unit Tests (Unit Test)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/task-unittests.yml/badge.svg)
-![End to End Test (E2E-Tests)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/task-playwright-e2e.yml/badge.svg)
-![WebVitals (Performance Tests)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/task-web-vitals.yml/badge.svg)
 
 # CAS FEE ADV Application - Pizza Hawaii 🍕
 
