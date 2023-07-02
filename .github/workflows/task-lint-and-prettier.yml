@@ -35,3 +35,11 @@ jobs:
 
       - name: Dependancy cruiser
         run: npm run dep-cruise:validate
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: npm-logs
+          path: ~/.npm/_logs
+          retention-days: 5
