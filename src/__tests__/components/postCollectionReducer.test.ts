@@ -65,4 +65,25 @@ describe('postCollectionReducer', () => {
 
 		expect(postState.posts).toEqual([secondPostMock]);
 	});
+
+	it('should handle POSTS_UPDATE action', () => {
+		const existingPosts = [firstPostMock, secondPostMock] as TPost[];
+		const postToUpdate = {
+			...firstPostMock,
+			likeCount: 27,
+		} as TPost;
+
+		const postState = postCollectionReducer(
+			{
+				...initialState,
+				posts: existingPosts,
+			},
+			{
+				type: ActionType.POSTS_UPDATE,
+				payload: postToUpdate,
+			}
+		);
+
+		expect(postState.posts).toEqual([postToUpdate, secondPostMock]);
+	});
 });
