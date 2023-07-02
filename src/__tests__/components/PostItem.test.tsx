@@ -2,36 +2,25 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 
 import postMock from '../../__mocks__/post.json';
-import { PostItem } from '../../components/post/PostItem';
+import { PostItem, TPostItemProps } from '../../components/post/PostItem';
 import { TPost } from '../../types/Post';
 
 /**
  * Unit tests for the PostItem component.
  *
- * Basicly we want to know if this often re-used Component is working with the basic funtionailities.
+ * Basically we want to know if this often re-used Component is working with the basic functionalities.
+ *
  * We test the following on PostItem
- * 1. Render PostItem component with text
- * 2. Render PostItem component with a link when a hastag is used in the text
- * 3. Render PostItem component with a link when a user is mentioned in the text
- * 4. Render PostItem component with a link when a url is used in the text
- * 5. Render PostItem component with a like button
- * 6. Render PostItem component with a userName with all the correct css classes
- * 7. Render PostItem component with a avatar image with and height 64px
- * 8. Render PostItem component with a copy button for the current user
- * 9. Render PostItem component with a disabled copy button for other users
- * 10. Render PostItem component with a copy button for the current user
- * 11. Render PostItem component with a like button for the current user
+ * 1. Text gets rendered correctly
+ * 2. Links get rendered correctly (hashtags, users, urls)
+ * 3. User name gets rendered correctly
+ * 4. Avatar image gets rendered correctly
+ * 5. Copy to clipboard button gets rendered correctly
+ * 6. Like button gets rendered correctly
  *
  **/
 
 jest.mock('next-auth/react');
-
-export type TPostItemProps = {
-	variant: 'detailpage' | 'timeline' | 'response';
-	post: TPost;
-	onDeletePost?: (id: string) => void;
-	onAnswerPost?: (id: string) => void;
-};
 
 const propsDetailPage: TPostItemProps = {
 	post: postMock as TPost,
@@ -41,10 +30,8 @@ const propsDetailPage: TPostItemProps = {
 };
 
 const propsTimelinePage: TPostItemProps = {
-	post: postMock as TPost,
+	...propsDetailPage,
 	variant: 'timeline',
-	onDeletePost: jest.fn(),
-	onAnswerPost: jest.fn(),
 };
 
 describe('PostItem renders correctly', () => {
@@ -111,7 +98,7 @@ describe('PostItem renders correctly', () => {
 			id: '1234567890',
 			name: 'John Doe',
 		};
-		useSession.mockReturnValue({ data: { user: currentUser } });
+		(useSession as jest.Mock).mockReturnValue({ data: { user: currentUser } });
 
 		render(<PostItem variant="detailpage" post={postMock as TPost} />);
 		const copyButton = screen.getAllByText('Copy Link');
