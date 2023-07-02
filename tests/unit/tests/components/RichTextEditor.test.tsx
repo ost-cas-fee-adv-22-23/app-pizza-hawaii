@@ -1,7 +1,7 @@
 import { Richtext } from '@smartive-education/pizza-hawaii';
 import { cleanup, render, screen } from '@testing-library/react';
 
-import { parse as parseRichText } from '../../utils/RichText';
+import { parse as parseRichText } from '../../../../src/utils/RichText';
 
 /**
  * Unit tests for the Richtext component.
