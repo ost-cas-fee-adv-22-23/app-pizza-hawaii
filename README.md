@@ -1,7 +1,6 @@
 ![Main Workflow)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/main.yml/badge.svg)
 ![Staging Workflow](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/stage.yml/badge.svg)
 
-
 # CAS FEE ADV Application - Pizza Hawaii 🍕
 
 ## Introduction
