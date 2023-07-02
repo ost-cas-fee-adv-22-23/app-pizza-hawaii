@@ -8,11 +8,6 @@ variable "NEXT_PUBLIC_VERCEL_URL" {
   description = "URL of the deployed application"
 }
 
-variable "NEXTAUTH_URL" {
-  type        = string
-  description = "URL of the deployed application"
-}
-
 variable "NEXTAUTH_SECRET" {
   type        = string
   description = "Secret for NextAuth"
