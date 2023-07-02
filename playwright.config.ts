@@ -9,7 +9,6 @@ export const authStateFile = './tmp/auth.json';
 const testBrowsers = process.env.browsers?.split(',') || ['Firefox']; // ['Firefox', 'Chrome', 'Safari', 'Mobile Chrome', 'Mobile Safari'];
 
 export default defineConfig({
-	globalSetup: './tests/e2e/global.setup.ts',
 	outputDir: './tmp/e2e-test-results',
 	testDir: './tests/e2e',
 	fullyParallel: true,
