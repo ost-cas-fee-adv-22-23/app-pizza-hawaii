@@ -1,4 +1,5 @@
-[![.github/workflows/deploy.yml](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/deploy.yml)
+![Main Workflow)](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/main.yml/badge.svg)
+![Staging Workflow](https://github.com/smartive-education/app-pizza-hawaii/actions/workflows/stage.yml/badge.svg)
 
 # CAS FEE ADV Application - Pizza Hawaii 🍕
 
@@ -232,7 +233,7 @@ building image and deploy it to Google Cloud Installation
 
 ### 1. install docker and docker-cli on your system
 
-## Workload Identity Provider for Google Cloud
+## Workload Identity Provider (WIF / WIP) for Google Cloud
 
 ### 1. enroll to google-cloud with a service account and Workload Identity Provider
 
@@ -351,7 +352,7 @@ data "google_secret_manager_secret_version" "nextauth_secret" {
 
 # Create Terraform configuration
 
-in 'main.tf' we describe our Project, define local variables, Data source and Terraform State location (Bucket at cloud). This file will be executed first.
+In 'main.tf' we describe our Project, define local variables, Data source and Terraform State location (Bucket at cloud). This file will be executed first.
 
 The file 'cloud-run.tf' defines the deploy process for in Google Cloud run.
 Here we define:
@@ -387,15 +388,52 @@ https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app
 
 # Deployment checks
 
-## Code Quality
+## Stage 1: Code Quality
 
 To ensure Qulity of deployed Code when deploying, there are github actions running
 
-`ESLint` and `Dependency Cruiser`
+1. `ESLint`
+2. `Dependency Cruiser`
+3. `Prettier`
 
 on every git commit push and on merge-requests.
 
-## Check Web Vitals metrics
+## Stage 2: Unit Tests
+
+The Unit-Test using the Test Framwork Jest / React Test Library are located in `src/__tests__/components`
+
+We focus on following Requirements or Features to consider a Unit Test meaningful:
+
+-   Datamanipulation in the Frontend
+-   Core Function
+-   Validation of Data
+-   Loading behaviour
+-   Failbacks
+-   Special Solutions
+
+We test the following Components to ensure the functionality to work:
+
+-   `AccountForm`
+-   `PostCollection`
+-   `PostCollectionReducer`
+-   `PostItem`
+-   `Footer`
+-   `RichTextEditor`
+-   `UserRecommender`
+
+to run Unit Tests locally:
+
+`npm run test-unit`
+
+or a specific Test
+
+`npm run test-unit AccountFormTest.test.tsx`
+
+## 3. Build Docker Container
+
+Docker Container will be built with Production Environment variables
+
+## 4. Check Web Vitals metrics
 
 To ensure our Web metrics are meeting some standards and will not been ruined by implementing some new features, we check for the following metrics and Web Vital scores:
 

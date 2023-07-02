@@ -3,6 +3,24 @@ import { cleanup, render, screen } from '@testing-library/react';
 
 import { parse as parseRichText } from '../../utils/RichText';
 
+/**
+ * Unit tests for the Richtext component.
+ *
+ * Basicly we want to know if all the different input types are rendered correctly.
+ * We test the following on Richtext
+ * 1. Render Richtext component with text
+ * 2. Render Richtext component with a link when a hastag is used in the text
+ * 3. Render Richtext component with a link when a user is mentioned in the text
+ * 4. Render Richtext component with a link when a url is used in the text
+ * 5. Render Richtext component with the correct font size class
+ * 6. Render Richtext component with the correct html tag when `as` prop is specified
+ * 7. Render Richtext component when `size` prop is specified as `M` to have the correct css class
+ * 8. Render Richtext component when a line break is used in the text
+ * 9. Render Richtext component when markdown links are used in the text
+ * 10. Render Richtext component when line breaks are used in the text
+ *
+ **/
+
 export const defaultSettings = {
 	basics: true,
 	links: true,

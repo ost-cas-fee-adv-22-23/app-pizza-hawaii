@@ -6,6 +6,26 @@ import { PostCollection } from '../../components/post/PostCollection';
 import { PostList } from '../../components/post/PostList';
 import { TPost } from '../../types/Post';
 
+/**
+ * Unit tests for the PostCollection and PostList components.
+ *
+ * These components are re-used a lot in our Application and represent the core-functionality of our app.
+ * So it is important to test them thoroughly.
+ * We test the following on PostCollection
+ * 1. Render the PostCollection component with text
+ * 2. Render the the load more Button if `canLoadMore` is true
+ * 3. Do not render the button if `canLoadMore` is false
+ * 4. Render the PostCreator component if `canAdd` is true with a send button
+ * 5. `Not` render the PostCreator component if `canAdd` is false (user is not logged in)
+ * 6. Not render a message to the user if there are no Posts available
+ * 7. Render the PostCollection component with a filter of userId
+ *
+ * We test the following on PostList
+ * 1. Render PostList component with text
+ * 2. Render an empty PostList component with a feedback text if no Posts are loaded
+ *
+ **/
+
 jest.mock('next-auth/react');
 
 describe('PostCollection Component input rendering', () => {
@@ -137,7 +157,7 @@ describe('PostList Component input rendering', () => {
 		expect(screen.getAllByText('#popcorn'));
 	});
 
-	//it should render also an empty postList
+	// it should render also an empty PostList
 	it('should render an empty PostList component with a feedback text if no Posts are loaded', () => {
 		render(<PostList posts={[]} variant="timeline" onAnswerPost={jest.fn()} noPostsMessage="Keine Posts vorhanden." />);
 		expect(screen.getByText('Keine Posts vorhanden.'));

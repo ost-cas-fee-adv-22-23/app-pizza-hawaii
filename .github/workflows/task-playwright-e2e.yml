@@ -48,8 +48,8 @@ jobs:
 
       - name: remove unnecessary files because actions/checkout@v3 does not sparse files
         run: |
-          find . -type f ! -path "./tests/*" ! -name "playwright.config.ts" -delete
-          find . -mindepth 1 -type d ! -path "./tests" ! -path "." -exec rm -rf {} +
+          find . -type f ! -path "./e2e-tests/*" ! -name "playwright.config.ts" -delete
+          find . -mindepth 1 -type d ! -path "./e2e-tests" ! -path "." -exec rm -rf {} +
 
       - name: Install dependencies
         run: |

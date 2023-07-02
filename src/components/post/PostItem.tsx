@@ -164,8 +164,6 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 		});
 	};
 
-	// TODO: check if functions arround without no reference to component
-
 	const headerSlotContent = (
 		<Grid variant="col" gap="S">
 			<Label as="span" size={setting.headlineSize}>

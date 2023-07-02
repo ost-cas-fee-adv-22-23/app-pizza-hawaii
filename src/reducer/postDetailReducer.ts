@@ -32,7 +32,7 @@ export const initialState: TPostState = {
 	loading: false,
 };
 
-export default function postCollectionReducer(state = initialState, action: TActionType) {
+export default function postDetailReducer(state = initialState, action: TActionType) {
 	switch (action.type) {
 		case ActionType.LOADING: {
 			return {
