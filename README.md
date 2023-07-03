@@ -61,14 +61,12 @@ Create a `.env` file and copy these keys and insert confidential values.
     NEXT_PUBLIC_QWACKER_API_URL=[insert prod QWACKER_API_URL]
 
     # Authentication
-    NEXTAUTH_URL=http://localhost:3000
     NEXTAUTH_SECRET=[insert NEXTAUTH_SECRET]
 
     ZITADEL_ISSUER=[insert ZITADEL ISSUER URL]
     ZITADEL_CLIENT_ID=[insert ZITADEL CLIENT ID]
 
     # Frontend
-    NEXT_PUBLIC_URL=http://localhost:3000
     NEXT_PUBLIC_VERCEL_URL=http://localhost:3000
 
 ## 4. Install

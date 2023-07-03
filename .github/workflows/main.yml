@@ -72,4 +72,5 @@ jobs:
     with:
       hoster: google-cloud
       image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:latest
+      url: https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app
     secrets: inherit
