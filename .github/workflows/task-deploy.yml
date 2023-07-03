@@ -114,4 +114,4 @@ jobs:
         run: terraform validate
 
       - name: Deploy Terraform configuration
-        run: terraform apply -auto-approve -lock=false -var IMAGE=${{ inputs.image }} -var NEXT_PUBLIC_VERCEL_URL=${{ inputs.url }} -var NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} -var ZITADEL_ISSUER=${{ secrets.ZITADEL_ISSUER }} -var ZITADEL_CLIENT_ID=${{ secrets.ZITADEL_CLIENT_ID }} -var NEXT_PUBLIC_QWACKER_API_URL=${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }} -var NEXTAUTH_URL=${{ inputs.url }}
+        run: terraform apply -auto-approve -var IMAGE=${{ inputs.image }} -var NEXT_PUBLIC_VERCEL_URL=${{ inputs.url }} -var NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} -var ZITADEL_ISSUER=${{ secrets.ZITADEL_ISSUER }} -var ZITADEL_CLIENT_ID=${{ secrets.ZITADEL_CLIENT_ID }} -var NEXT_PUBLIC_QWACKER_API_URL=${{ secrets.NEXT_PUBLIC_QWACKER_API_URL }} -var NEXTAUTH_URL=${{ inputs.url }}

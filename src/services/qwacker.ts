@@ -46,7 +46,7 @@ type TFetchListResult =
 	  };
 
 const BASE_URL = process.env.NEXT_PUBLIC_QWACKER_API_URL;
-
+console.log('qwacker.ts BASE_URL:', BASE_URL);
 export const fetchList = async (params: object): Promise<TFetchListResult> => {
 	const maxLimit = 1000;
 

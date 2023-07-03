@@ -59,6 +59,7 @@ resource "google_cloud_run_service" "app-pizza-hawaii" {
         resources {
           limits = {
             "memory" = "2Gi"
+            "cpu"    = "2"
           }
         }
 
