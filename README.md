@@ -398,7 +398,7 @@ on every git commit push and on merge-requests.
 
 ## Stage 2: Unit Tests
 
-The Unit-Test using the Test Framwork Jest / React Test Library are located in `src/__tests__/components`
+The Unit-Test using the Test Framwork Jest / React Test Library are located in `tests/unit/tests/components`
 
 We focus on following Requirements or Features to consider a Unit Test meaningful:
 
