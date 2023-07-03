@@ -1,4 +1,4 @@
-name: Playwright Tests E2E
+name: 'T: E2E Tests'
 
 on:
   workflow_call:

@@ -1,4 +1,4 @@
-name: Lint, Prettier and Dependancy cruiser
+name: 'T: Code Quality'
 
 on:
   workflow_call:

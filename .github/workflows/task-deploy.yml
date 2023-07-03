@@ -1,4 +1,4 @@
-name: Deploy Docker Container with Terraform to GCP
+name: 'T: Deploy'
 
 on:
   workflow_call:
@@ -44,6 +44,7 @@ permissions: write-all
 
 jobs:
   Deploy-Vercel:
+    name: 'Deploy to Vercel'
     runs-on: ubuntu-latest
     if: ${{ inputs.hoster == 'vercel' }}
     steps:
@@ -87,6 +88,7 @@ jobs:
           retention-days: 5
 
   Deploy-Google-Cloud:
+    name: 'Deploy to Google Cloud (Terraform)'
     runs-on: ubuntu-latest
     if: ${{ inputs.hoster == 'google-cloud' }}
     defaults:

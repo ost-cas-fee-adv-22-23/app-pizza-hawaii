@@ -1,4 +1,4 @@
-name: Web Vitals
+name: 'T: Web Vitals'
 
 on:
   workflow_call:
