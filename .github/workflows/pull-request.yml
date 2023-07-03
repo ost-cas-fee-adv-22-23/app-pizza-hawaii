@@ -7,43 +7,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  pr-lint-and-prettier:
-    name: Code Quality Image
-    uses: ./.github/workflows/task-lint-and-prettier.yml
-    secrets: inherit
 
-  pr-unit-tests:
-    name: Unit Tests
-    needs: pr-lint-and-prettier
-    uses: ./.github/workflows/task-unittests.yml
-    secrets: inherit
-
-  pr-docker-build-and-publish:
-    name: Build and Publish Docker Image
-    needs: pr-unit-tests
-    uses: ./.github/workflows/task-docker-push.yml
-    with:
-      registry: github
-      tags: |
-        ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
-    secrets: inherit
-
-  pr-playwright-e2e:
-    if: success()
-    name: E2E Tests on Docker Image
-    needs: pr-docker-build-and-publish
+  test-playwright-e2e-deployed:
+    name: E2E Tests on Live Environment
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
-      image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
-      browsers: chromium,firefox
-    secrets: inherit
-
-  pr-web-vitals:
-    if: success()
-    name: Web Vitals on Docker Image
-    needs: pr-docker-build-and-publish
-    uses: ./.github/workflows/task-web-vitals.yml
-    with:
-      image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
-      test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
+      test_url: https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app
     secrets: inherit
