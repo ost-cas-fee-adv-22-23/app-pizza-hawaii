@@ -6,7 +6,7 @@ dotenv.config();
 export const defaultStateFile = './tmp/state.json';
 export const authStateFile = './tmp/auth.json';
 
-const testBrowsers = 'chromium,firefox'?.split(',') || ['firefox']; // ['firefox', 'chromium', 'safari', 'mobile_chrome', 'mobile_safari'];
+const testBrowsers = process.env.browsers?.split(',') || ['firefox']; // ['firefox', 'chromium', 'safari', 'mobile_chrome', 'mobile_safari'];
 
 const browserVersions = {
 	firefox: {
@@ -31,7 +31,7 @@ const browserVersions = {
 	},
 } as Record<string, PlaywrightTestConfig>;
 
-const testBrowserConfig = testBrowsers.filter((browser) => browserVersions[browser]) as Array<PlaywrightTestConfig>;
+const testBrowserConfig = testBrowsers.map((browser) => browserVersions[browser]).filter((browser) => browser);
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -60,7 +60,7 @@ export default defineConfig({
 		})),
 		...testBrowserConfig.map((browser) => ({
 			...browser,
-			name: `logged in ${browser.name}`,
+			name: `${browser.name} - logged in`,
 			use: { ...browser.use, storageState: authStateFile },
 			testMatch: '**/*.loggedin.spec.ts',
 		})),
