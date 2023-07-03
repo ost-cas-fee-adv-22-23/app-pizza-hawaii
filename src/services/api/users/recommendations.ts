@@ -1,7 +1,5 @@
 import { TUserSimple } from '../../../types';
 
-const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
-
 type TRecommendations = {
 	currentUserId: string;
 	excludeUserIds?: string[];
@@ -21,7 +19,7 @@ export const recommendations = async ({
 	excludeUserIds,
 	limit,
 }: TRecommendations): Promise<TUserSimple[]> => {
-	const res = await fetch(`${BASE_URL}/api/users/recommendations`, {
+	const res = await fetch(`/api/users/recommendations`, {
 		method: 'POST',
 		body: JSON.stringify({
 			currentUserId,

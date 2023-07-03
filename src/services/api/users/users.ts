@@ -1,7 +1,5 @@
 import { TUserSimple } from '../../../types';
 
-const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
-console.log('users.ts BASE_URL:', BASE_URL);
 type TUsers = {
 	userIds: string[];
 };
@@ -13,7 +11,7 @@ type TUsers = {
  */
 
 export const users = async ({ userIds }: TUsers): Promise<TUserSimple[]> => {
-	const res = await fetch(`${BASE_URL}/api/users`, {
+	const res = await fetch(`/api/users`, {
 		method: 'POST',
 		body: JSON.stringify({
 			userIds,

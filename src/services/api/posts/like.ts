@@ -1,7 +1,6 @@
 type TGetPost = {
 	id: string;
 };
-const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
 
 /**
  * Like a post
@@ -11,7 +10,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
  */
 
 export const like = async ({ id }: TGetPost) => {
-	return await fetch(`${BASE_URL}/api/posts/${id}/like`, {
+	return await fetch(`/api/posts/${id}/like`, {
 		method: 'PUT',
 	});
 };
@@ -24,7 +23,7 @@ export const like = async ({ id }: TGetPost) => {
  */
 
 export const unlike = async ({ id }: TGetPost) => {
-	return await fetch(`${BASE_URL}/api/posts/${id}/like`, {
+	return await fetch(`/api/posts/${id}/like`, {
 		method: 'DELETE',
 	});
 };

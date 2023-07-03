@@ -1,5 +1,3 @@
-const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
-
 type TRemovePost = {
 	id: string;
 };
@@ -12,7 +10,7 @@ type TRemovePost = {
  */
 
 export const remove = async ({ id }: TRemovePost) => {
-	return await fetch(`${BASE_URL}/api/posts/${id}`, {
+	return await fetch(`/api/posts/${id}`, {
 		method: 'DELETE',
 	});
 };
