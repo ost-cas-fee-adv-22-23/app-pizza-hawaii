@@ -78,7 +78,7 @@ jobs:
   main-playwright-e2e-deployed:
     if: success()
     name: E2E Tests on Live Environment
-    needs: main-docker-build-and-publish
+    needs: [main-deploy-google-cloud]
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
       test_url: https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app
