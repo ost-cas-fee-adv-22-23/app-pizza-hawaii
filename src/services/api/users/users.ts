@@ -1,7 +1,7 @@
 import { TUserSimple } from '../../../types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
-
+console.log('users.ts BASE_URL:', BASE_URL);
 type TUsers = {
 	userIds: string[];
 };

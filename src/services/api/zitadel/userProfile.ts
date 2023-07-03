@@ -1,7 +1,7 @@
 import { TZitadelUser } from '../../../types/Zitadel';
 
 const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
-
+console.log('userProfile.ts BASE_URL:', BASE_URL);
 /**
  * Get user profile of current user
  * @returns {Promise<ZitadelProfile>}
