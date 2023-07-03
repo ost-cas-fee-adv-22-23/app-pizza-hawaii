@@ -30,6 +30,8 @@ jobs:
   playwright-e2e:
     name: Playwright Tests
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.35.0-jammy
     services:
       app:
         image: ${{ inputs.image }}
