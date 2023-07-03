@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, PlaywrightTestConfig } from '@playwright/test';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -8,9 +8,35 @@ export const authStateFile = './tmp/auth.json';
 
 const testBrowsers = process.env.browsers?.split(',') || ['Firefox']; // ['Firefox', 'Chrome', 'Safari', 'Mobile Chrome', 'Mobile Safari'];
 
+const browserVersions = {
+	Firefox: {
+		name: 'firefox',
+		use: { ...devices['Desktop Firefox'] },
+	},
+	Chrome: {
+		name: 'chromium',
+		use: { ...devices['Desktop Chrome'] },
+	},
+	Safari: {
+		name: 'webkit',
+		use: { ...devices['Desktop Safari'] },
+	},
+	'Mobile Chrome': {
+		name: 'chromium',
+		use: { ...devices['Pixel 5'] },
+	},
+	'Mobile Safari': {
+		name: 'webkit',
+		use: { ...devices['iPhone 12'] },
+	},
+} as Record<string, PlaywrightTestConfig>;
+
+/**
+ * See https://playwright.dev/docs/test-configuration.
+ */
 export default defineConfig({
+	testDir: './tests/e2e',
 	outputDir: './tmp/e2e-test-results',
-	testDir: 'tests/e2e',
 	fullyParallel: true,
 	forbidOnly: !!process.env.CI,
 	retries: process.env.CI ? 2 : 0,
@@ -27,13 +53,13 @@ export default defineConfig({
 	/* Configure projects for major browsers */
 	projects: [
 		...testBrowsers.map((browser) => ({
-			name: `logged out ${browser}`,
-			use: { ...devices[browser] },
+			...browserVersions[browser],
 			testIgnore: ['**/*.loggedin.spec.ts'],
 		})),
 		...testBrowsers.map((browser) => ({
-			name: `logged in ${browser}`,
-			use: { ...devices[browser], storageState: authStateFile },
+			...browserVersions[browser],
+			name: `logged in ${browserVersions[browser].name}`,
+			use: { ...browserVersions[browser], storageState: authStateFile },
 			testMatch: '**/*.loggedin.spec.ts',
 		})),
 	],
