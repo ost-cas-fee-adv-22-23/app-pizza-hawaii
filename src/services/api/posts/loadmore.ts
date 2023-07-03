@@ -1,7 +1,5 @@
 import { TPost } from '../../../types';
 
-const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
-
 type TLoadmoreResult = {
 	count: number;
 	posts: TPost[];
@@ -39,6 +37,6 @@ export const loadmore = async ({ olderThan, newerThan, creator }: TLoadmore): Pr
 		urlParams.set('creator', creator);
 	}
 
-	const res = await fetch(`${BASE_URL}/api/posts/loadmore?${urlParams}`);
+	const res = await fetch(`/api/posts/loadmore?${urlParams}`);
 	return (await res.json()) as TLoadmoreResult;
 };

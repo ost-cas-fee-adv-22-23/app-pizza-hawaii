@@ -1,14 +1,12 @@
 import { TZitadelUser } from '../../../types/Zitadel';
 
-const BASE_URL = process.env.NEXT_PUBLIC_VERCEL_URL;
-console.log('userProfile.ts BASE_URL:', BASE_URL);
 /**
  * Get user profile of current user
  * @returns {Promise<ZitadelProfile>}
  */
 
 export const get = async (): Promise<TZitadelUser> => {
-	const res = await fetch(`${BASE_URL}/api/profile`, {
+	const res = await fetch(`/api/profile`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -23,7 +21,7 @@ export const get = async (): Promise<TZitadelUser> => {
 };
 
 export const update = async (userProfile: TZitadelUser): Promise<Response> => {
-	return await fetch(`${BASE_URL}/api/profile`, {
+	return await fetch(`/api/profile`, {
 		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json',
@@ -33,7 +31,7 @@ export const update = async (userProfile: TZitadelUser): Promise<Response> => {
 };
 
 export const register = async (userProfile: TZitadelUser): Promise<Response> => {
-	return await fetch(`${BASE_URL}/api/profile`, {
+	return await fetch(`/api/profile`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
