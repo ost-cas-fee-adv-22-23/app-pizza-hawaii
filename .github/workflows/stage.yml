@@ -1,4 +1,4 @@
-name: Stage Workflow
+name: Stageing Workflow
 
 on:
   push:

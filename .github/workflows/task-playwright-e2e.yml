@@ -5,8 +5,6 @@ on:
     inputs:
       image:
         description: 'The image to test'
-        required: true
-        default: 'ghcr.io/smartive-education/app-pizza-hawaii:test'
         type: string
 
       test_url:
@@ -29,6 +27,7 @@ env:
 jobs:
   playwright-e2e:
     name: Playwright Tests
+    if: ${{ inputs.image }}
     runs-on: ubuntu-latest
     services:
       app:
@@ -42,6 +41,42 @@ jobs:
           ZITADEL_ISSUER: ${{ env.ZITADEL_ISSUER }}
           ZITADEL_CLIENT_ID: ${{ env.ZITADEL_CLIENT_ID }}
 
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: remove unnecessary files because actions/checkout@v3 does not sparse files
+        run: |
+          find . -type f ! -path "./tests/*" ! -name "playwright.config.ts" -delete
+          find . -mindepth 1 -type d ! -path "./tests/e2e" ! -path "./tests" ! -path "." -exec rm -rf {} +
+
+      - name: Install dependencies
+        run: |
+          npm init --yes
+          npm install --save-dev @playwright/test
+          npm install --save-dev dotenv
+          npx playwright install
+
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          NEXT_PUBLIC_VERCEL_URL: ${{ inputs.test_url }}
+          NEXT_PUBLIC_QWACKER_API_URL: ${{ env.NEXT_PUBLIC_QWACKER_API_URL }}
+          ZITADEL_USERNAME: ${{ env.ZITADEL_USERNAME }}
+          ZITADEL_PASSWORD: ${{ env.ZITADEL_PASSWORD }}
+          browsers: ${{ inputs.browsers }}
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 5
+
+  playwright-e2e-url:
+    name: Playwright Tests
+    if: ${{ !inputs.image }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
