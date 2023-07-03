@@ -28,9 +28,9 @@ jobs:
     needs: main-unit-tests
     uses: ./.github/workflows/task-docker-push.yml
     with:
-      registry: google
+      registry: github
       tags: |
-        europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
+        ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
   main-playwright-e2e:
@@ -39,7 +39,7 @@ jobs:
     needs: main-docker-build-and-publish
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
-      image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
+      image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
   main-web-vitals:
@@ -48,8 +48,19 @@ jobs:
     needs: main-docker-build-and-publish
     uses: ./.github/workflows/task-web-vitals.yml
     with:
-      image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
+      image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
       test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
+    secrets: inherit
+
+  main-retag-docker:
+    if: success()
+    name: Retag Docker (Test / GitHub Container Registry)
+    needs: [main-docker-build-and-publish, main-playwright-e2e, main-web-vitals]
+    uses: ./.github/workflows/task-docker-retag.yml
+    with:
+      registry: google
+      src: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      dst: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
   main-deploy-google-cloud:
