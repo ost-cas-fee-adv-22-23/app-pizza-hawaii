@@ -28,9 +28,9 @@ jobs:
     needs: main-unit-tests
     uses: ./.github/workflows/task-docker-push.yml
     with:
-      registry: github
+      registry: google
       tags: |
-        ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+        europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
   main-playwright-e2e:
@@ -39,7 +39,7 @@ jobs:
     needs: main-docker-build-and-publish
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
-      image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
   main-web-vitals:
@@ -48,28 +48,26 @@ jobs:
     needs: main-docker-build-and-publish
     uses: ./.github/workflows/task-web-vitals.yml
     with:
-      image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
       test_url: http://localhost:3000/mumble/01GYX2NAVWCNCQNX7RV5SZARJK
-    secrets: inherit
-
-  main-retag-docker:
-    if: success()
-    name: Retag Docker (Test / GitHub Container Registry)
-    needs: [main-docker-build-and-publish, main-playwright-e2e, main-web-vitals]
-    uses: ./.github/workflows/task-docker-retag.yml
-    with:
-      registry: google
-      src: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
-      dst: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
     secrets: inherit
 
   main-deploy-google-cloud:
     if: success()
     name: Deploy to Google Cloud Run Registry
-    needs: main-retag-docker
+    needs: [main-playwright-e2e, main-web-vitals]
     uses: ./.github/workflows/task-deploy.yml
     with:
       hoster: google-cloud
       image: europe-west6-docker.pkg.dev/project-pizza-388116/pizza-repo/app-pizza-hawaii:${{ github.sha }}
       url: https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app
+    secrets: inherit
+
+  main-playwright-e2e-deployed:
+    if: success()
+    name: E2E Tests on Live Environment
+    needs: main-docker-build-and-publish
+    uses: ./.github/workflows/task-playwright-e2e.yml
+    with:
+      test_url: https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app
     secrets: inherit
