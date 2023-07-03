@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   stage-lint-and-prettier:
-    name: Code Quality Image
+    name: Code Quality
     uses: ./.github/workflows/task-lint-and-prettier.yml
     secrets: inherit
 
