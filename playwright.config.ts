@@ -37,6 +37,7 @@ const testBrowserConfig = testBrowsers.map((browser) => browserVersions[browser]
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+	globalSetup: './tests/e2e/global.setup.ts',
 	testDir: './tests/e2e',
 	outputDir: './tmp/e2e-test-results',
 	fullyParallel: true,
