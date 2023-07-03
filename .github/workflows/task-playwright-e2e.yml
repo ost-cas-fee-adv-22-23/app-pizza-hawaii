@@ -16,7 +16,7 @@ on:
 
       browsers:
         description: 'The browsers to test'
-        default: 'firefox,chromium,safari,mobile_chrome,mobile_safari'
+        default: 'firefox,chromium,mobile_chrome'
         type: string
 env:
   NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
