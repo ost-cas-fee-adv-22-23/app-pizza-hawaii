@@ -31,6 +31,8 @@ const browserVersions = {
 	},
 } as Record<string, PlaywrightTestConfig>;
 
+const testBrowserConfig = testBrowsers.filter((browser) => browserVersions[browser]) as Array<PlaywrightTestConfig>;
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -52,14 +54,14 @@ export default defineConfig({
 
 	/* Configure projects for major browsers */
 	projects: [
-		...testBrowsers.map((browser) => ({
-			...browserVersions[browser],
+		...testBrowserConfig.map((browser) => ({
+			...browser,
 			testIgnore: ['**/*.loggedin.spec.ts'],
 		})),
-		...testBrowsers.map((browser) => ({
-			...browserVersions[browser],
-			name: `logged in ${browserVersions[browser].name}`,
-			use: { ...browserVersions[browser], storageState: authStateFile },
+		...testBrowserConfig.map((browser) => ({
+			...browser,
+			name: `logged in ${browser.name}`,
+			use: { ...browser.use, storageState: authStateFile },
 			testMatch: '**/*.loggedin.spec.ts',
 		})),
 	],
