@@ -58,7 +58,7 @@ resource "google_cloud_run_service" "app-pizza-hawaii" {
         image = local.IMAGE
         resources {
           limits = {
-            "memory" = "2.5Gi"
+            "memory" = "2Gi"
           }
         }
 
