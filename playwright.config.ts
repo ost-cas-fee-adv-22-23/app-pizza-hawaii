@@ -6,7 +6,7 @@ dotenv.config();
 export const defaultStateFile = './tmp/state.json';
 export const authStateFile = './tmp/auth.json';
 
-const testBrowsers = process.env.browsers?.split(',') || ['firefox']; // ['firefox', 'chromium', 'safari', 'mobile_chrome', 'mobile_safari'];
+const testBrowsers = process.env.browsers?.split(',') || ['firefox']; // ['firefox', 'chromium', 'mobile_chrome'];
 
 const browserVersions = {
 	firefox: {
@@ -17,17 +17,9 @@ const browserVersions = {
 		name: 'chromium',
 		use: { ...devices['Desktop Chrome'] },
 	},
-	safari: {
-		name: 'webkit',
-		use: { ...devices['Desktop Safari'] },
-	},
 	mobile_chrome: {
 		name: 'chromium',
 		use: { ...devices['Pixel 5'] },
-	},
-	mobile_safari: {
-		name: 'webkit',
-		use: { ...devices['iPhone 12'] },
 	},
 } as Record<string, PlaywrightTestConfig>;
 
