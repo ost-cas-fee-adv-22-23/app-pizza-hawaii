@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   main-lint-and-prettier:
-    name: Code Quality Image
+    name: Code Quality Checks
     uses: ./.github/workflows/task-lint-and-prettier.yml
     secrets: inherit
 
@@ -31,6 +31,7 @@ jobs:
       registry: github
       tags: |
         ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
+      base_url: https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app
     secrets: inherit
 
   main-playwright-e2e:
@@ -77,7 +78,7 @@ jobs:
   main-playwright-e2e-deployed:
     if: success()
     name: E2E Tests on Live Environment
-    needs: main-docker-build-and-publish
+    needs: [main-deploy-google-cloud]
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
       test_url: https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app
