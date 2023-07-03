@@ -6,26 +6,26 @@ dotenv.config();
 export const defaultStateFile = './tmp/state.json';
 export const authStateFile = './tmp/auth.json';
 
-const testBrowsers = process.env.browsers?.split(',') || ['Firefox']; // ['Firefox', 'Chrome', 'Safari', 'Mobile Chrome', 'Mobile Safari'];
+const testBrowsers = 'chromium,firefox'?.split(',') || ['firefox']; // ['firefox', 'chromium', 'safari', 'mobile_chrome', 'mobile_safari'];
 
 const browserVersions = {
-	Firefox: {
+	firefox: {
 		name: 'firefox',
 		use: { ...devices['Desktop Firefox'] },
 	},
-	Chrome: {
+	chromium: {
 		name: 'chromium',
 		use: { ...devices['Desktop Chrome'] },
 	},
-	Safari: {
+	safari: {
 		name: 'webkit',
 		use: { ...devices['Desktop Safari'] },
 	},
-	'Mobile Chrome': {
+	mobile_chrome: {
 		name: 'chromium',
 		use: { ...devices['Pixel 5'] },
 	},
-	'Mobile Safari': {
+	mobile_safari: {
 		name: 'webkit',
 		use: { ...devices['iPhone 12'] },
 	},

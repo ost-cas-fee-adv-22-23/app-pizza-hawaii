@@ -16,7 +16,7 @@ on:
 
       browsers:
         description: 'The browsers to test'
-        default: 'Firefox,Chrome,Safari,Mobile Chrome,Mobile Safari'
+        default: 'firefox,chromium,safari,mobile_chrome,mobile_safari'
         type: string
 env:
   NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
@@ -30,18 +30,7 @@ jobs:
   playwright-e2e:
     name: Playwright Tests
     runs-on: ubuntu-latest
-    services:
-      app:
-        image: ${{ inputs.image }}
-        ports:
-          - 3000:3000
-        env:
-          NEXT_PUBLIC_VERCEL_URL: ${{ inputs.test_url }}
-          NEXTAUTH_URL: ${{ inputs.test_url }}
-          NEXTAUTH_SECRET: ${{ env.NEXTAUTH_SECRET }}
-          NEXT_PUBLIC_QWACKER_API_URL: ${{ env.NEXT_PUBLIC_QWACKER_API_URL }}
-          ZITADEL_ISSUER: ${{ env.ZITADEL_ISSUER }}
-          ZITADEL_CLIENT_ID: ${{ env.ZITADEL_CLIENT_ID }}
+
 
     steps:
       - uses: actions/checkout@v3

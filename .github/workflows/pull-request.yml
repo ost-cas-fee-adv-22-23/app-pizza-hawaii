@@ -35,7 +35,7 @@ jobs:
     uses: ./.github/workflows/task-playwright-e2e.yml
     with:
       image: ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
-      browsers: Chromium,Firefox
+      browsers: chromium,firefox
     secrets: inherit
 
   pr-web-vitals:
