@@ -1,4 +1,4 @@
-name: Create Docker image and push to registry
+name: 'T: Create Docker and push to registry'
 
 on:
   workflow_call:
