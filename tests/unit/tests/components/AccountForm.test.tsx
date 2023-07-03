@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { cleanup, fireEvent, render } from '@testing-library/react';
 import React from 'react';
 
-import { AccountForm, TAccountFormData } from '../../components/form/AccountForm';
+import { AccountForm, TAccountFormData } from '../../../../src/components/form/AccountForm';
 /**
  * Unit tests for the AccountForm component.
  *

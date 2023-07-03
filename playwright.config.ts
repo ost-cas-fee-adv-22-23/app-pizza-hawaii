@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, PlaywrightTestConfig } from '@playwright/test';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -6,12 +6,40 @@ dotenv.config();
 export const defaultStateFile = './tmp/state.json';
 export const authStateFile = './tmp/auth.json';
 
-const testBrowsers = process.env.browsers?.split(',') || ['Firefox']; // ['Firefox', 'Chrome', 'Safari', 'Mobile Chrome', 'Mobile Safari'];
+const testBrowsers = process.env.browsers?.split(',') || ['firefox']; // ['firefox', 'chromium', 'safari', 'mobile_chrome', 'mobile_safari'];
 
+const browserVersions = {
+	firefox: {
+		name: 'firefox',
+		use: { ...devices['Desktop Firefox'] },
+	},
+	chromium: {
+		name: 'chromium',
+		use: { ...devices['Desktop Chrome'] },
+	},
+	safari: {
+		name: 'webkit',
+		use: { ...devices['Desktop Safari'] },
+	},
+	mobile_chrome: {
+		name: 'chromium',
+		use: { ...devices['Pixel 5'] },
+	},
+	mobile_safari: {
+		name: 'webkit',
+		use: { ...devices['iPhone 12'] },
+	},
+} as Record<string, PlaywrightTestConfig>;
+
+const testBrowserConfig = testBrowsers.map((browser) => browserVersions[browser]).filter((browser) => browser);
+
+/**
+ * See https://playwright.dev/docs/test-configuration.
+ */
 export default defineConfig({
-	globalSetup: './e2e-tests/global.setup.ts',
+	globalSetup: './tests/e2e/global.setup.ts',
+	testDir: './tests/e2e',
 	outputDir: './tmp/e2e-test-results',
-	testDir: './e2e-tests',
 	fullyParallel: true,
 	forbidOnly: !!process.env.CI,
 	retries: process.env.CI ? 2 : 0,
@@ -27,14 +55,14 @@ export default defineConfig({
 
 	/* Configure projects for major browsers */
 	projects: [
-		...testBrowsers.map((browser) => ({
-			name: `logged out ${browser}`,
-			use: { ...devices[browser] },
+		...testBrowserConfig.map((browser) => ({
+			...browser,
 			testIgnore: ['**/*.loggedin.spec.ts'],
 		})),
-		...testBrowsers.map((browser) => ({
-			name: `logged in ${browser}`,
-			use: { ...devices[browser], storageState: authStateFile },
+		...testBrowserConfig.map((browser) => ({
+			...browser,
+			name: `${browser.name} - logged in`,
+			use: { ...browser.use, storageState: authStateFile },
 			testMatch: '**/*.loggedin.spec.ts',
 		})),
 	],

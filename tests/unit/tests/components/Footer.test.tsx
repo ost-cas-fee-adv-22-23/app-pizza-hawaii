@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from '@testing-library/react';
 
-import { Footer } from '../../components/base/Footer';
+import { Footer } from '../../../../src/components/base/Footer';
 
 /**
  * Unit tests for the Footer component

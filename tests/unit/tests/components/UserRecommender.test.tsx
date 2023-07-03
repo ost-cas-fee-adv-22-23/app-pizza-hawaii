@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { cleanup, render } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 
-import { UserRecommender } from '../../components/widgets/UserRecommender';
+import { UserRecommender } from '../../../../src/components/widgets/UserRecommender';
 
 /**
  * Unit tests for the UserRecommender component

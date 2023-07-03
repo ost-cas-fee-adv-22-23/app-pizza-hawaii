@@ -1,7 +1,7 @@
-import firstPostMock from '../../__mocks__/firstPost.json';
-import secondPostMock from '../../__mocks__/secondPost.json';
-import postCollectionReducer, { ActionType, initialState } from '../../reducer/postCollectionReducer';
-import { TPost } from '../../types';
+import firstPostMock from '../../../../tests/unit/mocks/firstPost.json';
+import secondPostMock from '../../../../tests/unit/mocks/secondPost.json';
+import postCollectionReducer, { ActionType, initialState } from '../../../../src/reducer/postCollectionReducer';
+import { TPost } from '../../../../src/types';
 
 describe('postCollectionReducer', () => {
 	// test the LOADING action

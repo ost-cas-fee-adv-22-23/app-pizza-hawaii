@@ -1,5 +1,6 @@
 import { chromium, expect, FullConfig } from '@playwright/test';
-import { defaultStateFile, authStateFile } from '../playwright.config';
+
+import { authStateFile, defaultStateFile } from '../../playwright.config';
 
 async function globalSetup(config: FullConfig) {
 	const { baseURL } = config.projects[0].use as {
