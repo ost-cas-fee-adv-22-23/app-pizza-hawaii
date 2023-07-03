@@ -1,4 +1,4 @@
-name: Jest and RTL Test
+name: 'T: Unit Tests'
 
 on:
   workflow_call:

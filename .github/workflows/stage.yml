@@ -31,7 +31,6 @@ jobs:
       registry: github
       tags: |
         ghcr.io/smartive-education/app-pizza-hawaii:${{ github.sha }}
-        ghcr.io/smartive-education/app-pizza-hawaii:latest
     secrets: inherit
 
   stage-playwright-e2e:
