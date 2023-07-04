@@ -37,11 +37,7 @@ const propsTimelinePage: TPostItemProps = {
 describe('PostItem renders correctly', () => {
 	afterEach(cleanup);
 	test('PostItem variant `DetailPage` renders the text of Post', async () => {
-		const mockSession = {
-			user: { name: 'Filiks Adamski', email: 'filiks.adamski@mumble.com' },
-			expires: '1234567890',
-		};
-		(useSession as jest.Mock).mockReturnValue([mockSession, true]);
+		(useSession as jest.Mock).mockReturnValue([{}, true]);
 
 		render(<PostItem {...propsDetailPage} />);
 		expect(screen.getByText('Hier ist noch ein'));
@@ -90,11 +86,7 @@ describe('PostItem renders correctly', () => {
 
 	// test if the variant `timeline` renders the text of Post with the correct css classes
 	test('displays copy button for the current user', () => {
-		const currentUser = {
-			id: '1234567890',
-			name: 'John Doe',
-		};
-		(useSession as jest.Mock).mockReturnValue({ data: { user: currentUser } });
+		(useSession as jest.Mock).mockReturnValue({ data: { user: {} } });
 
 		render(<PostItem variant="detailpage" post={postMock as TPost} />);
 		const copyButton = screen.getAllByText('Copy Link');

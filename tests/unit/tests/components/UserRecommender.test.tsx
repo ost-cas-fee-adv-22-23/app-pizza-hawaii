@@ -33,11 +33,7 @@ jest.mock('next-auth/react', () => ({
 describe('UserRecommender component', () => {
 	afterEach(cleanup);
 	test('renders the title Header with the correct words and correct classes', async () => {
-		const mockSession = {
-			user: { name: 'Filiks Adamski', email: 'filiks.adamski@mumble.com', id: '1234567890' },
-			expires: '1',
-		};
-		(useSession as jest.Mock).mockReturnValue([mockSession, false]);
+		(useSession as jest.Mock).mockReturnValue([{}, false]);
 
 		const { container } = render(<UserRecommender {...props} />);
 		expect(container.querySelector('h2')).toHaveTextContent('Empfohlene User');
