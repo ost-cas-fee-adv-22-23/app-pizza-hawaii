@@ -1,9 +1,9 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 
-import postMock from '../../../../tests/unit/mocks/post.json';
 import { PostItem, TPostItemProps } from '../../../../src/components/post/PostItem';
 import { TPost } from '../../../../src/types/Post';
+import postMock from '../../../../tests/unit/mocks/post.json';
 
 /**
  * Unit tests for the PostItem component.

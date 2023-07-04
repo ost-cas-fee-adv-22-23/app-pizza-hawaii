@@ -1,10 +1,10 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 
-import mockLoadedPosts from '../../../../tests/unit/mocks/loadedPosts.json';
 import { PostCollection } from '../../../../src/components/post/PostCollection';
 import { PostList } from '../../../../src/components/post/PostList';
 import { TPost } from '../../../../src/types/Post';
+import mockLoadedPosts from '../../../../tests/unit/mocks/loadedPosts.json';
 
 /**
  * Unit tests for the PostCollection and PostList components.

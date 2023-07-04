@@ -12,7 +12,6 @@ import { AccountForm, TAccountFormData } from '../../../../src/components/form/A
  * 2. Render with an empty user, check if the submit button is (visually) disabled, fill all fields and check if submit button is enabled
  * 3. Render with non matching passwords, check if error message is shown
  *
- *
  **/
 const propsUser = {
 	user: {
