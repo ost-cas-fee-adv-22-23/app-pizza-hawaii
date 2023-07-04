@@ -18,6 +18,7 @@ import { parse as parseRichText } from '../../../../src/utils/RichText';
  * 3. Test user mention parser
  * 4. Test markdown link parser
  * 5. Test line break parser
+ * 6. Test all parsers together
  *
  **/
 
@@ -108,5 +109,12 @@ describe('test parseRichText functions', () => {
 		expect(parseRichText('foo\nbar')).toBe('<p>foo<br>bar</p>');
 
 		expect(parseRichText(examples.withBreaks)).toBe(`<p>${examples.withBreaks.replace('\n', '<br>')}</p>`);
+	});
+
+	it('test all parsers', () => {
+		const testText = `${examples.simple} ${examples.hashTag} ${examples.link} ${examples.markdown} ${examples.withBreaks} ${examples.userMention}`;
+		expect(parseRichText(testText)).toBe(
+			`<p>hi there, I am a great fan of pizza hawaii. hi there, I am a great fan of pizza hawaii. <a href="/tag/pizza">#pizza</a> <a href="/tag/hawaii">#hawaii</a> hi there, I want to share that <a href="https://example.com">https://example.com</a> is a great website. hi there, I want to share that <a href="https://lookatthat.ch">lookatthat</a> is a simple website. hi there, I want to share that long text with a line- <br>, break and a pizza slize 🍕. hi there, I want to share that <a href="/user/214652397815857409">@Testuser</a> is a crappy website.</p>`
+		);
 	});
 });
