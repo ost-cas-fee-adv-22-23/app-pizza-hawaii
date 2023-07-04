@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
 
 import { PostItem, TPostItemProps } from '../../../../src/components/post/PostItem';
@@ -33,6 +33,8 @@ const propsTimelinePage: TPostItemProps = {
 	...propsDetailPage,
 	variant: 'timeline',
 };
+
+const postUser = propsTimelinePage.post.user;
 
 describe('PostItem renders correctly', () => {
 	afterEach(cleanup);
@@ -69,7 +71,7 @@ describe('PostItem renders correctly', () => {
 	// test if the text of Post is rendered with the correct css classes
 	test('PostItem variant `timeline` displays the User Name with all the correct css classes', async () => {
 		render(<PostItem {...propsTimelinePage} />);
-		const user = screen.getByText('Peter Manser');
+		const user = screen.getByText(postUser.displayName);
 		expect(user).toHaveProperty(
 			'className',
 			'inline-block font-semibold overflow-hidden text-ellipsis mb-[-0.2em] pb-[0.2em] text-lg'
@@ -85,17 +87,23 @@ describe('PostItem renders correctly', () => {
 	});
 
 	// test if the variant `timeline` renders the text of Post with the correct css classes
-	test('displays copy button for the current user', () => {
+	test('displays copy button for the current user and test functionality', () => {
 		(useSession as jest.Mock).mockReturnValue({ data: { user: {} } });
 
 		render(<PostItem variant="detailpage" post={postMock as TPost} />);
-		const copyButton = screen.getAllByText('Copy Link');
-		expect(copyButton).toHaveLength(1);
-		expect(copyButton[0]).toBeInstanceOf(HTMLSpanElement);
+		const copyButton = screen.getByRole('button', { name: 'Copy Link' });
+
+		// Click on the copy button
+		fireEvent.click(copyButton);
+
+		// Expect new text "Link copied"
+		expect(copyButton.textContent).toBe('Link copied');
 	});
 
 	// test if the like button is rendered correctly
 	test('PostItem renders the like button correctly', async () => {
+		(useSession as jest.Mock).mockReturnValue({ data: { user: {} } });
+
 		render(<PostItem variant="detailpage" post={postMock as TPost} />);
 		const likeButton = screen.getAllByText('Like');
 		expect(likeButton).toHaveLength(1);
