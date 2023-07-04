@@ -71,8 +71,8 @@ jobs:
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
-          workload_identity_provider: 'projects/654053669202/locations/global/workloadIdentityPools/casfee23-pool/providers/casfee23-provider'
-          service_account: 'casfee23-account@project-pizza-388116.iam.gserviceaccount.com'
+          workload_identity_provider: ${{ secrets.WIP_PROVIDER }}
+          service_account: ${{ secrets.WIP_SERVICEACCOUNT }}
           token_format: 'access_token'
 
       - name: Login to Google Cloud
