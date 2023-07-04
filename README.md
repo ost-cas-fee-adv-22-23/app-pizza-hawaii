@@ -235,8 +235,6 @@ building image and deploy it to Google Cloud Installation
 
 > install docker and docker-cli on your system
 
-
-
 ## Workload Identity Provider (WIF / WIP) for Google Cloud
 
 ### 1. enroll to google-cloud with a service account and Workload Identity Provider
@@ -300,8 +298,6 @@ gcloud iam service-accounts add-iam-policy-binding "casfee23-account@${PROJECT_I
 ```
 gcloud iam workload-identity-pools providers describe "casfee23-provider" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --workload-identity-pool="casfee23-pool" \\n  --format="value(name)"
 ```
-
-
 
 # Docker Container
 
@@ -399,7 +395,7 @@ https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app
 ## Stage 1: Code Quality
 
 To ensure Qulity of deployed Code when deploying, there are github actions running
-We check Linting of our files, correct styling, TypeScript compiler, and dependancies. 
+We check Linting of our files, correct styling, TypeScript compiler, and dependancies.
 
 1. `ESLint`
 2. `Prettier`
@@ -441,9 +437,8 @@ or a specific Test
 
 ## Stage 3: Build Docker Container
 
-Docker Container will be built with Production Environment variables. 
+Docker Container will be built with Production Environment variables.
 The `NEXT_PUBLIC_VERCEL_URL` differs depending on the Workflow if the Build is for test (Vercel) or Production (CloudRun).
-
 
 ## Stage 4: Check Web Vitals metrics
 
@@ -458,10 +453,9 @@ To ensure our Web metrics are meeting some standards and will not been ruined by
 -   installable Manifest (PWA check)
 -   service Worker (PWA check)
 
-These Tests run on the current Docker Container to be deployed. 
+These Tests run on the current Docker Container to be deployed.
 Have a look at the github action logs to see the exact location of the final reports.
 They are stored for 30 Days at a [google storrage API](https://storage.googleapis.com/lighthouse-infrastructure.appspot.com/reports/1688494141179-71684.report.html) (Example from 4.07.2023)
-
 
 to run these Tests locally:
 
@@ -469,11 +463,9 @@ to run these Tests locally:
 npx lhci autorun
 ```
 
-
-
 ## Stage 5: End-to-End Tests
 
-To ensure basic functionality we test with several Browsers Workflows and User-Interaction of our Pizza-Hawaii Application. We use `Playwright` Library for that. These Tests run on the current Docker Container to be deployed. 
+To ensure basic functionality we test with several Browsers Workflows and User-Interaction of our Pizza-Hawaii Application. We use `Playwright` Library for that. These Tests run on the current Docker Container to be deployed.
 
 Following End-to-End tests are running:
 
@@ -485,7 +477,6 @@ Following End-to-End tests are running:
 
 > These tests will be be executed with the following Browsers: Firefox, Chromium & Mobile Chrome.
 
-
 to run these Tests locally:
 
 ```
@@ -493,10 +484,10 @@ npm run test-end2end
 ```
 
 with Graphical User Interface starting
+
 ```
 npm run test-end2end:ui
 ```
-
 
 ## PWA
 
