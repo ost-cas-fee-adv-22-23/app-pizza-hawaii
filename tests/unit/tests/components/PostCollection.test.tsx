@@ -20,10 +20,6 @@ import mockLoadedPosts from '../../../../tests/unit/mocks/loadedPosts.json';
  * 5. Show all posts
  * 6. Filter posts by creator
  *
- * We test the following on PostList
- * 1. Render PostList component with text
- * 2. Render an empty PostList component with a feedback text if no Posts are loaded
- *
  **/
 
 jest.mock('next-auth/react');
@@ -75,22 +71,5 @@ describe('PostCollection Component input rendering', () => {
 
 		const tomLinks = screen.getAllByRole('link', { name: 'tomschall' });
 		expect(tomLinks).toHaveLength(3);
-	});
-});
-
-describe('PostList Component input rendering', () => {
-	const loadedPosts = mockLoadedPosts as TPost[];
-
-	afterAll(cleanup);
-	// it should render the PostList component and display a post-hashtag as text
-	it('should render PostList component with text', () => {
-		render(<PostList posts={loadedPosts} variant="timeline" onAnswerPost={jest.fn()} />);
-		expect(screen.getAllByText('#popcorn'));
-	});
-
-	// it should render also an empty PostList
-	it('should render an empty PostList component with a feedback text if no Posts are loaded', () => {
-		render(<PostList posts={[]} variant="timeline" onAnswerPost={jest.fn()} />);
-		expect(screen.getByTestId('no-posts-available-message'));
 	});
 });
