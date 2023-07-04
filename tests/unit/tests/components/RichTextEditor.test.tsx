@@ -13,14 +13,11 @@ import { parse as parseRichText } from '../../../../src/utils/RichText';
  * 3. Render component against snapshot
  *
  * We test the following on the parse function
- * 3. Render Richtext component with a link when a user is mentioned in the text
- * 4. Render Richtext component with a link when a url is used in the text
- * 5. Render Richtext component with the correct font size class
- * 6. Render Richtext component with the correct html tag when `as` prop is specified
- * 7. Render Richtext component when `size` prop is specified as `M` to have the correct css class
- * 8. Render Richtext component when a line break is used in the text
- * 9. Render Richtext component when markdown links are used in the text
- * 10. Render Richtext component when line breaks are used in the text
+ * 1. Test link parser
+ * 2. Test hash tag parser
+ * 3. Test user mention parser
+ * 4. Test markdown link parser
+ * 5. Test line break parser
  *
  **/
 
@@ -43,6 +40,7 @@ const examples = {
 	withBreaks: 'hi there, I want to share that long text with a line- \n, break and a pizza slize 🍕.',
 };
 
+// Richtext Component rendering tests
 describe('Richtext Component input rendering', () => {
 	afterEach(cleanup);
 
@@ -63,31 +61,30 @@ describe('Richtext Component input rendering', () => {
 	});
 });
 
-// lets test the parse function
+// Richtext parse function tests
 describe('test parseRichText functions', () => {
-	afterEach(cleanup);
-	// test plain text URLs to anchor tags creation when links are posted
-	it('should return link anchor tag when links are posted, clutched by `paragraph-tags`', () => {
-		const result = parseRichText(examples.link);
-		expect(result).toBe(
+	it('test link parser', () => {
+		expect(parseRichText('https://example.com')).toBe('<p><a href="https://example.com">https://example.com</a></p>');
+
+		expect(parseRichText(examples.link)).toBe(
 			`<p>${examples.link.replace('https://example.com', '<a href="https://example.com">https://example.com</a>')}</p>`
 		);
 	});
 
-	// test link creation when hash tags are used
-	it('should return link creation when hash tags are used, clutched by `paragraph tags`', () => {
-		const result = parseRichText(examples.hashTag);
-		expect(result).toBe(
+	it('test hash tag parser', () => {
+		expect(parseRichText('#pizza')).toBe('<p><a href="/tag/pizza">#pizza</a></p>');
+
+		expect(parseRichText(examples.hashTag)).toBe(
 			`<p>${examples.hashTag
 				.replace('#pizza', '<a href="/tag/pizza">#pizza</a>')
 				.replace('#hawaii', '<a href="/tag/hawaii">#hawaii</a>')}</p>`
 		);
 	});
 
-	// test user mentions link creation
-	it('should return links to the corresponding user for all user mentions, clutched by `paragraph tags`', () => {
-		const result = parseRichText(examples.userMention);
-		expect(result).toBe(
+	it('test user mentions link', () => {
+		expect(parseRichText('@[User|000000]')).toBe('<p><a href="/user/000000">@User</a></p>');
+
+		expect(parseRichText(examples.userMention)).toBe(
 			`<p>${examples.userMention.replace(
 				'@[Testuser|214652397815857409]',
 				'<a href="/user/214652397815857409">@Testuser</a>'
@@ -95,10 +92,10 @@ describe('test parseRichText functions', () => {
 		);
 	});
 
-	// test markdown link creation
-	it('should return created links for all markdown links clutched by `paragraph tags`', () => {
-		const result = parseRichText(examples.markdown);
-		expect(result).toBe(
+	it('test markdown link', () => {
+		expect(parseRichText('[Ein Test](https://test.ch)')).toBe('<p><a href="https://test.ch">Ein Test</a></p>');
+
+		expect(parseRichText(examples.markdown)).toBe(
 			`<p>${examples.markdown.replace(
 				'[lookatthat](https://lookatthat.ch)',
 				'<a href="https://lookatthat.ch">lookatthat</a>'
@@ -106,9 +103,9 @@ describe('test parseRichText functions', () => {
 		);
 	});
 
-	// test line breaks creation renders correctly
-	it('should return replace line breaks with a `<br>`, clutched by `paragraph tags`', () => {
-		const result = parseRichText(examples.withBreaks);
-		expect(result).toBe(`<p>${examples.withBreaks.replace('\n', '<br>')}</p>`);
+	it('test line breaks', () => {
+		expect(parseRichText('foo\nbar')).toBe('<p>foo<br>bar</p>');
+
+		expect(parseRichText(examples.withBreaks)).toBe(`<p>${examples.withBreaks.replace('\n', '<br>')}</p>`);
 	});
 });
