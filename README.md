@@ -14,15 +14,19 @@ Our focus was to create a responsive and user-friendly interface that would cons
 
 Developed by Team "Pizza-Hawaii" - [Felix Adam](https://github.com/flxtagi) and [Jürgen Rudigier](https://github.com/rudigier).
 
-## Live Demopage
+## Live Demopage (Staging)
 
-The latest version of our Pizza Hawaii App is available [here](https://app-pizza-hawaii.vercel.app/).
+The latest version of our Pizza Hawaii App is available on Vercel [here](https://app-pizza-hawaii.vercel.app/).
+
+## Live Production Page (GCP)
+
+The latest version of our Pizza Hawaii App is available on Google CloudRun [here](https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app)
 
 ## Getting Started
 
 Make sure you work with Node v.16 or later.
 
-## 1. Clone the repo.
+## 1. Clone the Repository
 
 ```
 git clone https://github.com/smartive-education/app-pizza-hawaii.git
@@ -229,7 +233,9 @@ building image and deploy it to Google Cloud Installation
 
 ## Preparations
 
-### 1. install docker and docker-cli on your system
+> install docker and docker-cli on your system
+
+
 
 ## Workload Identity Provider (WIF / WIP) for Google Cloud
 
@@ -259,7 +265,7 @@ gcloud services enable iamcredentials.googleapis.com \\n  --project "${PROJECT_I
 gcloud iam workload-identity-pools create "casfee23-pool" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --display-name="casfee23-pool"
 ```
 
-### 5. describe pool
+### 5. Describe pool
 
 ```
 gcloud iam workload-identity-pools describe "casfee23-pool" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --format="value(name)"
@@ -271,31 +277,33 @@ gcloud iam workload-identity-pools describe "casfee23-pool" \\n  --project="${PR
 export WORKLOAD_IDENTITY_POOL_ID="projects/654053669202/locations/global/workloadIdentityPools/casfee23-pool"
 ```
 
-### 7.create providers at GCloud
+### 7. Create providers at GCloud
 
 ```
 gcloud iam workload-identity-pools providers create-oidc "casfee23-provider" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --workload-identity-pool="casfee23-pool" \\n  --display-name="CAS_FEE_23_Provider" \\n  --attribute-mapping="google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.repository=assertion.repository" \\n  --issuer-uri="https://token.actions.githubusercontent.com"
 ```
 
-### 7. define & Export Repo
+### 8. Define & Export Repo
 
 ```
 export REPO="smartive-education/app-pizza-hawaii"
 ```
 
-### 8. Connect Repo with project and set role
+### 9. Connect Repo with project and set role
 
 ```
 gcloud iam service-accounts add-iam-policy-binding "casfee23-account@${PROJECT_ID}.iam.gserviceaccount.com" \\n  --project="${PROJECT_ID}" \\n  --role="roles/iam.workloadIdentityUser" \\n  --member="principalSet://iam.googleapis.com/${WORKLOAD_IDENTITY_POOL_ID}/attribute.repository/${REPO}"
 ```
 
-### 9. Configure workload identity pool provider
+### 10. Configure workload identity pool provider
 
 ```
 gcloud iam workload-identity-pools providers describe "casfee23-provider" \\n  --project="${PROJECT_ID}" \\n  --location="global" \\n  --workload-identity-pool="casfee23-pool" \\n  --format="value(name)"
 ```
 
-## Docker Container
+
+
+# Docker Container
 
 1. Build a docker image with the following command.
 
@@ -311,13 +319,15 @@ We will deploy on a amd linux architecture, this ensures compability.
 
 3. deploy manually in the Cloud Run console
 
-## TerraForm
+<br />
 
-### preparation
+# Terraform
 
-install terraForm on your system and on command line
+### Preparation
 
-A docker-build should be there.
+> install terraForm on your system and on command line
+
+A Docker-build should be in place.
 
 Create a Bucket for Terraform State
 
@@ -348,9 +358,9 @@ data "google_secret_manager_secret_version" "nextauth_secret" {
 }
 ```
 
-# Create Terraform configuration
+## Create Terraform configuration
 
-In 'main.tf' we describe our Project, define local variables, Data source and Terraform State location (Bucket at cloud). This file will be executed first.
+In `main.tf` we describe our Project, define local variables, Data source and Terraform State location (Bucket at cloud). This file will be executed first.
 
 The file 'cloud-run.tf' defines the deploy process for in Google Cloud run.
 Here we define:
@@ -389,10 +399,12 @@ https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app
 ## Stage 1: Code Quality
 
 To ensure Qulity of deployed Code when deploying, there are github actions running
+We check Linting of our files, correct styling, TypeScript compiler, and dependancies. 
 
 1. `ESLint`
-2. `Dependency Cruiser`
-3. `Prettier`
+2. `Prettier`
+3. `tsc`
+4. `Dependency Cruiser`
 
 on every git commit push and on merge-requests.
 
@@ -427,11 +439,13 @@ or a specific Test
 
 `npm run test-unit AccountFormTest.test.tsx`
 
-## 3. Build Docker Container
+## Stage 3: Build Docker Container
 
-Docker Container will be built with Production Environment variables
+Docker Container will be built with Production Environment variables. 
+The `NEXT_PUBLIC_VERCEL_URL` differs depending on the Workflow if the Build is for test (Vercel) or Production (CloudRun).
 
-## 4. Check Web Vitals metrics
+
+## Stage 4: Check Web Vitals metrics
 
 To ensure our Web metrics are meeting some standards and will not been ruined by implementing some new features, we check for the following metrics and Web Vital scores:
 
@@ -444,13 +458,45 @@ To ensure our Web metrics are meeting some standards and will not been ruined by
 -   installable Manifest (PWA check)
 -   service Worker (PWA check)
 
-have a look at the github action logs to see the exact location of the final reports.
+These Tests run on the current Docker Container to be deployed. 
+Have a look at the github action logs to see the exact location of the final reports.
+They are stored for 30 Days at a [google storrage API](https://storage.googleapis.com/lighthouse-infrastructure.appspot.com/reports/1688494141179-71684.report.html) (Example from 4.07.2023)
+
 
 to run these Tests locally:
 
 ```
 npx lhci autorun
 ```
+
+
+
+## Stage 5: End-to-End Tests
+
+To ensure basic functionality we test with several Browsers Workflows and User-Interaction of our Pizza-Hawaii Application. We use `Playwright` Library for that. These Tests run on the current Docker Container to be deployed. 
+
+Following End-to-End tests are running:
+
+-   Register Form: Necessary Fields, Error Messages, Password validation.
+-   Standalone Post (no login required)
+-   Standalone Post Login
+-   Login Page: Login and Logout Procedure
+-   Posting a Mumble Entry, Like that Post, Unlike it, Delete exactly that Post again.
+
+> These tests will be be executed with the following Browsers: Firefox, Chromium & Mobile Chrome.
+
+
+to run these Tests locally:
+
+```
+npm run test-end2end
+```
+
+with Graphical User Interface starting
+```
+npm run test-end2end:ui
+```
+
 
 ## PWA
 
@@ -465,7 +511,7 @@ you have to build the next js app. and then run with `npm start`.
 
 ## License
 
-The Pizza Hawaii App is open source software licensed under the MIT license. Non Commercial use.
+The Pizza Hawaii App is open source software licensed under the Apache-2.0 license. Non Commercial use.
 
 ## Maintainer
 
