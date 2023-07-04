@@ -261,7 +261,6 @@ export const PostItem: FC<TPostItemProps> = ({ variant, post: initialPost, onDel
 								defaultButtonText="Copy Link"
 								activeButtonText="Link copied"
 								shareText={`${process.env.NEXT_PUBLIC_VERCEL_URL}/mumble/${post.id}`}
-								data-testid="share-button"
 							/>
 						)}
 
