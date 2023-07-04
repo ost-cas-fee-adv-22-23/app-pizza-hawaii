@@ -390,6 +390,37 @@ if the the deploy process is successfull we have a newly built App Pizza Hawaii 
 
 https://app-pizza-hawaii-rcosriwdxq-oa.a.run.app
 
+# Pipline
+
+We have a CI/CD Pipeline in place. The pipeline is triggered by a push to the main branch or by a pull request.
+
+## Main Workflow
+
+The pipeline is defined in the file `.github/workflows/main.yml`
+![Main workflow](./doc/main-workflow.png?raw=true)
+
+We have the following steps in place:
+
+1. Code Quality
+2. Unit Tests
+3. Build Docker Image on GitHub
+4. Run E2E Tests and Web Vitals
+5. Push Docker Image to Google Cloud
+6. Deploy to Google Cloud Run
+7. Run E2E Tests on live App
+
+## Pull Request Workflow
+
+The pipeline is defined in the file `.github/workflows/pull-request.yml`
+![PullRequest Workflow](./doc/pull-request-workflow.png?raw=true)
+
+We have the following steps in place:
+
+1. Code Quality
+2. Unit Tests
+3. Build Docker Image on GitHub
+4. Run E2E Tests and Web Vitals
+
 # Deployment checks
 
 ## Stage 1: Code Quality
