@@ -23,7 +23,7 @@ export const PostList: FC<TPostListProps> = ({
 	onAnswerPost,
 }) => {
 	if (noPostsMessage && posts?.length === 0) {
-		return <p>{noPostsMessage}</p>;
+		return <p data-testid="no-posts-available-message">{noPostsMessage}</p>;
 	}
 	// if there are no posts yet, show skeletons
 	return (
