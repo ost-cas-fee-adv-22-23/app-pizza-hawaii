@@ -36,23 +36,23 @@ const propsTimelinePage: TPostItemProps = {
 
 describe('PostItem renders correctly', () => {
 	afterEach(cleanup);
+	// test the variant `detailpage` renders the text of Post correctly
 	test('PostItem variant `DetailPage` renders the text of Post', async () => {
 		(useSession as jest.Mock).mockReturnValue([{}, true]);
-
 		render(<PostItem {...propsDetailPage} />);
 		expect(screen.getByText('Hier ist noch ein'));
 	});
 
+	// test the variant `detailpage` renders when a hastag is used in the text
 	test('PostItem variant `DetailPage` renders a link when a hastag is used in the text', async () => {
 		render(<PostItem {...propsDetailPage} />);
-
 		const hashtagLink = screen.getByRole('link', { name: '#hashtag' });
 		expect(hashtagLink.getAttribute('href')).toBe('/tag/hashtag');
 	});
 
+	// test the variant `detailpage` renders when a User is mentioned in the text
 	test('PostItem variant `DetailPage` renders a link when a user is mentioned in the text', async () => {
 		render(<PostItem {...propsDetailPage} />);
-
 		const userLink = screen.getByRole('link', { name: 'peter' });
 		expect(userLink.getAttribute('href')).toBe('/user/195305735549092097');
 	});

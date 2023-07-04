@@ -32,6 +32,8 @@ jest.mock('next-auth/react', () => ({
 
 describe('UserRecommender component', () => {
 	afterEach(cleanup);
+
+	// test the title of the component is rendered correctly
 	test('renders the title Header with the correct words and correct classes', async () => {
 		(useSession as jest.Mock).mockReturnValue([{}, false]);
 

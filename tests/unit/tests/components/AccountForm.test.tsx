@@ -13,6 +13,7 @@ import { AccountForm, TAccountFormData } from '../../../../src/components/form/A
  * 3. Render with non matching passwords, check if error message is shown
  *
  **/
+
 const propsUser = {
 	user: {
 		password: 'strongPA$$W0RD',
@@ -62,9 +63,9 @@ describe('AccountForm', () => {
 		});
 	});
 
+	// test if submit button is disabled when user is empty and enabled when user is filled
 	test('renders component with empty user, check if submit button is (visually) disabled, fill all fields and check if submit button is enabled', async () => {
 		const { container } = render(<AccountForm {...propsEmptyUser} />);
-
 		const button = container.querySelector('button[type="submit"]');
 		const buttonContainer = button?.parentElement;
 

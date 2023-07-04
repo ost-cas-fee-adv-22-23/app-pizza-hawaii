@@ -43,12 +43,13 @@ const examples = {
 // Richtext Component rendering tests
 describe('Richtext Component input rendering', () => {
 	afterEach(cleanup);
-
+	// test plain text URLs to anchor tags creation when links are posted
 	it('should render the simple text', () => {
 		render(<Richtext size="M">{examples.simple}</Richtext>);
 		expect(screen.getByText(examples.simple));
 	});
 
+	// test correct font size class
 	it('should render the correct style', () => {
 		const { container } = render(<Richtext size="M">{examples.simple}</Richtext>);
 		expect(container.getElementsByClassName('font-medium leading-normal text-l')).toHaveLength(1);

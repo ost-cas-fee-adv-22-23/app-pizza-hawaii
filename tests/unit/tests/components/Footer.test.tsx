@@ -9,7 +9,7 @@ import { Footer } from '../../../../src/components/base/Footer';
  * Because if this simple component fails, everything fails. So it is the very Entry Point for our unit tests.
  * Because it will be rendered on every page, it is an ideal starting point for our unit tests.
  *
- * We test the following on Footer:
+ * We test the following on Footer Component:
  * 1. Render Footer component with both great Authors in the footer text
  * 2. Theme toggle button is rendered
  * 3. Theme toggle button works as expected (adds the correct className to the body)
